@@ -33,9 +33,6 @@ extern __itt_heap_function ITT_FreeCallback;
 // Detours
 #include <detours/Detours.h>
 
-// ImGui
-#include <imgui/imgui.h>
-
 // INIReader
 #define INI_ALLOW_MULTILINE 0
 #define INI_USE_STACK 0

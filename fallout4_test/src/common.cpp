@@ -10,9 +10,7 @@
 
 #pragma comment(lib, "tbb.lib")					// Thread Building Blocks
 #pragma comment(lib, "libzydis.lib")			// Zydis
-#pragma comment(lib, "libmoc.lib")				// MaskedOcclusionCulling
 #pragma comment(lib, "libmeshoptimizer.lib")	// Meshoptimizer
-#pragma comment(lib, "libimgui.lib")			// ImGui
 #pragma comment(lib, "detours.lib")				// Detours
 
 #if SKYRIM64_USE_VTUNE

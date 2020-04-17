@@ -1,11 +1,3 @@
-[submodule "Dependencies/imgui"]
-	path = Dependencies/imgui
-	url = https://github.com/ocornut/imgui.git
-	branch = viewport
-[submodule "Dependencies/tracy-skyrim64-custom"]
-	path = Dependencies/tracy-skyrim64-custom
-	url = https://github.com/Nukem9/tracy-skyrim64-custom.git
-	branch = master
 [submodule "Dependencies/meshoptimizer"]
 	path = Dependencies/meshoptimizer
 	url = https://github.com/zeux/meshoptimizer.git
