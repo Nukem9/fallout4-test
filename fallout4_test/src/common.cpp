@@ -23,10 +23,6 @@ __itt_heap_function ITT_FreeCallback;
 
 #pragma comment(lib, "tbbmalloc.lib")			// TBB Allocator
 
-#if SKYRIM64_USE_TRACY
-#pragma comment(lib, "libtracy.lib")			// Tracy
-#endif
-
 INIReader g_INI("fallout4_test.ini");
 
 uintptr_t g_ModuleBase;

@@ -20,13 +20,6 @@ extern __itt_heap_function ITT_ReallocateCallback;
 extern __itt_heap_function ITT_FreeCallback;
 #endif
 
-// Tracy
-#if SKYRIM64_USE_TRACY
-#define TRACY_ENABLE
-#endif
-#include <tracy/Tracy.hpp>
-#include <tracy/TracyD3D11.hpp>
-
 // TBBMalloc
 #include <tbb/scalable_allocator.h>
 
