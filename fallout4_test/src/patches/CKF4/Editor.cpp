@@ -256,10 +256,6 @@ uintptr_t g_DeferredStringLength;
 bool g_AllowResize;
 std::vector<std::pair<const char *, void *>> g_DeferredMenuItems;
 
-#include <unordered_set>
-std::unordered_set<uintptr_t> retAddrs;
-#include <intrin.h>
-
 void ResetUIDefer()
 {
 	g_UseDeferredDialogInsert = false;
@@ -427,15 +423,6 @@ void InsertComboBoxItem(HWND ComboBoxHandle, const char *DisplayText, void *Valu
 
 void InsertListViewItem(HWND ListViewHandle, void *Parameter, bool UseImage, int ItemIndex)
 {
-	if (!g_UseDeferredDialogInsert)
-	{
-		if (retAddrs.count((uintptr_t)_ReturnAddress() - g_ModuleBase) <= 0)
-		{
-			retAddrs.emplace((uintptr_t)_ReturnAddress() - g_ModuleBase);
-			LogWindow::Log("New return address: 0x%p\n", (uintptr_t)_ReturnAddress() - g_ModuleBase);
-		}
-	}
-
 	if (ItemIndex == -1)
 		ItemIndex = INT_MAX;
 
