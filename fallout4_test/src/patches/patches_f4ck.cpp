@@ -180,6 +180,11 @@ void Patch_Fallout4CreationKit()
 	XUtil::PatchMemory(OFFSET(0x0DCB7DB, 0), (uint8_t *)"\x00\x00\x00\x00", 4);
 
 	//
+	// Fix for crash when tab control buttons are deleted. Uninitialized TCITEMA structure variables.
+	//
+	XUtil::DetourJump(OFFSET(0x0564E30, 0), &EditorUI::TabControlDeleteItem);
+
+	//
 	// Plugin loading optimizations
 	//
 	int cpuinfo[4];

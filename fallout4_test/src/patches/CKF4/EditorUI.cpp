@@ -376,9 +376,7 @@ namespace EditorUI
 		if (!KeepOtherSelections)
 			ListViewCustomSetItemState(ListViewHandle, -1, 0, LVIS_SELECTED);
 
-		LVFINDINFOA findInfo;
-		memset(&findInfo, 0, sizeof(findInfo));
-
+		LVFINDINFOA findInfo = {};
 		findInfo.flags = LVFI_PARAM;
 		findInfo.lParam = (LPARAM)Parameter;
 
@@ -390,9 +388,7 @@ namespace EditorUI
 
 	void ListViewDeselectItem(HWND ListViewHandle, void *Parameter)
 	{
-		LVFINDINFOA findInfo;
-		memset(&findInfo, 0, sizeof(findInfo));
-
+		LVFINDINFOA findInfo = {};
 		findInfo.flags = LVFI_PARAM;
 		findInfo.lParam = (LPARAM)Parameter;
 
@@ -400,5 +396,13 @@ namespace EditorUI
 
 		if (index != -1)
 			ListViewCustomSetItemState(ListViewHandle, index, 0, LVIS_SELECTED);
+	}
+
+	void TabControlDeleteItem(HWND TabControlHandle, uint32_t TabIndex)
+	{
+		TCITEMA itemInfo = {};
+
+		if (TabCtrl_GetItem(TabControlHandle, TabIndex, &itemInfo))
+			TabCtrl_DeleteItem(TabControlHandle, TabIndex);
 	}
 }
