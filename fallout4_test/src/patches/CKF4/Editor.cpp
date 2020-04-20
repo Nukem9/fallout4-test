@@ -63,15 +63,13 @@ HWND WINAPI hk_CreateDialogParamA(HINSTANCE hInstance, LPCSTR lpTemplateName, HW
 	DlgData.DialogFunc = lpDialogFunc;
 	DlgData.IsDialog = false;
 
-	/*
 	// Override certain default dialogs to use this DLL's resources
 	switch ((uintptr_t)lpTemplateName)
 	{
-	case 0:
+	case 350:
 		hInstance = (HINSTANCE)&__ImageBase;
 		break;
 	}
-	*/
 
 	return CreateDialogParamA(hInstance, lpTemplateName, hWndParent, DialogFuncOverride, dwInitParam);
 }
@@ -82,15 +80,13 @@ INT_PTR WINAPI hk_DialogBoxParamA(HINSTANCE hInstance, LPCSTR lpTemplateName, HW
 	DlgData.DialogFunc = lpDialogFunc;
 	DlgData.IsDialog = true;
 
-	/*
 	// Override certain default dialogs to use this DLL's resources
 	switch ((uintptr_t)lpTemplateName)
 	{
-	case 0:
+	case 350:
 		hInstance = (HINSTANCE)&__ImageBase;
 		break;
 	}
-	*/
 
 	return DialogBoxParamA(hInstance, lpTemplateName, hWndParent, DialogFuncOverride, dwInitParam);
 }
