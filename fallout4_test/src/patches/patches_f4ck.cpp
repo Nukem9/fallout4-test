@@ -40,10 +40,10 @@ void Patch_Fallout4CreationKit()
 	{
 		SetUnhandledExceptionFilter(DumpExceptionHandler);
 
-		XUtil::PatchMemory(OFFSET(0x2D49F12, 0), (PBYTE)"\xC3", 1);// crtSetUnhandledExceptionFilter
-		XUtil::PatchMemory(OFFSET(0x204AE80, 0), (PBYTE)"\xC3", 1);// StackTrace::MemoryTraceWrite
-		XUtil::PatchMemory(OFFSET(0x204D1A0, 0), (PBYTE)"\xC3", 1);// SetUnhandledExceptionFilter, BSWin32ExceptionHandler
-		XUtil::PatchMemory(OFFSET(0x204D1E0, 0), (PBYTE)"\xC3", 1);// SetUnhandledExceptionFilter, BSWin32ExceptionHandler
+		XUtil::PatchMemory(OFFSET(0x2D49F12, 0), { 0xC3 });// crtSetUnhandledExceptionFilter
+		XUtil::PatchMemory(OFFSET(0x204AE80, 0), { 0xC3 });// StackTrace::MemoryTraceWrite
+		XUtil::PatchMemory(OFFSET(0x204D1A0, 0), { 0xC3 });// SetUnhandledExceptionFilter, BSWin32ExceptionHandler
+		XUtil::PatchMemory(OFFSET(0x204D1E0, 0), { 0xC3 });// SetUnhandledExceptionFilter, BSWin32ExceptionHandler
 
 		_set_invalid_parameter_handler([](const wchar_t *, const wchar_t *, const wchar_t *, uint32_t, uintptr_t)
 		{
@@ -75,11 +75,11 @@ void Patch_Fallout4CreationKit()
 	{
 		PatchMemory();
 
-		XUtil::PatchMemory(OFFSET(0x030ECC0, 0), (PBYTE)"\xC3", 1);					// [3GB  ] MemoryManager - Default/Static/File heaps
-		XUtil::PatchMemory(OFFSET(0x2004B70, 0), (PBYTE)"\xC3", 1);					// [1GB  ] BSSmallBlockAllocator
+		XUtil::PatchMemory(OFFSET(0x030ECC0, 0), { 0xC3 });							// [3GB  ] MemoryManager - Default/Static/File heaps
+		XUtil::PatchMemory(OFFSET(0x2004B70, 0), { 0xC3 });							// [1GB  ] BSSmallBlockAllocator
 		XUtil::DetourJump(OFFSET(0x21115D0, 0), &bhkThreadMemorySource::__ctor__);	// [512MB] bhkThreadMemorySource
-		XUtil::PatchMemory(OFFSET(0x200A920, 0), (PBYTE)"\xC3", 1);					// [64MB ] ScrapHeap init
-		XUtil::PatchMemory(OFFSET(0x200B440, 0), (PBYTE)"\xC3", 1);					// [64MB ] ScrapHeap deinit
+		XUtil::PatchMemory(OFFSET(0x200A920, 0), { 0xC3 });							// [64MB ] ScrapHeap init
+		XUtil::PatchMemory(OFFSET(0x200B440, 0), { 0xC3 });							// [64MB ] ScrapHeap deinit
 																					// [128MB] BSScaleformSysMemMapper is untouched due to complexity
 
 		XUtil::DetourJump(OFFSET(0x2004E20, 0), &MemoryManager::Allocate);
@@ -99,22 +99,22 @@ void Patch_Fallout4CreationKit()
 
 	if (g_INI.GetBoolean("CreationKit", "UIDarkTheme", false))
 	{
-		HMODULE comDll = GetModuleHandle("comctl32.dll");
+		auto comDll = (uintptr_t)GetModuleHandle("comctl32.dll");
 		Assert(comDll);
 
 		EditorUIDarkMode::Initialize();
-		Detours::IATHook((uint8_t *)comDll, "USER32.dll", "GetSysColor", (uint8_t *)&EditorUIDarkMode::Comctl32GetSysColor);
-		Detours::IATHook((uint8_t *)comDll, "USER32.dll", "GetSysColorBrush", (uint8_t *)&EditorUIDarkMode::Comctl32GetSysColorBrush);
-		Detours::IATDelayedHook((uint8_t *)comDll, "UxTheme.dll", "DrawThemeBackground", (uint8_t *)&EditorUIDarkMode::Comctl32DrawThemeBackground);
-		Detours::IATDelayedHook((uint8_t *)comDll, "UxTheme.dll", "DrawThemeText", (uint8_t *)&EditorUIDarkMode::Comctl32DrawThemeText);
+		Detours::IATHook(comDll, "USER32.dll", "GetSysColor", (uintptr_t)&EditorUIDarkMode::Comctl32GetSysColor);
+		Detours::IATHook(comDll, "USER32.dll", "GetSysColorBrush", (uintptr_t)&EditorUIDarkMode::Comctl32GetSysColorBrush);
+		Detours::IATDelayedHook(comDll, "UxTheme.dll", "DrawThemeBackground", (uintptr_t)&EditorUIDarkMode::Comctl32DrawThemeBackground);
+		Detours::IATDelayedHook(comDll, "UxTheme.dll", "DrawThemeText", (uintptr_t)&EditorUIDarkMode::Comctl32DrawThemeText);
 	}
 
 	if (g_INI.GetBoolean("CreationKit", "UI", false))
 	{
 		EditorUI::Initialize();
-		*(uint8_t **)&EditorUI::OldWndProc = Detours::X64::DetourFunctionClass((PBYTE)OFFSET(0x05B74D0, 0), &EditorUI::WndProc);
-		*(uint8_t **)&EditorUI::OldObjectWindowProc = Detours::X64::DetourFunctionClass((PBYTE)OFFSET(0x03F9020, 0), &EditorUI::ObjectWindowProc);
-		*(uint8_t **)&EditorUI::OldCellViewProc = Detours::X64::DetourFunctionClass((PBYTE)OFFSET(0x059D820, 0), &EditorUI::CellViewProc);
+		*(uintptr_t *)&EditorUI::OldWndProc = Detours::X64::DetourFunctionClass(OFFSET(0x05B74D0, 0), &EditorUI::WndProc);
+		*(uintptr_t *)&EditorUI::OldObjectWindowProc = Detours::X64::DetourFunctionClass(OFFSET(0x03F9020, 0), &EditorUI::ObjectWindowProc);
+		*(uintptr_t *)&EditorUI::OldCellViewProc = Detours::X64::DetourFunctionClass(OFFSET(0x059D820, 0), &EditorUI::CellViewProc);
 
 		XUtil::PatchMemoryNop(OFFSET(0x2A4D45C, 0), 5);// Disable "Out of Pixel Shaders (running total: X)" log spam
 		XUtil::PatchMemoryNop(OFFSET(0x2A476B6, 0), 5);// Disable "Out of UCode space" log spam
@@ -153,8 +153,8 @@ void Patch_Fallout4CreationKit()
 	//
 	if (g_INI.GetBoolean("CreationKit", "RenderWindowUnlockedFPS", false))
 	{
-		XUtil::PatchMemory(OFFSET(0x0463383, 0), (uint8_t *)"\x01", 1);
-		XUtil::PatchMemory(OFFSET(0x2A39142, 0), (uint8_t *)"\x33\xD2\x90", 3);
+		XUtil::PatchMemory(OFFSET(0x0463383, 0), { 0x01 });
+		XUtil::PatchMemory(OFFSET(0x2A39142, 0), { 0x33, 0xD2, 0x90 });
 	}
 
 	//
@@ -177,7 +177,7 @@ void Patch_Fallout4CreationKit()
 	//
 	// Fix for the -GeneratePreCombined command line option creating files for the PS4 (2) format. It should be WIN64 (0).
 	//
-	XUtil::PatchMemory(OFFSET(0x0DCB7DB, 0), (uint8_t *)"\x00\x00\x00\x00", 4);
+	XUtil::PatchMemory(OFFSET(0x0DCB7DB, 0), { 0x00, 0x00, 0x00, 0x00 });
 
 	//
 	// Fix for crash when tab control buttons are deleted. Uninitialized TCITEMA structure variables.
