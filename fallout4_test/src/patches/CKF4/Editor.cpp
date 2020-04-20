@@ -67,11 +67,7 @@ HWND WINAPI hk_CreateDialogParamA(HINSTANCE hInstance, LPCSTR lpTemplateName, HW
 	// Override certain default dialogs to use this DLL's resources
 	switch ((uintptr_t)lpTemplateName)
 	{
-	//case 0x7A:// "Object Window"
-	//case 0x8D:// "Reference"
-	//case 0xA2:// "Data"
-	//case 0xAF:// "Cell View"
-	//case 0xDC:// "Use Report"
+	case 0:
 		hInstance = (HINSTANCE)&__ImageBase;
 		break;
 	}
@@ -90,11 +86,7 @@ INT_PTR WINAPI hk_DialogBoxParamA(HINSTANCE hInstance, LPCSTR lpTemplateName, HW
 	// Override certain default dialogs to use this DLL's resources
 	switch ((uintptr_t)lpTemplateName)
 	{
-	//case 0x7A:// "Object Window"
-	//case 0x8D:// "Reference"
-	//case 0xA2:// "Data"
-	//case 0xAF:// "Cell View"
-	//case 0xDC:// "Use Report"
+	case 0:
 		hInstance = (HINSTANCE)&__ImageBase;
 		break;
 	}
