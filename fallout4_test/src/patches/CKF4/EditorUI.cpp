@@ -1,6 +1,7 @@
 #include "../../common.h"
 #include <CommCtrl.h>
 #include <commdlg.h>
+#include <shellapi.h>
 #include "EditorUI.h"
 #include "EditorUIDarkMode.h"
 #include "LogWindow.h"
@@ -37,16 +38,15 @@ namespace EditorUI
 		ExtensionMenuHandle = CreateMenu();
 
 		BOOL result = TRUE;
-		result = result && InsertMenu(ExtensionMenuHandle, -1, MF_BYPOSITION | MF_STRING, (UINT_PTR)UI_EXTMENU_SHOWLOG, "Show Log");
-		result = result && InsertMenu(ExtensionMenuHandle, -1, MF_BYPOSITION | MF_STRING, (UINT_PTR)UI_EXTMENU_CLEARLOG, "Clear Log");
-		result = result && InsertMenu(ExtensionMenuHandle, -1, MF_BYPOSITION | MF_STRING | MF_CHECKED, (UINT_PTR)UI_EXTMENU_AUTOSCROLL, "Autoscroll Log");
-		result = result && InsertMenu(ExtensionMenuHandle, -1, MF_BYPOSITION | MF_SEPARATOR, (UINT_PTR)UI_EXTMENU_SPACER, "");
-		result = result && InsertMenu(ExtensionMenuHandle, -1, MF_BYPOSITION | MF_STRING, (UINT_PTR)UI_EXTMENU_LOADEDESPINFO, "Dump Active Forms");
-		result = result && InsertMenu(ExtensionMenuHandle, -1, MF_BYPOSITION | MF_SEPARATOR, (UINT_PTR)UI_EXTMENU_SPACER, "");
-		result = result && InsertMenu(ExtensionMenuHandle, -1, MF_BYPOSITION | MF_STRING, (UINT_PTR)UI_EXTMENU_HARDCODEDFORMS, "Save Hardcoded Forms");
+		result = result && InsertMenu(ExtensionMenuHandle, -1, MF_BYPOSITION | MF_STRING, UI_EXTMENU_SHOWLOG, "Show Log");
+		result = result && InsertMenu(ExtensionMenuHandle, -1, MF_BYPOSITION | MF_STRING, UI_EXTMENU_CLEARLOG, "Clear Log");
+		result = result && InsertMenu(ExtensionMenuHandle, -1, MF_BYPOSITION | MF_STRING | MF_CHECKED, UI_EXTMENU_AUTOSCROLL, "Autoscroll Log");
+		result = result && InsertMenu(ExtensionMenuHandle, -1, MF_BYPOSITION | MF_SEPARATOR, UI_EXTMENU_SPACER, "");
+		result = result && InsertMenu(ExtensionMenuHandle, -1, MF_BYPOSITION | MF_STRING, UI_EXTMENU_LOADEDESPINFO, "Dump Active Forms");
+		result = result && InsertMenu(ExtensionMenuHandle, -1, MF_BYPOSITION | MF_SEPARATOR, UI_EXTMENU_SPACER, "");
+		result = result && InsertMenu(ExtensionMenuHandle, -1, MF_BYPOSITION | MF_STRING, UI_EXTMENU_HARDCODEDFORMS, "Save Hardcoded Forms");
 
-		MENUITEMINFO menuInfo;
-		memset(&menuInfo, 0, sizeof(MENUITEMINFO));
+		MENUITEMINFO menuInfo = {};
 		menuInfo.cbSize = sizeof(MENUITEMINFO);
 		menuInfo.fMask = MIIM_SUBMENU | MIIM_ID | MIIM_STRING;
 		menuInfo.hSubMenu = ExtensionMenuHandle;
@@ -55,7 +55,21 @@ namespace EditorUI
 		menuInfo.cch = (uint32_t)strlen(menuInfo.dwTypeData);
 		result = result && InsertMenuItem(MainMenu, -1, TRUE, &menuInfo);
 
-		AssertMsg(result, "Failed to create extension submenu");
+		// Links
+		auto linksMenuHandle = CreateMenu();
+
+		result = result && InsertMenu(linksMenuHandle, -1, MF_BYPOSITION | MF_STRING, UI_EXTMENU_LINKS_WIKI, "Cascadia Wiki");
+
+		menuInfo = {};
+		menuInfo.cbSize = sizeof(MENUITEMINFO);
+		menuInfo.fMask = MIIM_SUBMENU | MIIM_ID | MIIM_STRING;
+		menuInfo.hSubMenu = linksMenuHandle;
+		menuInfo.wID = UI_EXTMENU_LINKS_ID;
+		menuInfo.dwTypeData = "Links";
+		menuInfo.cch = (uint32_t)strlen(menuInfo.dwTypeData);
+		result = result && InsertMenuItem(MainMenu, -1, TRUE, &menuInfo);
+
+		AssertMsg(result, "Failed to create extension submenus");
 		return result != FALSE;
 	}
 
@@ -226,6 +240,12 @@ namespace EditorUI
 
 				// Fake the click on "Save"
 				PostMessageA(Hwnd, WM_COMMAND, 40127, 0);
+			}
+			return 0;
+
+			case UI_EXTMENU_LINKS_WIKI:
+			{
+				ShellExecute(nullptr, "open", "https://wiki.falloutcascadia.com/index.php?title=Main_Page", "", "", SW_SHOW);
 			}
 			return 0;
 			}
