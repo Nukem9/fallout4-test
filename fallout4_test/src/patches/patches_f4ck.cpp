@@ -192,9 +192,9 @@ void Patch_Fallout4CreationKit()
 
 	// Utilize SSE4.1 instructions if available
 	if ((cpuinfo[2] & (1 << 19)) != 0)
-		XUtil::DetourJump(OFFSET(0x05B31C0, 0), &sub_1414974E0_SSE41);
+		XUtil::DetourJump(OFFSET(0x05B31C0, 0), &sub_1405B31C0_SSE41);
 	else
-		XUtil::DetourJump(OFFSET(0x05B31C0, 0), &sub_1414974E0);
+		XUtil::DetourJump(OFFSET(0x05B31C0, 0), &sub_1405B31C0);
 
 	XUtil::DetourCall(OFFSET(0x08056B7, 0), &hk_inflateInit);
 	XUtil::DetourCall(OFFSET(0x08056F7, 0), &hk_inflate);

@@ -24,8 +24,8 @@ LRESULT WINAPI hk_SendMessageA(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
 int hk_inflateInit(z_stream_s *Stream, const char *Version, int Mode);
 int hk_inflate(z_stream_s *Stream, int Flush);
 
-uint32_t sub_1414974E0(BSTArray<void *>& Array, const void *&Target, uint32_t StartIndex, __int64 Unused);
-uint32_t sub_1414974E0_SSE41(BSTArray<void *>& Array, const void *&Target, uint32_t StartIndex, __int64 Unused);
+uint32_t sub_1405B31C0(BSTArray<void *>& Array, const void *&Target);
+uint32_t sub_1405B31C0_SSE41(BSTArray<void *>& Array, const void *&Target);
 
 void UpdateObjectWindowTreeView(void *Thisptr, HWND ControlHandle, __int64 Unknown);
 void UpdateCellViewCellList(void *Thisptr, HWND ControlHandle, __int64 Unknown);
