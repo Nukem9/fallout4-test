@@ -17,6 +17,7 @@ namespace EditorUI
 	WNDPROC OldWndProc;
 	DLGPROC OldObjectWindowProc;
 	DLGPROC OldCellViewProc;
+	DLGPROC OldResponseWindowProc;
 
 	HWND GetWindow()
 	{
@@ -46,13 +47,15 @@ namespace EditorUI
 		result = result && InsertMenu(ExtensionMenuHandle, -1, MF_BYPOSITION | MF_SEPARATOR, UI_EXTMENU_SPACER, "");
 		result = result && InsertMenu(ExtensionMenuHandle, -1, MF_BYPOSITION | MF_STRING, UI_EXTMENU_HARDCODEDFORMS, "Save Hardcoded Forms");
 
-		MENUITEMINFO menuInfo = {};
-		menuInfo.cbSize = sizeof(MENUITEMINFO);
-		menuInfo.fMask = MIIM_SUBMENU | MIIM_ID | MIIM_STRING;
-		menuInfo.hSubMenu = ExtensionMenuHandle;
-		menuInfo.wID = UI_EXTMENU_ID;
-		menuInfo.dwTypeData = "Extensions";
-		menuInfo.cch = (uint32_t)strlen(menuInfo.dwTypeData);
+		MENUITEMINFO menuInfo
+		{
+			.cbSize = sizeof(MENUITEMINFO),
+			.fMask = MIIM_SUBMENU | MIIM_ID | MIIM_STRING,
+			.wID = UI_EXTMENU_ID,
+			.hSubMenu = ExtensionMenuHandle,
+			.dwTypeData = "Extensions",
+			.cch = (uint32_t)strlen(menuInfo.dwTypeData)
+		};
 		result = result && InsertMenuItem(MainMenu, -1, TRUE, &menuInfo);
 
 		// Links
@@ -120,9 +123,11 @@ namespace EditorUI
 
 			case UI_EXTMENU_AUTOSCROLL:
 			{
-				MENUITEMINFO info;
-				info.cbSize = sizeof(MENUITEMINFO);
-				info.fMask = MIIM_STATE;
+				MENUITEMINFO info
+				{
+					.cbSize = sizeof(MENUITEMINFO),
+					.fMask = MIIM_STATE
+				};
 				GetMenuItemInfo(ExtensionMenuHandle, param, FALSE, &info);
 
 				bool check = !((info.fState & MFS_CHECKED) == MFS_CHECKED);
@@ -139,17 +144,16 @@ namespace EditorUI
 
 			case UI_EXTMENU_LOADEDESPINFO:
 			{
-				char filePath[MAX_PATH];
-				memset(filePath, 0, sizeof(filePath));
-
-				OPENFILENAME ofnData;
-				memset(&ofnData, 0, sizeof(OPENFILENAME));
-				ofnData.lStructSize = sizeof(OPENFILENAME);
-				ofnData.lpstrFilter = "Text Files (*.txt)\0*.txt\0\0";
-				ofnData.lpstrFile = filePath;
-				ofnData.nMaxFile = ARRAYSIZE(filePath);
-				ofnData.Flags = OFN_OVERWRITEPROMPT | OFN_NOCHANGEDIR;
-				ofnData.lpstrDefExt = "txt";
+				char filePath[MAX_PATH] = {};
+				OPENFILENAME ofnData
+				{
+					.lStructSize = sizeof(OPENFILENAME),
+					.lpstrFilter = "Text Files (*.txt)\0*.txt\0\0",
+					.lpstrFile = filePath,
+					.nMaxFile = ARRAYSIZE(filePath),
+					.Flags = OFN_OVERWRITEPROMPT | OFN_NOCHANGEDIR,
+					.lpstrDefExt = "txt"
+				};
 
 				if (FILE *f; GetSaveFileName(&ofnData) && fopen_s(&f, filePath, "w") == 0)
 				{
@@ -188,19 +192,24 @@ namespace EditorUI
 					XUtil::DetourCall(OFFSET(0x5A5D51, 0), callback);
 					CallWindowProcA((WNDPROC)OFFSET(0x5A8250, 0), Hwnd, WM_COMMAND, 1185, 0);
 
-					// Sort by: form id, then name, then file offset
+					// Sort by: type, editor id, form id, then file offset
 					std::sort(formList.begin(), formList.end(),
-						[](const VersionControlListItem& A, const VersionControlListItem& B) -> bool
+						[](const auto& A, const auto& B) -> bool
 					{
-						if (A.FormId == B.FormId)
-						{
-							if (int ret = _stricmp(A.EditorId, B.EditorId); ret != 0)
-								return ret < 0;
+						int ret = memcmp(A.Type, B.Type, sizeof(VersionControlListItem::Type));
 
-							return A.FileOffset > B.FileOffset;
-						}
+						if (ret != 0)
+							return ret < 0;
 
-						return A.FormId > B.FormId;
+						ret = _stricmp(A.EditorId, B.EditorId);
+
+						if (ret != 0)
+							return ret < 0;
+
+						if (A.FormId != B.FormId)
+							return A.FormId > B.FormId;
+
+						return A.FileOffset > B.FileOffset;
 					});
 
 					// Dump it to the log
@@ -368,15 +377,109 @@ namespace EditorUI
 		return OldCellViewProc(DialogHwnd, Message, wParam, lParam);
 	}
 
+	INT_PTR CALLBACK ResponseWindowProc(HWND DialogHwnd, UINT Message, WPARAM wParam, LPARAM lParam)
+	{
+		bool& enableLipGeneration = *(bool *)OFFSET(0x455E2C8, 0);
+
+		if (Message == WM_INITDIALOG)
+		{
+			if (enableLipGeneration)
+			{
+				if (GetFileAttributes("CreationKit32.exe") == INVALID_FILE_ATTRIBUTES ||
+					GetFileAttributes("GFSDK_GodraysLib.Win32.dll") == INVALID_FILE_ATTRIBUTES || 
+					GetFileAttributes("ssce5532.dll") == INVALID_FILE_ATTRIBUTES)
+					enableLipGeneration = false;
+
+				if (!enableLipGeneration)
+					LogWindow::LogWarning(7, "'CreationKit32.exe', 'GFSDK_GodraysLib.Win32.dll', or 'ssce5532.dll' is missing from your game directory. LIP generation will be disabled.");
+			}
+		}
+		else if (Message == WM_COMMAND)
+		{
+			const uint32_t param = LOWORD(wParam);
+
+			switch (param)
+			{
+			case 1016:// "Generate Lip File"
+			case 2379:// "From WAV"
+			case 2380:// "From LTF"
+				auto item = (__int64)ListViewGetSelectedItem(GetDlgItem(DialogHwnd, 2168));
+
+				if (!enableLipGeneration || !item)
+					return 1;
+
+				if (param == 1016)
+				{
+					char audioFilePath[MAX_PATH];
+					strcpy_s(audioFilePath, (const char *)(item + 0xC));
+
+					auto data = *(__int64 *)OFFSET(0x6D7B480, 0);
+					auto topic = ((__int64(__fastcall *)(__int64, uint32_t))OFFSET(0x0B99420, 0))(*(__int64 *)(data + 0x28), *(uint8_t *)(*(__int64 *)(data + 0x18) + 0x1A));
+
+					// The sound file must exist on disk, not in archives
+					if (GetFileAttributes(audioFilePath) == INVALID_FILE_ATTRIBUTES)
+					{
+						LogWindow::LogWarning(7, "'%s' was not found on disk. Trying WAV extension fallback.", audioFilePath);
+
+						// Try .wav as a fallback
+						*strrchr(audioFilePath, '.') = '\0';
+						strcat_s(audioFilePath, ".wav");
+
+						if (GetFileAttributes(audioFilePath) == INVALID_FILE_ATTRIBUTES)
+						{
+							MessageBoxA(DialogHwnd, audioFilePath, "Unable to find audio file on disk", MB_ICONERROR);
+							return 1;
+						}
+					}
+
+					// Run the 32-bit CK
+					auto inputText = ((const char *(__fastcall *)(__int64))OFFSET(0x0B56920, 0))(topic);
+					((bool(__fastcall *)(HWND, const char *, const char *))OFFSET(0x0B66BF0, 0))(DialogHwnd, audioFilePath, inputText);
+
+					char lipFileTarget[MAX_PATH];
+					strcpy_s(lipFileTarget, audioFilePath);
+					*strrchr(lipFileTarget, '.') = '\0';
+					strcat_s(lipFileTarget, ".lip");
+
+					if (GetFileAttributes(lipFileTarget) == INVALID_FILE_ATTRIBUTES)
+						LogWindow::LogWarning(7, "LIP generation failed", lipFileTarget);
+					else
+						*(uint32_t *)(item + 0x114) = 1;
+				}
+				else
+				{
+					bool enableButton =
+						IsDlgButtonChecked(DialogHwnd, 2379) && *(uint32_t *)(item + 0x110) ||
+						IsDlgButtonChecked(DialogHwnd, 2380) && *(uint32_t *)(item + 0x118);
+
+					EnableWindow(GetDlgItem(DialogHwnd, 1016), enableButton);
+				}
+
+				return 1;
+			}
+		}
+		else if (Message == WM_NOTIFY)
+		{
+			auto notify = (LPNMHDR)lParam;
+
+			if (notify->code == LVN_ITEMCHANGED && notify->idFrom == 2168)
+				return ResponseWindowProc(DialogHwnd, WM_COMMAND, 2379, 0);
+		}
+
+		return OldResponseWindowProc(DialogHwnd, Message, wParam, lParam);
+	}
+
 	BOOL ListViewCustomSetItemState(HWND ListViewHandle, WPARAM Index, UINT Data, UINT Mask)
 	{
 		// Microsoft's implementation of this define is broken (ListView_SetItemState)
-		LVITEMA lvi = {};
-		lvi.mask = LVIF_STATE;
-		lvi.state = Data;
-		lvi.stateMask = Mask;
+		LVITEMA item
+		{
+			.mask = LVIF_STATE,
+			.state = Data,
+			.stateMask = Mask
+		};
 
-		return (BOOL)SendMessageA(ListViewHandle, LVM_SETITEMSTATE, Index, (LPARAM)&lvi);
+		return (BOOL)SendMessageA(ListViewHandle, LVM_SETITEMSTATE, Index, (LPARAM)&item);
 	}
 
 	void ListViewSelectItem(HWND ListViewHandle, int ItemIndex, bool KeepOtherSelections)
@@ -396,9 +499,11 @@ namespace EditorUI
 		if (!KeepOtherSelections)
 			ListViewCustomSetItemState(ListViewHandle, -1, 0, LVIS_SELECTED);
 
-		LVFINDINFOA findInfo = {};
-		findInfo.flags = LVFI_PARAM;
-		findInfo.lParam = (LPARAM)Parameter;
+		LVFINDINFOA findInfo
+		{
+			.flags = LVFI_PARAM,
+			.lParam = (LPARAM)Parameter
+		};
 
 		int index = ListView_FindItem(ListViewHandle, -1, &findInfo);
 
@@ -406,11 +511,33 @@ namespace EditorUI
 			ListViewSelectItem(ListViewHandle, index, KeepOtherSelections);
 	}
 
+	void *ListViewGetSelectedItem(HWND ListViewHandle)
+	{
+		if (!ListViewHandle)
+			return nullptr;
+
+		int index = ListView_GetNextItem(ListViewHandle, -1, LVNI_SELECTED);
+
+		if (index == -1)
+			return nullptr;
+
+		LVITEMA item
+		{
+			.mask = LVIF_PARAM,
+			.iItem = index
+		};
+
+		ListView_GetItem(ListViewHandle, &item);
+		return (void *)item.lParam;
+	}
+
 	void ListViewDeselectItem(HWND ListViewHandle, void *Parameter)
 	{
-		LVFINDINFOA findInfo = {};
-		findInfo.flags = LVFI_PARAM;
-		findInfo.lParam = (LPARAM)Parameter;
+		LVFINDINFOA findInfo
+		{
+			.flags = LVFI_PARAM,
+			.lParam = (LPARAM)Parameter
+		};
 
 		int index = ListView_FindItem(ListViewHandle, -1, &findInfo);
 

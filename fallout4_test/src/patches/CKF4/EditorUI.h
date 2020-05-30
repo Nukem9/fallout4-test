@@ -31,6 +31,7 @@ namespace EditorUI
 	extern WNDPROC OldWndProc;
 	extern DLGPROC OldObjectWindowProc;
 	extern DLGPROC OldCellViewProc;
+	extern DLGPROC OldResponseWindowProc;
 
 	HWND GetWindow();
 
@@ -40,10 +41,12 @@ namespace EditorUI
 	LRESULT CALLBACK WndProc(HWND Hwnd, UINT Message, WPARAM wParam, LPARAM lParam);
 	INT_PTR CALLBACK ObjectWindowProc(HWND DialogHwnd, UINT Message, WPARAM wParam, LPARAM lParam);
 	INT_PTR CALLBACK CellViewProc(HWND DialogHwnd, UINT Message, WPARAM wParam, LPARAM lParam);
+	INT_PTR CALLBACK ResponseWindowProc(HWND DialogHwnd, UINT Message, WPARAM wParam, LPARAM lParam);
 
 	BOOL ListViewCustomSetItemState(HWND ListViewHandle, WPARAM Index, UINT Data, UINT Mask);
 	void ListViewSelectItem(HWND ListViewHandle, int ItemIndex, bool KeepOtherSelections);
 	void ListViewFindAndSelectItem(HWND ListViewHandle, void *Parameter, bool KeepOtherSelections);
+	void *ListViewGetSelectedItem(HWND ListViewHandle);
 	void ListViewDeselectItem(HWND ListViewHandle, void *Parameter);
 	void TabControlDeleteItem(HWND TabControlHandle, uint32_t TabIndex);
 }
