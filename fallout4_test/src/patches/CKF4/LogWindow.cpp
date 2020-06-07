@@ -1,6 +1,7 @@
 #include "../../common.h"
 #include <tbb/concurrent_vector.h>
 #include <Richedit.h>
+#include <unordered_set>
 #include "EditorUI.h"
 #include "EditorUIDarkMode.h"
 #include "LogWindow.h"
@@ -13,7 +14,7 @@ namespace LogWindow
 	FILE *OutputFileHandle;
 
 	tbb::concurrent_vector<const char *> PendingMessages;
-	std::set<uint64_t> MessageBlacklist;
+	std::unordered_set<uint64_t> MessageBlacklist;
 
 	HWND GetWindow()
 	{
@@ -55,20 +56,20 @@ namespace LogWindow
 			EditorUIDarkMode::InitializeThread();
 
 			// Output window
-			HINSTANCE instance = (HINSTANCE)GetModuleHandle(nullptr);
+			auto instance = (HINSTANCE)GetModuleHandle(nullptr);
 
-			WNDCLASSEX wc;
-			memset(&wc, 0, sizeof(WNDCLASSEX));
-
-			wc.cbSize = sizeof(WNDCLASSEX);
-			wc.hbrBackground = (HBRUSH)GetStockObject(LTGRAY_BRUSH);
-			wc.hCursor = LoadCursor(nullptr, IDC_ARROW);
-			wc.hInstance = instance;
-			wc.hIcon = LoadIcon(instance, MAKEINTRESOURCE(0x13E));
-			wc.hIconSm = wc.hIcon;
-			wc.lpfnWndProc = WndProc;
-			wc.lpszClassName = TEXT("RTEDITLOG");
-			wc.style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
+			WNDCLASSEX wc
+			{
+				.cbSize = sizeof(WNDCLASSEX),
+				.style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS,
+				.lpfnWndProc = WndProc,
+				.hInstance = instance,
+				.hIcon = LoadIcon(instance, MAKEINTRESOURCE(0x13E)),
+				.hCursor = LoadCursor(nullptr, IDC_ARROW),
+				.hbrBackground = (HBRUSH)GetStockObject(LTGRAY_BRUSH),
+				.lpszClassName = TEXT("RTEDITLOG"),
+				.hIconSm = wc.hIcon,
+			};
 
 			if (!RegisterClassEx(&wc))
 				return false;
@@ -99,10 +100,12 @@ namespace LogWindow
 
 	bool CreateStdoutListener()
 	{
-		SECURITY_ATTRIBUTES saAttr = {};
-		saAttr.nLength = sizeof(SECURITY_ATTRIBUTES);
-		saAttr.bInheritHandle = TRUE;
-		saAttr.lpSecurityDescriptor = nullptr;
+		SECURITY_ATTRIBUTES saAttr
+		{
+			.nLength = sizeof(SECURITY_ATTRIBUTES),
+			.lpSecurityDescriptor = nullptr,
+			.bInheritHandle = TRUE,
+		};
 
 		if (!CreatePipe(&ExternalPipeReaderHandle, &ExternalPipeWriterHandle, &saAttr, 0))
 			return false;
@@ -113,15 +116,13 @@ namespace LogWindow
 
 		std::thread pipeReader([]()
 		{
-			char logBuffer[16384];
-			memset(logBuffer, 0, sizeof(logBuffer));
+			char logBuffer[16384] = {};
 
 			while (true)
 			{
-				char buffer[4096];
-				memset(buffer, 0, sizeof(buffer));
-
+				char buffer[4096] = {};
 				DWORD bytesRead;
+
 				bool succeeded = ReadFile(ExternalPipeReaderHandle, buffer, ARRAYSIZE(buffer) - 1, &bytesRead, nullptr) != 0;
 
 				// Bail if there's nothing left or the process exited
@@ -162,17 +163,20 @@ namespace LogWindow
 		// Keep reading entries until an empty one is hit
 		for (uint32_t i = 0;; i++)
 		{
-			std::string& message = g_INI.Get("CreationKit_Warnings", "W" + std::to_string(i), "");
+			std::string message = g_INI.Get("CreationKit_Warnings", "W" + std::to_string(i), "");
 
 			if (message.empty())
 				break;
 
-			// Un-escape newline and carriage return characters
+			// Unescape newlines, carriage returns, and trailing spaces
 			for (size_t i; (i = message.find("\\n")) != std::string::npos;)
 				message.replace(i, 2, "\n");
 
 			for (size_t i; (i = message.find("\\r")) != std::string::npos;)
 				message.replace(i, 2, "\r");
+
+			for (size_t i; (i = message.find("\\s")) != std::string::npos;)
+				message.replace(i, 2, " ");
 
 			MessageBlacklist.emplace(XUtil::MurmurHash64A(message.c_str(), message.length()));
 		}
@@ -312,19 +316,16 @@ namespace LogWindow
 				SendMessageA(richEditHwnd, EM_GETSCROLLPOS, 0, (WPARAM)&scrollRange);
 
 			// Get a copy of all elements and clear the global list
-			tbb::concurrent_vector<const char *> messages;
-
-			if (!wParam)
-				messages.swap(PendingMessages);
-			else
-				messages.push_back((const char *)wParam);
+			auto messages(std::move(PendingMessages));
 
 			for (const char *message : messages)
 			{
 				// Move caret to the end, then write
-				CHARRANGE range;
-				range.cpMin = LONG_MAX;
-				range.cpMax = LONG_MAX;
+				CHARRANGE range
+				{
+					.cpMin = LONG_MAX,
+					.cpMax = LONG_MAX,
+				};
 
 				SendMessageA(richEditHwnd, EM_EXSETSEL, 0, (LPARAM)&range);
 				SendMessageA(richEditHwnd, EM_REPLACESEL, FALSE, (LPARAM)message);
