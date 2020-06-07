@@ -129,20 +129,20 @@ void Patch_Fallout4CreationKit()
 		XUtil::DetourJump(OFFSET(0x2001F60, 0), &LogWindow::LogWarningUnknown1);
 		XUtil::DetourCall(OFFSET(0x07DA533, 0), &LogWindow::LogWarningUnknown2);
 		XUtil::DetourJump(OFFSET(0x2001BC0, 0), &LogWindow::LogAssert);
+
+		// Deferred dialog loading (batched UI updates)
+		PatchTemplatedFormIterator();
+		XUtil::DetourJump(OFFSET(0x05622B0, 0), &InsertComboBoxItem);
+		XUtil::DetourJump(OFFSET(0x0562BC0, 0), &InsertListViewItem);
+		XUtil::DetourCall(OFFSET(0x03FE701, 0), &UpdateObjectWindowTreeView);
+		XUtil::DetourCall(OFFSET(0x05A05FB, 0), &UpdateCellViewCellList);
+		XUtil::DetourCall(OFFSET(0x05A1B0A, 0), &UpdateCellViewObjectList);
 	}
 
 	if (g_INI.GetBoolean("CreationKit", "DisableWindowGhosting", false))
 	{
 		DisableProcessWindowsGhosting();
 	}
-
-	// Deferred dialog loading (batched UI updates)
-	PatchTemplatedFormIterator();
-	XUtil::DetourJump(OFFSET(0x05622B0, 0), &InsertComboBoxItem);
-	XUtil::DetourJump(OFFSET(0x0562BC0, 0), &InsertListViewItem);
-	XUtil::DetourCall(OFFSET(0x03FE701, 0), &UpdateObjectWindowTreeView);
-	XUtil::DetourCall(OFFSET(0x05A05FB, 0), &UpdateCellViewCellList);
-	XUtil::DetourCall(OFFSET(0x05A1B0A, 0), &UpdateCellViewObjectList);
 
 	// Disable useless "Processing Topic X..." status bar updates
 	XUtil::PatchMemoryNop(OFFSET(0xB89897, 0), 5);
