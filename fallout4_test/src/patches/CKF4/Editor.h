@@ -39,3 +39,17 @@ void QuitHandler();
 
 void hk_call_140906407(__int64 a1, __int64 a2, __int64 a3);
 void PatchTemplatedFormIterator();
+
+template<typename T, bool Stable = false>
+void ArrayQuickSortRecursive(BSTArray<T>& Array, int(*SortFunction)(const void *, const void *))
+{
+	auto compare = [SortFunction](const T& A, const T& B)
+	{
+		return SortFunction(A, B) == -1;
+	};
+
+	if constexpr (Stable)
+		std::stable_sort(&Array[0], &Array[Array.QSize()], compare);
+	else
+		std::sort(&Array[0], &Array[Array.QSize()], compare);
+}

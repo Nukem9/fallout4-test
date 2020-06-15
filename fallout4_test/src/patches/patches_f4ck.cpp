@@ -186,6 +186,12 @@ void Patch_Fallout4CreationKit()
 	XUtil::DetourJump(OFFSET(0x0564E30, 0), &EditorUI::TabControlDeleteItem);
 
 	//
+	// Fix for crash (recursive sorting function stack overflow) when saving certain ESP files (i.e SimSettlements.esp)
+	//
+	XUtil::DetourJump(OFFSET(0x07ED840, 0), &ArrayQuickSortRecursive<class TESForm_CK *>);
+	XUtil::PatchMemory(OFFSET(0x07EDA50, 0), { 0xC3 });
+
+	//
 	// Plugin loading optimizations
 	//
 	int cpuinfo[4];
