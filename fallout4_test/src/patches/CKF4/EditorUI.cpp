@@ -61,7 +61,7 @@ namespace EditorUI
 		// Links
 		auto linksMenuHandle = CreateMenu();
 
-		result = result && InsertMenu(linksMenuHandle, -1, MF_BYPOSITION | MF_STRING, UI_EXTMENU_LINKS_WIKI, "Cascadia Wiki");
+		result = result && InsertMenu(linksMenuHandle, -1, MF_BYPOSITION | MF_STRING, UI_EXTMENU_LINKS_WIKI, "Outfit Studio Wiki");
 
 		menuInfo = {};
 		menuInfo.cbSize = sizeof(MENUITEMINFO);
@@ -254,7 +254,7 @@ namespace EditorUI
 
 			case UI_EXTMENU_LINKS_WIKI:
 			{
-				ShellExecute(nullptr, "open", "https://wiki.falloutcascadia.com/index.php?title=Main_Page", "", "", SW_SHOW);
+				ShellExecute(nullptr, "open", "https://github.com/ousnius/BodySlide-and-Outfit-Studio/wiki", "", "", SW_SHOW);
 			}
 			return 0;
 			}
