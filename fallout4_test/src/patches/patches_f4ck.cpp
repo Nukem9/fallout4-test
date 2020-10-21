@@ -112,6 +112,7 @@ void Patch_Fallout4CreationKit()
 	if (g_INI.GetBoolean("CreationKit", "UI", false))
 	{
 		EditorUI::Initialize();
+
 		*(uintptr_t *)&EditorUI::OldWndProc = Detours::X64::DetourFunctionClass(OFFSET(0x05B74D0, 0), &EditorUI::WndProc);
 		*(uintptr_t *)&EditorUI::OldObjectWindowProc = Detours::X64::DetourFunctionClass(OFFSET(0x03F9020, 0), &EditorUI::ObjectWindowProc);
 		*(uintptr_t *)&EditorUI::OldCellViewProc = Detours::X64::DetourFunctionClass(OFFSET(0x059D820, 0), &EditorUI::CellViewProc);
@@ -137,6 +138,15 @@ void Patch_Fallout4CreationKit()
 		XUtil::DetourCall(OFFSET(0x03FE701, 0), &UpdateObjectWindowTreeView);
 		XUtil::DetourCall(OFFSET(0x05A05FB, 0), &UpdateCellViewCellList);
 		XUtil::DetourCall(OFFSET(0x05A1B0A, 0), &UpdateCellViewObjectList);
+
+		// Fix resize ObjectWindowProc
+		XUtil::DetourCall(OFFSET(0x5669D8, 0), &EditorUI::hk_0x5669D8);
+		XUtil::PatchMemoryNop(OFFSET(0x5669DD, 0), 0x40);
+
+		// Allow forms to be filtered in ObjectWindowProc
+		XUtil::DetourCall(OFFSET(0x3FE4CA, 0), &EditorUI::hk_7FF72F57F8F0);
+		// Allow forms to be filtered in CellViewProc
+		XUtil::DetourCall(OFFSET(0x6435BF, 0), &EditorUI::hk_7FF70C322BC0);
 	}
 
 	if (g_INI.GetBoolean("CreationKit", "DisableWindowGhosting", false))
