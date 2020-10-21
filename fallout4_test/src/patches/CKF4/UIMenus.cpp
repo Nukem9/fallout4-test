@@ -129,7 +129,7 @@ namespace Core
 			void CUIMenuItem::Remove(CUIMenuItem* MenuItem)
 			{
 				Assert(MenuItem && IsMenu(MenuItem->Menu()->Handle));
-				DeleteMenu(MenuItem->Menu()->Handle, (UINT)MenuItem->ID, MenuItem->ByPosition());
+				DeleteMenu(MenuItem->Menu()->Handle, MenuItem->ID, MenuItem->ByPosition() ? MF_BYPOSITION : MF_BYCOMMAND);
 			}
 
 			void CUIMenuItem::Remove(CUIMenuItem& MenuItem)
@@ -163,13 +163,13 @@ namespace Core
 			void CUIMenu::Remove(const UINT MenuID)
 			{
 				Assert(IsMenu(m_Handle));
-				DeleteMenu(m_Handle, MenuID, FALSE);
+				DeleteMenu(m_Handle, MenuID, MF_BYCOMMAND);
 			}
 
 			void CUIMenu::RemoveByPos(const UINT Position)
 			{
 				Assert(IsMenu(m_Handle));
-				DeleteMenu(m_Handle, Position, TRUE);
+				DeleteMenu(m_Handle, Position, MF_BYPOSITION);
 			}
 
 			CUIMenuItem CUIMenu::GetItem(const UINT MenuID)
