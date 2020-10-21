@@ -65,7 +65,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)Dependencies\detours;$(SolutionDir)Dependencies\zydis\msvc\zydis;$(SolutionDir)Dependencies\zydis\include;$(SolutionDir)Dependencies\tbb\include;$(SolutionDir)Dependencies;E:\Program Files %28x86%29\IntelSWTools\VTune Amplifier 2019\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(WindowsSDK_IncludePath);$(VC_IncludePath);$(SolutionDir)Dependencies\detours;$(SolutionDir)Dependencies\zydis\msvc\zydis;$(SolutionDir)Dependencies\zydis\include;$(SolutionDir)Dependencies\tbb\include;$(SolutionDir)Dependencies;E:\Program Files %28x86%29\IntelSWTools\VTune Amplifier 2019\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(OutDir);E:\Program Files %28x86%29\IntelSWTools\VTune Amplifier 2019\lib64;$(LibraryPath)</LibraryPath>
     <TargetName>winhttp</TargetName>
     <IntDir>$(SolutionDir)x64\$(ProjectName)\</IntDir>
@@ -167,6 +167,7 @@
     <ClInclude Include="src\patches\CKF4\Editor.h" />
     <ClInclude Include="src\patches\CKF4\EditorUI.h" />
     <ClInclude Include="src\patches\CKF4\EditorUIDarkMode.h" />
+    <ClInclude Include="src\patches\CKF4\ExperimentalNuukem.h" />
     <ClInclude Include="src\patches\CKF4\LogWindow.h" />
     <ClInclude Include="src\patches\CKF4\TESForm_CK.h" />
     <ClInclude Include="src\patches\CKF4\UIBaseWindow.h" />
@@ -222,6 +223,7 @@
     <ClCompile Include="src\patches\bnet.cpp" />
     <ClCompile Include="src\patches\CKF4\Editor.cpp" />
     <ClCompile Include="src\patches\CKF4\EditorUIDarkMode.cpp" />
+    <ClCompile Include="src\patches\CKF4\ExperimentalNuukem.cpp" />
     <ClCompile Include="src\patches\CKF4\LogWindow.cpp" />
     <ClCompile Include="src\patches\CKF4\TESForm_CK.cpp" />
     <ClCompile Include="src\patches\CKF4\UIBaseWindow.cpp" />

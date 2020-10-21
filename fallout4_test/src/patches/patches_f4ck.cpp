@@ -7,6 +7,7 @@
 #include "CKF4/EditorUI.h"
 #include "CKF4/EditorUIDarkMode.h"
 #include "CKF4/LogWindow.h"
+#include "CKF4/ExperimentalNuukem.h"
 
 void PatchMemory();
 void PatchFileIO();
@@ -215,4 +216,9 @@ void Patch_Fallout4CreationKit()
 
 	XUtil::DetourCall(OFFSET(0x08056B7, 0), &hk_inflateInit);
 	XUtil::DetourCall(OFFSET(0x08056F7, 0), &hk_inflate);
+
+	// Experimental. Must be run last to avoid interfering with other hooks and patches.
+	// Optimization that nuukem did in CK SSE
+	// https://github.com/Nukem9/SkyrimSETest/blob/master/skyrim64_test/src/patches/CKSSE/Experimental.cpp
+	Experimental::RunOptimizations();
 }

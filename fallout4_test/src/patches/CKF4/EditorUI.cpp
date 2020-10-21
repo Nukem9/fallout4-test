@@ -425,13 +425,9 @@ namespace EditorUI
 
 			case UI_CMD_SHOWHIDE_OBJECTWINDOW:
 			{
-				if (IsWindowVisible(GetObjectWindow()))
-					ShowWindow(GetObjectWindow(), SW_HIDE);
-				else
-				{
-					ShowWindow(GetObjectWindow(), SW_SHOW);
-					SetForegroundWindow(GetObjectWindow());
-				}
+				ObjectWindow.Visible = !ObjectWindow.Visible;
+				if (ObjectWindow.Visible)
+					ObjectWindow.Foreground();
 
 				// Change the checkbox
 				MenuItem = MainMenu->GetItem(UI_CMD_SHOWHIDE_OBJECTWINDOW);
@@ -441,13 +437,9 @@ namespace EditorUI
 
 			case UI_CMD_SHOWHIDE_CELLVIEWWINDOW:
 			{
-				if (IsWindowVisible(GetCellViewWindow()))
-					ShowWindow(GetCellViewWindow(), SW_HIDE);
-				else
-				{
-					ShowWindow(GetCellViewWindow(), SW_SHOW);
-					SetForegroundWindow(GetCellViewWindow());
-				}
+				CellViewWindow.Visible = !CellViewWindow.Visible;
+				if (CellViewWindow.Visible)
+					CellViewWindow.Foreground();
 
 				// Change the checkbox
 				MenuItem = MainMenu->GetItem(UI_CMD_SHOWHIDE_CELLVIEWWINDOW);
