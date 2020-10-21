@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../common.h"
+#include "TESForm_CK.h"
 
 #define UI_EDITOR_TOOLBAR				1
 #define UI_EDITOR_OPENFORMBYID			52001	// Sent from the LogWindow on double click
@@ -34,9 +35,11 @@ namespace EditorUI
 	extern DLGPROC OldResponseWindowProc;
 
 	HWND GetWindow();
+	HWND GetObjectWindow();
+	HWND GetCellViewWindow();
 
 	void Initialize();
-	bool CreateExtensionMenu(HWND MainWindow, HMENU MainMenu);
+	//bool CreateExtensionMenu(HWND MainWindow, HMENU MainMenu);
 
 	LRESULT CALLBACK WndProc(HWND Hwnd, UINT Message, WPARAM wParam, LPARAM lParam);
 	INT_PTR CALLBACK ObjectWindowProc(HWND DialogHwnd, UINT Message, WPARAM wParam, LPARAM lParam);
@@ -49,4 +52,8 @@ namespace EditorUI
 	void *ListViewGetSelectedItem(HWND ListViewHandle);
 	void ListViewDeselectItem(HWND ListViewHandle, void *Parameter);
 	void TabControlDeleteItem(HWND TabControlHandle, uint32_t TabIndex);
+
+	LRESULT WINAPI hk_0x5669D8(void);
+	int32_t WINAPI hk_7FF72F57F8F0(const int64_t ObjectListInsertData, TESForm_CK* Form);
+	void WINAPI hk_7FF70C322BC0(HWND ListViewHandle, TESForm_CK* Form, bool UseImage, int32_t ItemIndex);
 }
