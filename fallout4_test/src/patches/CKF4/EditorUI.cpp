@@ -7,10 +7,6 @@
 #include "LogWindow.h"
 #include "TESForm_CK.h"
 
-#include "UIMenus.h"
-#include "UIBaseWindow.h"
-#include "UICheckboxControl.h"
-
 #pragma comment(lib, "comctl32.lib")
 
 #define UI_CUSTOM_MESSAGE						52000
@@ -84,6 +80,26 @@ namespace EditorUI
 	HWND GetCellViewWindow()
 	{
 		return CellViewWindow.Handle;
+	}
+
+	Core::Classes::UI::CUICustomWindow& GetWindowObj()
+	{
+		return MainWindow;
+	}
+
+	Core::Classes::UI::CUICustomWindow& GetObjectWindowObj()
+	{
+		return ObjectWindow;
+	}
+
+	Core::Classes::UI::CUICustomWindow& GetCellViewWindowObj()
+	{
+		return CellViewWindow;
+	}
+
+	Core::Classes::UI::CUIMenu* GetMainMenuObj()
+	{
+		return MainMenu;
 	}
 
 	LRESULT WINAPI hk_0x5669D8(void)

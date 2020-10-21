@@ -3,6 +3,10 @@
 #include "../../common.h"
 #include "TESForm_CK.h"
 
+#include "UIMenus.h"
+#include "UIBaseWindow.h"
+#include "UICheckboxControl.h"
+
 #define UI_EDITOR_TOOLBAR				1
 #define UI_EDITOR_OPENFORMBYID			52001	// Sent from the LogWindow on double click
 
@@ -37,6 +41,10 @@ namespace EditorUI
 	HWND GetWindow();
 	HWND GetObjectWindow();
 	HWND GetCellViewWindow();
+	Core::Classes::UI::CUICustomWindow& GetWindowObj();
+	Core::Classes::UI::CUICustomWindow& GetObjectWindowObj();
+	Core::Classes::UI::CUICustomWindow& GetCellViewWindowObj();
+	Core::Classes::UI::CUIMenu* GetMainMenuObj();
 
 	void Initialize();
 	//bool CreateExtensionMenu(HWND MainWindow, HMENU MainMenu);
