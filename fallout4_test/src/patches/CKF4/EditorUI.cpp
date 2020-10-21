@@ -7,12 +7,64 @@
 #include "LogWindow.h"
 #include "TESForm_CK.h"
 
+#include "UIMenus.h"
+#include "UIBaseWindow.h"
+#include "UICheckboxControl.h"
+
 #pragma comment(lib, "comctl32.lib")
+
+#define UI_CUSTOM_MESSAGE						52000
+#define UI_CMD_SHOWHIDE_OBJECTWINDOW			(UI_CUSTOM_MESSAGE + 2)
+#define UI_CMD_SHOWHIDE_CELLVIEWWINDOW			(UI_CUSTOM_MESSAGE + 3)
+#define UI_CMD_CHANGE_SPLITTER_OBJECTWINDOW		(UI_CUSTOM_MESSAGE + 4)
+#define UI_CELL_WINDOW_ADD_ITEM					UI_OBJECT_WINDOW_ADD_ITEM
 
 namespace EditorUI
 {
-	HWND MainWindowHandle;
-	HMENU ExtensionMenuHandle;
+	// Since very little is described, it is easier for me to implement some of the developments
+
+	Core::Classes::UI::CUICustomWindow MainWindow;
+	Core::Classes::UI::CUICustomWindow ObjectWindow;
+	Core::Classes::UI::CUICustomWindow CellViewWindow;
+
+	struct ObjectWindowControls_t
+	{
+		BOOL StartResize = FALSE;
+
+		Core::Classes::UI::CUIBaseControl TreeList;
+		Core::Classes::UI::CUIBaseControl ItemList;
+		Core::Classes::UI::CUIBaseControl ToggleDecompose;
+		Core::Classes::UI::CUIBaseControl BtnObjLayout;
+		Core::Classes::UI::CUIBaseControl ComboLayout;
+		Core::Classes::UI::CUIBaseControl EditFilter;
+		Core::Classes::UI::CUIBaseControl Spliter;
+		Core::Classes::UI::CUICheckbox ActiveOnly;
+	} ObjectWindowControls;
+
+	struct CellViewWindowControls_t
+	{
+		BOOL Initialize = FALSE;
+
+		Core::Classes::UI::CUIBaseControl LabelWorldSpace;
+		Core::Classes::UI::CUIBaseControl NoCellSellected;
+		Core::Classes::UI::CUIBaseControl Interiors;
+		Core::Classes::UI::CUIBaseControl LoadedAtTop;
+		Core::Classes::UI::CUIBaseControl FilteredOnly;
+		Core::Classes::UI::CUIBaseControl VisibleOnly;
+		Core::Classes::UI::CUIBaseControl SelectedOnly;
+		Core::Classes::UI::CUIBaseControl LabelX;
+		Core::Classes::UI::CUIBaseControl LabelY;
+		Core::Classes::UI::CUIBaseControl EditX;
+		Core::Classes::UI::CUIBaseControl EditY;
+		Core::Classes::UI::CUIBaseControl EditCellFiltered;
+		Core::Classes::UI::CUIBaseControl BtnGo;
+		Core::Classes::UI::CUIBaseControl Lst1;
+		Core::Classes::UI::CUIBaseControl Lst2;
+		Core::Classes::UI::CUICheckbox ActiveOnly;
+	} CellViewWindowControls;
+
+	// A pointer to the main menu, I will create in WM_CREATE and delete it WM_DESTROY. I will use it everywhere.
+	Core::Classes::UI::CUIMenu* MainMenu;
 
 	WNDPROC OldWndProc;
 	DLGPROC OldObjectWindowProc;
@@ -21,7 +73,24 @@ namespace EditorUI
 
 	HWND GetWindow()
 	{
-		return MainWindowHandle;
+		return MainWindow.Handle;
+	}
+
+	HWND GetObjectWindow()
+	{
+		return ObjectWindow.Handle;
+	}
+
+	HWND GetCellViewWindow()
+	{
+		return CellViewWindow.Handle;
+	}
+
+	LRESULT WINAPI hk_0x5669D8(void)
+	{
+		ObjectWindow.Perform(WM_COMMAND, UI_CMD_CHANGE_SPLITTER_OBJECTWINDOW, 0);
+
+		return 0;
 	}
 
 	void Initialize()
@@ -33,12 +102,17 @@ namespace EditorUI
 			MessageBoxA(nullptr, "Failed to create console log window", "Error", MB_ICONERROR);
 	}
 
-	bool CreateExtensionMenu(HWND MainWindow, HMENU MainMenu)
+	bool CreateExtensionMenu(/*HWND MainWindow, */Core::Classes::UI::CUIMenu* MainMenu)
 	{
-		// Create extended menu options
-		ExtensionMenuHandle = CreateMenu();
-
 		BOOL result = TRUE;
+
+		// Microsoft does not recommend using InsertMenu
+		// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-insertmenua
+		// "Note  The InsertMenu function has been superseded by the InsertMenuItem function. 
+		// You can still use InsertMenu, however, if you do not need any of the extended features of InsertMenuItem."
+
+	/*	// Create extended menu options
+		ExtensionMenuHandle = CreateMenu();
 		result = result && InsertMenu(ExtensionMenuHandle, -1, MF_BYPOSITION | MF_STRING, UI_EXTMENU_SHOWLOG, "Show Log");
 		result = result && InsertMenu(ExtensionMenuHandle, -1, MF_BYPOSITION | MF_STRING, UI_EXTMENU_CLEARLOG, "Clear Log");
 		result = result && InsertMenu(ExtensionMenuHandle, -1, MF_BYPOSITION | MF_STRING | MF_CHECKED, UI_EXTMENU_AUTOSCROLL, "Autoscroll Log");
@@ -47,15 +121,14 @@ namespace EditorUI
 		result = result && InsertMenu(ExtensionMenuHandle, -1, MF_BYPOSITION | MF_SEPARATOR, UI_EXTMENU_SPACER, "");
 		result = result && InsertMenu(ExtensionMenuHandle, -1, MF_BYPOSITION | MF_STRING, UI_EXTMENU_HARDCODEDFORMS, "Save Hardcoded Forms");
 
-		MENUITEMINFO menuInfo
-		{
-			.cbSize = sizeof(MENUITEMINFO),
-			.fMask = MIIM_SUBMENU | MIIM_ID | MIIM_STRING,
-			.wID = UI_EXTMENU_ID,
-			.hSubMenu = ExtensionMenuHandle,
-			.dwTypeData = "Extensions",
-			.cch = (uint32_t)strlen(menuInfo.dwTypeData)
-		};
+		MENUITEMINFO menuInfo = { 0 };
+		menuInfo.cbSize = sizeof(MENUITEMINFO);
+		menuInfo.fMask = MIIM_SUBMENU | MIIM_ID | MIIM_STRING;
+		menuInfo.wID = UI_EXTMENU_ID;
+		menuInfo.hSubMenu = ExtensionMenuHandle;
+		menuInfo.dwTypeData = "Extensions";
+		menuInfo.cch = (uint32_t)strlen(menuInfo.dwTypeData);
+
 		result = result && InsertMenuItem(MainMenu, -1, TRUE, &menuInfo);
 
 		// Links
@@ -70,14 +143,43 @@ namespace EditorUI
 		menuInfo.wID = UI_EXTMENU_LINKS_ID;
 		menuInfo.dwTypeData = "Links";
 		menuInfo.cch = (uint32_t)strlen(menuInfo.dwTypeData);
-		result = result && InsertMenuItem(MainMenu, -1, TRUE, &menuInfo);
+		result = result && InsertMenuItem(MainMenu, -1, TRUE, &menuInfo);*/
+
+		// I tend to write object-oriented
+
+		Core::Classes::UI::CUIMenu* ExtensionSubMenu = new Core::Classes::UI::CUIMenu(Core::Classes::UI::CUIMenu::CreateSubMenu());
+		Core::Classes::UI::CUIMenu* LinksSubMenu = new Core::Classes::UI::CUIMenu(Core::Classes::UI::CUIMenu::CreateSubMenu());
+
+		Assert(ExtensionSubMenu);
+		Assert(LinksSubMenu);
+
+		// I'll add hiding and showing the log window 
+
+		result = result && ExtensionSubMenu->Append("Show/Hide Log", UI_EXTMENU_SHOWLOG, TRUE, IsWindowVisible(LogWindow::GetWindow()));
+		result = result && ExtensionSubMenu->Append("Clear Log", UI_EXTMENU_CLEARLOG);
+		result = result && ExtensionSubMenu->Append("Autoscroll Log", UI_EXTMENU_AUTOSCROLL, TRUE, TRUE);
+		result = result && ExtensionSubMenu->AppendSeparator();
+		result = result && ExtensionSubMenu->Append("Dump Active Forms", UI_EXTMENU_LOADEDESPINFO);
+		result = result && ExtensionSubMenu->AppendSeparator();
+		result = result && ExtensionSubMenu->Append("Save Hardcoded Forms", UI_EXTMENU_HARDCODEDFORMS);
+		result = result && MainMenu->Append("Extensions", *ExtensionSubMenu);
+
+		result = result && LinksSubMenu->Append("Cascadia Wiki", UI_EXTMENU_LINKS_WIKI);
+		result = result && MainMenu->Append("Links", *LinksSubMenu);
+
+		// I don't use DeleteMenu when destroying, I don't need to store a pointer and all that.
+
+		delete LinksSubMenu;
+		delete ExtensionSubMenu;
 
 		AssertMsg(result, "Failed to create extension submenus");
-		return result != FALSE;
+		return result;
 	}
 
 	LRESULT CALLBACK WndProc(HWND Hwnd, UINT Message, WPARAM wParam, LPARAM lParam)
 	{
+		Core::Classes::UI::CUIMenuItem MenuItem;
+
 		if (Message == WM_CREATE)
 		{
 			auto createInfo = (const CREATESTRUCT *)lParam;
@@ -85,13 +187,45 @@ namespace EditorUI
 			if (!_stricmp(createInfo->lpszName, "Creation Kit") && !_stricmp(createInfo->lpszClass, "Creation Kit"))
 			{
 				// Initialize the original window before adding anything
-				LRESULT status = CallWindowProc(OldWndProc, Hwnd, Message, wParam, lParam);
-				MainWindowHandle = Hwnd;
+
+				// The entire API is in the Creation Kit ANSI, so it's better to use A
+				LRESULT status = CallWindowProcA(OldWndProc, Hwnd, Message, wParam, lParam);
+				MainWindow = Hwnd;
+
+				// Set font default
+				// This is the default value, but I need an object record to create the missing controls
+				MainWindow.Font = Core::Classes::UI::CFont("MS Sans Serif", 8, {}, Core::Classes::UI::fqClearTypeNatural, Core::Classes::UI::fpVariable);
 
 				// Create custom menu controls
-				CreateExtensionMenu(Hwnd, createInfo->hMenu);
+				MainMenu = new Core::Classes::UI::CUIMenu(createInfo->hMenu);
+				CreateExtensionMenu(MainMenu);
+
+				// All main menus change to uppercase letters
+				for (UINT i = 0; i < MainMenu->Count(); i++)
+				{
+					MenuItem = MainMenu->GetItemByPos(i);
+					MenuItem.Text = XUtil::Str::UpperCase(MenuItem.Text);
+				}
+
+				Core::Classes::UI::CUIMenu ViewMenu = MainMenu->GetSubMenuItem(2);
+
+				// How annoying is this window Warnings, delete from the menu.
+				ViewMenu.RemoveByPos(34);
+
+				// Fix show/hide object & cell view windows
+				MenuItem = ViewMenu.GetItemByPos(2);
+				MenuItem.ID = UI_CMD_SHOWHIDE_OBJECTWINDOW;
+				MenuItem.Checked = TRUE;
+				MenuItem = ViewMenu.GetItemByPos(3);
+				MenuItem.ID = UI_CMD_SHOWHIDE_CELLVIEWWINDOW;
+				MenuItem.Checked = TRUE;
+
 				return status;
 			}
+		}
+		else if (Message == WM_DESTROY)
+		{
+			delete MainMenu;
 		}
 		else if (Message == WM_COMMAND)
 		{
@@ -110,8 +244,20 @@ namespace EditorUI
 
 			case UI_EXTMENU_SHOWLOG:
 			{
-				ShowWindow(LogWindow::GetWindow(), SW_SHOW);
-				SetForegroundWindow(LogWindow::GetWindow());
+				// I already have a class that describes the basic functions of Windows, 
+				// but there is no point in rewriting it too much, so I'll add hiding and showing the log window.
+
+				if (IsWindowVisible(LogWindow::GetWindow()))
+					ShowWindow(LogWindow::GetWindow(), SW_HIDE);
+				else
+				{
+					ShowWindow(LogWindow::GetWindow(), SW_SHOW);
+					SetForegroundWindow(LogWindow::GetWindow());
+				}
+
+				// Change the checkbox
+				MenuItem = MainMenu->GetItem(UI_EXTMENU_SHOWLOG);
+				MenuItem.Checked = !MenuItem.Checked;
 			}
 			return 0;
 
@@ -123,11 +269,10 @@ namespace EditorUI
 
 			case UI_EXTMENU_AUTOSCROLL:
 			{
-				MENUITEMINFO info
-				{
-					.cbSize = sizeof(MENUITEMINFO),
-					.fMask = MIIM_STATE
-				};
+			/*	MENUITEMINFO info = { 0 };
+				info.cbSize = sizeof(MENUITEMINFO);
+				info.fMask = MIIM_STATE;
+				
 				GetMenuItemInfo(ExtensionMenuHandle, param, FALSE, &info);
 
 				bool check = !((info.fState & MFS_CHECKED) == MFS_CHECKED);
@@ -138,22 +283,26 @@ namespace EditorUI
 					info.fState |= MFS_CHECKED;
 
 				PostMessageA(LogWindow::GetWindow(), UI_LOG_CMD_AUTOSCROLL, (WPARAM)check, 0);
-				SetMenuItemInfo(ExtensionMenuHandle, param, FALSE, &info);
+				SetMenuItemInfo(ExtensionMenuHandle, param, FALSE, &info);*/
+
+				// Change the checkbox
+				MenuItem = MainMenu->GetItem(UI_EXTMENU_AUTOSCROLL);
+				MenuItem.Checked = !MenuItem.Checked;
+
+				PostMessageA(LogWindow::GetWindow(), UI_LOG_CMD_AUTOSCROLL, (WPARAM)MenuItem.Checked, 0);
 			}
 			return 0;
 
 			case UI_EXTMENU_LOADEDESPINFO:
 			{
 				char filePath[MAX_PATH] = {};
-				OPENFILENAME ofnData
-				{
-					.lStructSize = sizeof(OPENFILENAME),
-					.lpstrFilter = "Text Files (*.txt)\0*.txt\0\0",
-					.lpstrFile = filePath,
-					.nMaxFile = ARRAYSIZE(filePath),
-					.Flags = OFN_OVERWRITEPROMPT | OFN_NOCHANGEDIR,
-					.lpstrDefExt = "txt"
-				};
+				OPENFILENAME ofnData = { 0 };
+				ofnData.lStructSize = sizeof(OPENFILENAME);
+				ofnData.lpstrFilter = "Text Files (*.txt)\0*.txt\0\0";
+				ofnData.lpstrFile = filePath;
+				ofnData.nMaxFile = ARRAYSIZE(filePath);
+				ofnData.Flags = OFN_OVERWRITEPROMPT | OFN_NOCHANGEDIR;
+				ofnData.lpstrDefExt = "txt";
 
 				if (FILE *f; GetSaveFileName(&ofnData) && fopen_s(&f, filePath, "w") == 0)
 				{
@@ -254,7 +403,39 @@ namespace EditorUI
 
 			case UI_EXTMENU_LINKS_WIKI:
 			{
-				ShellExecute(nullptr, "open", "https://wiki.falloutcascadia.com/index.php?title=Main_Page", "", "", SW_SHOW);
+				ShellExecuteA(nullptr, "open", "https://wiki.falloutcascadia.com/index.php?title=Main_Page", "", "", SW_SHOW);
+			}
+			return 0;
+
+			case UI_CMD_SHOWHIDE_OBJECTWINDOW:
+			{
+				if (IsWindowVisible(GetObjectWindow()))
+					ShowWindow(GetObjectWindow(), SW_HIDE);
+				else
+				{
+					ShowWindow(GetObjectWindow(), SW_SHOW);
+					SetForegroundWindow(GetObjectWindow());
+				}
+
+				// Change the checkbox
+				MenuItem = MainMenu->GetItem(UI_CMD_SHOWHIDE_OBJECTWINDOW);
+				MenuItem.Checked = !MenuItem.Checked;
+			}
+			return 0;
+
+			case UI_CMD_SHOWHIDE_CELLVIEWWINDOW:
+			{
+				if (IsWindowVisible(GetCellViewWindow()))
+					ShowWindow(GetCellViewWindow(), SW_HIDE);
+				else
+				{
+					ShowWindow(GetCellViewWindow(), SW_SHOW);
+					SetForegroundWindow(GetCellViewWindow());
+				}
+
+				// Change the checkbox
+				MenuItem = MainMenu->GetItem(UI_CMD_SHOWHIDE_CELLVIEWWINDOW);
+				MenuItem.Checked = !MenuItem.Checked;
 			}
 			return 0;
 			}
@@ -265,115 +446,274 @@ namespace EditorUI
 			char customTitle[1024];
 			sprintf_s(customTitle, "%s [CK64Fixes Rev. F4-%s]", (const char *)lParam, g_GitVersion);
 
-			return CallWindowProc(OldWndProc, Hwnd, Message, wParam, (LPARAM)customTitle);
+			return CallWindowProcA(OldWndProc, Hwnd, Message, wParam, (LPARAM)customTitle);
 		}
 
-		return CallWindowProc(OldWndProc, Hwnd, Message, wParam, lParam);
+		return CallWindowProcA(OldWndProc, Hwnd, Message, wParam, lParam);
+	}
+
+	void ResizeObjectWndChildControls(void)
+	{
+		// The perfectionist in me is dying....
+
+		ObjectWindowControls.TreeList.LockUpdate();
+		ObjectWindowControls.ItemList.LockUpdate();
+		ObjectWindowControls.EditFilter.LockUpdate();
+		ObjectWindowControls.ToggleDecompose.LockUpdate();
+		ObjectWindowControls.BtnObjLayout.LockUpdate();
+
+		LONG w_tree = ObjectWindowControls.TreeList.Width;
+		LONG w_left = w_tree - ObjectWindowControls.BtnObjLayout.Width + 1;
+		ObjectWindowControls.BtnObjLayout.Left = w_left;
+		ObjectWindowControls.ToggleDecompose.Left = w_left;
+
+		w_left = w_left - ObjectWindowControls.EditFilter.Left - 3;
+		ObjectWindowControls.EditFilter.Width = w_left;
+		ObjectWindowControls.ComboLayout.Width = w_left;
+
+		ObjectWindowControls.ItemList.Left = w_tree + 5;
+		ObjectWindowControls.ItemList.Width = ObjectWindow.ClientWidth() - (w_tree + 5);
+
+		RedrawWindow(ObjectWindow.Handle, NULL, NULL, RDW_INVALIDATE | RDW_FRAME | RDW_UPDATENOW | RDW_NOCHILDREN);
+		ObjectWindowControls.BtnObjLayout.UnlockUpdate();
+		ObjectWindowControls.ToggleDecompose.UnlockUpdate();
+		ObjectWindowControls.EditFilter.UnlockUpdate();
+		ObjectWindowControls.ItemList.UnlockUpdate();
+		ObjectWindowControls.TreeList.UnlockUpdate();
+		ObjectWindowControls.BtnObjLayout.Repaint();
+		ObjectWindowControls.ToggleDecompose.Repaint();
+		ObjectWindowControls.EditFilter.Repaint();
+		ObjectWindowControls.ItemList.Repaint();
+		ObjectWindowControls.TreeList.Repaint();
+	}
+
+	void SetObjectWindowFilter(const std::string& name, const BOOL SkipText, const BOOL actived)
+	{
+		if (!SkipText)
+			ObjectWindowControls.EditFilter.Caption = name;
+
+		ObjectWindowControls.ActiveOnly.Checked = actived;
+		// Force the list items to update as if it was by timer
+		ObjectWindow.Perform(WM_TIMER, 0x1B58, 0);
+	}
+
+	int32_t WINAPI hk_7FF72F57F8F0(const int64_t ObjectListInsertData, TESForm_CK* Form)
+	{
+		bool allowInsert = true;
+		ObjectWindow.Perform(UI_OBJECT_WINDOW_ADD_ITEM, (WPARAM)Form, (LPARAM)& allowInsert);
+
+		if (!allowInsert)
+			return 1;
+
+		return ((int32_t(__fastcall*)(int64_t, TESForm_CK*))OFFSET(0x40F8F0, 0))(ObjectListInsertData, Form);
 	}
 
 	INT_PTR CALLBACK ObjectWindowProc(HWND DialogHwnd, UINT Message, WPARAM wParam, LPARAM lParam)
 	{
 		if (Message == WM_INITDIALOG)
 		{
+			ObjectWindow = DialogHwnd;
+
+			// Set font default
+			// This is the default value, but I need an object record to create the missing controls
+			ObjectWindow.Font = Core::Classes::UI::CFont("MS Sans Serif", 8, {}, Core::Classes::UI::fqClearTypeNatural, Core::Classes::UI::fpVariable);
+
+			ObjectWindowControls.TreeList = ObjectWindow.GetControl(2093);
+			ObjectWindowControls.ItemList = ObjectWindow.GetControl(1041);
+			ObjectWindowControls.ToggleDecompose = ObjectWindow.GetControl(6027);
+			ObjectWindowControls.BtnObjLayout = ObjectWindow.GetControl(6025);
+			ObjectWindowControls.ComboLayout = ObjectWindow.GetControl(6024);
+			ObjectWindowControls.EditFilter = ObjectWindow.GetControl(2581);
+			ObjectWindowControls.Spliter = ObjectWindow.GetControl(2157);
+
+			// Eliminate the flicker when resizing
+			ObjectWindowControls.TreeList.Perform(TVM_SETEXTENDEDSTYLE, TVS_EX_DOUBLEBUFFER, TVS_EX_DOUBLEBUFFER);
+
 			// Eliminate the flicker when changing categories
-			ListView_SetExtendedListViewStyleEx(GetDlgItem(DialogHwnd, 1041), LVS_EX_DOUBLEBUFFER, LVS_EX_DOUBLEBUFFER);
+			ListView_SetExtendedListViewStyleEx(ObjectWindowControls.ItemList.Handle, LVS_EX_DOUBLEBUFFER, LVS_EX_DOUBLEBUFFER);
+
+			// Erase Icon and SysMenu
+			ObjectWindow.Style = WS_OVERLAPPED | WS_CAPTION | WS_THICKFRAME;
+
+			// Include filter "Active Only" 
+			Core::Classes::UI::CRECT bounds = ObjectWindowControls.EditFilter.BoundsRect;
+			ObjectWindowControls.ActiveOnly.CreateWnd(ObjectWindow, "Active Only *", bounds.Left, ObjectWindowControls.TreeList.Top, bounds.Width, 14, UI_OBJECT_WINDOW_ADD_ITEM);
+			ObjectWindowControls.ActiveOnly.Visible = TRUE;
+			ObjectWindowControls.TreeList.Top += 17;
+
+			ObjectWindowControls.BtnObjLayout.Top = ObjectWindowControls.ComboLayout.Top - 1;
+			ObjectWindowControls.BtnObjLayout.Height = ObjectWindowControls.ComboLayout.Height + 2;
+			ObjectWindowControls.ToggleDecompose.Top = ObjectWindowControls.EditFilter.Top - 1;
+			ObjectWindowControls.ToggleDecompose.Height = ObjectWindowControls.EditFilter.Height + 2;
 		}
-		/*
-		else if (Message == WM_COMMAND)
+		// Don't let us reduce the window too much
+		else if (Message == WM_GETMINMAXINFO)
 		{
-			const uint32_t param = LOWORD(wParam);
+			LPMINMAXINFO lpMMI = (LPMINMAXINFO)lParam;
+			lpMMI->ptMinTrackSize.x = 350;
+			lpMMI->ptMinTrackSize.y = 500;
 
-			if (param == UI_OBJECT_WINDOW_CHECKBOX)
+			return 0;
+		}
+		else if (Message == WM_SIZE)
+		{
+			if (!ObjectWindowControls.StartResize)
 			{
-				bool enableFilter = SendMessage((HWND)lParam, BM_GETCHECK, 0, 0) == BST_CHECKED;
-				SetPropA(DialogHwnd, "ActiveOnly", (HANDLE)enableFilter);
-
-				// Force the list items to update as if it was by timer
-				SendMessageA(DialogHwnd, WM_TIMER, 0x4D, 0);
-				return 1;
+				ObjectWindowControls.StartResize = TRUE;
+				ResizeObjectWndChildControls();
 			}
 		}
 		else if (Message == UI_OBJECT_WINDOW_ADD_ITEM)
 		{
-			const bool onlyActiveForms = (bool)GetPropA(DialogHwnd, "ActiveOnly");
-			const auto form = (TESForm_CK *)wParam;
-			bool *allowInsert = (bool *)lParam;
-
+			auto form = reinterpret_cast<const TESForm_CK*>(wParam);
+			auto allowInsert = reinterpret_cast<bool*>(lParam);
 			*allowInsert = true;
 
-			if (onlyActiveForms)
+			if (ObjectWindowControls.ActiveOnly.Checked)
 			{
-				if (form && !form->GetActive())
-					*allowInsert = false;
+				if (form && !form->Active)
+					* allowInsert = false;
 			}
 
-			return 1;
+			return 0;
 		}
-		*/
+		else if (Message == WM_COMMAND)
+		{
+			switch (wParam)
+			{
+			case UI_OBJECT_WINDOW_ADD_ITEM:
+				SetObjectWindowFilter("", TRUE, !ObjectWindowControls.ActiveOnly.Checked);
+				return 0;
+			case UI_CMD_CHANGE_SPLITTER_OBJECTWINDOW:
+				ResizeObjectWndChildControls();
+				return 0;
+			}
+		}
+
 		return OldObjectWindowProc(DialogHwnd, Message, wParam, lParam);
+	}
+
+	void SetCellWindowFilter(const BOOL actived)
+	{
+		CellViewWindowControls.ActiveOnly.Checked = actived;
+		// Fake the dropdown list being activated
+		CellViewWindow.Perform(WM_COMMAND, MAKEWPARAM(2083, 1), 0);
+	}
+
+	void WINAPI hk_7FF70C322BC0(HWND ListViewHandle, TESForm_CK* Form, bool UseImage, int32_t ItemIndex)
+	{
+		bool allowInsert = true;
+		CellViewWindow.Perform(UI_CELL_WINDOW_ADD_ITEM, (WPARAM)Form, (LPARAM)& allowInsert);
+
+		if (!allowInsert)
+			return;
+
+		return ((void(__fastcall*)(HWND, TESForm_CK*, bool, int32_t))OFFSET(0x562BC0, 0))(ListViewHandle, Form, UseImage, ItemIndex);
 	}
 	
 	INT_PTR CALLBACK CellViewProc(HWND DialogHwnd, UINT Message, WPARAM wParam, LPARAM lParam)
 	{
 		if (Message == WM_INITDIALOG)
 		{
-			// Eliminate the flicker when changing cells
-			ListView_SetExtendedListViewStyleEx(GetDlgItem(DialogHwnd, 1155), LVS_EX_DOUBLEBUFFER, LVS_EX_DOUBLEBUFFER);
-			ListView_SetExtendedListViewStyleEx(GetDlgItem(DialogHwnd, 1156), LVS_EX_DOUBLEBUFFER, LVS_EX_DOUBLEBUFFER);
+			// This message is called a great many times, especially when updating World Space
 
-			ShowWindow(GetDlgItem(DialogHwnd, 1007), SW_HIDE);
-		}
-		/*
-		else if (Message == WM_SIZE)
-		{
-			auto *labelRect = (RECT *)OFFSET(0x3AFB570, 1530);
-
-			// Fix the "World Space" label positioning on window resize
-			RECT label;
-			GetClientRect(GetDlgItem(DialogHwnd, 1164), &label);
-
-			RECT rect;
-			GetClientRect(GetDlgItem(DialogHwnd, 2083), &rect);
-
-			int ddMid = rect.left + ((rect.right - rect.left) / 2);
-			int labelMid = (label.right - label.left) / 2;
-
-			SetWindowPos(GetDlgItem(DialogHwnd, 1164), nullptr, ddMid - (labelMid / 2), labelRect->top, 0, 0, SWP_NOSIZE);
-
-			// Force the dropdown to extend the full length of the column
-			labelRect->right = 0;
-		}
-		else if (Message == WM_COMMAND)
-		{
-			const uint32_t param = LOWORD(wParam);
-
-			if (param == UI_CELL_VIEW_CHECKBOX)
+			if (!CellViewWindowControls.Initialize)
 			{
-				bool enableFilter = SendMessage((HWND)lParam, BM_GETCHECK, 0, 0) == BST_CHECKED;
-				SetPropA(DialogHwnd, "ActiveOnly", (HANDLE)enableFilter);
+				CellViewWindow = DialogHwnd;
 
-				// Fake the dropdown list being activated
-				SendMessageA(DialogHwnd, WM_COMMAND, MAKEWPARAM(2083, 1), 0);
-				return 1;
+				// Set font default
+				// This is the default value, but I need an object record to create the missing controls
+				CellViewWindow.Font = Core::Classes::UI::CFont("MS Sans Serif", 8, {}, Core::Classes::UI::fqClearTypeNatural, Core::Classes::UI::fpVariable);
+
+				CellViewWindowControls.LabelWorldSpace = CellViewWindow.GetControl(1164);
+				CellViewWindowControls.NoCellSellected = CellViewWindow.GetControl(1163);
+				CellViewWindowControls.Interiors = CellViewWindow.GetControl(2083);
+				CellViewWindowControls.LoadedAtTop = CellViewWindow.GetControl(5662);
+				CellViewWindowControls.FilteredOnly = CellViewWindow.GetControl(5664);
+				CellViewWindowControls.VisibleOnly = CellViewWindow.GetControl(5666);
+				CellViewWindowControls.SelectedOnly = CellViewWindow.GetControl(5665);
+				CellViewWindowControls.LabelX = CellViewWindow.GetControl(5281);
+				CellViewWindowControls.LabelY = CellViewWindow.GetControl(5282);
+				CellViewWindowControls.EditX = CellViewWindow.GetControl(5283);
+				CellViewWindowControls.EditY = CellViewWindow.GetControl(5099);
+				CellViewWindowControls.EditCellFiltered = CellViewWindow.GetControl(2581);
+				CellViewWindowControls.BtnGo = CellViewWindow.GetControl(3681);
+				CellViewWindowControls.Lst1 = CellViewWindow.GetControl(1155);
+				CellViewWindowControls.Lst2 = CellViewWindow.GetControl(1156);
+
+				CellViewWindowControls.LabelWorldSpace.Style |= SS_CENTER;
+
+				// Eliminate the flicker when changing cells
+				ListView_SetExtendedListViewStyleEx(CellViewWindowControls.Lst1.Handle, LVS_EX_DOUBLEBUFFER, LVS_EX_DOUBLEBUFFER);
+				ListView_SetExtendedListViewStyleEx(CellViewWindowControls.Lst2.Handle, LVS_EX_DOUBLEBUFFER, LVS_EX_DOUBLEBUFFER);
+
+				ShowWindow(GetDlgItem(DialogHwnd, 1007), SW_HIDE);
+			}
+
+			Core::Classes::UI::CRECT rBounds_1 = CellViewWindowControls.Lst1.BoundsRect;
+			Core::Classes::UI::CRECT rBounds_2 = CellViewWindowControls.EditCellFiltered.BoundsRect;
+
+			CellViewWindowControls.Interiors.BoundsRect = { rBounds_1.Left, rBounds_2.Top, rBounds_1.Right, rBounds_2.Bottom };
+			rBounds_2 = CellViewWindowControls.NoCellSellected.BoundsRect;
+			CellViewWindowControls.LabelWorldSpace.BoundsRect = { rBounds_1.Left, rBounds_2.Top, rBounds_1.Right, rBounds_2.Bottom };
+
+			CellViewWindowControls.LoadedAtTop.Move(161, 44);
+			CellViewWindowControls.LabelX.Move(14, 56);
+			CellViewWindowControls.EditX.Move(28, 50);
+			CellViewWindowControls.LabelY.Move(68, 56);
+			CellViewWindowControls.EditY.Move(80, 50);
+			CellViewWindowControls.BtnGo.Move(124, 51);
+
+			rBounds_1 = CellViewWindowControls.Lst2.BoundsRect;
+			rBounds_2 = CellViewWindowControls.Interiors.BoundsRect;
+			CellViewWindowControls.EditCellFiltered.BoundsRect = { rBounds_1.Left, rBounds_2.Top, rBounds_1.Right, rBounds_2.Bottom };
+
+			CellViewWindowControls.SelectedOnly.Move(rBounds_1.Left + 5, 61);
+			CellViewWindowControls.VisibleOnly.Move(rBounds_1.Left + 115, 44);
+
+			CellViewWindowControls.Lst1.Top += 1;
+			CellViewWindowControls.Lst2.Top += 1;
+
+			if (!CellViewWindowControls.Initialize)
+			{
+				// Include filter "Active Only" 
+				rBounds_1 = CellViewWindowControls.LoadedAtTop.BoundsRect;
+				CellViewWindowControls.ActiveOnly.CreateWnd(CellViewWindow, "Active Only *", rBounds_1.Left, rBounds_1.Bottom, rBounds_1.Width, 14, UI_CELL_WINDOW_ADD_ITEM);
+
+				CellViewWindowControls.Initialize = TRUE;
 			}
 		}
-		else if (Message == UI_CELL_VIEW_ADD_CELL_ITEM)
+		else if (Message == UI_CELL_WINDOW_ADD_ITEM)
 		{
-			const bool onlyActiveForms = (bool)GetPropA(DialogHwnd, "ActiveOnly");
-			const auto form = (TESForm_CK *)wParam;
-			bool *allowInsert = (bool *)lParam;
+			auto form = reinterpret_cast<const TESForm_CK*>(wParam);
+			auto allowInsert = reinterpret_cast<bool*>(lParam);
 
 			*allowInsert = true;
 
-			if (onlyActiveForms)
+			// Skip the entry if "Show only active forms" is checked
+			if (CellViewWindowControls.ActiveOnly.Checked)
 			{
-				if (form && !form->GetActive())
+				if (form && !form->Active)
 					*allowInsert = false;
 			}
 
-			return 1;
+			return 0;
 		}
-		*/
+		else if (Message == WM_COMMAND)
+		{
+			switch (wParam)
+			{
+			case UI_CELL_WINDOW_ADD_ITEM:
+				SetCellWindowFilter(!CellViewWindowControls.ActiveOnly.Checked);
+				return 0;
+			}
+		}
+		else if (Message == WM_SIZE)
+		{
+			// Fix the "World Space" label positioning on window resize
+			CellViewWindowControls.LabelWorldSpace.Width = CellViewWindowControls.Lst1.Width;
+		}
+
 		return OldCellViewProc(DialogHwnd, Message, wParam, lParam);
 	}
 
@@ -472,12 +812,10 @@ namespace EditorUI
 	BOOL ListViewCustomSetItemState(HWND ListViewHandle, WPARAM Index, UINT Data, UINT Mask)
 	{
 		// Microsoft's implementation of this define is broken (ListView_SetItemState)
-		LVITEMA item
-		{
-			.mask = LVIF_STATE,
-			.state = Data,
-			.stateMask = Mask
-		};
+		LVITEMA item = { 0 };
+		item.mask = LVIF_STATE;
+		item.state = Data;
+		item.stateMask = Mask;
 
 		return (BOOL)SendMessageA(ListViewHandle, LVM_SETITEMSTATE, Index, (LPARAM)&item);
 	}
@@ -499,11 +837,9 @@ namespace EditorUI
 		if (!KeepOtherSelections)
 			ListViewCustomSetItemState(ListViewHandle, -1, 0, LVIS_SELECTED);
 
-		LVFINDINFOA findInfo
-		{
-			.flags = LVFI_PARAM,
-			.lParam = (LPARAM)Parameter
-		};
+		LVFINDINFOA findInfo = { 0 };
+		findInfo.flags = LVFI_PARAM;
+		findInfo.lParam = (LPARAM)Parameter;
 
 		int index = ListView_FindItem(ListViewHandle, -1, &findInfo);
 
@@ -521,11 +857,9 @@ namespace EditorUI
 		if (index == -1)
 			return nullptr;
 
-		LVITEMA item
-		{
-			.mask = LVIF_PARAM,
-			.iItem = index
-		};
+		LVITEMA item = { 0 };
+		item.mask = LVIF_PARAM;
+		item.iItem = index;
 
 		ListView_GetItem(ListViewHandle, &item);
 		return (void *)item.lParam;
@@ -533,11 +867,9 @@ namespace EditorUI
 
 	void ListViewDeselectItem(HWND ListViewHandle, void *Parameter)
 	{
-		LVFINDINFOA findInfo
-		{
-			.flags = LVFI_PARAM,
-			.lParam = (LPARAM)Parameter
-		};
+		LVFINDINFOA findInfo = { 0 };
+		findInfo.flags = LVFI_PARAM;
+		findInfo.lParam = (LPARAM)Parameter;
 
 		int index = ListView_FindItem(ListViewHandle, -1, &findInfo);
 
