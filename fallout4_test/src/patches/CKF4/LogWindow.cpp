@@ -58,18 +58,16 @@ namespace LogWindow
 			// Output window
 			auto instance = (HINSTANCE)GetModuleHandle(nullptr);
 
-			WNDCLASSEX wc
-			{
-				.cbSize = sizeof(WNDCLASSEX),
-				.style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS,
-				.lpfnWndProc = WndProc,
-				.hInstance = instance,
-				.hIcon = LoadIcon(instance, MAKEINTRESOURCE(0x13E)),
-				.hCursor = LoadCursor(nullptr, IDC_ARROW),
-				.hbrBackground = (HBRUSH)GetStockObject(LTGRAY_BRUSH),
-				.lpszClassName = TEXT("RTEDITLOG"),
-				.hIconSm = wc.hIcon,
-			};
+			WNDCLASSEX wc = { 0 };
+			wc.cbSize = sizeof(WNDCLASSEX);
+			wc.style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
+			wc.lpfnWndProc = WndProc;
+			wc.hInstance = instance;
+			wc.hIcon = LoadIcon(instance, MAKEINTRESOURCE(0x13E));
+			wc.hCursor = LoadCursor(nullptr, IDC_ARROW);
+			wc.hbrBackground = (HBRUSH)GetStockObject(LTGRAY_BRUSH);
+			wc.lpszClassName = TEXT("RTEDITLOG");
+			wc.hIconSm = wc.hIcon;
 
 			if (!RegisterClassEx(&wc))
 				return false;
@@ -100,12 +98,10 @@ namespace LogWindow
 
 	bool CreateStdoutListener()
 	{
-		SECURITY_ATTRIBUTES saAttr
-		{
-			.nLength = sizeof(SECURITY_ATTRIBUTES),
-			.lpSecurityDescriptor = nullptr,
-			.bInheritHandle = TRUE,
-		};
+		SECURITY_ATTRIBUTES saAttr = { 0 };
+		saAttr.nLength = sizeof(SECURITY_ATTRIBUTES);
+		saAttr.lpSecurityDescriptor = nullptr;
+		saAttr.bInheritHandle = TRUE;
 
 		if (!CreatePipe(&ExternalPipeReaderHandle, &ExternalPipeWriterHandle, &saAttr, 0))
 			return false;
@@ -321,11 +317,7 @@ namespace LogWindow
 			for (const char *message : messages)
 			{
 				// Move caret to the end, then write
-				CHARRANGE range
-				{
-					.cpMin = LONG_MAX,
-					.cpMax = LONG_MAX,
-				};
+				CHARRANGE range = { LONG_MAX, LONG_MAX };
 
 				SendMessageA(richEditHwnd, EM_EXSETSEL, 0, (LPARAM)&range);
 				SendMessageA(richEditHwnd, EM_REPLACESEL, FALSE, (LPARAM)message);
