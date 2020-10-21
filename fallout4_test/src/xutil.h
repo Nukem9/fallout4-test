@@ -84,6 +84,25 @@ struct __declspec(empty_bases)CheckOffset
 
 namespace XUtil
 {
+	namespace Str
+	{
+		// convert string to upper case
+		static inline std::string& UpperCase(std::string& s) {
+			std::for_each(s.begin(), s.end(), [](char& c) {
+				c = ::toupper(c);
+				});
+			return s;
+		}
+
+		// convert string to upper case
+		static inline std::string& LowerCase(std::string& s) {
+			std::for_each(s.begin(), s.end(), [](char& c) {
+				c = ::tolower(c);
+				});
+			return s;
+		}
+	}
+
 	void SetThreadName(uint32_t ThreadID, const char *ThreadName);
 	void Trim(char *Buffer, char C);
 	void XAssert(const char *File, int Line, const char *Format, ...);
@@ -112,5 +131,17 @@ namespace XUtil
 		static_assert(std::is_member_function_pointer_v<T> || (std::is_pointer_v<T> && std::is_function_v<typename std::remove_pointer<T>::type>));
 
 		DetourCall(Target, *(uintptr_t *)&Destination);
+	}
+
+	template <typename T>
+	void __stdcall DetourClassCall(uintptr_t target, T destination)
+	{
+		Detours::X64::DetourFunctionClass(target, destination, Detours::X64Option::USE_REL32_CALL);
+	}
+
+	template <typename T>
+	void __stdcall DetourClassJump(uintptr_t target, T destination)
+	{
+		Detours::X64::DetourFunctionClass(target, destination, Detours::X64Option::USE_REL32_JUMP);
 	}
 }
