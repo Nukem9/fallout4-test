@@ -12,6 +12,24 @@
     <Filter Include="Source Files\patches">
       <UniqueIdentifier>{6ecca651-f6ac-4430-b4b5-a9d5fb31e2fc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\RTTI">
+      <UniqueIdentifier>{35ec8d65-0314-4ba5-b3b8-c4b0d305fd93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\RTTI\NiRTTI">
+      <UniqueIdentifier>{50666074-f04e-49df-b1ef-ebec84513633}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\RTTI">
+      <UniqueIdentifier>{744f2e83-7807-45a2-846e-e098caf43cc5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\RTTI\NiRTTI">
+      <UniqueIdentifier>{11571499-241a-44d6-ae8f-ecf1517440b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\UI">
+      <UniqueIdentifier>{e015c614-1eea-42df-b254-b63b981c8468}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\UI">
+      <UniqueIdentifier>{8ac21372-4a9a-4e6b-ac6d-0248039f9a3c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\dump.h">
@@ -35,37 +53,7 @@
     <ClInclude Include="src\patches\TES\BSTArray.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\patches\TES\NiMain\NiAVObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\patches\TES\NiMain\NiColor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\patches\TES\NiMain\NiObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\patches\TES\NiMain\NiObjectNET.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\patches\TES\NiMain\NiRefObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\patches\TES\NiMain\NiTransform.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\patches\TES\NiMain\BSGeometry.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\patches\TES\NiMain\NiTexture.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\patches\TES\NiMain\NiSourceTexture.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\patches\TES\NiMain\NiAlphaProperty.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\patches\TES\NiMain\NiSkinInstance.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\patches\TES\Setting.h">
@@ -83,58 +71,19 @@
     <ClInclude Include="src\patches\TES\NiMain\BSDynamicTriShape.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\patches\TES\NiMain\NiNode.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\patches\TES\NiMain\NiLight.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\patches\TES\NiMain\NiDirectionalLight.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\patches\TES\NiMain\NiMatrix.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\patches\TES\NiMain\NiPoint.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\patches\TES\NiMain\BSNiNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\patches\TES\NiMain\BSMultiBoundNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\patches\TES\NiMain\NiRTTI.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\patches\TES\NiMain\NiCamera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\patches\TES\NiMain\NiCullingProcess.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\patches\TES\NiMain\NiFrustum.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\config.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\typeinfo\hk_rtti.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\typeinfo\ms_rtti.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\patches\TES\NiMain\NiPointer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\patches\TES\NavMesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\patches\INIReader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\patches\TES\TESForm_CK.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\patches\TES\bhkThreadMemorySource.h">
@@ -146,35 +95,110 @@
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\patches\TES\NiMain\NiPick.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\patches\TES\NiMain\NiCollisionUtils.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\patches\offsets.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\patches\TES\NiMain\BSMultiIndexTriShape.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\patches\TES\NiMain\NiFogProperty.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\patches\CKF4\LogWindow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\patches\CKF4\Editor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\patches\CKF4\EditorUI.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\patches\CKF4\EditorUIDarkMode.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\patches\CKF4\TESForm_CK.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\TES\NiMain\NiAlphaProperty.h">
+      <Filter>Header Files\RTTI\NiRTTI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\TES\NiMain\NiAVObject.h">
+      <Filter>Header Files\RTTI\NiRTTI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\TES\NiMain\NiCamera.h">
+      <Filter>Header Files\RTTI\NiRTTI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\TES\NiMain\NiCollisionUtils.h">
+      <Filter>Header Files\RTTI\NiRTTI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\TES\NiMain\NiColor.h">
+      <Filter>Header Files\RTTI\NiRTTI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\TES\NiMain\NiCullingProcess.h">
+      <Filter>Header Files\RTTI\NiRTTI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\TES\NiMain\NiDirectionalLight.h">
+      <Filter>Header Files\RTTI\NiRTTI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\TES\NiMain\NiFogProperty.h">
+      <Filter>Header Files\RTTI\NiRTTI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\TES\NiMain\NiFrustum.h">
+      <Filter>Header Files\RTTI\NiRTTI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\TES\NiMain\NiLight.h">
+      <Filter>Header Files\RTTI\NiRTTI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\TES\NiMain\NiMatrix.h">
+      <Filter>Header Files\RTTI\NiRTTI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\TES\NiMain\NiNode.h">
+      <Filter>Header Files\RTTI\NiRTTI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\TES\NiMain\NiObject.h">
+      <Filter>Header Files\RTTI\NiRTTI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\TES\NiMain\NiObjectNET.h">
+      <Filter>Header Files\RTTI\NiRTTI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\TES\NiMain\NiPick.h">
+      <Filter>Header Files\RTTI\NiRTTI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\TES\NiMain\NiPoint.h">
+      <Filter>Header Files\RTTI\NiRTTI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\TES\NiMain\NiPointer.h">
+      <Filter>Header Files\RTTI\NiRTTI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\TES\NiMain\NiRefObject.h">
+      <Filter>Header Files\RTTI\NiRTTI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\TES\NiMain\NiRTTI.h">
+      <Filter>Header Files\RTTI\NiRTTI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\TES\NiMain\NiSkinInstance.h">
+      <Filter>Header Files\RTTI\NiRTTI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\TES\NiMain\NiSourceTexture.h">
+      <Filter>Header Files\RTTI\NiRTTI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\TES\NiMain\NiTexture.h">
+      <Filter>Header Files\RTTI\NiRTTI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\TES\NiMain\NiTransform.h">
+      <Filter>Header Files\RTTI\NiRTTI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\typeinfo\hk_rtti.h">
+      <Filter>Header Files\RTTI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\typeinfo\ms_rtti.h">
+      <Filter>Header Files\RTTI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\EditorUI.h">
+      <Filter>Header Files\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\Editor.h">
+      <Filter>Header Files\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\EditorUIDarkMode.h">
+      <Filter>Header Files\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\LogWindow.h">
+      <Filter>Header Files\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\UIBaseWindow.h">
+      <Filter>Header Files\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\UICheckboxControl.h">
+      <Filter>Header Files\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\UIMenus.h">
+      <Filter>Header Files\UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -193,25 +217,10 @@
     <ClCompile Include="src\patches\TES\MemoryManager.cpp">
       <Filter>Source Files\patches</Filter>
     </ClCompile>
-    <ClCompile Include="src\patches\TES\NiMain\NiMain.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\patches\fileio.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\patches\TES\Setting.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\patches\TES\NiMain\NiRTTI.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\typeinfo\hk_rtti.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\typeinfo\ms_rtti.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\typeinfo\ni_rtti.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\common.cpp">
@@ -226,37 +235,61 @@
     <ClCompile Include="src\patches\bnet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\patches\TES\NiMain\NiCollisionUtils.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\patches\offsets.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\patches\patches_f4ck.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\patches\CKF4\Editor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\patches\CKF4\EditorUI.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\patches\CKF4\EditorUIDarkMode.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\patches\CKF4\LogWindow.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\patches\CKF4\TESForm_CK.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\patches\TES\NiMain\NiRTTI.cpp">
+      <Filter>Source Files\RTTI\NiRTTI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\TES\NiMain\NiMain.cpp">
+      <Filter>Source Files\RTTI\NiRTTI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\TES\NiMain\NiCollisionUtils.cpp">
+      <Filter>Source Files\RTTI\NiRTTI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\typeinfo\ni_rtti.cpp">
+      <Filter>Source Files\RTTI\NiRTTI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\typeinfo\hk_rtti.cpp">
+      <Filter>Source Files\RTTI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\typeinfo\ms_rtti.cpp">
+      <Filter>Source Files\RTTI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\EditorUIDarkMode.cpp">
+      <Filter>Source Files\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\EditorUI.cpp">
+      <Filter>Source Files\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\Editor.cpp">
+      <Filter>Source Files\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\LogWindow.cpp">
+      <Filter>Source Files\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\UIBaseWindow.cpp">
+      <Filter>Source Files\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\UICheckboxControl.cpp">
+      <Filter>Source Files\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\UIMenus.cpp">
+      <Filter>Source Files\UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\patches\TES\NiMain\NiRTTI.inl">
-      <Filter>Header Files</Filter>
-    </None>
     <None Include="src\typeinfo\ni_rtti.inl">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\RTTI\NiRTTI</Filter>
+    </None>
+    <None Include="src\patches\TES\NiMain\NiRTTI.inl">
+      <Filter>Header Files\RTTI\NiRTTI</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
