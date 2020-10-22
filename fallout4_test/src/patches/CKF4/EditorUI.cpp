@@ -546,7 +546,6 @@ namespace EditorUI
 			// Include filter "Active Only" 
 			Core::Classes::UI::CRECT bounds = ObjectWindowControls.EditFilter.BoundsRect;
 			ObjectWindowControls.ActiveOnly.CreateWnd(ObjectWindow, "Active Only *", bounds.Left, ObjectWindowControls.TreeList.Top, bounds.Width, 14, UI_OBJECT_WINDOW_ADD_ITEM);
-			ObjectWindowControls.ActiveOnly.Visible = TRUE;
 			ObjectWindowControls.TreeList.Top += 17;
 
 			ObjectWindowControls.BtnObjLayout.Top = ObjectWindowControls.ComboLayout.Top - 1;
