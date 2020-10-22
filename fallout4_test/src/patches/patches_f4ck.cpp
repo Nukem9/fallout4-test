@@ -8,6 +8,7 @@
 #include "CKF4/EditorUIDarkMode.h"
 #include "CKF4/LogWindow.h"
 #include "CKF4/ExperimentalNuukem.h"
+#include "CKF4/TranslateUnicode_CK.h"
 
 void PatchMemory();
 void PatchFileIO();
@@ -167,6 +168,41 @@ void Patch_Fallout4CreationKit()
 	{
 		XUtil::PatchMemory(OFFSET(0x0463383, 0), { 0x01 });
 		XUtil::PatchMemory(OFFSET(0x2A39142, 0), { 0x33, 0xD2, 0x90 });
+	}
+
+	//
+	// Convert Utf-8 to WinCP when loading and back when saving
+	//
+	if (g_INI.GetBoolean("Experimental", "Unicode", false))
+	{
+#ifdef __INC_LAZ_UNICODE_PLUGIN
+		// Initialization CreationKitUnicodePlugin.dll
+		BOOL bRes = XUtil::Conversion::LazUnicodePluginInit();
+		if (!bRes)
+			LogWindow::Log("Library 'CreationKitUnicodePlugin.dll' no found. Unicode support don't patched.");
+		else
+		{
+			// Also delete it message "You must close all Dialoge Boxes",
+			// which has problems with programs that work with multiple monitors.
+			XUtil::DetourCall(OFFSET(0x5C4470, 0), &Experimental::BeginPluginSave);
+			// I don't quite understand the meaning of calling SetCursor in this function, which deals with saving
+			// But we'll make the call in hook.
+			XUtil::DetourCall(OFFSET(0x5C4511, 0), &Experimental::EndPluginSave);
+
+			// Introduction of string processing.
+			XUtil::PatchMemory(OFFSET(0x247D717, 0), { 0x22 });
+			XUtil::PatchMemory(OFFSET(0x247D72F, 0), { 0x51, 0x48, 0x89, 0xC1 });
+			XUtil::DetourCall(OFFSET(0x247D733, 0), &Experimental::Translate);
+			XUtil::PatchMemory(OFFSET(0x247D738, 0), { 0x59, 0xC3, 0x31, 0xC0, 0xC3 });
+			XUtil::PatchMemory(OFFSET(0x2481DF7, 0), { 0xE9, 0x33, 0xB9, 0xFF, 0xFF });
+
+			// In the "Data" dialog box, the "author" and "description" controls are independent, and I'm forced to make a trap for WinAPI calls
+			PatchIAT(Experimental::hk_SetDlgItemTextA, "User32.dll", "SetDlgItemTextA");
+			PatchIAT(Experimental::hk_SendDlgItemMessageA, "User32.dll", "SendDlgItemMessageA");
+		}
+#else
+		LogWindow::Log("Unfortunately, your compiled version does not support the 'Experimental::Unicode' option.");
+#endif // __INC_LAZ_UNICODE_PLUGIN
 	}
 
 	//
