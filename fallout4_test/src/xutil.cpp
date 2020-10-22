@@ -1,5 +1,46 @@
 #include "common.h"
 
+#include <strsafe.h>
+
+std::string __stdcall XUtil::Str::GetLastErrorToStr(DWORD err, const std::string& namefunc)
+{
+	// Retrieve the system error message for the last-error code
+
+	std::string str;
+	LPVOID lpMsgBuf;
+	LPVOID lpDisplayBuf;
+
+	FormatMessageA(
+		FORMAT_MESSAGE_ALLOCATE_BUFFER |
+		FORMAT_MESSAGE_FROM_SYSTEM |
+		FORMAT_MESSAGE_IGNORE_INSERTS,
+		NULL,
+		err,
+		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+		(LPSTR)&lpMsgBuf,
+		0, NULL);
+
+	// Display the error message and exit the process
+
+	lpDisplayBuf = (LPVOID)LocalAlloc(LMEM_ZEROINIT,
+		(lstrlenA((LPCSTR)lpMsgBuf) + lstrlenA(namefunc.c_str()) + 40) * sizeof(CHAR));
+	StringCchPrintfA((LPSTR)lpDisplayBuf,
+		LocalSize(lpDisplayBuf) / sizeof(CHAR),
+		"%s failed with error %d: %s",
+		namefunc.c_str(), err, lpMsgBuf);
+	str = (LPSTR)lpDisplayBuf;
+
+	LocalFree(lpMsgBuf);
+	LocalFree(lpDisplayBuf);
+
+	return str;
+}
+
+std::string __stdcall XUtil::Str::GetLastErrorToStr(const std::string& namefunc)
+{
+	return GetLastErrorToStr(GetLastError(), namefunc);
+}
+
 VtableIndexUtil *VtableIndexUtil::GlobalInstance;
 
 VtableIndexUtil *VtableIndexUtil::Instance()

@@ -2,6 +2,10 @@
 
 #pragma warning(disable:4094) // untagged 'struct' declared no symbols
 
+#include <atomic>
+#include <algorithm>
+#include <functional>
+#include <string>
 #include <future>
 
 #define Assert(Cond)					if(!(Cond)) XUtil::XAssert(__FILE__, __LINE__, #Cond);
@@ -151,6 +155,37 @@ namespace XUtil
 
 	namespace Str
 	{
+		// trim https://stackoverflow.com/questions/216823/whats-the-best-way-to-trim-stdstring
+
+		// trim from start (in place)
+		static inline std::string ltrim(std::string& s) {
+			s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch) { return !std::isspace(ch); }));
+			return s;
+		}
+
+		static inline std::string ltrim(const std::string& s) {
+			return ltrim(const_cast<std::string&>(s));
+		}
+
+		// trim from end (in place)
+		static inline std::string rtrim(std::string& s) {
+			s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) { return !std::isspace(ch); }).base(), s.end());
+			return s;
+		}
+
+		static inline std::string rtrim(const std::string& s) {
+			return rtrim(const_cast<std::string&>(s));
+		}
+
+		// trim from both ends
+		static inline std::string& trim(std::string& s) {
+			return ltrim(rtrim(s));
+		}
+
+		static inline std::string trim(const std::string& s) {
+			return trim(const_cast<std::string&>(s));
+		}
+
 		// convert string to upper case
 		static inline std::string& UpperCase(std::string& s) {
 			std::for_each(s.begin(), s.end(), [](char& c) {
@@ -166,6 +201,10 @@ namespace XUtil
 				});
 			return s;
 		}
+
+		// https://docs.microsoft.com/en-us/windows/win32/debug/retrieving-the-last-error-code
+		std::string __stdcall GetLastErrorToStr(DWORD err, const std::string& namefunc);
+		std::string __stdcall GetLastErrorToStr(const std::string& namefunc);
 	}
 
 	void SetThreadName(uint32_t ThreadID, const char *ThreadName);
