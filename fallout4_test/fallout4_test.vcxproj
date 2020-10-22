@@ -168,16 +168,15 @@
     <ClInclude Include="src\patches\CKF4\EditorUI.h" />
     <ClInclude Include="src\patches\CKF4\EditorUIDarkMode.h" />
     <ClInclude Include="src\patches\CKF4\ExperimentalNuukem.h" />
+    <ClInclude Include="src\patches\CKF4\TranslateUnicode_CK.h" />
     <ClInclude Include="src\patches\CKF4\LogWindow.h" />
     <ClInclude Include="src\patches\CKF4\TESForm_CK.h" />
     <ClInclude Include="src\patches\CKF4\UIBaseWindow.h" />
     <ClInclude Include="src\patches\CKF4\UICheckboxControl.h" />
     <ClInclude Include="src\patches\CKF4\UIMenus.h" />
     <ClInclude Include="src\patches\offsets.h" />
-    <ClInclude Include="src\patches\INIReader.h" />
     <ClInclude Include="src\patches\TES\bhkThreadMemorySource.h" />
     <ClInclude Include="src\patches\TES\BSTList.h" />
-    <ClInclude Include="src\patches\TES\NavMesh.h" />
     <ClInclude Include="src\patches\TES\NiMain\BSDynamicTriShape.h" />
     <ClInclude Include="src\patches\TES\NiMain\BSGeometry.h" />
     <ClInclude Include="src\patches\TES\BSTArray.h" />
@@ -217,6 +216,7 @@
     <ClInclude Include="src\typeinfo\ms_rtti.h" />
     <ClInclude Include="src\patches\TES\MemoryManager.h" />
     <ClInclude Include="src\common.h" />
+    <ClInclude Include="src\UtfStr.h" />
     <ClInclude Include="src\xutil.h" />
   </ItemGroup>
   <ItemGroup>
@@ -224,6 +224,7 @@
     <ClCompile Include="src\patches\CKF4\Editor.cpp" />
     <ClCompile Include="src\patches\CKF4\EditorUIDarkMode.cpp" />
     <ClCompile Include="src\patches\CKF4\ExperimentalNuukem.cpp" />
+    <ClCompile Include="src\patches\CKF4\TranslateUnicode_CK.cpp" />
     <ClCompile Include="src\patches\CKF4\LogWindow.cpp" />
     <ClCompile Include="src\patches\CKF4\TESForm_CK.cpp" />
     <ClCompile Include="src\patches\CKF4\UIBaseWindow.cpp" />
@@ -232,6 +233,7 @@
     <ClCompile Include="src\patches\offsets.cpp" />
     <ClCompile Include="src\patches\patches_f4ck.cpp" />
     <ClCompile Include="src\patches\TES\NiMain\NiCollisionUtils.cpp" />
+    <ClCompile Include="src\UtfStr.cpp" />
     <ClCompile Include="src\winhttp_exports.cpp" />
     <ClCompile Include="src\common.cpp" />
     <ClCompile Include="src\patches\CKF4\EditorUI.cpp" />
