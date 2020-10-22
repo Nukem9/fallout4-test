@@ -33,6 +33,30 @@
     <Filter Include="Source Files\Patches">
       <UniqueIdentifier>{6ecca651-f6ac-4430-b4b5-a9d5fb31e2fc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Classes">
+      <UniqueIdentifier>{a7766be7-54b7-4d4d-8e6b-5e4819048994}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Classes">
+      <UniqueIdentifier>{7a39de88-cf1e-4c4d-9288-3967c45c9d73}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\UI\Classes">
+      <UniqueIdentifier>{b7db8a77-7b3c-45db-b7ed-adbc6fbea900}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\UI\Classes">
+      <UniqueIdentifier>{895435af-7cd1-4201-a693-09007da7f43b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Utils">
+      <UniqueIdentifier>{4f2e0375-dc16-4a4b-943c-bb12aafa811a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Utils">
+      <UniqueIdentifier>{bc1302bb-1063-4a3a-89a4-53364001bd4f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Patches\CK">
+      <UniqueIdentifier>{9a61be2f-a22e-47e3-a8dc-97bb27863811}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Patches\CK">
+      <UniqueIdentifier>{cd26e7a2-a163-4aa0-923d-f4759c8c3eac}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\profiler.h">
@@ -41,64 +65,25 @@
     <ClInclude Include="src\profiler_internal.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\xutil.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\common.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\patches\TES\BSTArray.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\patches\TES\NiMain\BSGeometry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\patches\TES\Setting.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\patches\TES\BSTList.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\patches\TES\NiMain\common.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\patches\TES\NiMain\BSTriShape.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\patches\TES\NiMain\BSDynamicTriShape.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\patches\TES\NiMain\BSNiNode.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\patches\TES\NiMain\BSMultiBoundNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\config.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\patches\TES\NavMesh.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\patches\INIReader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\patches\TES\bhkThreadMemorySource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\INIReader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\patches\offsets.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\patches\TES\NiMain\BSMultiIndexTriShape.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\patches\CKF4\TESForm_CK.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\patches\TES\NiMain\NiAlphaProperty.h">
@@ -188,23 +173,62 @@
     <ClInclude Include="src\patches\CKF4\LogWindow.h">
       <Filter>Header Files\UI</Filter>
     </ClInclude>
-    <ClInclude Include="src\patches\CKF4\UIBaseWindow.h">
-      <Filter>Header Files\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="src\patches\CKF4\UICheckboxControl.h">
-      <Filter>Header Files\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="src\patches\CKF4\UIMenus.h">
-      <Filter>Header Files\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="src\patches\CKF4\ExperimentalNuukem.h">
-      <Filter>Header Files\Patches</Filter>
-    </ClInclude>
     <ClInclude Include="src\dump.h">
       <Filter>Header Files\Patches</Filter>
     </ClInclude>
     <ClInclude Include="src\patches\TES\MemoryManager.h">
       <Filter>Header Files\Patches</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\TES\BSTList.h">
+      <Filter>Header Files\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\TES\BSTArray.h">
+      <Filter>Header Files\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\TES\NiMain\BSTriShape.h">
+      <Filter>Header Files\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\TES\NiMain\BSNiNode.h">
+      <Filter>Header Files\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\TES\NiMain\BSGeometry.h">
+      <Filter>Header Files\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\TES\NiMain\BSDynamicTriShape.h">
+      <Filter>Header Files\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\TES\NiMain\BSMultiIndexTriShape.h">
+      <Filter>Header Files\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\TES\NiMain\BSMultiBoundNode.h">
+      <Filter>Header Files\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\TESForm_CK.h">
+      <Filter>Header Files\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\UIMenus.h">
+      <Filter>Header Files\UI\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\UIBaseWindow.h">
+      <Filter>Header Files\UI\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\UICheckboxControl.h">
+      <Filter>Header Files\UI\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\xutil.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\INIReader.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UtfStr.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\ExperimentalNuukem.h">
+      <Filter>Header Files\Patches\CK</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\TranslateUnicode_CK.h">
+      <Filter>Header Files\Patches\CK</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -215,9 +239,6 @@
       <Filter>Source Files\Patches</Filter>
     </ClCompile>
     <ClCompile Include="src\profiler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\xutil.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\patches\TES\MemoryManager.cpp">
@@ -245,9 +266,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\patches\patches_f4ck.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\patches\CKF4\TESForm_CK.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\patches\TES\NiMain\NiRTTI.cpp">
@@ -280,17 +298,29 @@
     <ClCompile Include="src\patches\CKF4\LogWindow.cpp">
       <Filter>Source Files\UI</Filter>
     </ClCompile>
-    <ClCompile Include="src\patches\CKF4\UIBaseWindow.cpp">
-      <Filter>Source Files\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="src\patches\CKF4\UICheckboxControl.cpp">
-      <Filter>Source Files\UI</Filter>
+    <ClCompile Include="src\patches\CKF4\TESForm_CK.cpp">
+      <Filter>Source Files\Classes</Filter>
     </ClCompile>
     <ClCompile Include="src\patches\CKF4\UIMenus.cpp">
-      <Filter>Source Files\UI</Filter>
+      <Filter>Source Files\UI\Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\UIBaseWindow.cpp">
+      <Filter>Source Files\UI\Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\UICheckboxControl.cpp">
+      <Filter>Source Files\UI\Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UtfStr.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\xutil.cpp">
+      <Filter>Source Files\Utils</Filter>
     </ClCompile>
     <ClCompile Include="src\patches\CKF4\ExperimentalNuukem.cpp">
-      <Filter>Source Files\Patches</Filter>
+      <Filter>Source Files\Patches\CK</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\TranslateUnicode_CK.cpp">
+      <Filter>Source Files\Patches\CK</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
