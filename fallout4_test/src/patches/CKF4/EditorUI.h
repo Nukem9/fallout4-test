@@ -2,13 +2,13 @@
 
 #include "../../common.h"
 #include "TESForm_CK.h"
+#include "TESFile_CK.h"
 
 #include "UIMenus.h"
 #include "UIBaseWindow.h"
 #include "UICheckboxControl.h"
 
 #define UI_EDITOR_TOOLBAR				1
-#define UI_EDITOR_OPENFORMBYID			52001	// Sent from the LogWindow on double click
 
 #define UI_OBJECT_WINDOW_ADD_ITEM		2579
 #define UI_OBJECT_WINDOW_CHECKBOX		2580	// See: resource.rc
@@ -31,6 +31,14 @@
 #define UI_EXTMENU_LINKS_ID				51010
 #define UI_EXTMENU_LINKS_WIKI			51011
 
+#define UI_CUSTOM_MESSAGE						52000
+#define UI_EDITOR_OPENFORMBYID					(UI_CUSTOM_MESSAGE + 1)	// Sent from the LogWindow on double click
+#define UI_CMD_SHOWHIDE_OBJECTWINDOW			(UI_CUSTOM_MESSAGE + 2)
+#define UI_CMD_SHOWHIDE_CELLVIEWWINDOW			(UI_CUSTOM_MESSAGE + 3)
+#define UI_CMD_CHANGE_SPLITTER_OBJECTWINDOW		(UI_CUSTOM_MESSAGE + 4)
+#define UI_CELL_WINDOW_ADD_ITEM					UI_OBJECT_WINDOW_ADD_ITEM
+#define UI_PROGRESS_CMD_STEPIT					(UI_CUSTOM_MESSAGE + 5)
+
 namespace EditorUI
 {
 	extern WNDPROC OldWndProc;
@@ -41,10 +49,10 @@ namespace EditorUI
 	HWND GetWindow();
 	HWND GetObjectWindow();
 	HWND GetCellViewWindow();
-	Core::Classes::UI::CUICustomWindow& GetWindowObj();
+	Core::Classes::UI::CUIMainWindow& GetMainWindowObj();
 	Core::Classes::UI::CUICustomWindow& GetObjectWindowObj();
 	Core::Classes::UI::CUICustomWindow& GetCellViewWindowObj();
-	Core::Classes::UI::CUIMenu* GetMainMenuObj();
+	Core::Classes::UI::CUIMenu& GetMainMenuObj();
 
 	void Initialize();
 	//bool CreateExtensionMenu(HWND MainWindow, HMENU MainMenu);
@@ -64,4 +72,6 @@ namespace EditorUI
 	LRESULT WINAPI hk_0x5669D8(void);
 	int32_t WINAPI hk_7FF72F57F8F0(const int64_t ObjectListInsertData, TESForm_CK* Form);
 	void WINAPI hk_7FF70C322BC0(HWND ListViewHandle, TESForm_CK* Form, bool UseImage, int32_t ItemIndex);
+	LRESULT WINAPI hk_SetSettingsPartStatusBar(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+	LRESULT WINAPI hk_SetTextPartStatusBar(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 }

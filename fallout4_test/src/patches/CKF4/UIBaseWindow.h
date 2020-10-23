@@ -259,14 +259,11 @@ namespace Core
 
 			class CUIMainWindow : public CUICustomWindow
 			{
-			public:
-				CUIToolWindow Toolbar;
-				CUIToolWindow Statusbar;
+			private:
 				CUIMenu m_MainMenu;
-			protected:
+			public:
 				void FindToolWindow(void);
 			public:
-				inline CUIMenu GetMainMenu(void) const { return m_MainMenu; }
 				void SetTextToStatusBar(const uint32_t index, const std::string text);
 				void SetTextToStatusBar(const uint32_t index, const std::wstring text);
 				static void ProcessMessages(void);
@@ -275,7 +272,9 @@ namespace Core
 				CUIMainWindow(const HWND hWnd) : CUICustomWindow(hWnd) {}
 				CUIMainWindow(const CUIMainWindow &base) : CUICustomWindow(base) {}
 			public:
-				READ_PROPERTY(GetMainMenu) CUIMenu MainMenu;
+				CUIMenu MainMenu;
+				CUIToolWindow Toolbar;
+				CUIToolWindow Statusbar;
 			};
 
 			class CUICustomDialog : public CUICustomWindow

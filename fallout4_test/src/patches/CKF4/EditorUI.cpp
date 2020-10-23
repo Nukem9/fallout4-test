@@ -5,21 +5,14 @@
 #include "EditorUI.h"
 #include "EditorUIDarkMode.h"
 #include "LogWindow.h"
-#include "TESForm_CK.h"
 
 #pragma comment(lib, "comctl32.lib")
-
-#define UI_CUSTOM_MESSAGE						52000
-#define UI_CMD_SHOWHIDE_OBJECTWINDOW			(UI_CUSTOM_MESSAGE + 2)
-#define UI_CMD_SHOWHIDE_CELLVIEWWINDOW			(UI_CUSTOM_MESSAGE + 3)
-#define UI_CMD_CHANGE_SPLITTER_OBJECTWINDOW		(UI_CUSTOM_MESSAGE + 4)
-#define UI_CELL_WINDOW_ADD_ITEM					UI_OBJECT_WINDOW_ADD_ITEM
 
 namespace EditorUI
 {
 	// Since very little is described, it is easier for me to implement some of the developments
 
-	Core::Classes::UI::CUICustomWindow MainWindow;
+	Core::Classes::UI::CUIMainWindow MainWindow;
 	Core::Classes::UI::CUICustomWindow ObjectWindow;
 	Core::Classes::UI::CUICustomWindow CellViewWindow;
 
@@ -59,9 +52,6 @@ namespace EditorUI
 		Core::Classes::UI::CUICheckbox ActiveOnly;
 	} CellViewWindowControls;
 
-	// A pointer to the main menu, I will create in WM_CREATE and delete it WM_DESTROY. I will use it everywhere.
-	Core::Classes::UI::CUIMenu* MainMenu;
-
 	WNDPROC OldWndProc;
 	DLGPROC OldObjectWindowProc;
 	DLGPROC OldCellViewProc;
@@ -82,7 +72,7 @@ namespace EditorUI
 		return CellViewWindow.Handle;
 	}
 
-	Core::Classes::UI::CUICustomWindow& GetWindowObj()
+	Core::Classes::UI::CUIMainWindow& GetMainWindowObj()
 	{
 		return MainWindow;
 	}
@@ -97,9 +87,9 @@ namespace EditorUI
 		return CellViewWindow;
 	}
 
-	Core::Classes::UI::CUIMenu* GetMainMenuObj()
+	Core::Classes::UI::CUIMenu& GetMainMenuObj()
 	{
-		return MainMenu;
+		return MainWindow.MainMenu;
 	}
 
 	LRESULT WINAPI hk_0x5669D8(void)
@@ -107,6 +97,19 @@ namespace EditorUI
 		ObjectWindow.Perform(WM_COMMAND, UI_CMD_CHANGE_SPLITTER_OBJECTWINDOW, 0);
 
 		return 0;
+	}
+
+	LRESULT WINAPI hk_SetSettingsPartStatusBar(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+	{
+		int parts[4] = { 200, 300, 700, 5000 /* over 5000 for if -1, the text is erased */ };
+		return SendMessageA(hWnd, SB_SETPARTS, sizeof(parts), (LPARAM)parts);
+	}
+
+	LRESULT WINAPI hk_SetTextPartStatusBar(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+	{
+		BYTE bId = LOBYTE(wParam);
+		if (bId == 1) bId = 2;
+		return SendMessageA(hWnd, SB_SETTEXTA, MAKEWORD(bId, 0), lParam);
 	}
 
 	void Initialize()
@@ -118,48 +121,9 @@ namespace EditorUI
 			MessageBoxA(nullptr, "Failed to create console log window", "Error", MB_ICONERROR);
 	}
 
-	bool CreateExtensionMenu(/*HWND MainWindow, */Core::Classes::UI::CUIMenu* MainMenu)
+	bool CreateExtensionMenu()
 	{
 		BOOL result = TRUE;
-
-		// Microsoft does not recommend using InsertMenu
-		// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-insertmenua
-		// "Note  The InsertMenu function has been superseded by the InsertMenuItem function. 
-		// You can still use InsertMenu, however, if you do not need any of the extended features of InsertMenuItem."
-
-	/*	// Create extended menu options
-		ExtensionMenuHandle = CreateMenu();
-		result = result && InsertMenu(ExtensionMenuHandle, -1, MF_BYPOSITION | MF_STRING, UI_EXTMENU_SHOWLOG, "Show Log");
-		result = result && InsertMenu(ExtensionMenuHandle, -1, MF_BYPOSITION | MF_STRING, UI_EXTMENU_CLEARLOG, "Clear Log");
-		result = result && InsertMenu(ExtensionMenuHandle, -1, MF_BYPOSITION | MF_STRING | MF_CHECKED, UI_EXTMENU_AUTOSCROLL, "Autoscroll Log");
-		result = result && InsertMenu(ExtensionMenuHandle, -1, MF_BYPOSITION | MF_SEPARATOR, UI_EXTMENU_SPACER, "");
-		result = result && InsertMenu(ExtensionMenuHandle, -1, MF_BYPOSITION | MF_STRING, UI_EXTMENU_LOADEDESPINFO, "Dump Active Forms");
-		result = result && InsertMenu(ExtensionMenuHandle, -1, MF_BYPOSITION | MF_SEPARATOR, UI_EXTMENU_SPACER, "");
-		result = result && InsertMenu(ExtensionMenuHandle, -1, MF_BYPOSITION | MF_STRING, UI_EXTMENU_HARDCODEDFORMS, "Save Hardcoded Forms");
-
-		MENUITEMINFO menuInfo = { 0 };
-		menuInfo.cbSize = sizeof(MENUITEMINFO);
-		menuInfo.fMask = MIIM_SUBMENU | MIIM_ID | MIIM_STRING;
-		menuInfo.wID = UI_EXTMENU_ID;
-		menuInfo.hSubMenu = ExtensionMenuHandle;
-		menuInfo.dwTypeData = "Extensions";
-		menuInfo.cch = (uint32_t)strlen(menuInfo.dwTypeData);
-
-		result = result && InsertMenuItem(MainMenu, -1, TRUE, &menuInfo);
-
-		// Links
-		auto linksMenuHandle = CreateMenu();
-
-		result = result && InsertMenu(linksMenuHandle, -1, MF_BYPOSITION | MF_STRING, UI_EXTMENU_LINKS_WIKI, "Cascadia Wiki");
-
-		menuInfo = {};
-		menuInfo.cbSize = sizeof(MENUITEMINFO);
-		menuInfo.fMask = MIIM_SUBMENU | MIIM_ID | MIIM_STRING;
-		menuInfo.hSubMenu = linksMenuHandle;
-		menuInfo.wID = UI_EXTMENU_LINKS_ID;
-		menuInfo.dwTypeData = "Links";
-		menuInfo.cch = (uint32_t)strlen(menuInfo.dwTypeData);
-		result = result && InsertMenuItem(MainMenu, -1, TRUE, &menuInfo);*/
 
 		// I tend to write object-oriented
 
@@ -178,10 +142,10 @@ namespace EditorUI
 		result = result && ExtensionSubMenu->Append("Dump Active Forms", UI_EXTMENU_LOADEDESPINFO);
 		result = result && ExtensionSubMenu->AppendSeparator();
 		result = result && ExtensionSubMenu->Append("Save Hardcoded Forms", UI_EXTMENU_HARDCODEDFORMS);
-		result = result && MainMenu->Append("Extensions", *ExtensionSubMenu);
+		result = result && MainWindow.MainMenu.Append("Extensions", *ExtensionSubMenu);
 
 		result = result && LinksSubMenu->Append("Cascadia Wiki", UI_EXTMENU_LINKS_WIKI);
-		result = result && MainMenu->Append("Links", *LinksSubMenu);
+		result = result && MainWindow.MainMenu.Append("Links", *LinksSubMenu);
 
 		// I don't use DeleteMenu when destroying, I don't need to store a pointer and all that.
 
@@ -212,18 +176,21 @@ namespace EditorUI
 				// This is the default value, but I need an object record to create the missing controls
 				MainWindow.Font = Core::Classes::UI::CFont("MS Sans Serif", 8, {}, Core::Classes::UI::fqClearTypeNatural, Core::Classes::UI::fpVariable);
 
+				// Getting additional child Windows
+				MainWindow.FindToolWindow();
+
 				// Create custom menu controls
-				MainMenu = new Core::Classes::UI::CUIMenu(createInfo->hMenu);
-				CreateExtensionMenu(MainMenu);
+				MainWindow.MainMenu = createInfo->hMenu;
+				CreateExtensionMenu();
 
 				// All main menus change to uppercase letters
-				for (UINT i = 0; i < MainMenu->Count(); i++)
+				for (UINT i = 0; i < MainWindow.MainMenu.Count(); i++)
 				{
-					MenuItem = MainMenu->GetItemByPos(i);
+					MenuItem = MainWindow.MainMenu.GetItemByPos(i);
 					MenuItem.Text = XUtil::Str::UpperCase(MenuItem.Text);
 				}
 
-				Core::Classes::UI::CUIMenu ViewMenu = MainMenu->GetSubMenuItem(2);
+				Core::Classes::UI::CUIMenu ViewMenu = MainWindow.MainMenu.GetSubMenuItem(2);
 
 				// How annoying is this window Warnings, delete from the menu.
 				ViewMenu.RemoveByPos(34);
@@ -238,10 +205,6 @@ namespace EditorUI
 
 				return status;
 			}
-		}
-		else if (Message == WM_DESTROY)
-		{
-			delete MainMenu;
 		}
 		else if (Message == WM_COMMAND)
 		{
@@ -272,7 +235,7 @@ namespace EditorUI
 				}
 
 				// Change the checkbox
-				MenuItem = MainMenu->GetItem(UI_EXTMENU_SHOWLOG);
+				MenuItem = MainWindow.MainMenu.GetItem(UI_EXTMENU_SHOWLOG);
 				MenuItem.Checked = !MenuItem.Checked;
 			}
 			return 0;
@@ -285,24 +248,8 @@ namespace EditorUI
 
 			case UI_EXTMENU_AUTOSCROLL:
 			{
-			/*	MENUITEMINFO info = { 0 };
-				info.cbSize = sizeof(MENUITEMINFO);
-				info.fMask = MIIM_STATE;
-				
-				GetMenuItemInfo(ExtensionMenuHandle, param, FALSE, &info);
-
-				bool check = !((info.fState & MFS_CHECKED) == MFS_CHECKED);
-
-				if (!check)
-					info.fState &= ~MFS_CHECKED;
-				else
-					info.fState |= MFS_CHECKED;
-
-				PostMessageA(LogWindow::GetWindow(), UI_LOG_CMD_AUTOSCROLL, (WPARAM)check, 0);
-				SetMenuItemInfo(ExtensionMenuHandle, param, FALSE, &info);*/
-
 				// Change the checkbox
-				MenuItem = MainMenu->GetItem(UI_EXTMENU_AUTOSCROLL);
+				MenuItem = MainWindow.MainMenu.GetItem(UI_EXTMENU_AUTOSCROLL);
 				MenuItem.Checked = !MenuItem.Checked;
 
 				PostMessageA(LogWindow::GetWindow(), UI_LOG_CMD_AUTOSCROLL, (WPARAM)MenuItem.Checked, 0);
@@ -430,7 +377,7 @@ namespace EditorUI
 					ObjectWindow.Foreground();
 
 				// Change the checkbox
-				MenuItem = MainMenu->GetItem(UI_CMD_SHOWHIDE_OBJECTWINDOW);
+				MenuItem = MainWindow.MainMenu.GetItem(UI_CMD_SHOWHIDE_OBJECTWINDOW);
 				MenuItem.Checked = !MenuItem.Checked;
 			}
 			return 0;
@@ -442,7 +389,7 @@ namespace EditorUI
 					CellViewWindow.Foreground();
 
 				// Change the checkbox
-				MenuItem = MainMenu->GetItem(UI_CMD_SHOWHIDE_CELLVIEWWINDOW);
+				MenuItem = MainWindow.MainMenu.GetItem(UI_CMD_SHOWHIDE_CELLVIEWWINDOW);
 				MenuItem.Checked = !MenuItem.Checked;
 			}
 			return 0;
