@@ -230,6 +230,15 @@
     <ClInclude Include="src\patches\CKF4\TranslateUnicode_CK.h">
       <Filter>Header Files\Patches\CK</Filter>
     </ClInclude>
+    <ClInclude Include="src\patches\CKF4\UIProgressDialog.h">
+      <Filter>Header Files\UI\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\TESDataFileHandler_CK.h">
+      <Filter>Header Files\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\TESFile_CK.h">
+      <Filter>Header Files\Classes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\dllmain.cpp">
@@ -321,6 +330,15 @@
     </ClCompile>
     <ClCompile Include="src\patches\CKF4\TranslateUnicode_CK.cpp">
       <Filter>Source Files\Patches\CK</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\UIProgressDialog.cpp">
+      <Filter>Source Files\UI\Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\TESDataFileHandler_CK.cpp">
+      <Filter>Source Files\Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\TESFile_CK.cpp">
+      <Filter>Source Files\Classes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
