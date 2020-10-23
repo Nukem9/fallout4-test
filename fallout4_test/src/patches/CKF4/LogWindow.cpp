@@ -240,7 +240,7 @@ namespace LogWindow
 
 		case WM_CLOSE:
 			ShowWindow(Hwnd, SW_HIDE);
-			EditorUI::GetMainMenuObj()->GetItem(UI_EXTMENU_SHOWLOG).Checked = FALSE;
+			EditorUI::GetMainMenuObj().GetItem(UI_EXTMENU_SHOWLOG).Checked = FALSE;
 			return 0;
 
 		case WM_NOTIFY:
