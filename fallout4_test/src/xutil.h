@@ -1,6 +1,7 @@
 #pragma once
 
 #pragma warning(disable:4094) // untagged 'struct' declared no symbols
+#pragma warning(disable:4172)
 
 #include <atomic>
 #include <algorithm>
