@@ -9,6 +9,7 @@
 #include "CKF4/LogWindow.h"
 #include "CKF4/ExperimentalNuukem.h"
 #include "CKF4/TranslateUnicode_CK.h"
+#include "CKF4/UIProgressDialog.h"
 
 void PatchMemory();
 void PatchFileIO();
@@ -149,6 +150,38 @@ void Patch_Fallout4CreationKit()
 		XUtil::DetourCall(OFFSET(0x3FE4CA, 0), &EditorUI::hk_7FF72F57F8F0);
 		// Allow forms to be filtered in CellViewProc
 		XUtil::DetourCall(OFFSET(0x6435BF, 0), &EditorUI::hk_7FF70C322BC0);
+
+		//
+		// Since I'm used to seeing SSE fixes
+		//
+
+		// Setting section sizes statusbar
+		XUtil::DetourCall(OFFSET(0x5FDFC8, 0), &EditorUI::hk_SetSettingsPartStatusBar);
+		// Ban on sending text to section 2 statusbar and send in 3 section
+		XUtil::DetourJump(OFFSET(0x5FDFF2, 0), &EditorUI::hk_SetTextPartStatusBar);
+
+		//
+		// Replacing the Tips window "Do you know...". Which appears when the plugin is loaded.
+		//
+
+		if (g_INI.GetBoolean("CreationKit", "ReplacingTipsWithProgressBar", false))
+		{
+			XUtil::PatchMemory(OFFSET(0x392260, 0), { 0xC3 });
+			XUtil::PatchMemory(OFFSET(0x3923C3, 0), { 0xC3 });
+			XUtil::PatchMemoryNop(OFFSET(0x5BE590, 0), 5);
+
+			XUtil::PatchMemory(OFFSET(0x7DEA53, 0), { 0x4C, 0x89, 0xD9 });
+			XUtil::DetourCall(OFFSET(0x7DEA56, 0), &EditorUI::hk_StepItProgress);
+			XUtil::PatchMemory(OFFSET(0x7DEA5B, 0), { 0xEB, 0x05 });
+
+			// Load Files... Initializing...
+			XUtil::DetourClassCall(OFFSET(0x7E2FF6, 0), &TESDataFileHandler_CK::InitUnknownDataSetTextStatusBar);
+			// During the entire process, the update is only 95 times for each percentage.... very little, get in here for an update
+			XUtil::DetourCall(OFFSET(0x7DEA67, 0), &EditorUI::hk_UpdateProgress);
+			// Load Files... Done... etc.
+			XUtil::DetourCall(OFFSET(0x7E34FD, 0), &EditorUI::hk_SetTextAndSendStatusBar);
+			XUtil::DetourCall(OFFSET(0x7DC390, 0), &EditorUI::hk_SetTextAndSendStatusBar);
+		}
 	}
 
 	if (g_INI.GetBoolean("CreationKit", "DisableWindowGhosting", false))
@@ -156,18 +189,56 @@ void Patch_Fallout4CreationKit()
 		DisableProcessWindowsGhosting();
 	}
 
+	// Getting a pointer to TESDataFileHandler_CK. 
+	// And when the ReplacingTipsWithProgressBar option is enabled, the dialog starts.
+	XUtil::DetourCall(OFFSET(0x5BE5A6, 0), &EditorUI::hk_CallLoadFile);
+	// Foreground CellView and Object Windows after loading.
+	// And when the ReplacingTipsWithProgressBar option is enabled, closing the dialog box.
+	XUtil::DetourJump(OFFSET(0x7DA80D, 0), &EditorUI::hk_EndLoadFile);
+
+	// Recognition of loaded files
+	XUtil::DetourCall(OFFSET(0x801AA7, 0), &hk_InputToLogLoadFile);
+	
+	// Ignore bAllowMultipleMasterLoads
+	XUtil::DetourJump(OFFSET(0x7D9F93, 0), OFFSET(0x7D9FD5, 0));
+	// Ignore bAllowMultipleEditors
+	XUtil::PatchMemory(OFFSET(0x5B5A53, 0), { 0xEB });
+
 	// Disable useless "Processing Topic X..." status bar updates
 	XUtil::PatchMemoryNop(OFFSET(0xB89897, 0), 5);
 	XUtil::PatchMemoryNop(OFFSET(0xB89BF3, 0), 5);
 	XUtil::PatchMemoryNop(OFFSET(0xB8A472, 0), 5);
 
 	//
-	// Force the render window to draw at 60fps while idle (SetTimer(1ms)). This also disables vsync.
+	// Processing messages during file upload so that the window doesn't hang
+	//
+
+	// jump to function for useful work (messages pool)
+	XUtil::DetourClassJump(OFFSET(0x2485C46, 0), &Core::Classes::UI::CUIMainWindow::ProcessMessages);
+	XUtil::DetourClassJump(OFFSET(0x2485E46, 0), &Core::Classes::UI::CUIMainWindow::ProcessMessages);
+	XUtil::DetourClassJump(OFFSET(0xDF2FBA, 0), &Core::Classes::UI::CUIMainWindow::ProcessMessages);
+	XUtil::DetourClassJump(OFFSET(0x2001B1B, 0), &Core::Classes::UI::CUIMainWindow::ProcessMessages);
+	XUtil::DetourClassJump(OFFSET(0x8531BD, 0), &Core::Classes::UI::CUIMainWindow::ProcessMessages);
+	// Replacing Sleep(1) on (messages pool)
+	XUtil::DetourClassCall(OFFSET(0x247EF69, 0), &Core::Classes::UI::CUIMainWindow::ProcessMessages);
+	XUtil::DetourClassCall(OFFSET(0x5DD8C2, 0), &Core::Classes::UI::CUIMainWindow::ProcessMessages);
+	XUtil::DetourClassCall(OFFSET(0x5DD7F2, 0), &Core::Classes::UI::CUIMainWindow::ProcessMessages);
+	// Replacing a completely empty function with something useful (messages pool)
+	XUtil::DetourClassCall(OFFSET(0x7E34D2, 0), &Core::Classes::UI::CUIMainWindow::ProcessMessages);
+	XUtil::DetourClassCall(OFFSET(0x773DEE, 0), &Core::Classes::UI::CUIMainWindow::ProcessMessages);
+
+	//
+	// Force the render window to draw at 60fps while idle (SetTimer(1ms)). 
 	//
 	if (g_INI.GetBoolean("CreationKit", "RenderWindowUnlockedFPS", false))
 	{
-		XUtil::PatchMemory(OFFSET(0x0463383, 0), { 0x01 });
-		XUtil::PatchMemory(OFFSET(0x2A39142, 0), { 0x33, 0xD2, 0x90 });
+		// SetTimer minimum value 10ms
+		// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-settimer
+		XUtil::PatchMemory(OFFSET(0x0463383, 0), { (uint8_t)USER_TIMER_MINIMUM });
+
+		// In a separate option VSync
+		if (!g_INI.GetBoolean("CreationKit", "VSyncRender", false))
+			XUtil::PatchMemory(OFFSET(0x2A39142, 0), { 0x33, 0xD2, 0x90 });
 	}
 
 	//
