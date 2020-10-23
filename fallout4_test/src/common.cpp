@@ -1,4 +1,5 @@
 #include "common.h"
+#include "version_info.h"
 
 #pragma comment(lib, "winmm.lib")
 #pragma comment(lib, "d3d11.lib")
@@ -36,4 +37,4 @@ uintptr_t g_DataBase;	// .data
 uintptr_t g_DataEnd;
 
 GAME_EXECUTABLE_TYPE g_LoadType;
-char g_GitVersion[64];
+char g_GitVersion[64] = VER_CURRENT_COMMIT_ID;
