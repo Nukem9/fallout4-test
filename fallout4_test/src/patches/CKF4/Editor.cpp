@@ -67,9 +67,11 @@ HWND WINAPI hk_CreateDialogParamA(HINSTANCE hInstance, LPCSTR lpTemplateName, HW
 	switch ((uintptr_t)lpTemplateName)
 	{
 	case 122:
+	case 162:
 	case 220:
 	case 243:
 	case 252:
+	case 279:
 	case 316:
 	case 350:
 		hInstance = (HINSTANCE)&__ImageBase;
@@ -89,9 +91,11 @@ INT_PTR WINAPI hk_DialogBoxParamA(HINSTANCE hInstance, LPCSTR lpTemplateName, HW
 	switch ((uintptr_t)lpTemplateName)
 	{
 	case 122:
+	case 162:
 	case 220:
 	case 243:
 	case 252:
+	case 279:
 	case 316:
 	case 350:
 		hInstance = (HINSTANCE)&__ImageBase;
