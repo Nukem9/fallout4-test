@@ -182,7 +182,7 @@ namespace EditorUI
 	bool __stdcall hk_CallLoadFile(TESDataFileHandler_CK* io_handler, int _zero_only)
 	{
 		// get and save F4FileDataHandler from CK
-		FileHandler = io_handler;
+		// FileHandler = io_handler; 0x6D67960 and doesn't change
 
 		// Replacing Tips with a progress Bar
 		if (g_INI.GetBoolean("CreationKit", "ReplacingTipsWithProgressBar", false))

@@ -11,7 +11,7 @@ private:
 	TESFile_CK();
 	~TESFile_CK();
 public:
-	enum Type_t: uint32_t
+	enum : uint32_t
 	{
 		FILE_RECORD_ESM			= 0x1,			// Master plugin
 		FILE_RECORD_CHECKED		= 0x4,			// Pending load/loaded
@@ -23,16 +23,21 @@ private:
 	char _pad0[0x78];
 	char m_FileName[MAX_PATH];
 	char m_FilePath[MAX_PATH];
-	//char _pad1[0x9];
-	//Type_t m_Type;
+	char _pad1[0xBC];
+	uint32_t m_Flags;
 public:
-	std::string GetFileName(void) const { return m_FileName; }
-	std::string GetFilePath(void) const { return m_FilePath; }
-	//Type_t GetType(void) const { return m_Type; }
+	inline std::string GetFileName(void) const { return m_FileName; }
+	inline std::string GetFilePath(void) const { return m_FilePath; }
+	inline uint32_t GetFlags(void) const { return m_Flags; }
+	inline BOOL IsMaster(void) const { return m_Flags & FILE_RECORD_ESM; }
+	inline BOOL IsSelected(void) const { return m_Flags & FILE_RECORD_CHECKED; }
+	inline BOOL IsActive(void) const { return m_Flags & FILE_RECORD_ACTIVE; }
+	inline BOOL IsLocalized(void) const { return m_Flags & FILE_RECORD_LOCALIZED; }
+	inline BOOL IsSmallMaster(void) const { return m_Flags & FILE_RECORD_ESL; }
 public:
 	__declspec(property(get = GetFileName)) std::string FileName;
 	__declspec(property(get = GetFilePath)) std::string FilePath;
-	//__declspec(property(get = GetType)) Type_t Type;
+	__declspec(property(get = GetFlags)) uint32_t Flags;
 };
 
 #pragma pack(pop)

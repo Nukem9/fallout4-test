@@ -189,18 +189,17 @@ void Patch_Fallout4CreationKit()
 		DisableProcessWindowsGhosting();
 	}
 
-	// Getting a pointer to TESDataFileHandler_CK. 
+	TESDataFileHandler_CK::Initialize();
+
+	// Getting a pointer to TESDataFileHandler_CK. (no actual)
 	// And when the ReplacingTipsWithProgressBar option is enabled, the dialog starts.
 	XUtil::DetourCall(OFFSET(0x5BE5A6, 0), &EditorUI::hk_CallLoadFile);
 	// Foreground CellView and Object Windows after loading.
 	// And when the ReplacingTipsWithProgressBar option is enabled, closing the dialog box.
 	XUtil::DetourJump(OFFSET(0x7DA80D, 0), &EditorUI::hk_EndLoadFile);
-
-	// Recognition of loaded files
-	XUtil::DetourCall(OFFSET(0x801AA7, 0), &hk_InputToLogLoadFile);
 	
 	// Ignore bAllowMultipleMasterLoads
-	XUtil::DetourJump(OFFSET(0x7D9F93, 0), OFFSET(0x7D9FD5, 0));
+	XUtil::PatchMemory(OFFSET(0x7D9F93, 0), { 0xEB, 0x40 });
 	// Ignore bAllowMultipleEditors
 	XUtil::PatchMemory(OFFSET(0x5B5A53, 0), { 0xEB });
 

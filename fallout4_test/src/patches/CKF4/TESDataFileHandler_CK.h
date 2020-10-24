@@ -1,22 +1,81 @@
 #pragma once
 
 #include "TESFile_CK.h"
+#include "../TES/BSTList.h"
+
 #include <vector>
 
-typedef std::vector<TESFile_CK*> TESFiles_CK;
-
+/// <summary>
+/// Class that works with archived game files
+/// </summary>
 class TESDataFileHandler_CK
 {
 public:
-	bool Load(int Unknown);
-	bool InitUnknownDataSetTextStatusBar(void);
-
+	using TESFileList_CK = BSSimpleList<TESFile_CK*>;
+	using TESFileListPtr_CK = TESFileList_CK*;
+	using TESFileArray_CK = std::vector<TESFile_CK*>;
+public:
+	/// <summary>
+	/// Used in a hook, do not use!
+	/// </summary>
+	/// <param name="Unknown">Unknown value that is equal to zero</param>
+	/// <returns>Return True if loading and defining dependencies is successful</returns>
+	bool Load(int Unknown);							
+	/// <summary>
+	/// Used in a hook, do not use!
+	/// </summary>
+	/// <param name="">No parms</param>
+	/// <returns>Return True if some initialization is successful</returns>
+	bool InitUnknownDataSetTextStatusBar(void);	
+	/// <summary>
+	/// Used in a hook, do not use!
+	/// </summary>
+	/// <param name="File">Pointer to the archive file</param>
+	static void DetectSelectFile(TESFile_CK* File);
+public:
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="">No parms</param>
+	/// <returns>Return an list of all archives</returns>
+	static TESFileListPtr_CK GetArchiveFiles(void);
+	/// <summary>
+	/// Self-written list with selected archives, embedded in the load algorithm.
+	/// </summary>
+	/// <param name="">No parms</param>
+	/// <returns>Return an array of selected archives</returns>
+	static TESFileListPtr_CK GetSelectedFiles(void);
+	/// <summary>
+	/// Can be NULL. If only Master Files are loaded.
+	/// </summary>
+	/// <param name="">No parms</param>
+	/// <returns>Returns the active file that has target save</returns>
 	TESFile_CK* GetActiveFile(void) const;
-	TESFiles_CK& GetDependences(void) const;
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="">No parms</param>
+	/// <returns>Return True if active file is exists</returns>
+	bool IsActiveFile(void) const;
+public:
+	/// <summary>
+	/// do not use!
+	/// </summary>
+	/// <param name="">No parms</param>
+	static void Initialize(void);
+public:
+	/// <summary>
+	/// Return an list of all archives.
+	/// </summary>
+	__declspec(property(get = GetArchiveFiles)) TESFileListPtr_CK ArchiveFiles;
+	/// <summary>
+	/// Return an list of selected archives.
+	/// </summary>
+	__declspec(property(get = GetSelectedFiles)) TESFileListPtr_CK SelectedFiles;
+	/// <summary>
+	/// Returns the active file that has target save. Can be NULL. If only Master Files are loaded.
+	/// </summary>
+	__declspec(property(get = GetActiveFile)) TESFile_CK* ActiveFile;
 };
 
-// 0x6D67960 and doesn't change hmm...
 extern TESDataFileHandler_CK* FileHandler;
-
-void WINAPI hk_InputToLogLoadFile(TESFile_CK* File);
-BOOL WINAPI hk_InputToLogOneOfDependencesActiveFile(TESFile_CK* File, int Unknown);
