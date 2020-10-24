@@ -3,11 +3,6 @@
 #include "UIProgressDialog.h"
 #include "LogWindow.h"
 
-#define XBYAK_NO_OP_NAMES
-#include <xbyak/xbyak.h>
-
-using namespace Xbyak;
-
 TESDataFileHandler_CK* FileHandler;
 TESDataFileHandler_CK::TESFileList_CK g_SelectedFilesList, *g_SelectedFilesListNodeLast;
 TESDataFileHandler_CK::TESFileArray_CK g_SelectedFilesArray;
@@ -18,32 +13,6 @@ void TESDataFileHandler_CK::Initialize(void)
 
 	// Recognition of loaded files
 	XUtil::DetourClassCall(OFFSET(0x801AA7, 0), &TESDataFileHandler_CK::DetectSelectFile);
-
-	// The entire list of files is checked three times per load mod. 
-	// I will do it only once, replace the register with the already created list of selected elements, this slightly optimizes the loading.
-
-	const size_t codeSize = 4096;
-	static uint8_t buf[codeSize + 16];
-	static uint8_t* p = CodeArray::getAlignedAddress(buf);
-
-	CodeArray::protect(p, codeSize, true);
-	class changeLoadFileHook : public Xbyak::CodeGenerator
-	{
-	public:
-		changeLoadFileHook() : Xbyak::CodeGenerator(codeSize, (void*)p)
-		{
-			mov(rax, (size_t)GetSelectedFiles);
-			call(rax);
-			mov(r14, rsi);
-			mov(r12, rax);
-			mov(rbx, rax);
-			ret();
-		}
-	} static changeLoadFileHook;
-
-	XUtil::DetourCall(OFFSET(0x7D9F02, 0), (uintptr_t)changeLoadFileHook.getCode());
-	XUtil::DetourCall(OFFSET(0x7DA306, 0), (uintptr_t)changeLoadFileHook.getCode());
-	XUtil::PatchMemory(OFFSET(0x7D9F08, 0), { 0x48, 0x85, 0xC0 });
 }
 
 bool TESDataFileHandler_CK::Load(int Unknown)
@@ -65,6 +34,8 @@ bool TESDataFileHandler_CK::InitUnknownDataSetTextStatusBar(void)
 		Core::Classes::UI::ProgressDialog->MessageText = "Loading Files... Initializing...";
 		Core::Classes::UI::ProgressDialog->Marquee = TRUE;
 	}
+
+	g_SelectedFilesArray.clear();
 
 	// Unknown. Initializes something.
 	return ((bool(__fastcall*)(TESDataFileHandler_CK*))OFFSET(0x7D66A0, 0))(this);

@@ -40,7 +40,7 @@ public:
 	/// <returns>Return an list of all archives</returns>
 	static TESFileListPtr_CK GetArchiveFiles(void);
 	/// <summary>
-	/// Self-written list with selected archives, embedded in the load algorithm.
+	/// Self-written list with selected archives.
 	/// </summary>
 	/// <param name="">No parms</param>
 	/// <returns>Return an array of selected archives</returns>
