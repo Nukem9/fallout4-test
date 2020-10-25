@@ -4,7 +4,6 @@
 #include "LogWindow.h"
 
 TESDataFileHandler_CK* FileHandler;
-TESDataFileHandler_CK::TESFileList_CK g_SelectedFilesList, *g_SelectedFilesListNodeLast;
 TESDataFileHandler_CK::TESFileArray_CK g_SelectedFilesArray;
 
 void TESDataFileHandler_CK::Initialize(void)
@@ -17,8 +16,6 @@ void TESDataFileHandler_CK::Initialize(void)
 
 bool TESDataFileHandler_CK::Load(int Unknown)
 {
-	g_SelectedFilesList.RemoveAllNodes();
-	g_SelectedFilesListNodeLast = &g_SelectedFilesList;
 	g_SelectedFilesArray.clear();
 
 	// loads, checks.
@@ -35,8 +32,6 @@ bool TESDataFileHandler_CK::InitUnknownDataSetTextStatusBar(void)
 		Core::Classes::UI::ProgressDialog->Marquee = TRUE;
 	}
 
-	g_SelectedFilesArray.clear();
-
 	// Unknown. Initializes something.
 	return ((bool(__fastcall*)(TESDataFileHandler_CK*))OFFSET(0x7D66A0, 0))(this);
 }
@@ -46,17 +41,14 @@ void TESDataFileHandler_CK::DetectSelectFile(TESFile_CK* File)
 	// Sometimes duplicated
 	if (std::find(g_SelectedFilesArray.begin(), g_SelectedFilesArray.end(), File) == g_SelectedFilesArray.end())
 	{
-		if (File->IsActive()) // Active plugin
-		{
+		if (File->IsActive()) 
 			LogWindow::Log("Load active file %s...", File->FileName.c_str());
-		}
+		else if (File->IsMaster() || File->IsSmallMaster())
+			LogWindow::Log("Load master file %s...", File->FileName.c_str());
 		else
-		{
-			LogWindow::Log("Load dependent file %s...", File->FileName.c_str());
-		}
+			LogWindow::Log("Load file %s...", File->FileName.c_str());
 
 		g_SelectedFilesArray.push_back(File);
-		g_SelectedFilesListNodeLast = g_SelectedFilesList.AddNode(g_SelectedFilesListNodeLast, File);
 	}
 
 	((void(__fastcall*)(TESFile_CK*))OFFSET(0x7FFF10, 0))(File);
@@ -67,10 +59,10 @@ TESDataFileHandler_CK::TESFileListPtr_CK TESDataFileHandler_CK::GetArchiveFiles(
 	return (TESDataFileHandler_CK::TESFileListPtr_CK)OFFSET(0x6D68910, 0);
 }
 
-TESDataFileHandler_CK::TESFileListPtr_CK TESDataFileHandler_CK::GetSelectedFiles(void)
+TESDataFileHandler_CK::TESFileArray_CK* TESDataFileHandler_CK::GetSelectedFiles(void)
 {
 	// first always null data
-	return g_SelectedFilesList.m_pkNext;
+	return &g_SelectedFilesArray;
 }
 
 TESFile_CK* TESDataFileHandler_CK::GetActiveFile(void) const

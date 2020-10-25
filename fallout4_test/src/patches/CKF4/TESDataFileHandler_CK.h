@@ -40,11 +40,11 @@ public:
 	/// <returns>Return an list of all archives</returns>
 	static TESFileListPtr_CK GetArchiveFiles(void);
 	/// <summary>
-	/// Self-written list with selected archives.
+	/// Self-written array with selected archives.
 	/// </summary>
 	/// <param name="">No parms</param>
 	/// <returns>Return an array of selected archives</returns>
-	static TESFileListPtr_CK GetSelectedFiles(void);
+	static TESFileArray_CK* GetSelectedFiles(void);
 	/// <summary>
 	/// Can be NULL. If only Master Files are loaded.
 	/// </summary>
@@ -69,9 +69,9 @@ public:
 	/// </summary>
 	__declspec(property(get = GetArchiveFiles)) TESFileListPtr_CK ArchiveFiles;
 	/// <summary>
-	/// Return an list of selected archives.
+	/// Return an array of selected archives.
 	/// </summary>
-	__declspec(property(get = GetSelectedFiles)) TESFileListPtr_CK SelectedFiles;
+	__declspec(property(get = GetSelectedFiles)) TESFileArray_CK* SelectedFiles;
 	/// <summary>
 	/// Returns the active file that has target save. Can be NULL. If only Master Files are loaded.
 	/// </summary>
