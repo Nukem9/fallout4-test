@@ -340,6 +340,9 @@
     <ClCompile Include="src\patches\CKF4\TESFile_CK.cpp">
       <Filter>Source Files\Classes</Filter>
     </ClCompile>
+    <ClCompile Include="src\patches\threading.cpp">
+      <Filter>Source Files\Patches</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\typeinfo\ni_rtti.inl">
