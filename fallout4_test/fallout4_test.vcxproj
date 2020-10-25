@@ -239,6 +239,7 @@
     <ClCompile Include="src\patches\offsets.cpp" />
     <ClCompile Include="src\patches\patches_f4ck.cpp" />
     <ClCompile Include="src\patches\TES\NiMain\NiCollisionUtils.cpp" />
+    <ClCompile Include="src\patches\threading.cpp" />
     <ClCompile Include="src\UtfStr.cpp" />
     <ClCompile Include="src\winhttp_exports.cpp" />
     <ClCompile Include="src\common.cpp" />
