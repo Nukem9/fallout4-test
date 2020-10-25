@@ -144,6 +144,14 @@ namespace Core
 				m_Progress.Perform(PBM_STEPIT, 0, 0);
 			}
 
+			void CUIProgressDialog::ProcessMessages(void)
+			{
+				if (ProgressDialog)
+					Core::Classes::UI::CUIMainWindow::ProcessMessages();
+				else
+					Sleep(1);
+			}
+
 			LRESULT CUIProgressDialog::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			{
 				switch (uMsg)
@@ -246,5 +254,27 @@ namespace EditorUI
 		// set Text 
 		sys::ProgressDialog->MessageText = message;
 		Core::Classes::UI::CUIMainWindow::ProcessMessages();
+	}
+
+	void __stdcall hk_SendFromCellViewToRender(void* Unknown1, void* Unknown2, int Unknown3)
+	{
+		Assert(!sys::ProgressDialog);
+		// show Progress
+		sys::ProgressDialog = new sys::CUIProgressDialog(&GetMainWindowObj(), 3238);
+		Assert(sys::ProgressDialog);
+		sys::ProgressDialog->Create();
+
+		sys::ProgressDialog->Marquee = TRUE;
+		sys::ProgressDialog->MessageText = "Loading Cell...";
+
+		// send
+		((void(__fastcall*)(void*, void*, int))OFFSET(0x45FE60, 0))(Unknown1, Unknown2, Unknown3);
+	}
+
+	void __stdcall hk_EndSendFromCellViewToRender(void)
+	{
+		// close Progress
+		delete sys::ProgressDialog;
+		sys::ProgressDialog = nullptr;
 	}
 }

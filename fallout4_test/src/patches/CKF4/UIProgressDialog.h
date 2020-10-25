@@ -36,6 +36,7 @@ namespace Core
 				std::string GetMessageText(void);
 				void SetMessageText(const std::string &str);
 				void Step(void);
+				static void ProcessMessages(void);
 			public:
 				PROPERTY(GetMin, SetMin) UINT16 Min;
 				PROPERTY(GetMax, SetMax) UINT16 Max;
@@ -60,4 +61,6 @@ namespace EditorUI
 	void __stdcall hk_StepItProgress(const char** str);
 	bool __stdcall hk_UpdateProgress(void* __this, int __1);
 	void __stdcall hk_SetTextAndSendStatusBar(const uint32_t index, const char* message);
+	void __stdcall hk_SendFromCellViewToRender(void* Unknown1, void* Unknown2, int Unknown3);
+	void __stdcall hk_EndSendFromCellViewToRender(void);
 }

@@ -11,8 +11,11 @@
 #include "CKF4/TranslateUnicode_CK.h"
 #include "CKF4/UIProgressDialog.h"
 
+#include <xbyak/xbyak.h>
+
 void PatchMemory();
 void PatchFileIO();
+void PatchThreading();
 
 void Patch_Fallout4CreationKit()
 {
@@ -90,6 +93,14 @@ void Patch_Fallout4CreationKit()
 		XUtil::DetourJump(OFFSET(0x2004300, 0), &MemoryManager::Size);
 		XUtil::DetourJump(OFFSET(0x200AB30, 0), &ScrapHeap::Allocate);
 		XUtil::DetourJump(OFFSET(0x200B170, 0), &ScrapHeap::Deallocate);
+	}
+
+	//
+	// Threads
+	//
+	if (g_INI.GetBoolean("CreationKit", "ThreadingPatch", false))
+	{
+		PatchThreading();
 	}
 
 	//
@@ -181,6 +192,16 @@ void Patch_Fallout4CreationKit()
 			// Load Files... Done... etc.
 			XUtil::DetourCall(OFFSET(0x7E34FD, 0), &EditorUI::hk_SetTextAndSendStatusBar);
 			XUtil::DetourCall(OFFSET(0x7DC390, 0), &EditorUI::hk_SetTextAndSendStatusBar);
+
+			// Run the progress dialog when loading the interior in the render.
+			XUtil::DetourCall(OFFSET(0x59F6B9, 0), &EditorUI::hk_SendFromCellViewToRender);
+			// Close the progress dialog 
+			XUtil::DetourJump(OFFSET(0x460239, 0), &EditorUI::hk_EndSendFromCellViewToRender);
+
+			// The terrain patch freezes, so a queue is created taking into account the activity of the dialog
+			XUtil::DetourClassCall(OFFSET(0x2629D96, 0), &Core::Classes::UI::CUIProgressDialog::ProcessMessages);
+			XUtil::DetourClassCall(OFFSET(0x262A6B2, 0), &Core::Classes::UI::CUIProgressDialog::ProcessMessages);
+			XUtil::DetourClassCall(OFFSET(0x262A6BF, 0), &Core::Classes::UI::CUIProgressDialog::ProcessMessages);
 		}
 	}
 
@@ -218,6 +239,7 @@ void Patch_Fallout4CreationKit()
 	XUtil::DetourClassJump(OFFSET(0xDF2FBA, 0), &Core::Classes::UI::CUIMainWindow::ProcessMessages);
 	XUtil::DetourClassJump(OFFSET(0x2001B1B, 0), &Core::Classes::UI::CUIMainWindow::ProcessMessages);
 	XUtil::DetourClassJump(OFFSET(0x8531BD, 0), &Core::Classes::UI::CUIMainWindow::ProcessMessages);
+	XUtil::DetourClassJump(OFFSET(0x262D1A7, 0), &Core::Classes::UI::CUIMainWindow::ProcessMessages);
 	// Replacing Sleep(1) on (messages pool)
 	XUtil::DetourClassCall(OFFSET(0x247EF69, 0), &Core::Classes::UI::CUIMainWindow::ProcessMessages);
 	XUtil::DetourClassCall(OFFSET(0x5DD8C2, 0), &Core::Classes::UI::CUIMainWindow::ProcessMessages);
@@ -225,7 +247,7 @@ void Patch_Fallout4CreationKit()
 	// Replacing a completely empty function with something useful (messages pool)
 	XUtil::DetourClassCall(OFFSET(0x7E34D2, 0), &Core::Classes::UI::CUIMainWindow::ProcessMessages);
 	XUtil::DetourClassCall(OFFSET(0x773DEE, 0), &Core::Classes::UI::CUIMainWindow::ProcessMessages);
-
+	
 	//
 	// Force the render window to draw at 60fps while idle (SetTimer(1ms)). 
 	//
