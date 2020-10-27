@@ -265,7 +265,7 @@ namespace EditorUI
 		sys::ProgressDialog->Create();
 
 		sys::ProgressDialog->Marquee = TRUE;
-		sys::ProgressDialog->MessageText = "Loading Cell...";
+		sys::ProgressDialog->MessageText = "Please wait while requested cell loads ...";
 
 		// send
 		((void(__fastcall*)(void*, void*, int))OFFSET(0x45FE60, 0))(Unknown1, Unknown2, Unknown3);
