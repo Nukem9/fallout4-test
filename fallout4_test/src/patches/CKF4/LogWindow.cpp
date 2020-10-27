@@ -6,6 +6,11 @@
 #include "EditorUIDarkMode.h"
 #include "LogWindow.h"
 
+#include <fstream>
+#include <filesystem>
+
+namespace fs = std::filesystem;
+
 namespace LogWindow
 {
 	HWND LogWindowHandle;
@@ -13,7 +18,9 @@ namespace LogWindow
 	HANDLE ExternalPipeWriterHandle;
 	FILE *OutputFileHandle;
 
-	tbb::concurrent_vector<const char *> PendingMessages;
+	uint64_t HashLast = 0xFFFFFFFF;
+
+	tbb::concurrent_vector<std::string> PendingMessages;
 	std::unordered_set<uint64_t> MessageBlacklist;
 
 	HWND GetWindow()
@@ -157,24 +164,57 @@ namespace LogWindow
 			return;
 
 		// Keep reading entries until an empty one is hit
-		for (uint32_t i = 0;; i++)
+
+		auto fname = "CreationKitWarnings.txt";
+
+		std::string message;
+		fs::path filename = fs::absolute(fs::current_path() / fname);
+
+		if (!fs::exists(filename))
+			Log("File '%s' not found. Recommend creating one to skip the specified messages.", fname);
+		else
 		{
-			std::string message = g_INI.Get("CreationKit_Warnings", "W" + std::to_string(i), "");
+			std::ifstream in(filename);
 
-			if (message.empty())
-				break;
+			// Keep reading entries until an end
+			while (!in.eof())
+			{
+				std::getline(in, message);
 
-			// Unescape newlines, carriage returns, and trailing spaces
-			for (size_t i; (i = message.find("\\n")) != std::string::npos;)
-				message.replace(i, 2, "\n");
+				
+				std::erase_if(message, [](auto const& x) { return x == '\n' || x == '\r'; });
+				XUtil::Str::trim(message);
 
-			for (size_t i; (i = message.find("\\r")) != std::string::npos;)
-				message.replace(i, 2, "\r");
+				if (message.empty())
+					continue;
 
-			for (size_t i; (i = message.find("\\s")) != std::string::npos;)
-				message.replace(i, 2, " ");
+				MessageBlacklist.emplace(XUtil::MurmurHash64A(message.c_str(), message.length()));
+			}
 
-			MessageBlacklist.emplace(XUtil::MurmurHash64A(message.c_str(), message.length()));
+			in.close();
+		}
+
+		// localized errors
+		filename = fs::absolute(fs::current_path() / "Localize/CreationKitWarnings.txt");
+
+		if (fs::exists(filename))
+		{
+			std::ifstream in(filename);
+
+			// Keep reading entries until an end
+			while (!in.eof())
+			{
+				std::getline(in, message);
+				std::erase_if(message, [](auto const& x) { return x == '\n' || x == '\r'; });
+				XUtil::Str::trim(message);
+
+				if (message.empty())
+					continue;
+
+				MessageBlacklist.emplace(XUtil::MurmurHash64A(message.c_str(), message.length()));
+			}
+
+			in.close();
 		}
 	}
 
@@ -315,15 +355,15 @@ namespace LogWindow
 			// Get a copy of all elements and clear the global list
 			auto messages(std::move(PendingMessages));
 
-			for (const char *message : messages)
+			for (std::string msg : messages)
 			{
 				// Move caret to the end, then write
-				CHARRANGE range = { LONG_MAX, LONG_MAX };
+				CHARRANGE range;
+				range.cpMax = LONG_MAX;
+				range.cpMin = LONG_MAX;
 
 				SendMessageA(richEditHwnd, EM_EXSETSEL, 0, (LPARAM)&range);
-				SendMessageA(richEditHwnd, EM_REPLACESEL, FALSE, (LPARAM)message);
-
-				free((void *)message);
+				SendMessageA(richEditHwnd, EM_REPLACESEL, FALSE, (LPARAM)msg.c_str());
 			}
 
 			if (!autoScroll)
@@ -338,6 +378,7 @@ namespace LogWindow
 		{
 			char emptyString[1];
 			emptyString[0] = '\0';
+			HashLast = 0xFFFFFFFF;
 
 			SendMessageA(richEditHwnd, WM_SETTEXT, 0, (LPARAM)&emptyString);
 		}
@@ -353,26 +394,32 @@ namespace LogWindow
 
 	void LogVa(const char *Format, va_list Va)
 	{
-		char buffer[2048];
-		int len = _vsnprintf_s(buffer, _TRUNCATE, Format, Va);
+		std::string message;
+		message.resize(2048);
+		message.resize(_vsnprintf(&message[0], _TRUNCATE, Format, Va));
 
-		if (len <= 0)
+		// Un-escape newline and carriage return characters
+		std::erase_if(message, [](auto const& x) { return x == '\n' || x == '\r'; });
+		XUtil::Str::trim(message);
+
+		if (!message.length())
 			return;
 
-		if (MessageBlacklist.count(XUtil::MurmurHash64A(buffer, len)))
+		uint64_t Hash = XUtil::MurmurHash64A(message.c_str(), message.length());	
+		if (Hash == HashLast || MessageBlacklist.count(Hash))
 			return;
-
-		if (len >= 2 && buffer[len - 1] != '\n')
-			strcat_s(buffer, "\n");
+	
+		HashLast = Hash;
+		message += "\n";
 
 		if (OutputFileHandle)
 		{
-			fputs(buffer, OutputFileHandle);
+			fputs(message.c_str(), OutputFileHandle);
 			fflush(OutputFileHandle);
 		}
 
 		if (PendingMessages.size() < 50000)
-			PendingMessages.push_back(_strdup(buffer));
+			PendingMessages.emplace_back(message.c_str());
 	}
 
 	void Log(const char *Format, ...)
@@ -388,7 +435,7 @@ namespace LogWindow
 	{
 		static const char *typeList[34] =
 		{
-			"DEFAULT",
+			"DEFAULT", 
 			"SYSTEM",
 			"COMBAT",
 			"ANIMATION",
