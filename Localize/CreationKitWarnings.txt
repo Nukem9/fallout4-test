@@ -22,6 +22,7 @@ FORMS: EXTRA SPACE: Ключ от склада на Кранберри-Айленд  has at least one space a
 FORMS: EXTRA SPACE: Стейк из мяса матки болотников  has at least one space after it.
 FORMS: EXTRA SPACE: Обработчик задания для объектов FFNucleus  has at least one space after it.
 EDITOR: Editor ID 'Critters' for LAYR (0302022C) is not unique, previous object (02053D63) is type LAYR. Editor ID will be set to 'CrittersDUPLICATE000'.
+MASTERFILE: NavMesh ID 0022D139 in cell 'Пустоши' (0000E45C) (-26, -2) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
 MASTERFILE: *** Cell Пустоши (0000DF76) combined data is owned by file DLCNukaWorld.esm due to ref TerrainShelfRocks01 (0300B03E)
 MASTERFILE: *** Cell Пустоши (0000DF97) combined data is owned by file DLCNukaWorld.esm due to ref RockCliff05_NF (0300B02E)
 MASTERFILE: *** Cell Пустоши (0000DF9C) combined data is owned by file DLCNukaWorld.esm due to ref RockCliff06 (0300B048)
