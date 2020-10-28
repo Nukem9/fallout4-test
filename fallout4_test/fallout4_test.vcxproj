@@ -244,7 +244,6 @@
     <ClCompile Include="src\winhttp_exports.cpp" />
     <ClCompile Include="src\common.cpp" />
     <ClCompile Include="src\patches\CKF4\EditorUI.cpp" />
-    <ClCompile Include="src\patches\fileio.cpp" />
     <ClCompile Include="src\dllmain.cpp" />
     <ClCompile Include="src\dump.cpp" />
     <ClCompile Include="src\patches\TES\bhkThreadMemorySource.cpp" />
