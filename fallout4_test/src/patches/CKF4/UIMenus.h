@@ -31,6 +31,7 @@ namespace Core
 				BOOL IsSeparate(void) const;
 				inline CUIMenu* Menu(void) const { return m_Menu; };
 				inline BOOL ByPosition(void) const { return m_ByPos; };
+				void Click(void) const;
 			public:
 				static void Remove(CUIMenuItem* MenuItem);
 				static void Remove(CUIMenuItem& MenuItem);
