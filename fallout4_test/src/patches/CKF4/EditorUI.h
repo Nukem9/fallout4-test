@@ -39,12 +39,16 @@
 #define UI_CELL_WINDOW_ADD_ITEM					UI_OBJECT_WINDOW_ADD_ITEM
 #define UI_PROGRESS_CMD_STEPIT					(UI_CUSTOM_MESSAGE + 5)
 
+#define UI_COLLISION_GEOM_CMD			0x9CFD
+#define UI_FOG_CMD						0x9FE9
+
 namespace EditorUI
 {
 	extern WNDPROC OldWndProc;
 	extern DLGPROC OldObjectWindowProc;
 	extern DLGPROC OldCellViewProc;
 	extern DLGPROC OldResponseWindowProc;
+	extern DLGPROC OldRenderWindowProc;
 
 	HWND GetWindow();
 	HWND GetObjectWindow();
@@ -61,6 +65,7 @@ namespace EditorUI
 	INT_PTR CALLBACK ObjectWindowProc(HWND DialogHwnd, UINT Message, WPARAM wParam, LPARAM lParam);
 	INT_PTR CALLBACK CellViewProc(HWND DialogHwnd, UINT Message, WPARAM wParam, LPARAM lParam);
 	INT_PTR CALLBACK ResponseWindowProc(HWND DialogHwnd, UINT Message, WPARAM wParam, LPARAM lParam);
+	INT_PTR CALLBACK RenderWindowProc(HWND DialogHwnd, UINT Message, WPARAM wParam, LPARAM lParam);
 
 	BOOL ListViewCustomSetItemState(HWND ListViewHandle, WPARAM Index, UINT Data, UINT Mask);
 	void ListViewSelectItem(HWND ListViewHandle, int ItemIndex, bool KeepOtherSelections);

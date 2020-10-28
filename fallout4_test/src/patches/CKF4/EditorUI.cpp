@@ -8,6 +8,8 @@
 
 #pragma comment(lib, "comctl32.lib")
 
+
+
 namespace EditorUI
 {
 	// Since very little is described, it is easier for me to implement some of the developments
@@ -52,10 +54,16 @@ namespace EditorUI
 		Core::Classes::UI::CUICheckbox ActiveOnly;
 	} CellViewWindowControls;
 
+	struct RenderWindowControls_t
+	{
+		BOOL IsCollisionView;
+	} RenderWindowControls;
+
 	WNDPROC OldWndProc;
 	DLGPROC OldObjectWindowProc;
 	DLGPROC OldCellViewProc;
 	DLGPROC OldResponseWindowProc;
+	DLGPROC OldRenderWindowProc;
 
 	HWND GetWindow()
 	{
@@ -393,6 +401,23 @@ namespace EditorUI
 				MenuItem.Checked = !MenuItem.Checked;
 			}
 			return 0;
+
+			case UI_COLLISION_GEOM_CMD:
+			{
+				// CheckMenuItem is called, however, it always gets zero, but eight is written on top, which is equal to MFS_CHECKED.
+				// So I'll create a variable. By the way, when loading a new process, the flag is not set, as is the function itself.
+
+				RenderWindowControls.IsCollisionView = !RenderWindowControls.IsCollisionView;
+				MainWindow.MainMenu.GetSubMenuItem(2).GetItemByPos(24).Checked = RenderWindowControls.IsCollisionView;
+			}
+			return CallWindowProcA(OldWndProc, Hwnd, Message, wParam, lParam);
+
+			case UI_FOG_CMD:
+			{
+				MenuItem = MainWindow.MainMenu.GetSubMenuItem(2).GetItem(UI_FOG_CMD);
+				MenuItem.Checked = !MenuItem.Checked;
+			}
+			return CallWindowProcA(OldWndProc, Hwnd, Message, wParam, lParam);
 			}
 		}
 		else if (Message == WM_SETTEXT && Hwnd == GetWindow())
@@ -761,6 +786,32 @@ namespace EditorUI
 		}
 
 		return OldResponseWindowProc(DialogHwnd, Message, wParam, lParam);
+	}
+
+	INT_PTR CALLBACK RenderWindowProc(HWND DialogHwnd, UINT Message, WPARAM wParam, LPARAM lParam)
+	{
+		if (Message == WM_INITDIALOG)
+		{
+			RenderWindowControls.IsCollisionView = FALSE;
+		}
+		else if (Message == WM_KEYUP)
+		{
+			if (wParam == 'M')
+			{
+				// If you click on M, the menu will still have the previous state, we will fix this. 
+				// However, in fact, there should be two requests to show or hide, but the second one is ignored and this is good.
+
+				MainWindow.MainMenu.GetSubMenuItem(2).GetItemByPos(15).Click();
+			}
+			else if (wParam == 'S')
+			{
+				// Fix that only worked with the menu
+
+				MainWindow.MainMenu.GetSubMenuItem(2).GetItemByPos(17).Click();
+			}
+		}
+
+		return OldRenderWindowProc(DialogHwnd, Message, wParam, lParam);
 	}
 
 	BOOL ListViewCustomSetItemState(HWND ListViewHandle, WPARAM Index, UINT Data, UINT Mask)

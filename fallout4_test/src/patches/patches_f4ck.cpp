@@ -14,7 +14,6 @@
 #include <xbyak/xbyak.h>
 
 void PatchMemory();
-void PatchFileIO();
 void PatchThreading();
 
 void Patch_Fallout4CreationKit()
@@ -104,6 +103,16 @@ void Patch_Fallout4CreationKit()
 	}
 
 	//
+	// Steam API
+	//
+	if (g_INI.GetBoolean("CreationKit", "SteamPatch", false))
+	{
+		XUtil::PatchMemory(OFFSET(0x2881F84, 0), { 0x74, 0x1B, 0x90, 0x90, 0x90, 0x90 });
+		XUtil::PatchMemory(OFFSET(0x2881FB4, 0), { 0x74, 0x26, 0x90, 0x90, 0x90, 0x90 });
+		XUtil::PatchMemory(OFFSET(0x2881FF4, 0), { 0x74, 0x1D, 0x90, 0x90, 0x90, 0x90 });
+	}
+
+	//
 	// UI
 	//
 	PatchIAT(hk_CreateDialogParamA, "USER32.DLL", "CreateDialogParamA");
@@ -127,10 +136,16 @@ void Patch_Fallout4CreationKit()
 	{
 		EditorUI::Initialize();
 
-		*(uintptr_t *)&EditorUI::OldWndProc = Detours::X64::DetourFunctionClass(OFFSET(0x05B74D0, 0), &EditorUI::WndProc);
-		*(uintptr_t *)&EditorUI::OldObjectWindowProc = Detours::X64::DetourFunctionClass(OFFSET(0x03F9020, 0), &EditorUI::ObjectWindowProc);
-		*(uintptr_t *)&EditorUI::OldCellViewProc = Detours::X64::DetourFunctionClass(OFFSET(0x059D820, 0), &EditorUI::CellViewProc);
-		*(uintptr_t *)&EditorUI::OldResponseWindowProc = Detours::X64::DetourFunctionClass(OFFSET(0x0B5EB50, 0), &EditorUI::ResponseWindowProc);
+		*(uintptr_t*)&EditorUI::OldWndProc = Detours::X64::DetourFunctionClass(OFFSET(0x05B74D0, 0), &EditorUI::WndProc);
+		*(uintptr_t*)&EditorUI::OldObjectWindowProc = Detours::X64::DetourFunctionClass(OFFSET(0x03F9020, 0), &EditorUI::ObjectWindowProc);
+		*(uintptr_t*)&EditorUI::OldCellViewProc = Detours::X64::DetourFunctionClass(OFFSET(0x059D820, 0), &EditorUI::CellViewProc);
+		*(uintptr_t*)&EditorUI::OldResponseWindowProc = Detours::X64::DetourFunctionClass(OFFSET(0x0B5EB50, 0), &EditorUI::ResponseWindowProc);
+		*(uintptr_t*)&EditorUI::OldRenderWindowProc = Detours::X64::DetourFunctionClass(OFFSET(0x460570, 0), &EditorUI::RenderWindowProc);
+
+		// CheckMenuItem is called, however, it always gets zero, but eight is written on top, which is equal to MFS_CHECKED.
+		XUtil::PatchMemoryNop(OFFSET(0x5B820D, 0), 6);
+		// CheckMenuItem is called, however, it always gets MFS_CHECKED.
+		XUtil::PatchMemoryNop(OFFSET(0x43E3A3, 0), 6);
 
 		XUtil::PatchMemoryNop(OFFSET(0x2A4D45C, 0), 5);// Disable "Out of Pixel Shaders (running total: X)" log spam
 		XUtil::PatchMemoryNop(OFFSET(0x2A476B6, 0), 5);// Disable "Out of UCode space" log spam
