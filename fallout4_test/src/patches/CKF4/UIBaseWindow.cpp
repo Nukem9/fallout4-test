@@ -557,6 +557,26 @@ namespace Core
 				}
 			}
 
+			INT32 CUIMainWindow::MessageDlg(const std::string message, const std::string caption, const UINT32 flags)
+			{
+				return MessageBoxA(GetForegroundWindow(), message.c_str(), caption.c_str(), flags);
+			}
+
+			INT32 CUIMainWindow::MessageDlg(const std::wstring message, const std::wstring caption, const UINT32 flags)
+			{
+				return MessageBoxW(GetForegroundWindow(), message.c_str(), caption.c_str(), flags);
+			}
+
+			INT32 CUIMainWindow::MessageWarningDlg(const std::string message)
+			{
+				return MessageDlg(message, "Warning", MB_ICONWARNING);
+			}
+
+			INT32 CUIMainWindow::MessageWarningDlg(const std::wstring message)
+			{
+				return MessageDlg(message, L"Warning", MB_ICONWARNING);
+			}
+
 			void CUIMainWindow::SetTextToStatusBar(const uint32_t index, const std::string text)
 			{
 				Statusbar.Perform(SB_SETTEXTA, index, (LPARAM)text.c_str());

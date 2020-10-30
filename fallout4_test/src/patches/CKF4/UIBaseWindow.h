@@ -1,14 +1,7 @@
 #pragma once
 
-#define VC_EXTRALEAN
-#define WIN32_LEAN_AND_MEAN
-
-#include <Windows.h>
-#include <string>
+#include"..\ComClasses.h"
 #include "UIMenus.h"
-
-#define PROPERTY(read_func, write_func) __declspec(property(get = read_func, put = write_func))
-#define READ_PROPERTY(read_func) __declspec(property(get = read_func))
 
 namespace Core
 {
@@ -267,6 +260,10 @@ namespace Core
 				void SetTextToStatusBar(const uint32_t index, const std::string text);
 				void SetTextToStatusBar(const uint32_t index, const std::wstring text);
 				static void ProcessMessages(void);
+				static INT32 MessageDlg(const std::string message, const std::string caption, const UINT32 flags);
+				static INT32 MessageDlg(const std::wstring message, const std::wstring caption, const UINT32 flags);
+				static INT32 MessageWarningDlg(const std::string message);
+				static INT32 MessageWarningDlg(const std::wstring message);
 			public:
 				CUIMainWindow(void) : CUICustomWindow() {}
 				CUIMainWindow(const HWND hWnd) : CUICustomWindow(hWnd) {}

@@ -239,6 +239,9 @@
     <ClInclude Include="src\patches\CKF4\TESFile_CK.h">
       <Filter>Header Files\Classes</Filter>
     </ClInclude>
+    <ClInclude Include="src\patches\ComClasses.h">
+      <Filter>Header Files\Classes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\dllmain.cpp">

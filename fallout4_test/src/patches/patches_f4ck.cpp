@@ -146,6 +146,8 @@ void Patch_Fallout4CreationKit()
 		XUtil::PatchMemoryNop(OFFSET(0x5B820D, 0), 6);
 		// CheckMenuItem is called, however, it always gets MFS_CHECKED.
 		XUtil::PatchMemoryNop(OFFSET(0x43E3A3, 0), 6);
+		// Fix repeat CheckMenuItem is called
+		XUtil::PatchMemory(OFFSET(0x5B84C1, 0), { 0x20, 0x63 });
 
 		XUtil::PatchMemoryNop(OFFSET(0x2A4D45C, 0), 5);// Disable "Out of Pixel Shaders (running total: X)" log spam
 		XUtil::PatchMemoryNop(OFFSET(0x2A476B6, 0), 5);// Disable "Out of UCode space" log spam
@@ -208,8 +210,6 @@ void Patch_Fallout4CreationKit()
 			XUtil::DetourCall(OFFSET(0x7E34FD, 0), &EditorUI::hk_SetTextAndSendStatusBar);
 			XUtil::DetourCall(OFFSET(0x7DC390, 0), &EditorUI::hk_SetTextAndSendStatusBar);
 
-			// Run the progress dialog when loading the interior in the render.
-			XUtil::DetourCall(OFFSET(0x59F6B9, 0), &EditorUI::hk_SendFromCellViewToRender);
 			// Close the progress dialog 
 			XUtil::DetourJump(OFFSET(0x460239, 0), &EditorUI::hk_EndSendFromCellViewToRender);
 
@@ -227,6 +227,10 @@ void Patch_Fallout4CreationKit()
 
 	TESDataFileHandler_CK::Initialize();
 
+	// Run the progress dialog when loading the interior in the render.
+	// PS: Show markers (Light Markers render always after loading)
+	XUtil::DetourCall(OFFSET(0x59F6B9, 0), &EditorUI::hk_SendFromCellViewToRender);
+
 	// Getting a pointer to TESDataFileHandler_CK. (no actual)
 	// And when the ReplacingTipsWithProgressBar option is enabled, the dialog starts.
 	XUtil::DetourCall(OFFSET(0x5BE5A6, 0), &EditorUI::hk_CallLoadFile);
@@ -243,6 +247,40 @@ void Patch_Fallout4CreationKit()
 	XUtil::PatchMemoryNop(OFFSET(0xB89897, 0), 5);
 	XUtil::PatchMemoryNop(OFFSET(0xB89BF3, 0), 5);
 	XUtil::PatchMemoryNop(OFFSET(0xB8A472, 0), 5);
+
+	//
+	// AllowSaveESM   - Allow saving ESMs directly without version control
+	// AllowMasterESP - Allow ESP files to act as master files while saving
+	//
+	TESFile_CK::AllowSaveESM = g_INI.GetBoolean("CreationKit", "AllowSaveESM", false);
+	TESFile_CK::AllowMasterESP = g_INI.GetBoolean("CreationKit", "AllowMasterESP", false);
+
+	if (TESFile_CK::AllowSaveESM || TESFile_CK::AllowMasterESP)
+	{
+		*(uintptr_t*)&TESFile_CK::LoadTESInfo = Detours::X64::DetourFunctionClass(OFFSET(0x7FFF10, 0), &TESFile_CK::hk_LoadTESInfo);
+		*(uintptr_t*)&TESFile_CK::WriteTESInfo = Detours::X64::DetourFunctionClass(OFFSET(0x800850, 0), &TESFile_CK::hk_WriteTESInfo);
+
+		if (TESFile_CK::AllowSaveESM)
+		{
+			// Also allow non-game ESMs to be set as "Active File"
+			XUtil::DetourCall(OFFSET(0x5A569F, 0), &TESFile_CK::IsActiveFileBlacklist);
+			XUtil::PatchMemoryNop(OFFSET(0x7D9CD8, 0), 2);
+
+			// Disable: "File '%s' is a master file or is in use.\n\nPlease select another file to save to."
+			const char* newFormat = "File '%s' is in use.\n\nPlease select another file to save to.";
+
+			XUtil::PatchMemoryNop(OFFSET(0x7DDBC9, 0), 13);
+			XUtil::PatchMemory(OFFSET(0x38840B0, 0), (uint8_t*)newFormat, strlen(newFormat) + 1);
+
+			XUtil::DetourJump(OFFSET(0x646BD0, 0), &OpenPluginSaveDialog);	
+		}
+		
+		if (TESFile_CK::AllowMasterESP)
+		{
+			// Remove the check for IsMaster()
+			XUtil::PatchMemoryNop(OFFSET(0x7EF13C, 0), 9);
+		}
+	}
 
 	//
 	// Processing messages during file upload so that the window doesn't hang

@@ -18,6 +18,26 @@ std::recursive_mutex g_DialogMutex;
 std::unordered_map<HWND, DialogOverrideData> g_DialogOverrides;
 thread_local DialogOverrideData DlgData;
 
+bool OpenPluginSaveDialog(HWND ParentWindow, const char* BasePath, bool IsESM, char* Buffer, uint32_t BufferSize, const char* Directory)
+{
+	if (!BasePath)
+		BasePath = "\\Data";
+
+	const char* filter = "TES Plugin Files (*.esp)\0*.esp\0TES Master Files (*.esm)\0*.esm\0\0";
+	const char* title = "Select Target Plugin";
+	const char* extension = "esp";
+
+	if (IsESM)
+	{
+		filter = "TES Master Files (*.esm)\0*.esm\0\0";
+		title = "Select Target Master";
+		extension = "esm";
+	}
+
+	return ((bool(__fastcall*)(HWND, const char*, const char*, const char*, const char*, void*, bool, bool, char*, uint32_t, const char*, void*))
+		OFFSET(0x6461B0, 0))(ParentWindow, BasePath, filter, title, extension, nullptr, false, true, Buffer, BufferSize, Directory, nullptr);
+}
+
 INT_PTR CALLBACK DialogFuncOverride(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	DLGPROC proc = nullptr;

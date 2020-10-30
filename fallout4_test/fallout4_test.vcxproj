@@ -177,6 +177,7 @@
     <ClInclude Include="src\patches\CKF4\UICheckboxControl.h" />
     <ClInclude Include="src\patches\CKF4\UIMenus.h" />
     <ClInclude Include="src\patches\CKF4\UIProgressDialog.h" />
+    <ClInclude Include="src\patches\ComClasses.h" />
     <ClInclude Include="src\patches\offsets.h" />
     <ClInclude Include="src\patches\TES\bhkThreadMemorySource.h" />
     <ClInclude Include="src\patches\TES\BSTList.h" />

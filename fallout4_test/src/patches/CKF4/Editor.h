@@ -27,6 +27,7 @@ int hk_inflate(z_stream_s *Stream, int Flush);
 uint32_t sub_1405B31C0(BSTArray<void *>& Array, const void *&Target);
 uint32_t sub_1405B31C0_SSE41(BSTArray<void *>& Array, const void *&Target);
 
+bool OpenPluginSaveDialog(HWND ParentWindow, const char* BasePath, bool IsESM, char* Buffer, uint32_t BufferSize, const char* Directory);
 void UpdateObjectWindowTreeView(void *Thisptr, HWND ControlHandle, __int64 Unknown);
 void UpdateCellViewCellList(void *Thisptr, HWND ControlHandle, __int64 Unknown);
 void UpdateCellViewObjectList(void *Thisptr, HWND *ControlHandle);
