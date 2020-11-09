@@ -221,6 +221,10 @@ void Patch_Fallout4CreationKit()
 			XUtil::DetourClassCall(OFFSET(0x262A6B2, 0), &Core::Classes::UI::CUIProgressDialog::ProcessMessages);
 			XUtil::DetourClassCall(OFFSET(0x262A6BF, 0), &Core::Classes::UI::CUIProgressDialog::ProcessMessages);
 		}
+
+		// Close the progress dialog 
+		// PS: Show markers (Light Markers render always after loading)
+		XUtil::DetourJump(OFFSET(0x460239, 0), &EditorUI::hk_EndSendFromCellViewToRender);
 	}
 
 	if (g_INI.GetBoolean("CreationKit", "DisableWindowGhosting", false))
@@ -229,10 +233,6 @@ void Patch_Fallout4CreationKit()
 	}
 
 	TESDataFileHandler_CK::Initialize();
-
-	// Close the progress dialog 
-	// PS: Show markers (Light Markers render always after loading)
-	XUtil::DetourJump(OFFSET(0x460239, 0), &EditorUI::hk_EndSendFromCellViewToRender);
 
 	// Getting a pointer to TESDataFileHandler_CK. (no actual)
 	// And when the ReplacingTipsWithProgressBar option is enabled, the dialog starts.

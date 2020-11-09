@@ -274,7 +274,7 @@ namespace EditorUI
 	void __stdcall hk_EndSendFromCellViewToRender(void)
 	{
 		// Replacing Tips with a progress Bar
-		if (g_INI.GetBoolean("CreationKit", "UI", false) && g_INI.GetBoolean("CreationKit", "ReplacingTipsWithProgressBar", false))
+		if (g_INI.GetBoolean("CreationKit", "ReplacingTipsWithProgressBar", false))
 		{
 			// close Progress
 			delete sys::ProgressDialog;
