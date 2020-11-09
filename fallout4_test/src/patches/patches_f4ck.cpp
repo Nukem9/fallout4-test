@@ -1,6 +1,7 @@
 #include "../common.h"
 #include <libdeflate/libdeflate.h>
 #include <intrin.h>
+#include "../tools/INIHookInputToFile.h"
 #include "TES/MemoryManager.h"
 #include "TES/bhkThreadMemorySource.h"
 #include "CKF4/Editor.h"
@@ -178,6 +179,8 @@ void Patch_Fallout4CreationKit()
 		XUtil::DetourCall(OFFSET(0x3FE4CA, 0), &EditorUI::hk_7FF72F57F8F0);
 		// Allow forms to be filtered in CellViewProc
 		XUtil::DetourCall(OFFSET(0x6435BF, 0), &EditorUI::hk_7FF70C322BC0);
+		// Update the UI options when fog is toggled
+		XUtil::DetourCall(OFFSET(0xF90C4F, 0), &hk_call_141CF03C9);
 
 		//
 		// Since I'm used to seeing SSE fixes
@@ -210,8 +213,8 @@ void Patch_Fallout4CreationKit()
 			XUtil::DetourCall(OFFSET(0x7E34FD, 0), &EditorUI::hk_SetTextAndSendStatusBar);
 			XUtil::DetourCall(OFFSET(0x7DC390, 0), &EditorUI::hk_SetTextAndSendStatusBar);
 
-			// Close the progress dialog 
-			XUtil::DetourJump(OFFSET(0x460239, 0), &EditorUI::hk_EndSendFromCellViewToRender);
+			// Run the progress dialog when loading the interior in the render.
+			XUtil::DetourCall(OFFSET(0x59F6B9, 0), &EditorUI::hk_SendFromCellViewToRender);
 
 			// The terrain patch freezes, so a queue is created taking into account the activity of the dialog
 			XUtil::DetourClassCall(OFFSET(0x2629D96, 0), &Core::Classes::UI::CUIProgressDialog::ProcessMessages);
@@ -227,9 +230,9 @@ void Patch_Fallout4CreationKit()
 
 	TESDataFileHandler_CK::Initialize();
 
-	// Run the progress dialog when loading the interior in the render.
+	// Close the progress dialog 
 	// PS: Show markers (Light Markers render always after loading)
-	XUtil::DetourCall(OFFSET(0x59F6B9, 0), &EditorUI::hk_SendFromCellViewToRender);
+	XUtil::DetourJump(OFFSET(0x460239, 0), &EditorUI::hk_EndSendFromCellViewToRender);
 
 	// Getting a pointer to TESDataFileHandler_CK. (no actual)
 	// And when the ReplacingTipsWithProgressBar option is enabled, the dialog starts.
@@ -356,6 +359,11 @@ void Patch_Fallout4CreationKit()
 	XUtil::DetourCall(OFFSET(0x5B6DF7, 0), &QuitHandler);
 	XUtil::DetourCall(OFFSET(0x2D48FC0, 0), &QuitHandler);
 	XUtil::DetourCall(OFFSET(0x2D48FCF, 0), &QuitHandler);
+
+	//
+	// For study ini
+	//
+	//Tools::IniHookInputInit();
 
 	//
 	// Enable the render window "Go to selection in game" hotkey even if version control is off

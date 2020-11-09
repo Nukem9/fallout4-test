@@ -4,6 +4,7 @@
 #include <CommCtrl.h>
 #include <smmintrin.h>
 #include "Editor.h"
+#include "EditorUI.h"
 #include "LogWindow.h"
 
 #pragma comment(lib, "libdeflate.lib")
@@ -476,6 +477,16 @@ void QuitHandler()
 {
 	TerminateProcess(GetCurrentProcess(), 0);
 }
+
+void hk_call_141CF03C9(__int64 a1, bool Enable)
+{
+	// Modify the global setting itself then update UI to match
+	((void(__fastcall*)(__int64, bool))OFFSET(0x26031D0, 0))(a1, Enable);
+
+	EditorUI::GetMainMenuObj().GetItem(UI_FOG_CMD).Checked = Enable;
+}
+
+// 459F228 - address bFogEnabled
 
 void hk_call_140906407(__int64 a1, __int64 a2, __int64 a3)
 {

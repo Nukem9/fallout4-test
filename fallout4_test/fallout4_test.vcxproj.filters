@@ -57,6 +57,12 @@
     <Filter Include="Header Files\Patches\CK">
       <UniqueIdentifier>{cd26e7a2-a163-4aa0-923d-f4759c8c3eac}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Tools">
+      <UniqueIdentifier>{729a6042-ea7b-4b04-9748-e89acfd10058}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Tools">
+      <UniqueIdentifier>{57f76dce-f933-4e6f-9acd-ab0971e93f8c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\profiler.h">
@@ -242,6 +248,9 @@
     <ClInclude Include="src\patches\ComClasses.h">
       <Filter>Header Files\Classes</Filter>
     </ClInclude>
+    <ClInclude Include="src\tools\INIHookInputToFile.h">
+      <Filter>Header Files\Tools</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\dllmain.cpp">
@@ -342,6 +351,9 @@
     </ClCompile>
     <ClCompile Include="src\patches\threading.cpp">
       <Filter>Source Files\Patches</Filter>
+    </ClCompile>
+    <ClCompile Include="src\tools\INIHookInputToFile.cpp">
+      <Filter>Source Files\Tools</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

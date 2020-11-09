@@ -203,9 +203,9 @@ namespace EditorUI
 				// How annoying is this window Warnings, delete from the menu.
 				ViewMenu.RemoveByPos(34);
 
-				MenuItem = ViewMenu.GetItem(UI_FOG_CMD);
+			/*	MenuItem = ViewMenu.GetItem(UI_FOG_CMD);
 				MenuItem.Text = "Fog (No worked, need fix)";
-				MenuItem.Enabled = FALSE;
+				MenuItem.Enabled = FALSE;*/
 
 				// Fix show/hide object & cell view windows
 				MenuItem = ViewMenu.GetItemByPos(2);
@@ -418,8 +418,8 @@ namespace EditorUI
 
 			case UI_FOG_CMD:
 			{
-				MenuItem = MainWindow.MainMenu.GetSubMenuItem(2).GetItem(wParam);
-				MenuItem.Checked = !MenuItem.Checked;
+			//	MenuItem = MainWindow.MainMenu.GetSubMenuItem(2).GetItem(wParam);
+			//	MenuItem.Checked = !MenuItem.Checked;
 			}
 			return CallWindowProcA(OldWndProc, Hwnd, Message, wParam, lParam);
 			}

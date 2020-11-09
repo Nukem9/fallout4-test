@@ -216,6 +216,7 @@
     <ClInclude Include="src\profiler_internal.h" />
     <ClInclude Include="src\dump.h" />
     <ClInclude Include="src\profiler.h" />
+    <ClInclude Include="src\tools\INIHookInputToFile.h" />
     <ClInclude Include="src\typeinfo\hk_rtti.h" />
     <ClInclude Include="src\typeinfo\ms_rtti.h" />
     <ClInclude Include="src\patches\TES\MemoryManager.h" />
@@ -241,6 +242,7 @@
     <ClCompile Include="src\patches\patches_f4ck.cpp" />
     <ClCompile Include="src\patches\TES\NiMain\NiCollisionUtils.cpp" />
     <ClCompile Include="src\patches\threading.cpp" />
+    <ClCompile Include="src\tools\INIHookInputToFile.cpp" />
     <ClCompile Include="src\UtfStr.cpp" />
     <ClCompile Include="src\winhttp_exports.cpp" />
     <ClCompile Include="src\common.cpp" />

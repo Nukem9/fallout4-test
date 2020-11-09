@@ -56,3 +56,4 @@ fallout4_test/resource.aps
 Dependencies/libdeflate.vcxproj.user
 Dependencies/libdeflate.vcxproj
 Dependencies/tbb
+*.lnk

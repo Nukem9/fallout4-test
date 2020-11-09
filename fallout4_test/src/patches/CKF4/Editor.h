@@ -38,6 +38,7 @@ void InsertListViewItem(HWND ListViewHandle, void *Parameter, bool UseImage, int
 
 void QuitHandler();
 
+void hk_call_141CF03C9(__int64 a1, bool Enable);
 void hk_call_140906407(__int64 a1, __int64 a2, __int64 a3);
 void PatchTemplatedFormIterator();
 

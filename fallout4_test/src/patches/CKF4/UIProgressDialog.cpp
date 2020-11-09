@@ -193,7 +193,7 @@ namespace EditorUI
 		// FileHandler = io_handler; 0x6D67960 and doesn't change
 
 		// Replacing Tips with a progress Bar
-		if (g_INI.GetBoolean("CreationKit", "ReplacingTipsWithProgressBar", false))
+		if (g_INI.GetBoolean("CreationKit", "UI", false) && g_INI.GetBoolean("CreationKit", "ReplacingTipsWithProgressBar", false))
 		{
 			Assert(!sys::ProgressDialog);
 			// show Progress
@@ -211,7 +211,7 @@ namespace EditorUI
 	void __stdcall hk_EndLoadFile(void)
 	{
 		// Replacing Tips with a progress Bar
-		if (g_INI.GetBoolean("CreationKit", "ReplacingTipsWithProgressBar", false))
+		if (g_INI.GetBoolean("CreationKit", "UI", false) && g_INI.GetBoolean("CreationKit", "ReplacingTipsWithProgressBar", false))
 		{
 			// close Progress
 			delete sys::ProgressDialog;
@@ -258,35 +258,42 @@ namespace EditorUI
 
 	void __stdcall hk_SendFromCellViewToRender(void* Unknown1, void* Unknown2, int Unknown3)
 	{
-		// Replacing Tips with a progress Bar
-		if (g_INI.GetBoolean("CreationKit", "ReplacingTipsWithProgressBar", false))
-		{
-			Assert(!sys::ProgressDialog);
-			// show Progress
-			sys::ProgressDialog = new sys::CUIProgressDialog(&GetMainWindowObj(), 3238);
-			Assert(sys::ProgressDialog);
-			sys::ProgressDialog->Create();
+		Assert(!sys::ProgressDialog);
+		// show Progress
+		sys::ProgressDialog = new sys::CUIProgressDialog(&GetMainWindowObj(), 3238);
+		Assert(sys::ProgressDialog);
+		sys::ProgressDialog->Create();
 
-			sys::ProgressDialog->Marquee = TRUE;
-			sys::ProgressDialog->MessageText = "Please wait while requested cell loads ...";
-		}
-
-		Core::Classes::UI::CUIMenuItem MenuItem = GetMainMenuObj().GetSubMenuItem(2).GetItemByPos(15);
-		if (!MenuItem.Checked)
-			MenuItem.Click();
+		sys::ProgressDialog->Marquee = TRUE;
+		sys::ProgressDialog->MessageText = "Please wait while requested cell loads ...";
 		
-		MenuItem = GetMainMenuObj().GetSubMenuItem(2).GetItemByPos(16);
-		if (!MenuItem.Checked)
-			MenuItem.Click();
-
 		// send
 		((void(__fastcall*)(void*, void*, int))OFFSET(0x45FE60, 0))(Unknown1, Unknown2, Unknown3);
 	}
 
 	void __stdcall hk_EndSendFromCellViewToRender(void)
 	{
-		// close Progress
-		delete sys::ProgressDialog;
-		sys::ProgressDialog = nullptr;
+		// Replacing Tips with a progress Bar
+		if (g_INI.GetBoolean("CreationKit", "UI", false) && g_INI.GetBoolean("CreationKit", "ReplacingTipsWithProgressBar", false))
+		{
+			// close Progress
+			delete sys::ProgressDialog;
+			sys::ProgressDialog = nullptr;
+		}
+
+		// enabled all markers
+		Core::Classes::UI::CUIMenuItem MenuItem = GetMainMenuObj().GetSubMenuItem(2).GetItemByPos(15);
+		if (!MenuItem.Checked)
+			MenuItem.Click();
+
+		// enabled light markers
+		MenuItem = GetMainMenuObj().GetSubMenuItem(2).GetItemByPos(16);
+		if (!MenuItem.Checked)
+			MenuItem.Click();
+
+		// enabled sound markers
+		MenuItem = GetMainMenuObj().GetSubMenuItem(2).GetItemByPos(17);
+		if (!MenuItem.Checked)
+			MenuItem.Click();
 	}
 }
