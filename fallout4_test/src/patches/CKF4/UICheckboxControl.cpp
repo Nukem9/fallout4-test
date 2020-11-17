@@ -9,6 +9,22 @@ namespace Core
 	{
 		namespace UI
 		{
+			void CUICheckbox::CreateWnd(const CUIBaseWindow& parent, const CUIBaseControl& control, const UINT menu_id)
+			{
+				Assert(!m_hWnd);
+				Assert(menu_id);
+				Assert(parent.Is());
+
+				m_hWnd = control.Handle;
+				Font = parent.Font;
+				Font.Apply(m_hWnd);
+
+				Assert(m_hWnd);
+				m_MenuId = menu_id;
+
+				m_Checked = IsDlgButtonChecked(Parent(), m_MenuId);
+			}
+
 			void CUICheckbox::CreateWnd(const CUIBaseWindow &parent, const std::string &caption, const LONG l, const LONG t, const LONG w, const LONG h, const UINT menu_id)
 			{
 				Assert(!m_hWnd);

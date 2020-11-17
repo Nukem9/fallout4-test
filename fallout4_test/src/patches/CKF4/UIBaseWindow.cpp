@@ -1,5 +1,6 @@
 #include "..\..\Common.h"
 #include "UIBaseWindow.h"
+#include "Editor.h"
 
 #include <commctrl.h>
 
@@ -475,7 +476,7 @@ namespace Core
 
 			LRESULT CUIBaseWindow::Perform(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			{ 
-				return SendMessageA(hWnd, uMsg, wParam, lParam); 
+				return hk_SendMessageA(hWnd, uMsg, wParam, lParam);
 			}
 
 			LRESULT CUIBaseWindow::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -488,7 +489,7 @@ namespace Core
 			CUIBaseControl CUICustomWindow::GetControl(const uint32_t index)
 			{
 				HWND hWnd = GetDlgItem(Handle, index);
-				Assert(hWnd);
+				AssertMsgVa(hWnd, "control %d no found", index);
 
 				return CUIBaseControl(hWnd);
 			}
@@ -509,7 +510,9 @@ namespace Core
 
 			void CUICustomDialog::Create(void)
 			{
-				CreateDialogParamA(GetModuleHandle(NULL), MAKEINTRESOURCEA(m_ResId), m_Parent->Handle, m_DlgProc, (LONG_PTR)this);
+				// fix crashes dark theme
+			//	CreateDialogParamA(GetModuleHandle(NULL), MAKEINTRESOURCEA(m_ResId), m_Parent->Handle, m_DlgProc, (LONG_PTR)this);
+				hk_CreateDialogParamA(GetModuleHandle(NULL), MAKEINTRESOURCEA(m_ResId), m_Parent->Handle, m_DlgProc, (LONG_PTR)this);
 				Assert(m_hWnd);
 				ShowWindow(m_hWnd, SW_SHOW);
 				UpdateWindow(m_hWnd);

@@ -509,6 +509,7 @@ namespace EditorUI
 			ObjectWindowControls.ComboLayout = ObjectWindow.GetControl(6024);
 			ObjectWindowControls.EditFilter = ObjectWindow.GetControl(2581);
 			ObjectWindowControls.Spliter = ObjectWindow.GetControl(2157);
+			ObjectWindowControls.ActiveOnly.CreateWnd(ObjectWindow, ObjectWindow.GetControl(UI_OBJECT_WINDOW_ADD_ITEM), UI_OBJECT_WINDOW_ADD_ITEM);
 
 			// Eliminate the flicker when resizing
 			ObjectWindowControls.TreeList.Perform(TVM_SETEXTENDEDSTYLE, TVS_EX_DOUBLEBUFFER, TVS_EX_DOUBLEBUFFER);
@@ -521,8 +522,6 @@ namespace EditorUI
 
 			// Include filter "Active Only" 
 			Core::Classes::UI::CRECT bounds = ObjectWindowControls.EditFilter.BoundsRect;
-			ObjectWindowControls.ActiveOnly.CreateWnd(ObjectWindow, "Active Only *", bounds.Left, ObjectWindowControls.TreeList.Top, bounds.Width, 14, UI_OBJECT_WINDOW_ADD_ITEM);
-			ObjectWindowControls.TreeList.Top += 17;
 
 			ObjectWindowControls.BtnObjLayout.Top = ObjectWindowControls.ComboLayout.Top - 1;
 			ObjectWindowControls.BtnObjLayout.Height = ObjectWindowControls.ComboLayout.Height + 2;
@@ -623,45 +622,13 @@ namespace EditorUI
 				CellViewWindowControls.BtnGo = CellViewWindow.GetControl(3681);
 				CellViewWindowControls.Lst1 = CellViewWindow.GetControl(1155);
 				CellViewWindowControls.Lst2 = CellViewWindow.GetControl(1156);
-
-				CellViewWindowControls.LabelWorldSpace.Style |= SS_CENTER;
+				CellViewWindowControls.ActiveOnly.CreateWnd(CellViewWindow, CellViewWindow.GetControl(UI_CELL_WINDOW_ADD_ITEM), UI_CELL_WINDOW_ADD_ITEM);
 
 				// Eliminate the flicker when changing cells
 				ListView_SetExtendedListViewStyleEx(CellViewWindowControls.Lst1.Handle, LVS_EX_DOUBLEBUFFER, LVS_EX_DOUBLEBUFFER);
 				ListView_SetExtendedListViewStyleEx(CellViewWindowControls.Lst2.Handle, LVS_EX_DOUBLEBUFFER, LVS_EX_DOUBLEBUFFER);
 
 				ShowWindow(GetDlgItem(DialogHwnd, 1007), SW_HIDE);
-			}
-
-			Core::Classes::UI::CRECT rBounds_1 = CellViewWindowControls.Lst1.BoundsRect;
-			Core::Classes::UI::CRECT rBounds_2 = CellViewWindowControls.EditCellFiltered.BoundsRect;
-
-			CellViewWindowControls.Interiors.BoundsRect = { rBounds_1.Left, rBounds_2.Top, rBounds_1.Right, rBounds_2.Bottom };
-			rBounds_2 = CellViewWindowControls.NoCellSellected.BoundsRect;
-			CellViewWindowControls.LabelWorldSpace.BoundsRect = { rBounds_1.Left, rBounds_2.Top, rBounds_1.Right, rBounds_2.Bottom };
-
-			CellViewWindowControls.LoadedAtTop.Move(161, 44);
-			CellViewWindowControls.LabelX.Move(14, 56);
-			CellViewWindowControls.EditX.Move(28, 50);
-			CellViewWindowControls.LabelY.Move(68, 56);
-			CellViewWindowControls.EditY.Move(80, 50);
-			CellViewWindowControls.BtnGo.Move(124, 51);
-
-			rBounds_1 = CellViewWindowControls.Lst2.BoundsRect;
-			rBounds_2 = CellViewWindowControls.Interiors.BoundsRect;
-			CellViewWindowControls.EditCellFiltered.BoundsRect = { rBounds_1.Left, rBounds_2.Top, rBounds_1.Right, rBounds_2.Bottom };
-
-			CellViewWindowControls.SelectedOnly.Move(rBounds_1.Left + 5, 61);
-			CellViewWindowControls.VisibleOnly.Move(rBounds_1.Left + 115, 44);
-
-			CellViewWindowControls.Lst1.Top += 1;
-			CellViewWindowControls.Lst2.Top += 1;
-
-			if (!CellViewWindowControls.Initialize)
-			{
-				// Include filter "Active Only" 
-				rBounds_1 = CellViewWindowControls.LoadedAtTop.BoundsRect;
-				CellViewWindowControls.ActiveOnly.CreateWnd(CellViewWindow, "Active Only *", rBounds_1.Left, rBounds_1.Bottom, rBounds_1.Width, 14, UI_CELL_WINDOW_ADD_ITEM);
 
 				CellViewWindowControls.Initialize = TRUE;
 			}
@@ -678,6 +645,18 @@ namespace EditorUI
 			{
 				if (form && !form->Active)
 					*allowInsert = false;
+			}
+
+			return 0;
+		}
+		// Don't let us reduce the window too much
+		else if (Message == WM_GETMINMAXINFO)
+		{
+			if (lParam)
+			{
+				LPMINMAXINFO lpMMI = (LPMINMAXINFO)lParam;
+				lpMMI->ptMinTrackSize.x = 660;
+				lpMMI->ptMinTrackSize.y = 315;
 			}
 
 			return 0;
