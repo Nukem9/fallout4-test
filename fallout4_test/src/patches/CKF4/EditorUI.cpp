@@ -450,6 +450,7 @@ namespace EditorUI
 		LONG w_left = w_tree - ObjectWindowControls.BtnObjLayout.Width + 1;
 		ObjectWindowControls.BtnObjLayout.Left = w_left;
 		ObjectWindowControls.ToggleDecompose.Left = w_left;
+		ObjectWindowControls.ActiveOnly.Width = w_tree;
 
 		w_left = w_left - ObjectWindowControls.EditFilter.Left - 3;
 		ObjectWindowControls.EditFilter.Width = w_left;
@@ -500,7 +501,7 @@ namespace EditorUI
 
 			// Set font default
 			// This is the default value, but I need an object record to create the missing controls
-			ObjectWindow.Font = Core::Classes::UI::CFont("MS Sans Serif", 8, {}, Core::Classes::UI::fqClearTypeNatural, Core::Classes::UI::fpVariable);
+			ObjectWindow.Font = Core::Classes::UI::CFont("Microsoft Sans Serif", 8, {}, Core::Classes::UI::fqClearTypeNatural, Core::Classes::UI::fpVariable);
 
 			ObjectWindowControls.TreeList = ObjectWindow.GetControl(2093);
 			ObjectWindowControls.ItemList = ObjectWindow.GetControl(1041);
@@ -605,7 +606,7 @@ namespace EditorUI
 
 				// Set font default
 				// This is the default value, but I need an object record to create the missing controls
-				CellViewWindow.Font = Core::Classes::UI::CFont("MS Sans Serif", 8, {}, Core::Classes::UI::fqClearTypeNatural, Core::Classes::UI::fpVariable);
+				CellViewWindow.Font = Core::Classes::UI::CFont("Microsoft Sans Serif", 8, {}, Core::Classes::UI::fqClearTypeNatural, Core::Classes::UI::fpVariable);
 
 				CellViewWindowControls.LabelWorldSpace = CellViewWindow.GetControl(1164);
 				CellViewWindowControls.NoCellSellected = CellViewWindow.GetControl(1163);
@@ -655,7 +656,7 @@ namespace EditorUI
 			if (lParam)
 			{
 				LPMINMAXINFO lpMMI = (LPMINMAXINFO)lParam;
-				lpMMI->ptMinTrackSize.x = 660;
+				lpMMI->ptMinTrackSize.x = 700;
 				lpMMI->ptMinTrackSize.y = 315;
 			}
 
