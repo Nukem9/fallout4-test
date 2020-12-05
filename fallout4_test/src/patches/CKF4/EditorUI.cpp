@@ -182,7 +182,7 @@ namespace EditorUI
 
 				// Set font default
 				// This is the default value, but I need an object record to create the missing controls
-				MainWindow.Font = Core::Classes::UI::CFont("MS Sans Serif", 8, {}, Core::Classes::UI::fqClearTypeNatural, Core::Classes::UI::fpVariable);
+				MainWindow.Font = Core::Classes::UI::CFont("Microsoft Sans Serif", 8, {}, Core::Classes::UI::fqClearTypeNatural, Core::Classes::UI::fpVariable);
 
 				// Getting additional child Windows
 				MainWindow.FindToolWindow();
@@ -203,9 +203,9 @@ namespace EditorUI
 				// How annoying is this window Warnings, delete from the menu.
 				ViewMenu.RemoveByPos(34);
 
-			/*	MenuItem = ViewMenu.GetItem(UI_FOG_CMD);
+				MenuItem = ViewMenu.GetItem(UI_FOG_CMD);
 				MenuItem.Text = "Fog (No worked, need fix)";
-				MenuItem.Enabled = FALSE;*/
+				MenuItem.Enabled = FALSE;
 
 				// Fix show/hide object & cell view windows
 				MenuItem = ViewMenu.GetItemByPos(2);
@@ -520,9 +520,6 @@ namespace EditorUI
 
 			// Erase Icon and SysMenu
 			ObjectWindow.Style = WS_OVERLAPPED | WS_CAPTION | WS_THICKFRAME;
-
-			// Include filter "Active Only" 
-			Core::Classes::UI::CRECT bounds = ObjectWindowControls.EditFilter.BoundsRect;
 
 			ObjectWindowControls.BtnObjLayout.Top = ObjectWindowControls.ComboLayout.Top - 1;
 			ObjectWindowControls.BtnObjLayout.Height = ObjectWindowControls.ComboLayout.Height + 2;
