@@ -222,6 +222,9 @@ void Patch_Fallout4CreationKit()
 			XUtil::DetourClassCall(OFFSET(0x262A6BF, 0), &Core::Classes::UI::CUIProgressDialog::ProcessMessages);
 		}
 
+		// Raise the papyrus script editor text limit to 500k characters from 64k
+		XUtil::DetourCall(OFFSET(0x12E852C, 0), &hk_call_12E852C);
+
 		// Close the progress dialog 
 		// PS: Show markers (Light Markers render always after loading)
 		XUtil::DetourJump(OFFSET(0x460239, 0), &EditorUI::hk_EndSendFromCellViewToRender);

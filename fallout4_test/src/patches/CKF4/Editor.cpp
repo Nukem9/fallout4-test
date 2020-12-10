@@ -496,6 +496,12 @@ void hk_call_140906407(__int64 a1, __int64 a2, __int64 a3)
 		((void(__fastcall *)(__int64, __int64, __int64))OFFSET(0x2A6B230, 0))(a1, a2, a3);
 }
 
+BOOL WINAPI hk_call_12E852C(HWND RichEditControl, LPCSTR Text)
+{
+	SendMessageA(RichEditControl, EM_LIMITTEXT, 500000, 0);
+	return SetWindowTextA(RichEditControl, Text);
+}
+
 void PatchTemplatedFormIterator()
 {
 	class FormIteratorHook : public Xbyak::CodeGenerator

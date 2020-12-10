@@ -59,7 +59,6 @@ namespace EditorUI
 	Core::Classes::UI::CUIMenu& GetMainMenuObj();
 
 	void Initialize();
-	//bool CreateExtensionMenu(HWND MainWindow, HMENU MainMenu);
 
 	LRESULT CALLBACK WndProc(HWND Hwnd, UINT Message, WPARAM wParam, LPARAM lParam);
 	INT_PTR CALLBACK ObjectWindowProc(HWND DialogHwnd, UINT Message, WPARAM wParam, LPARAM lParam);
