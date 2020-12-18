@@ -1,5 +1,6 @@
 #include "..\..\Common.h"
 #include "EditorUI.h"
+#include "EditorUIDarkMode.h"
 #include "UIProgressDialog.h"
 #include "LogWindow.h"
 #include <CommCtrl.h>
@@ -227,7 +228,16 @@ namespace EditorUI
 		Assert(sys::ProgressDialog);
 
 		// set position 0..95%
-		std::string s(*str);
+
+		std::string s = "";
+
+		if (EditorUIDarkMode::IsUIDarkMode())
+			// fix crash DarkUI
+			// when you enable the dark theme, the string is not available, because it is located in a different address spaceand is protected.
+			s = GetMainWindowObj().GetTextToStatusBarA(3);
+		else
+			s = *str;
+	
 		s.assign(s.begin() + s.find('%') - 2, s.end());
 		sys::ProgressDialog->Position = strtol(s.c_str(), nullptr, 10);
 	}

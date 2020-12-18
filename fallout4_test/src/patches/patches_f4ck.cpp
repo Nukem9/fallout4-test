@@ -127,10 +127,10 @@ void Patch_Fallout4CreationKit()
 		Assert(comDll);
 
 		EditorUIDarkMode::Initialize();
-		Detours::IATHook(comDll, "USER32.dll", "GetSysColor", (uintptr_t)&EditorUIDarkMode::Comctl32GetSysColor);
-		Detours::IATHook(comDll, "USER32.dll", "GetSysColorBrush", (uintptr_t)&EditorUIDarkMode::Comctl32GetSysColorBrush);
-		Detours::IATDelayedHook(comDll, "UxTheme.dll", "DrawThemeBackground", (uintptr_t)&EditorUIDarkMode::Comctl32DrawThemeBackground);
-		Detours::IATDelayedHook(comDll, "UxTheme.dll", "DrawThemeText", (uintptr_t)&EditorUIDarkMode::Comctl32DrawThemeText);
+		Detours::IATHook(comDll, "USER32.dll", "GetSysColor", (uintptr_t)& EditorUIDarkMode::Comctl32GetSysColor);
+		Detours::IATHook(comDll, "USER32.dll", "GetSysColorBrush", (uintptr_t)& EditorUIDarkMode::Comctl32GetSysColorBrush);
+		Detours::IATDelayedHook(comDll, "UxTheme.dll", "DrawThemeBackground", (uintptr_t)& EditorUIDarkMode::Comctl32DrawThemeBackground);
+		Detours::IATDelayedHook(comDll, "UxTheme.dll", "DrawThemeText", (uintptr_t)& EditorUIDarkMode::Comctl32DrawThemeText);
 	}
 
 	if (g_INI.GetBoolean("CreationKit", "UI", false))

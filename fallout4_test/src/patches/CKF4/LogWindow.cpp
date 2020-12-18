@@ -1,4 +1,5 @@
 #include "../../common.h"
+#include "../../erase_if.h"
 #include <tbb/concurrent_vector.h>
 #include <Richedit.h>
 #include <unordered_set>

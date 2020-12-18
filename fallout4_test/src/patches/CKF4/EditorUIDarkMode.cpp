@@ -9,8 +9,22 @@
 
 namespace EditorUIDarkMode
 {
-	tbb::concurrent_unordered_map<HTHEME, ThemeType> ThemeHandles;
-	bool EnableThemeHooking;
+	enum class ThemeType
+	{
+		None,
+		ScrollBar,
+		StatusBar,
+		MDIClient,
+		Static,
+		Edit,
+		RichEdit,
+		Button,
+		ComboBox,
+		Header,
+		ListView,
+		TreeView,
+		TabControl,
+	};
 
 	const std::unordered_map<std::string_view, ThemeType> TargetWindowThemes
 	{
@@ -18,6 +32,7 @@ namespace EditorUIDarkMode
 		{ "MDIClient", ThemeType::MDIClient },
 		{ "Static", ThemeType::Static },
 		{ "Edit", ThemeType::Edit },
+		{ "RichEdit20A", ThemeType::RichEdit },
 		{ "RICHEDIT50W", ThemeType::RichEdit },
 		{ "Button", ThemeType::Button },
 		{ "ComboBox", ThemeType::ComboBox },
@@ -49,6 +64,10 @@ namespace EditorUIDarkMode
 		// "NiTreeCtrl",
 	};
 
+
+	tbb::concurrent_unordered_map<HTHEME, ThemeType> ThemeHandles;
+	bool EnableThemeHooking;
+
 	void Initialize()
 	{
 		EnableThemeHooking = true;
@@ -60,17 +79,25 @@ namespace EditorUIDarkMode
 			SetWindowsHookExA(WH_CALLWNDPROC, CallWndProcCallback, nullptr, GetCurrentThreadId());
 	}
 
+	bool IsUIDarkMode()
+	{
+		return EnableThemeHooking;
+	}
+
 	LRESULT CALLBACK CallWndProcCallback(int nCode, WPARAM wParam, LPARAM lParam)
 	{
 		if (nCode == HC_ACTION)
 		{
-			auto messageData = reinterpret_cast<CWPSTRUCT *>(lParam);
+			auto messageData = reinterpret_cast<CWPSTRUCT*>(lParam);
 
 			switch (messageData->message)
 			{
 			case WM_CREATE:
+				SetWindowSubclass(messageData->hwnd, WindowSubclass, 0, reinterpret_cast<DWORD_PTR>(WindowSubclass));
+				break;
+
 			case WM_INITDIALOG:
-				SetWindowSubclass(messageData->hwnd, WindowSubclass, 0, 0);
+				SetWindowSubclass(messageData->hwnd, DialogWindowSubclass, 0, reinterpret_cast<DWORD_PTR>(DialogWindowSubclass));
 				break;
 			}
 		}
@@ -173,6 +200,37 @@ namespace EditorUIDarkMode
 
 			if (!PermanentWindowSubclasses.count(className))
 				RemoveWindowSubclass(hWnd, WindowSubclass, 0);
+		}
+		break;
+		}
+
+		return result;
+	}
+
+	LRESULT CALLBACK DialogWindowSubclass(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
+	{
+		constexpr COLORREF generalBackgroundColor = RGB(56, 56, 56);
+		static HBRUSH generalBackgroundBrush = CreateSolidBrush(generalBackgroundColor);
+
+		LRESULT result = WindowSubclass(hWnd, uMsg, wParam, lParam, uIdSubclass, dwRefData);
+
+		switch (uMsg)
+		{
+		case WM_PAINT:
+		{
+			// Special override for DialogBoxIndirectParam (MessageBox) since the bottom half doesn't get themed correctly. ReactOS
+			// says this is MSGBOX_IDTEXT.
+			if (GetDlgItem(hWnd, 0xFFFF))
+			{
+				if (HDC hdc = GetDC(hWnd); hdc)
+				{
+					RECT windowArea;
+					GetClientRect(hWnd, &windowArea);
+
+					FillRect(hdc, &windowArea, generalBackgroundBrush);
+					ReleaseDC(hWnd, hdc);
+				}
+			}
 		}
 		break;
 		}
@@ -342,6 +400,108 @@ namespace EditorUIDarkMode
 			return S_OK;
 
 			case SBP_ARROWBTN:		// Arrow button
+			{
+				// Assume the perspective of the arrow pointing upward ( /\ ) in GDI coordinates. NOTE: (0, 0) is the
+				// top left corner of the screen. Awful code, but it works.
+				const int arrowWidth = std::ceil(std::abs(pRect->left - pRect->right) * 0.4f);
+				const int arrowHeight = std::ceil(std::abs(pRect->top - pRect->bottom) * 0.35f);
+
+				std::array<DWORD, 6> counts{ 2, 2, 2, 2, 2, 2 };
+				std::array<POINT, 12> verts
+				{ {
+						// Left segment
+						{ 0, -0 },
+						{ (arrowWidth / 2) + 1, -arrowHeight + 2 },
+
+						{ 0, -1 },
+						{ (arrowWidth / 2) + 1, -arrowHeight + 1 },
+
+						{ 0, -2 },
+						{ (arrowWidth / 2) + 1, -arrowHeight + 0 },
+
+						// Right segment (final vertex Y adjusted to avoid a stray pixel)
+						{ arrowWidth - 1, -0 },
+						{ arrowWidth / 2, -arrowHeight + 2 },
+
+						{ arrowWidth - 1, -1 },
+						{ arrowWidth / 2, -arrowHeight + 1 },
+
+						{ arrowWidth - 1, -2 },
+						{ arrowWidth / 2, -arrowHeight + 1 },
+					} };
+
+				bool isHot = false;
+				bool isDisabled = false;
+
+				for (auto& vert : verts)
+				{
+					switch (iStateId)
+					{
+					case ABS_UPHOT:// Up
+					case ABS_UPPRESSED:
+						isHot = true;
+					case ABS_UPDISABLED:
+						isDisabled = true;
+					case ABS_UPNORMAL:
+					case ABS_UPHOVER:
+						vert.x += pRect->left + arrowHeight - 1;
+						vert.y += pRect->bottom - arrowHeight;
+						break;
+
+					case ABS_DOWNHOT:// Down
+					case ABS_DOWNPRESSED:
+						isHot = true;
+					case ABS_DOWNDISABLED:
+						isDisabled = true;
+					case ABS_DOWNNORMAL:
+					case ABS_DOWNHOVER:
+						vert.x += pRect->left + arrowHeight - 1;
+						vert.y = -vert.y + pRect->top + arrowHeight - 1;
+						break;
+
+					case ABS_LEFTHOT:// Left
+					case ABS_LEFTPRESSED:
+						isHot = true;
+					case ABS_LEFTDISABLED:
+						isDisabled = true;
+					case ABS_LEFTNORMAL:
+					case ABS_LEFTHOVER:
+						std::swap(vert.x, vert.y);
+						vert.x += pRect->right - arrowHeight;
+						vert.y += pRect->top + arrowHeight - 1;
+						break;
+
+					case ABS_RIGHTHOT:// Right
+					case ABS_RIGHTPRESSED:
+						isHot = true;
+					case ABS_RIGHTDISABLED:
+						isDisabled = true;
+					case ABS_RIGHTNORMAL:
+					case ABS_RIGHTHOVER:
+						std::swap(vert.x, vert.y);
+						vert.x = -vert.x + pRect->left + arrowHeight - 1;
+						vert.y += pRect->top + arrowHeight - 1;
+						break;
+					}
+				}
+
+				HBRUSH fillColor = scrollbarFill;
+				HGDIOBJ oldPen = SelectObject(hdc, GetStockObject(DC_PEN));
+
+				if (isHot)
+					fillColor = scrollbarFillHighlighted;
+				else if (isDisabled)
+					fillColor = scrollbarFill;
+
+				FillRect(hdc, pRect, fillColor);
+
+				SetDCPenColor(hdc, RGB(255, 255, 255));
+				PolyPolyline(hdc, verts.data(), counts.data(), counts.size());
+
+				SelectObject(hdc, oldPen);
+			}
+			return S_OK;
+
 			case SBP_GRIPPERHORZ:	// Horizontal resize scrollbar
 			case SBP_GRIPPERVERT:	// Vertical resize scrollbar
 			case SBP_SIZEBOX:		// Resize box, bottom right
@@ -497,17 +657,17 @@ namespace EditorUIDarkMode
 					else
 						SetDCPenColor(hdc, RGB(29, 38, 48));
 
-					std::array<DWORD, 2> counts = { 2, 2 };
+					std::array<DWORD, 2> counts{ 2, 2 };
 					std::array<POINT, 4> verts
-					{{
-						// Right border
-						{ pRect->right - 2 + i, pRect->top },
-						{ pRect->right - 2 + i, pRect->bottom },
+					{ {
+							// Right border
+							{ pRect->right - 2 + i, pRect->top },
+							{ pRect->right - 2 + i, pRect->bottom },
 
-						// Bottom border
-						{ pRect->left - 1, pRect->bottom - 2 + i },
-						{ pRect->right - 2, pRect->bottom - 2 + i },
-					}};
+							// Bottom border
+							{ pRect->left - 1, pRect->bottom - 2 + i },
+							{ pRect->right - 2, pRect->bottom - 2 + i },
+						} };
 
 					PolyPolyline(hdc, verts.data(), counts.data(), counts.size());
 				}
@@ -532,6 +692,9 @@ namespace EditorUIDarkMode
 		{
 			static HBRUSH tabControlButtonBorder = CreateSolidBrush(RGB(130, 135, 144));// RGB(83, 83, 83)
 			static HBRUSH tabControlButtonFill = CreateSolidBrush(RGB(56, 56, 56));
+
+			if (iPartId == TABP_PANE)
+				return S_OK;
 
 			switch (iPartId)
 			{
@@ -577,9 +740,6 @@ namespace EditorUIDarkMode
 				FillRect(hdc, &insideRect, isHover ? tabControlButtonBorder : tabControlButtonFill);
 			}
 			return S_OK;
-
-			case TABP_PANE:
-				return S_OK;
 			}
 		}
 

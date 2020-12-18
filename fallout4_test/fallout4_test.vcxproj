@@ -115,7 +115,7 @@
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalOptions>/D "NOMINMAX" /D "ZYDIS_STATIC_DEFINE"  /D "TRACY_ON_DEMAND" /D "_REENTRANT" /D "JEMALLOC_EXPORT=" %(AdditionalOptions)</AdditionalOptions>
       <OmitFramePointers>true</OmitFramePointers>
-      <DisableSpecificWarnings>4430;4267;4302;4311;4312;4996;4244;4477</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4430;4267;4302;4311;4312;4996;4244;4477;26495</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -124,6 +124,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalOptions>/ignore:4104 %(AdditionalOptions)</AdditionalOptions>
       <AdditionalLibraryDirectories>..\x64\Release-MT;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <StackReserveSize>32768</StackReserveSize>
     </Link>
     <PreBuildEvent>
       <Command>powershell -ExecutionPolicy Bypass -File "$(SolutionDir)release.ps1" 4</Command>
@@ -163,6 +164,7 @@
   <ItemGroup>
     <ClInclude Include="resource.h" />
     <ClInclude Include="src\config.h" />
+    <ClInclude Include="src\erase_if.h" />
     <ClInclude Include="src\INIReader.h" />
     <ClInclude Include="src\patches\CKF4\Editor.h" />
     <ClInclude Include="src\patches\CKF4\EditorUI.h" />
@@ -261,6 +263,7 @@
     <ClCompile Include="src\typeinfo\ms_rtti.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="cpp.hint" />
     <None Include="src\patches\TES\NiMain\NiRTTI.inl" />
     <None Include="src\typeinfo\ni_rtti.inl" />
   </ItemGroup>

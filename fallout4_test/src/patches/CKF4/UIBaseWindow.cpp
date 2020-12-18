@@ -537,9 +537,12 @@ namespace Core
 				EnumChildWindows(Handle, [](HWND hwnd, LPARAM lParam) -> BOOL {
 					CUIMainWindow* main = (CUIMainWindow*)lParam;
 					CUIToolWindow Tool(hwnd);
-					if (!Tool.Name.compare(TOOLBARCLASSNAMEA))
+
+					// For some reason, only the standard comparison function finds it...
+
+					if (!strcmp(Tool.Name.c_str(), TOOLBARCLASSNAMEA))
 						main->Toolbar = Tool;
-					else if (!Tool.Name.compare(STATUSCLASSNAMEA))
+					else if (!strcmp(Tool.Name.c_str(), STATUSCLASSNAMEA))
 						main->Statusbar = Tool;
 					return TRUE;
 				}, (LPARAM)this);
@@ -588,6 +591,38 @@ namespace Core
 			void CUIMainWindow::SetTextToStatusBar(const uint32_t index, const std::wstring text)
 			{
 				Statusbar.Perform(SB_SETTEXTW, index, (LPARAM)text.c_str());
+			}
+
+			std::string CUIMainWindow::GetTextToStatusBarA(const uint32_t index)
+			{
+				LPSTR lpBuffer = NULL;
+				INT nLen = Statusbar.Perform(SB_GETTEXTLENGTHA, index, NULL);
+				if (nLen > 0)
+				{
+					lpBuffer = (LPSTR)malloc(nLen + 1);
+					Statusbar.Perform(SB_GETTEXTA, index, (LPARAM)lpBuffer);
+					std::string s(lpBuffer);
+					free(lpBuffer);
+
+					return s;
+				}
+				else return "";
+			}
+
+			std::wstring CUIMainWindow::GetTextToStatusBarW(const uint32_t index)
+			{
+				LPWSTR lpBuffer = NULL;
+				INT nLen = Statusbar.Perform(SB_GETTEXTLENGTHW, index, NULL);
+				if (nLen > 0)
+				{
+					lpBuffer = (LPWSTR)malloc((nLen + 1) << 1);
+					Statusbar.Perform(SB_GETTEXTW, index, (LPARAM)lpBuffer);
+					std::wstring s(lpBuffer);
+					free(lpBuffer);
+
+					return s;
+				}
+				else return L"";
 			}
 		}
 	}

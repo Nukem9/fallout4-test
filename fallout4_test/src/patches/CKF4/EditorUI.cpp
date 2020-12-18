@@ -184,9 +184,6 @@ namespace EditorUI
 				// This is the default value, but I need an object record to create the missing controls
 				MainWindow.Font = Core::Classes::UI::CFont("Microsoft Sans Serif", 8, {}, Core::Classes::UI::fqClearTypeNatural, Core::Classes::UI::fpVariable);
 
-				// Getting additional child Windows
-				MainWindow.FindToolWindow();
-
 				// Create custom menu controls
 				MainWindow.MainMenu = createInfo->hMenu;
 				CreateExtensionMenu();
@@ -423,6 +420,11 @@ namespace EditorUI
 			}
 			return CallWindowProcA(OldWndProc, Hwnd, Message, wParam, lParam);
 			}
+		}
+		else if (Message == WM_SHOWWINDOW)
+		{
+			// Getting additional child Windows
+			MainWindow.FindToolWindow();
 		}
 		else if (Message == WM_SETTEXT && Hwnd == GetWindow())
 		{

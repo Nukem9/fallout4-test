@@ -251,6 +251,9 @@
     <ClInclude Include="src\tools\INIHookInputToFile.h">
       <Filter>Header Files\Tools</Filter>
     </ClInclude>
+    <ClInclude Include="src\erase_if.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\dllmain.cpp">
@@ -363,6 +366,7 @@
     <None Include="src\patches\TES\NiMain\NiRTTI.inl">
       <Filter>Header Files\RTTI\NiRTTI</Filter>
     </None>
+    <None Include="cpp.hint" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

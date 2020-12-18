@@ -259,6 +259,8 @@ namespace Core
 			public:
 				void SetTextToStatusBar(const uint32_t index, const std::string text);
 				void SetTextToStatusBar(const uint32_t index, const std::wstring text);
+				std::string GetTextToStatusBarA(const uint32_t index);
+				std::wstring GetTextToStatusBarW(const uint32_t index);
 				static void ProcessMessages(void);
 				static INT32 MessageDlg(const std::string message, const std::string caption, const UINT32 flags);
 				static INT32 MessageDlg(const std::wstring message, const std::wstring caption, const UINT32 flags);
