@@ -10,6 +10,8 @@
 #define UI_CONTROL_ID_LABEL_DLGPROGRESS		2217
 #define UI_CONTROL_ID_PROGRESS_DLGPROGRESS	31007
 
+#define HOTFIX_0001
+
 namespace Core
 {
 	namespace Classes
@@ -229,6 +231,7 @@ namespace EditorUI
 
 		// set position 0..95%
 
+#ifndef HOTFIX_0001
 		std::string s = "";
 
 		if (EditorUIDarkMode::IsUIDarkMode())
@@ -237,6 +240,9 @@ namespace EditorUI
 			s = GetMainWindowObj().GetTextToStatusBarA(3);
 		else
 			s = *str;
+#else
+		std::string s(GetMainWindowObj().GetTextToStatusBarA(3));
+#endif
 	
 		s.assign(s.begin() + s.find('%') - 2, s.end());
 		sys::ProgressDialog->Position = strtol(s.c_str(), nullptr, 10);
