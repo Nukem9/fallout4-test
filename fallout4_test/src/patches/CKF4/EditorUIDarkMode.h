@@ -7,7 +7,9 @@ namespace EditorUIDarkMode
 {
 	void Initialize();
 	void InitializeThread();
+#ifndef HOTFIX_0001
 	bool IsUIDarkMode();
+#endif // !HOTFIX_0001
 
 	LRESULT CALLBACK CallWndProcCallback(int nCode, WPARAM wParam, LPARAM lParam);
 	LRESULT CALLBACK WindowSubclass(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData);

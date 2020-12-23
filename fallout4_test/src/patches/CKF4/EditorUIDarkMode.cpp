@@ -79,10 +79,14 @@ namespace EditorUIDarkMode
 			SetWindowsHookExA(WH_CALLWNDPROC, CallWndProcCallback, nullptr, GetCurrentThreadId());
 	}
 
+#ifndef HOTFIX_0001
+
 	bool IsUIDarkMode()
 	{
 		return EnableThemeHooking;
 	}
+
+#endif // !HOTFIX_0001
 
 	LRESULT CALLBACK CallWndProcCallback(int nCode, WPARAM wParam, LPARAM lParam)
 	{

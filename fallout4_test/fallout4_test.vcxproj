@@ -104,7 +104,7 @@
       <PrecompiledHeader>
       </PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
-      <PreprocessorDefinitions>NOMINMAX;NDEBUG;_WINDOWS;_USRDLL;FALLOUT4=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>HOTFIX_0001;NOMINMAX;NDEBUG;_WINDOWS;_USRDLL;FALLOUT4=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <UseMSVC>false</UseMSVC>
@@ -125,6 +125,7 @@
       <AdditionalOptions>/ignore:4104 %(AdditionalOptions)</AdditionalOptions>
       <AdditionalLibraryDirectories>..\x64\Release-MT;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <StackReserveSize>32768</StackReserveSize>
+      <AdditionalDependencies>comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>powershell -ExecutionPolicy Bypass -File "$(SolutionDir)release.ps1" 4</Command>
@@ -166,10 +167,16 @@
     <ClInclude Include="src\config.h" />
     <ClInclude Include="src\erase_if.h" />
     <ClInclude Include="src\INIReader.h" />
+    <ClInclude Include="src\patches\CKF4\CellViewWindow.h" />
     <ClInclude Include="src\patches\CKF4\Editor.h" />
     <ClInclude Include="src\patches\CKF4\EditorUI.h" />
     <ClInclude Include="src\patches\CKF4\EditorUIDarkMode.h" />
+    <ClInclude Include="src\patches\CKF4\EditorUIProgressDialog.h" />
     <ClInclude Include="src\patches\CKF4\ExperimentalNuukem.h" />
+    <ClInclude Include="src\patches\CKF4\MainWindow.h" />
+    <ClInclude Include="src\patches\CKF4\ObjectWindow.h" />
+    <ClInclude Include="src\patches\CKF4\RenderWindow.h" />
+    <ClInclude Include="src\patches\CKF4\ResponseWindow.h" />
     <ClInclude Include="src\patches\CKF4\TESDataFileHandler_CK.h" />
     <ClInclude Include="src\patches\CKF4\TESFile_CK.h" />
     <ClInclude Include="src\patches\CKF4\TranslateUnicode_CK.h" />
@@ -228,9 +235,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\patches\bnet.cpp" />
+    <ClCompile Include="src\patches\CKF4\CellViewWindow.cpp" />
     <ClCompile Include="src\patches\CKF4\Editor.cpp" />
     <ClCompile Include="src\patches\CKF4\EditorUIDarkMode.cpp" />
+    <ClCompile Include="src\patches\CKF4\EditorUIProgressDialog.cpp" />
     <ClCompile Include="src\patches\CKF4\ExperimentalNuukem.cpp" />
+    <ClCompile Include="src\patches\CKF4\MainWindow.cpp" />
+    <ClCompile Include="src\patches\CKF4\ObjectWindow.cpp" />
+    <ClCompile Include="src\patches\CKF4\RenderWindow.cpp" />
+    <ClCompile Include="src\patches\CKF4\ResponseWindow.cpp" />
     <ClCompile Include="src\patches\CKF4\TESDataFileHandler_CK.cpp" />
     <ClCompile Include="src\patches\CKF4\TESFile_CK.cpp" />
     <ClCompile Include="src\patches\CKF4\TranslateUnicode_CK.cpp" />

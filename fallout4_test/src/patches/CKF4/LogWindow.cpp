@@ -6,6 +6,7 @@
 #include "EditorUI.h"
 #include "EditorUIDarkMode.h"
 #include "LogWindow.h"
+#include "MainWindow.h"
 
 #include <fstream>
 #include <filesystem>
@@ -281,7 +282,7 @@ namespace LogWindow
 
 		case WM_CLOSE:
 			ShowWindow(Hwnd, SW_HIDE);
-			EditorUI::GetMainMenuObj().GetItem(UI_EXTMENU_SHOWLOG).Checked = FALSE;
+			MainWindow::GetMainMenuObj().GetItem(UI_EXTMENU_SHOWLOG).Checked = FALSE;
 			return 0;
 
 		case WM_NOTIFY:
@@ -321,7 +322,7 @@ namespace LogWindow
 						if (p[0] == '(' && strlen(p) >= 10 && p[9] == ')')
 						{
 							uint32_t id = strtoul(&p[1], nullptr, 16);
-							PostMessageA(EditorUI::GetWindow(), WM_COMMAND, UI_EDITOR_OPENFORMBYID, id);
+							PostMessageA(MainWindow::GetWindow(), WM_COMMAND, UI_EDITOR_OPENFORMBYID, id);
 						}
 					}
 				}

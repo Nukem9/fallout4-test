@@ -1,5 +1,5 @@
 #include "../../common.h"
-#include "EditorUI.h"
+#include "UIBaseWindow.h"
 #include "TESFile_CK.h"
 #include "LogWindow.h"
 

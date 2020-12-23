@@ -1,7 +1,7 @@
 #include "../../common.h"
 #include "UIMenus.h"
 #include "LogWindow.h"
-#include "EditorUI.h"
+#include "MainWindow.h"
 
 namespace Core
 {
@@ -11,7 +11,7 @@ namespace Core
 		{
 			void CUIMenuItem::Click(void) const
 			{
-				PostMessageA(EditorUI::GetWindow(), WM_COMMAND, GetID(), 0);
+				PostMessageA(MainWindow::GetWindow(), WM_COMMAND, GetID(), 0);
 			}
 
 			void CUIMenuItem::SetText(const std::string& text)

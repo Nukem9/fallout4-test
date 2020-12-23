@@ -63,6 +63,12 @@
     <Filter Include="Source Files\Tools">
       <UniqueIdentifier>{57f76dce-f933-4e6f-9acd-ab0971e93f8c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\UI\Windows">
+      <UniqueIdentifier>{81dacff4-51da-4b50-87a1-a91f7fe41ed4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\UI\Windows">
+      <UniqueIdentifier>{ec9ef0a5-0078-47fc-9491-90360ef81de8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\profiler.h">
@@ -176,9 +182,6 @@
     <ClInclude Include="src\patches\CKF4\EditorUIDarkMode.h">
       <Filter>Header Files\UI</Filter>
     </ClInclude>
-    <ClInclude Include="src\patches\CKF4\LogWindow.h">
-      <Filter>Header Files\UI</Filter>
-    </ClInclude>
     <ClInclude Include="src\dump.h">
       <Filter>Header Files\Patches</Filter>
     </ClInclude>
@@ -254,6 +257,27 @@
     <ClInclude Include="src\erase_if.h">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
+    <ClInclude Include="src\patches\CKF4\EditorUIProgressDialog.h">
+      <Filter>Header Files\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\RenderWindow.h">
+      <Filter>Header Files\UI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\MainWindow.h">
+      <Filter>Header Files\UI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\ObjectWindow.h">
+      <Filter>Header Files\UI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\LogWindow.h">
+      <Filter>Header Files\UI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\CellViewWindow.h">
+      <Filter>Header Files\UI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\ResponseWindow.h">
+      <Filter>Header Files\UI\Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\dllmain.cpp">
@@ -316,9 +340,6 @@
     <ClCompile Include="src\patches\CKF4\Editor.cpp">
       <Filter>Source Files\UI</Filter>
     </ClCompile>
-    <ClCompile Include="src\patches\CKF4\LogWindow.cpp">
-      <Filter>Source Files\UI</Filter>
-    </ClCompile>
     <ClCompile Include="src\patches\CKF4\TESForm_CK.cpp">
       <Filter>Source Files\Classes</Filter>
     </ClCompile>
@@ -357,6 +378,27 @@
     </ClCompile>
     <ClCompile Include="src\tools\INIHookInputToFile.cpp">
       <Filter>Source Files\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\EditorUIProgressDialog.cpp">
+      <Filter>Source Files\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\RenderWindow.cpp">
+      <Filter>Source Files\UI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\LogWindow.cpp">
+      <Filter>Source Files\UI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\MainWindow.cpp">
+      <Filter>Source Files\UI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\ObjectWindow.cpp">
+      <Filter>Source Files\UI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\CellViewWindow.cpp">
+      <Filter>Source Files\UI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\ResponseWindow.cpp">
+      <Filter>Source Files\UI\Windows</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

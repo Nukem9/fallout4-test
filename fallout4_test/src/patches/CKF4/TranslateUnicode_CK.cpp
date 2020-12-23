@@ -16,19 +16,8 @@ namespace Core
 		{
 			CTranslateUnicodeMediator Translator;
 
-			/*int CTranslateUnicodeMediator::getCodePage(void)
+			CTranslateUnicodeMediator::CTranslateUnicodeMediator(void)
 			{
-				return m_CodePage;
-			}
-
-			void CTranslateUnicodeMediator::setCodePage(const int codepage)
-			{
-				m_CodePage = codepage;
-			}*/
-
-			CTranslateUnicodeMediator::CTranslateUnicodeMediator(/*const int codepage*/void)
-			{
-			//	m_CodePage = codepage;
 				m_Mode = false;
 				m_preaddres = nullptr;
 			}
@@ -173,14 +162,6 @@ namespace Experimental
 
 	BOOL WINAPI hk_SetDlgItemTextA(HWND hDlg, int nIDDlgItem, LPCSTR lpString)
 	{
-		std::string dlg_name;
-		dlg_name.resize(MAX_PATH);
-		dlg_name.resize(GetWindowTextA(hDlg, &dlg_name[0], MAX_PATH));
-
-		// need Data only
-		if (dlg_name.compare("Data"))
-			goto SetTextDef;
-
 		switch (nIDDlgItem)
 		{
 		case UI_RESID_AUTHOR_PLUGIN:
@@ -202,15 +183,7 @@ namespace Experimental
 	{
 		if (Msg != WM_GETTEXT && Msg != WM_GETTEXTLENGTH)
 			MsgTextDef:
-		return SendDlgItemMessageA(hDlg, nIDDlgItem, Msg, wParam, lParam);
-
-		std::string dlg_name;
-		dlg_name.resize(MAX_PATH);
-		dlg_name.resize(GetWindowTextA(hDlg, &dlg_name[0], MAX_PATH));
-
-		// need Data only
-		if (dlg_name.compare("Data"))
-			goto MsgTextDef;
+			return SendDlgItemMessageA(hDlg, nIDDlgItem, Msg, wParam, lParam);
 
 		HWND hCtrlWnd;
 

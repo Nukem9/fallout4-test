@@ -4,13 +4,24 @@
 #include "../tools/INIHookInputToFile.h"
 #include "TES/MemoryManager.h"
 #include "TES/bhkThreadMemorySource.h"
-#include "CKF4/Editor.h"
-#include "CKF4/EditorUI.h"
-#include "CKF4/EditorUIDarkMode.h"
-#include "CKF4/LogWindow.h"
+
 #include "CKF4/ExperimentalNuukem.h"
 #include "CKF4/TranslateUnicode_CK.h"
 #include "CKF4/UIProgressDialog.h"
+
+// include patches for editor
+#include "CKF4/Editor.h"
+#include "CKF4/EditorUI.h"
+#include "CKF4/EditorUIDarkMode.h"
+#include "CKF4/EditorUIProgressDialog.h"
+
+// include windows
+#include "CKF4/LogWindow.h"
+#include "CKF4/CellViewWindow.h"
+#include "CKF4/ObjectWindow.h"
+#include "CKF4/RenderWindow.h"
+#include "CKF4/MainWindow.h"
+#include "CKF4/ResponseWindow.h"
 
 #include <xbyak/xbyak.h>
 
@@ -127,21 +138,21 @@ void Patch_Fallout4CreationKit()
 		Assert(comDll);
 
 		EditorUIDarkMode::Initialize();
-		Detours::IATHook(comDll, "USER32.dll", "GetSysColor", (uintptr_t)& EditorUIDarkMode::Comctl32GetSysColor);
-		Detours::IATHook(comDll, "USER32.dll", "GetSysColorBrush", (uintptr_t)& EditorUIDarkMode::Comctl32GetSysColorBrush);
-		Detours::IATDelayedHook(comDll, "UxTheme.dll", "DrawThemeBackground", (uintptr_t)& EditorUIDarkMode::Comctl32DrawThemeBackground);
-		Detours::IATDelayedHook(comDll, "UxTheme.dll", "DrawThemeText", (uintptr_t)& EditorUIDarkMode::Comctl32DrawThemeText);
+		Detours::IATHook(comDll, "USER32.dll", "GetSysColor", (uintptr_t)&EditorUIDarkMode::Comctl32GetSysColor);
+		Detours::IATHook(comDll, "USER32.dll", "GetSysColorBrush", (uintptr_t)&EditorUIDarkMode::Comctl32GetSysColorBrush);
+		Detours::IATDelayedHook(comDll, "UxTheme.dll", "DrawThemeBackground", (uintptr_t)&EditorUIDarkMode::Comctl32DrawThemeBackground);
+		Detours::IATDelayedHook(comDll, "UxTheme.dll", "DrawThemeText", (uintptr_t)&EditorUIDarkMode::Comctl32DrawThemeText);
 	}
 
 	if (g_INI.GetBoolean("CreationKit", "UI", false))
 	{
 		EditorUI::Initialize();
 
-		*(uintptr_t*)&EditorUI::OldWndProc = Detours::X64::DetourFunctionClass(OFFSET(0x05B74D0, 0), &EditorUI::WndProc);
-		*(uintptr_t*)&EditorUI::OldObjectWindowProc = Detours::X64::DetourFunctionClass(OFFSET(0x03F9020, 0), &EditorUI::ObjectWindowProc);
-		*(uintptr_t*)&EditorUI::OldCellViewProc = Detours::X64::DetourFunctionClass(OFFSET(0x059D820, 0), &EditorUI::CellViewProc);
-		*(uintptr_t*)&EditorUI::OldResponseWindowProc = Detours::X64::DetourFunctionClass(OFFSET(0x0B5EB50, 0), &EditorUI::ResponseWindowProc);
-		*(uintptr_t*)&EditorUI::OldRenderWindowProc = Detours::X64::DetourFunctionClass(OFFSET(0x460570, 0), &EditorUI::RenderWindowProc);
+		*(uintptr_t*)&MainWindow::OldWndProc = Detours::X64::DetourFunctionClass(OFFSET(0x05B74D0, 0), &MainWindow::WndProc);
+		*(uintptr_t*)&ObjectWindow::OldDlgProc = Detours::X64::DetourFunctionClass(OFFSET(0x03F9020, 0), &ObjectWindow::DlgProc);
+		*(uintptr_t*)&CellViewWindow::OldDlgProc = Detours::X64::DetourFunctionClass(OFFSET(0x059D820, 0), &CellViewWindow::DlgProc);
+		*(uintptr_t*)&ResponseWindow::OldDlgProc = Detours::X64::DetourFunctionClass(OFFSET(0x0B5EB50, 0), &ResponseWindow::DlgProc);
+		*(uintptr_t*)&RenderWindow::OldDlgProc = Detours::X64::DetourFunctionClass(OFFSET(0x460570, 0), &RenderWindow::DlgProc);
 
 		// CheckMenuItem is called, however, it always gets zero, but eight is written on top, which is equal to MFS_CHECKED.
 		XUtil::PatchMemoryNop(OFFSET(0x5B820D, 0), 6);
@@ -172,15 +183,15 @@ void Patch_Fallout4CreationKit()
 		XUtil::DetourCall(OFFSET(0x05A1B0A, 0), &UpdateCellViewObjectList);
 
 		// Fix resize ObjectWindowProc
-		XUtil::DetourCall(OFFSET(0x5669D8, 0), &EditorUI::hk_0x5669D8);
+		XUtil::DetourCall(OFFSET(0x5669D8, 0), &ObjectWindow::hk_0x5669D8);
 		XUtil::PatchMemoryNop(OFFSET(0x5669DD, 0), 0x40);
 
 		// Allow forms to be filtered in ObjectWindowProc
-		XUtil::DetourCall(OFFSET(0x3FE4CA, 0), &EditorUI::hk_7FF72F57F8F0);
+		XUtil::DetourCall(OFFSET(0x3FE4CA, 0), &ObjectWindow::hk_7FF72F57F8F0);
 		// Allow forms to be filtered in CellViewProc
-		XUtil::DetourCall(OFFSET(0x6435BF, 0), &EditorUI::hk_7FF70C322BC0);
+		XUtil::DetourCall(OFFSET(0x6435BF, 0), &CellViewWindow::hk_7FF70C322BC0);
 		// Update the UI options when fog is toggled
-		XUtil::DetourCall(OFFSET(0xF90C4F, 0), &hk_call_141CF03C9);
+		XUtil::DetourCall(OFFSET(0xF90C4F, 0), &EditorUI::hk_call_141CF03C9);
 
 		//
 		// Since I'm used to seeing SSE fixes
@@ -348,8 +359,12 @@ void Patch_Fallout4CreationKit()
 			XUtil::PatchMemory(OFFSET(0x2481DF7, 0), { 0xE9, 0x33, 0xB9, 0xFF, 0xFF });
 
 			// In the "Data" dialog box, the "author" and "description" controls are independent, and I'm forced to make a trap for WinAPI calls
-			PatchIAT(Experimental::hk_SetDlgItemTextA, "User32.dll", "SetDlgItemTextA");
-			PatchIAT(Experimental::hk_SendDlgItemMessageA, "User32.dll", "SendDlgItemMessageA");
+			XUtil::DetourClassCall(OFFSET(0x5A8C81, 0), &Experimental::hk_SetDlgItemTextA);
+			XUtil::DetourClassCall(OFFSET(0x5A8CA0, 0), &Experimental::hk_SetDlgItemTextA);
+			XUtil::DetourClassCall(OFFSET(0x5A8A95, 0), &Experimental::hk_SendDlgItemMessageA);
+			XUtil::DetourClassCall(OFFSET(0x5A8ACD, 0), &Experimental::hk_SendDlgItemMessageA);
+			XUtil::DetourClassCall(OFFSET(0x5A8B07, 0), &Experimental::hk_SendDlgItemMessageA);
+			XUtil::DetourClassCall(OFFSET(0x5A8B3F, 0), &Experimental::hk_SendDlgItemMessageA);
 		}
 #else
 		LogWindow::Log("Unfortunately, your compiled version does not support the 'Experimental::Unicode' option.");
