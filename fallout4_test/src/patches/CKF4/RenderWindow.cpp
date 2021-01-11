@@ -41,18 +41,32 @@ namespace RenderWindow
 		}
 		else if (Message == WM_KEYUP)
 		{
-			if (wParam == 'M')
-			{
-				// If you click on M, the menu will still have the previous state, we will fix this. 
-				// However, in fact, there should be two requests to show or hide, but the second one is ignored and this is good.
+			auto ctrl = HIBYTE(GetKeyState(VK_CONTROL)) & 0x80;
 
-				MainWindow::GetMainMenuObj().GetSubMenuItem(2).GetItemByPos(15).Click();
+			if (ctrl)
+			{
+				if (wParam == '5')
+				{
+					// Fake click fog
+
+					MainWindow::GetMainMenuObj().GetSubMenuItem(2).GetItemByPos(23).Click();
+				}
 			}
-			else if (wParam == 'S')
+			else
 			{
-				// Fix that only worked with the menu
+				if (wParam == 'M')
+				{
+					// If you click on M, the menu will still have the previous state, we will fix this. 
+					// However, in fact, there should be two requests to show or hide, but the second one is ignored and this is good.
 
-				MainWindow::GetMainMenuObj().GetSubMenuItem(2).GetItemByPos(17).Click();
+					MainWindow::GetMainMenuObj().GetSubMenuItem(2).GetItemByPos(15).Click();
+				}
+				else if (wParam == 'S')
+				{
+					// Fix that only worked with the menu
+
+					MainWindow::GetMainMenuObj().GetSubMenuItem(2).GetItemByPos(17).Click();
+				}
 			}
 		}
 

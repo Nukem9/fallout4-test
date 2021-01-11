@@ -190,8 +190,20 @@ void Patch_Fallout4CreationKit()
 		XUtil::DetourCall(OFFSET(0x3FE4CA, 0), &ObjectWindow::hk_7FF72F57F8F0);
 		// Allow forms to be filtered in CellViewProc
 		XUtil::DetourCall(OFFSET(0x6435BF, 0), &CellViewWindow::hk_7FF70C322BC0);
-		// Update the UI options when fog is toggled
-		XUtil::DetourCall(OFFSET(0xF90C4F, 0), &EditorUI::hk_call_141CF03C9);
+
+		//
+		//  Experimantal functions
+		//
+
+		if (g_INI.GetBoolean("Experimental", "Fog", false))
+		{
+			// Update the UI options when fog is toggled
+			// 459F228 - address bFogEnabled
+			if (*(bool*)(OFFSET(0x459F228, 0)))
+			{
+				PatchFogToggle();
+			};
+		};
 
 		//
 		// Since I'm used to seeing SSE fixes
@@ -233,13 +245,13 @@ void Patch_Fallout4CreationKit()
 			XUtil::DetourClassCall(OFFSET(0x262A6BF, 0), &Core::Classes::UI::CUIProgressDialog::ProcessMessages);
 		}
 
-		// Raise the papyrus script editor text limit to 500k characters from 64k
-		XUtil::DetourCall(OFFSET(0x12E852C, 0), &hk_call_12E852C);
-
 		// Close the progress dialog 
 		// PS: Show markers (Light Markers render always after loading)
 		XUtil::DetourJump(OFFSET(0x460239, 0), &EditorUI::hk_EndSendFromCellViewToRender);
 	}
+
+	// Raise the papyrus script editor text limit to 500k characters from 64k
+	XUtil::DetourCall(OFFSET(0x12E852C, 0), &hk_call_12E852C);
 
 	if (g_INI.GetBoolean("CreationKit", "DisableWindowGhosting", false))
 	{
@@ -335,7 +347,7 @@ void Patch_Fallout4CreationKit()
 	//
 	// Convert Utf-8 to WinCP when loading and back when saving
 	//
-	if (g_INI.GetBoolean("Experimental", "Unicode", false))
+	if (g_INI.GetBoolean("CreationKit", "Unicode", false))
 	{
 #ifdef __INC_LAZ_UNICODE_PLUGIN
 		// Initialization CreationKitUnicodePlugin.dll
@@ -408,6 +420,12 @@ void Patch_Fallout4CreationKit()
 	//
 	XUtil::DetourJump(OFFSET(0x07ED840, 0), &ArrayQuickSortRecursive<class TESForm_CK *>);
 	XUtil::PatchMemory(OFFSET(0x07EDA50, 0), { 0xC3 });
+
+	//
+	// Fix for crash (nullptr no test) when close CK with Sky enable 
+	//
+	XUtil::PatchMemory(OFFSET(0xF84521, 0), { 0xEB, 0x4D, 0x90 });
+	XUtil::PatchMemory(OFFSET(0xF84570, 0), { 0x48, 0x85, 0xC9, 0x74, 0xB5, 0x48, 0x8B, 0x01, 0xEB, 0xAA });
 
 	//
 	// Plugin loading optimizations

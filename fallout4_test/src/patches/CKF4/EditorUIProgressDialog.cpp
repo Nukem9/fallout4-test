@@ -138,5 +138,7 @@ namespace EditorUI
 		MenuItem = MainWindow::GetMainMenuObj().GetSubMenuItem(2).GetItemByPos(17);
 		if (!MenuItem.Checked)
 			MenuItem.Click();
+
+		RenderWindow::GetWindowObj().Foreground();
 	}
 }

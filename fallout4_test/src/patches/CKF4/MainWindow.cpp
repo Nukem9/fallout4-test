@@ -3,6 +3,7 @@
 #include "CellViewWindow.h"
 #include "ObjectWindow.h"
 #include "RenderWindow.h"
+#include "Editor.h"
 
 #include <commdlg.h>
 #include <shellapi.h>
@@ -100,8 +101,25 @@ namespace MainWindow
 				ViewMenu.RemoveByPos(34);
 
 				MenuItem = ViewMenu.GetItem(UI_FOG_CMD);
-				MenuItem.Text = "Fog (No worked, need fix)";
-				MenuItem.Enabled = FALSE;
+				if (g_INI.GetBoolean("Experimental", "Fog", false))
+				{
+					// 459F228 - address bFogEnabled
+					MenuItem.Enabled = (*(bool*)(OFFSET(0x459F228, 0)));
+					MenuItem.Checked = (*(bool*)(OFFSET(0x459F228, 0)));
+
+					MenuItem = ViewMenu.GetItem(UI_SKY_TOGGLE_CMD);
+					if (MenuItem.Checked)
+					{
+						MenuItem = ViewMenu.GetItem(UI_FOG_CMD);
+						MenuItem.Enabled = FALSE;
+						MenuItem.Checked = TRUE;
+					}
+				}
+				else
+				{
+					MenuItem.Enabled = FALSE;
+					MenuItem.Checked = TRUE;
+				}
 
 				// Fix show/hide object & cell view windows
 				MenuItem = ViewMenu.GetItemByPos(2);
@@ -318,8 +336,21 @@ namespace MainWindow
 
 			case UI_FOG_CMD:
 			{
-				//	MenuItem = MainWindow.MainMenu.GetSubMenuItem(2).GetItem(wParam);
-				//	MenuItem.Checked = !MenuItem.Checked;
+				MenuItem = MainWindow.MainMenu.GetSubMenuItem(2).GetItem(wParam);
+				MenuItem.Checked = !MenuItem.Checked;
+				bFogToggle = MenuItem.Checked;
+
+				uintptr_t ptr1 = *((uintptr_t*)OFFSET(0x6D54CF8, 0));
+
+				if (ptr1)
+				{
+					uintptr_t ptr2 = *((uintptr_t*)(ptr1 + 0x58));
+					if (ptr2)
+					{
+						// Fake update scene
+						((void(__stdcall*)(uintptr_t, uintptr_t))OFFSET(0x7B1E80, 0))(ptr1, ptr2);
+					}
+				}
 			}
 			return CallWindowProcA(OldWndProc, Hwnd, Message, wParam, lParam);
 			}

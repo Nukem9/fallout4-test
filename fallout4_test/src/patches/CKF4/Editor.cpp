@@ -9,6 +9,8 @@
 
 #pragma comment(lib, "libdeflate.lib")
 
+BOOL bFogToggle = TRUE;
+
 struct DialogOverrideData
 {
 	DLGPROC DialogFunc;	// Original function pointer
@@ -490,6 +492,48 @@ BOOL WINAPI hk_call_12E852C(HWND RichEditControl, LPCSTR Text)
 {
 	SendMessageA(RichEditControl, EM_LIMITTEXT, 500000, 0);
 	return SetWindowTextA(RichEditControl, Text);
+}
+
+bool __stdcall hk_IsFogEnabled(void)
+{
+	return bFogToggle;
+}
+
+void PatchFogToggle()
+{
+	class FogToggle : public Xbyak::CodeGenerator
+	{
+	public:
+		FogToggle() : Xbyak::CodeGenerator(4096)
+		{
+			sub(rsp, 0x28);
+			mov(rdx, rcx);
+			mov(rcx, (uintptr_t)&bFogToggle);
+			test(byte[rcx], -1);
+			jne("L1");
+			mov(rcx, ptr[rdx + 0x80]);
+			test(rcx, rcx);
+			je("L1");
+			mov(rax, ptr[rcx]);
+			movaps(xmm2, xmm6);
+			call(ptr[rax + 0x10]);
+			L("L1");
+			add(rsp, 0x28);
+			ret(); 
+		}
+
+		static void Generate(uintptr_t Target)
+		{
+			auto hook = new FogToggle();
+			XUtil::PatchMemory(Target, { 0x48, 0x89, 0xD9 });
+			XUtil::DetourCall(Target + 3, (uintptr_t)hook->getCode());
+			XUtil::PatchMemory(Target + 8, { 0xEB, 0x0E });
+		}
+	};
+
+	FogToggle::Generate(OFFSET(0xF8AF33, 0));
+
+	XUtil::DetourJump(OFFSET(0xF90CE0, 0), &hk_IsFogEnabled);
 }
 
 void PatchTemplatedFormIterator()

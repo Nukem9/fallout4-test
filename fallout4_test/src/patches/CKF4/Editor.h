@@ -2,6 +2,8 @@
 
 #include "../TES/BSTArray.h"
 
+extern BOOL bFogToggle;
+
 struct z_stream_s
 {
 	const void *next_in;
@@ -41,6 +43,7 @@ void QuitHandler();
 void hk_call_140906407(__int64 a1, __int64 a2, __int64 a3);
 BOOL WINAPI hk_call_12E852C(HWND RichEditControl, LPCSTR Text);
 void PatchTemplatedFormIterator();
+void PatchFogToggle();
 
 template<typename T, bool Stable = false>
 void ArrayQuickSortRecursive(BSTArray<T>& Array, int(*SortFunction)(const void *, const void *))

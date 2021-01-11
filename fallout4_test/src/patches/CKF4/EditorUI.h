@@ -15,6 +15,4 @@ namespace EditorUI
 
 	LRESULT WINAPI hk_SetSettingsPartStatusBar(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 	LRESULT WINAPI hk_SetTextPartStatusBar(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-
-	void hk_call_141CF03C9(__int64 a1, bool Enable);
 }

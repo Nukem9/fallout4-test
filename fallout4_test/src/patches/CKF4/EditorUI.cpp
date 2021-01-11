@@ -10,16 +10,6 @@ namespace EditorUI
 	WNDPROC OldWndProc;
 	DLGPROC OldResponseWindowProc;
 
-	void hk_call_141CF03C9(__int64 a1, bool Enable)
-	{
-		// Modify the global setting itself then update UI to match
-		((void(__fastcall*)(__int64, bool))OFFSET(0x26031D0, 0))(a1, Enable);
-
-		MainWindow::GetMainMenuObj().GetItem(UI_FOG_CMD).Checked = Enable;
-	}
-
-	// 459F228 - address bFogEnabled
-
 	LRESULT WINAPI hk_SetSettingsPartStatusBar(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
 		int parts[4] = { 200, 300, 700, 5000 /* over 5000 for if -1, the text is erased */ };

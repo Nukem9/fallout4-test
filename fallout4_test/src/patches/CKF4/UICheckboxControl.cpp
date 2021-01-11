@@ -11,7 +11,7 @@ namespace Core
 		{
 			void CUICheckbox::CreateWnd(const CUIBaseWindow& parent, const CUIBaseControl& control, const UINT menu_id)
 			{
-				// Assert(!m_hWnd);
+				Assert(!m_hWnd);
 				Assert(menu_id);
 				Assert(parent.Is());
 
@@ -27,7 +27,7 @@ namespace Core
 
 			void CUICheckbox::CreateWnd(const CUIBaseWindow &parent, const std::string &caption, const LONG l, const LONG t, const LONG w, const LONG h, const UINT menu_id)
 			{
-				// Assert(!m_hWnd);
+				Assert(!m_hWnd);
 				Assert(menu_id);
 				Assert(parent.Is());
 
