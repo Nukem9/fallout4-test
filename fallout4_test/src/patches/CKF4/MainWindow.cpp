@@ -104,21 +104,20 @@ namespace MainWindow
 				if (g_INI.GetBoolean("Experimental", "Fog", false))
 				{
 					// 459F228 - address bFogEnabled
-					MenuItem.Enabled = (*(bool*)(OFFSET(0x459F228, 0)));
 					MenuItem.Checked = (*(bool*)(OFFSET(0x459F228, 0)));
 
 					MenuItem = ViewMenu.GetItem(UI_SKY_TOGGLE_CMD);
 					if (MenuItem.Checked)
 					{
-						MenuItem = ViewMenu.GetItem(UI_FOG_CMD);
-						MenuItem.Enabled = FALSE;
+						MenuItem = ViewMenu.GetItem(UI_FOG_CMD);	
 						MenuItem.Checked = TRUE;
+						MenuItem.Enabled = FALSE;
 					}
 				}
 				else
 				{
-					MenuItem.Enabled = FALSE;
 					MenuItem.Checked = TRUE;
+					MenuItem.Enabled = FALSE;
 				}
 
 				// Fix show/hide object & cell view windows

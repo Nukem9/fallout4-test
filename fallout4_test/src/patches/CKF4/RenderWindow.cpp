@@ -47,9 +47,12 @@ namespace RenderWindow
 			{
 				if (wParam == '5')
 				{
-					// Fake click fog
+					if (g_INI.GetBoolean("Experimental", "Fog", false))
+					{
+						// Fake click fog
 
-					MainWindow::GetMainMenuObj().GetSubMenuItem(2).GetItemByPos(23).Click();
+						MainWindow::GetMainMenuObj().GetSubMenuItem(2).GetItemByPos(23).Click();
+					}
 				}
 			}
 			else
