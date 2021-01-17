@@ -149,6 +149,16 @@ void XUtil::SetThreadName(uint32_t ThreadID, const char *ThreadName)
 	}
 }
 
+size_t XUtil::Str::findCaseInsensitive(std::string data, std::string toSearch, size_t pos)
+{
+	// Convert complete given String to lower case
+	std::transform(data.begin(), data.end(), data.begin(), ::tolower);
+	// Convert complete given Sub String to lower case
+	std::transform(toSearch.begin(), toSearch.end(), toSearch.begin(), ::tolower);
+	// Find sub string in given string
+	return data.find(toSearch, pos);
+}
+
 void XUtil::Trim(char *Buffer, char C)
 {
 	size_t len = strlen(Buffer);
