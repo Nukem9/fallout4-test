@@ -12,8 +12,6 @@ namespace DataWindow
 		Core::Classes::UI::CUIBaseControl ListViewPlugins;
 		Core::Classes::UI::CUIBaseControl ListViewDependences;
 		Core::Classes::UI::CUIBaseControl EditSearch;
-
-		std::vector<std::string> Items;
 	} DataWindowControls;
 
 	DLGPROC OldDlgProc;

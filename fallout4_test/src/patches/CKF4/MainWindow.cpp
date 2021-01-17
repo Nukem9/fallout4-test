@@ -101,24 +101,9 @@ namespace MainWindow
 				ViewMenu.RemoveByPos(34);
 
 				MenuItem = ViewMenu.GetItem(UI_FOG_CMD);
-				if (g_INI.GetBoolean("Experimental", "Fog", false))
-				{
-					// 459F228 - address bFogEnabled
-					MenuItem.Checked = (*(bool*)(OFFSET(0x459F228, 0)));
-
-					MenuItem = ViewMenu.GetItem(UI_SKY_TOGGLE_CMD);
-					if (MenuItem.Checked)
-					{
-						MenuItem = ViewMenu.GetItem(UI_FOG_CMD);	
-						MenuItem.Checked = TRUE;
-						MenuItem.Enabled = FALSE;
-					}
-				}
-				else
-				{
-					MenuItem.Checked = TRUE;
-					MenuItem.Enabled = FALSE;
-				}
+				// 459F228 - address bFogEnabled
+				bFogToggle = (*(bool*)(OFFSET(0x459F228, 0)));
+				MenuItem.Checked = bFogToggle;
 
 				// Fix show/hide object & cell view windows
 				MenuItem = ViewMenu.GetItemByPos(2);
