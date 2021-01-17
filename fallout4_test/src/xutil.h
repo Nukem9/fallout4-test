@@ -8,6 +8,7 @@
 #include <functional>
 #include <string>
 #include <future>
+#include <locale>
 
 #define Assert(Cond)					if(!(Cond)) XUtil::XAssert(__FILE__, __LINE__, #Cond);
 #define AssertDebug(Cond)				if(!(Cond)) XUtil::XAssert(__FILE__, __LINE__, #Cond);
@@ -156,6 +157,14 @@ namespace XUtil
 
 	namespace Str
 	{
+		// https://thispointer.com/implementing-a-case-insensitive-stringfind-in-c/
+
+		/*
+		 * Find Case Insensitive Sub String in a given substring
+		 */
+
+		size_t findCaseInsensitive(std::string data, std::string toSearch, size_t pos = 0);
+
 		// trim https://stackoverflow.com/questions/216823/whats-the-best-way-to-trim-stdstring
 
 		// trim from start (in place)

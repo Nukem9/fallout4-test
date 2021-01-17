@@ -278,6 +278,9 @@
     <ClInclude Include="src\patches\CKF4\ResponseWindow.h">
       <Filter>Header Files\UI\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="src\patches\CKF4\DataWindow.h">
+      <Filter>Header Files\UI\Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\dllmain.cpp">
@@ -398,6 +401,9 @@
       <Filter>Source Files\UI\Windows</Filter>
     </ClCompile>
     <ClCompile Include="src\patches\CKF4\ResponseWindow.cpp">
+      <Filter>Source Files\UI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\DataWindow.cpp">
       <Filter>Source Files\UI\Windows</Filter>
     </ClCompile>
   </ItemGroup>

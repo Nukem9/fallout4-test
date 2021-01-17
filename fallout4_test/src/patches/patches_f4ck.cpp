@@ -22,6 +22,7 @@
 #include "CKF4/RenderWindow.h"
 #include "CKF4/MainWindow.h"
 #include "CKF4/ResponseWindow.h"
+#include "CKF4/DataWindow.h"
 
 #include <xbyak/xbyak.h>
 
@@ -153,6 +154,7 @@ void Patch_Fallout4CreationKit()
 		*(uintptr_t*)&CellViewWindow::OldDlgProc = Detours::X64::DetourFunctionClass(OFFSET(0x059D820, 0), &CellViewWindow::DlgProc);
 		*(uintptr_t*)&ResponseWindow::OldDlgProc = Detours::X64::DetourFunctionClass(OFFSET(0x0B5EB50, 0), &ResponseWindow::DlgProc);
 		*(uintptr_t*)&RenderWindow::OldDlgProc = Detours::X64::DetourFunctionClass(OFFSET(0x460570, 0), &RenderWindow::DlgProc);
+		*(uintptr_t*)&DataWindow::OldDlgProc = Detours::X64::DetourFunctionClass(OFFSET(0x5A8250, 0), &DataWindow::DlgProc);
 
 		// CheckMenuItem is called, however, it always gets zero, but eight is written on top, which is equal to MFS_CHECKED.
 		XUtil::PatchMemoryNop(OFFSET(0x5B820D, 0), 6);
