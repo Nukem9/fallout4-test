@@ -197,15 +197,7 @@ void Patch_Fallout4CreationKit()
 		//  Experimantal functions
 		//
 
-		if (g_INI.GetBoolean("Experimental", "Fog", false))
-		{
-			// Update the UI options when fog is toggled
-			// 459F228 - address bFogEnabled
-			if (*(bool*)(OFFSET(0x459F228, 0)))
-			{
-				PatchFogToggle();
-			};
-		};
+		PatchFogToggle();
 
 		//
 		// Since I'm used to seeing SSE fixes
