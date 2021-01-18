@@ -257,6 +257,8 @@
     <ClCompile Include="src\patches\CKF4\UIProgressDialog.cpp" />
     <ClCompile Include="src\patches\offsets.cpp" />
     <ClCompile Include="src\patches\patches_f4ck.cpp" />
+    <ClCompile Include="src\patches\patches_f4tes.cpp" />
+    <ClCompile Include="src\patches\TES\Achievements.cpp" />
     <ClCompile Include="src\patches\TES\NiMain\NiCollisionUtils.cpp" />
     <ClCompile Include="src\patches\threading.cpp" />
     <ClCompile Include="src\tools\INIHookInputToFile.cpp" />

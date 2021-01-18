@@ -1,10 +1,11 @@
 #pragma once
 
+#include "config.h"
+
 #include <atomic>
 #include <string>
 
 #define UTILAPI WINAPI
-#define __INC_LAZ_UNICODE_PLUGIN
 
 namespace XUtil
 {
@@ -13,9 +14,9 @@ namespace XUtil
 		typedef std::basic_string<char> utf8string;
 		typedef std::basic_string<wchar_t> utf16string;
 
-#ifdef __INC_LAZ_UNICODE_PLUGIN
+#if FALLOUT4_LAZ_UNICODE_PLUGIN
 		bool UTILAPI LazUnicodePluginInit(void);
-#endif // __INC_LAZ_UNICODE_PLUGIN
+#endif // !FALLOUT4_LAZ_UNICODE_PLUGIN
 
 		bool UTILAPI IsUtf8Valid(const utf8string &str);
 		utf8string UTILAPI Utf16ToUtf8(const utf16string &str);

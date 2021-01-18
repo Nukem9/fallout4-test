@@ -12,7 +12,7 @@ namespace XUtil
 {
 	namespace Conversion
 	{
-#ifdef __INC_LAZ_UNICODE_PLUGIN
+#if FALLOUT4_LAZ_UNICODE_PLUGIN
 		typedef bool(*laz_unicode_plugin_is_utf8_t)(const char* str);
 		typedef int(*laz_unicode_plugin_wincp_to_utf8_t)(const char* src, char* dst);
 		typedef int(*laz_unicode_plugin_utf8_to_wincp_t)(const char* src, char* dst, const bool test_invalid);
@@ -24,9 +24,9 @@ namespace XUtil
 		laz_unicode_plugin_utf8_to_wincp_t laz_unicode_plugin_utf8_to_wincp = nullptr;
 		laz_unicode_plugin_utf16_to_utf8_t laz_unicode_plugin_utf16_to_utf8 = nullptr;
 		laz_unicode_plugin_utf8_to_utf16_t laz_unicode_plugin_utf8_to_utf16 = nullptr;
-#endif // __INC_LAZ_UNICODE_PLUGIN
+#endif // !FALLOUT4_LAZ_UNICODE_PLUGIN
 
-#ifdef __INC_LAZ_UNICODE_PLUGIN
+#if FALLOUT4_LAZ_UNICODE_PLUGIN
 		bool UTILAPI LazUnicodePluginInit(void)
 		{
 			HMODULE hModule = LoadLibraryW(L"CreationKitUnicodePlugin.dll");
@@ -44,11 +44,11 @@ namespace XUtil
 
 			return false;
 		}
-#endif // __INC_LAZ_UNICODE_PLUGIN
+#endif // !FALLOUT4_LAZ_UNICODE_PLUGIN
 
 		bool UTILAPI IsUtf8Valid(const utf8string &str)
 		{
-#ifdef __INC_LAZ_UNICODE_PLUGIN
+#if FALLOUT4_LAZ_UNICODE_PLUGIN
 			if (laz_unicode_plugin_is_utf8)
 				return laz_unicode_plugin_is_utf8(str.c_str());
 			else
@@ -61,7 +61,7 @@ namespace XUtil
 			if (!MultiByteToWideChar(CP_ACP, 0, str.c_str(), -1, NULL, 0))
 				return GetLastError() == ERROR_NO_UNICODE_TRANSLATION;
 			return true;
-#endif // __INC_LAZ_UNICODE_PLUGIN
+#endif // !FALLOUT4_LAZ_UNICODE_PLUGIN
 		}
 
 		utf8string UTILAPI Utf16ToUtf8(const utf16string &str)
@@ -71,7 +71,7 @@ namespace XUtil
 			if (str.empty())
 				return utf8str;
 
-#ifdef __INC_LAZ_UNICODE_PLUGIN
+#if FALLOUT4_LAZ_UNICODE_PLUGIN
 			if (laz_unicode_plugin_utf16_to_utf8)
 			{
 				int l = laz_unicode_plugin_utf16_to_utf8(str.c_str(), NULL);
@@ -94,7 +94,7 @@ namespace XUtil
 			// this will null-terminate
 			utf8str.resize(utf8_cnt);
 			WideCharToMultiByte(CP_UTF8, MB_PRECOMPOSED, str.c_str(), -1, &utf8str[0], utf8_cnt, NULL, NULL);
-#endif // __INC_LAZ_UNICODE_PLUGIN
+#endif // !FALLOUT4_LAZ_UNICODE_PLUGIN
 			return utf8str;
 		}
 
@@ -362,7 +362,7 @@ namespace XUtil
 			// this will null-terminate
 			utf16str.resize(iRes);
 #else
-#ifdef __INC_LAZ_UNICODE_PLUGIN
+#if FALLOUT4_LAZ_UNICODE_PLUGIN
 			if (laz_unicode_plugin_utf8_to_utf16)
 			{
 				utf16str.resize(str.length());
@@ -385,8 +385,8 @@ namespace XUtil
 			// this will null-terminate
 			utf16str.resize(utf16_cnt);
 			MultiByteToWideChar(CP_UTF8, MB_PRECOMPOSED, str.c_str(), -1, &utf16str[0], utf16_cnt);
-#endif // __INC_LAZ_UNICODE_PLUGIN
-#endif // __deprecated_utf8
+#endif // !FALLOUT4_LAZ_UNICODE_PLUGIN
+#endif // !__deprecated_utf8
 
 			return utf16str;
 		}
@@ -398,7 +398,7 @@ namespace XUtil
 			if (str.empty())
 				return ansistr;
 
-#ifdef __INC_LAZ_UNICODE_PLUGIN
+#if FALLOUT4_LAZ_UNICODE_PLUGIN
 			if (laz_unicode_plugin_utf8_to_wincp)
 			{
 				ansistr.resize(str.length());
@@ -435,7 +435,7 @@ namespace XUtil
 				return utf8string();
 
 			
-#ifdef __INC_LAZ_UNICODE_PLUGIN
+#if FALLOUT4_LAZ_UNICODE_PLUGIN
 			if (laz_unicode_plugin_wincp_to_utf8)
 			{
 				utf8string utf8str;
@@ -466,7 +466,7 @@ namespace XUtil
 			MultiByteToWideChar(CP_ACP, 0, str.c_str(), -1, &utf16str[0], utf16_cnt);
 
 			return utf16_to_utf8(utf16str);
-#endif // __INC_LAZ_UNICODE_PLUGIN
+#endif // !FALLOUT4_LAZ_UNICODE_PLUGIN
 		}
 
 		std::string UTILAPI Utf16ToAnsi(const utf16string &str)

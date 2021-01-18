@@ -343,7 +343,7 @@ void Patch_Fallout4CreationKit()
 	//
 	if (g_INI.GetBoolean("CreationKit", "Unicode", false))
 	{
-#ifdef __INC_LAZ_UNICODE_PLUGIN
+#if FALLOUT4_LAZ_UNICODE_PLUGIN
 		// Initialization CreationKitUnicodePlugin.dll
 		BOOL bRes = XUtil::Conversion::LazUnicodePluginInit();
 		if (!bRes)
@@ -374,7 +374,7 @@ void Patch_Fallout4CreationKit()
 		}
 #else
 		LogWindow::Log("Unfortunately, your compiled version does not support the 'Experimental::Unicode' option.");
-#endif // __INC_LAZ_UNICODE_PLUGIN
+#endif // !FALLOUT4_LAZ_UNICODE_PLUGIN
 	}
 
 	//
@@ -384,10 +384,12 @@ void Patch_Fallout4CreationKit()
 	XUtil::DetourCall(OFFSET(0x2D48FC0, 0), &QuitHandler);
 	XUtil::DetourCall(OFFSET(0x2D48FCF, 0), &QuitHandler);
 
+#if FALLOUT4_STUDY_CK64_INIFILE
 	//
 	// For study ini
 	//
-	//Tools::IniHookInputInit();
+	Tools::IniHookInputInit();
+#endif // !FALLOUT4_STUDY_CK64_INIFILE
 
 	//
 	// Enable the render window "Go to selection in game" hotkey even if version control is off

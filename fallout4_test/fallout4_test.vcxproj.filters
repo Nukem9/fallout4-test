@@ -69,6 +69,9 @@
     <Filter Include="Source Files\UI\Windows">
       <UniqueIdentifier>{ec9ef0a5-0078-47fc-9491-90360ef81de8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Patches\TES">
+      <UniqueIdentifier>{21b55ee5-b253-45aa-b06c-c363d0179815}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\profiler.h">
@@ -405,6 +408,12 @@
     </ClCompile>
     <ClCompile Include="src\patches\CKF4\DataWindow.cpp">
       <Filter>Source Files\UI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\TES\Achievements.cpp">
+      <Filter>Source Files\Patches\TES</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\patches_f4tes.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

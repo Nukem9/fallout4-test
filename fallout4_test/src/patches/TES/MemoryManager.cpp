@@ -7,7 +7,7 @@ void *MemAlloc(size_t Size, size_t Alignment = 0, bool Aligned = false, bool Zer
 	ProfileCounterAdd("Byte Count", Size);
 	ProfileTimer("Time Spent Allocating");
 
-#if SKYRIM64_USE_VTUNE
+#if FALLOUT4_USE_VTUNE
 	__itt_heap_allocate_begin(ITT_AllocateCallback, Size, Zeroed ? 1 : 0);
 #endif
 
@@ -39,7 +39,7 @@ void *MemAlloc(size_t Size, size_t Alignment = 0, bool Aligned = false, bool Zer
 	if ((Size % Alignment) != 0)
 		Size = ((Size + Alignment - 1) / Alignment) * Alignment;
 
-#if SKYRIM64_USE_PAGE_HEAP
+#if FALLOUT4_USE_PAGE_HEAP
 	void *ptr = VirtualAlloc(nullptr, Size, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
 #else
 	void *ptr = scalable_aligned_malloc(Size, Alignment);
@@ -48,7 +48,7 @@ void *MemAlloc(size_t Size, size_t Alignment = 0, bool Aligned = false, bool Zer
 		memset(ptr, 0, Size);
 #endif
 
-#if SKYRIM64_USE_VTUNE
+#if FALLOUT4_USE_VTUNE
 	__itt_heap_allocate_end(ITT_AllocateCallback, &ptr, Size, Zeroed ? 1 : 0);
 #endif
 
@@ -63,28 +63,28 @@ void MemFree(void *Memory, bool Aligned = false)
 	if (!Memory)
 		return;
 
-#if SKYRIM64_USE_VTUNE
+#if FALLOUT4_USE_VTUNE
 	__itt_heap_free_begin(ITT_FreeCallback, Memory);
 #endif
 
-#if SKYRIM64_USE_PAGE_HEAP
+#if FALLOUT4_USE_PAGE_HEAP
 	VirtualFree(Memory, 0, MEM_RELEASE);
 #else
 	scalable_aligned_free(Memory);
 #endif
 
-#if SKYRIM64_USE_VTUNE
+#if FALLOUT4_USE_VTUNE
 	__itt_heap_free_end(ITT_FreeCallback, Memory);
 #endif
 }
 
 size_t MemSize(void *Memory)
 {
-#if SKYRIM64_USE_VTUNE
+#if FALLOUT4_USE_VTUNE
 	__itt_heap_internal_access_begin();
 #endif
 
-#if SKYRIM64_USE_PAGE_HEAP
+#if FALLOUT4_USE_PAGE_HEAP
 	MEMORY_BASIC_INFORMATION info;
 	VirtualQuery(Memory, &info, sizeof(MEMORY_BASIC_INFORMATION));
 
@@ -93,7 +93,7 @@ size_t MemSize(void *Memory)
 	size_t result = scalable_msize(Memory);
 #endif
 
-#if SKYRIM64_USE_VTUNE
+#if FALLOUT4_USE_VTUNE
 	__itt_heap_internal_access_end();
 #endif
 
