@@ -72,9 +72,6 @@
     <Filter Include="Source Files\Patches\TES">
       <UniqueIdentifier>{21b55ee5-b253-45aa-b06c-c363d0179815}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Patches\TES">
-      <UniqueIdentifier>{e8139818-10d8-4428-9908-e3a62206b87e}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\profiler.h">
@@ -287,9 +284,6 @@
     <ClInclude Include="src\patches\CKF4\DataWindow.h">
       <Filter>Header Files\UI\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="src\patches\dinput8.h">
-      <Filter>Header Files\Patches</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\dllmain.cpp">
@@ -425,9 +419,6 @@
       <Filter>Source Files\Patches\TES</Filter>
     </ClCompile>
     <ClCompile Include="src\patches\settings.cpp">
-      <Filter>Source Files\Patches\TES</Filter>
-    </ClCompile>
-    <ClCompile Include="src\patches\dinput8.cpp">
       <Filter>Source Files\Patches\TES</Filter>
     </ClCompile>
   </ItemGroup>

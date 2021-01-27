@@ -9,6 +9,7 @@
 VOID PatchSettings();
 VOID PatchMemory();
 VOID PatchThreading();
+VOID PatchWindow();
 VOID LoadSettingFromIni();
 BOOL PatchAchievements();
 
@@ -110,4 +111,9 @@ void Patch_Fallout4Game()
 	{
 		PatchThreading();
 	}
+
+	//
+	// Window
+	//
+	PatchWindow();
 }
