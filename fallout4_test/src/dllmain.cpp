@@ -79,6 +79,11 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD fdwReason, LPVOID lpReserved)
 #if FALLOUT4_CREATIONKIT_ONLY
 			if (g_LoadType != GAME_EXECUTABLE_TYPE::CREATIONKIT_FALLOUT4)
 				return TRUE;
+#else
+			if (!g_INI.GetBoolean("Mode", "Extended", FALSE) && (g_LoadType != GAME_EXECUTABLE_TYPE::CREATIONKIT_FALLOUT4))
+			{
+				return TRUE;
+			}
 #endif
 
 			DumpEnableBreakpoint();

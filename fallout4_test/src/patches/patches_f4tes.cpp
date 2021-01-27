@@ -6,9 +6,12 @@
 
 #include <string>	
 
+VOID PatchSettings();
 VOID PatchMemory();
 VOID PatchThreading();
+VOID LoadSettingFromIni();
 BOOL PatchAchievements();
+
 
 std::string GetGameVersion()
 {
@@ -62,12 +65,21 @@ void Patch_Fallout4Game()
 		return;
 	}
 
+	//
+	// Settings
+	//
+	if (g_INI.GetBoolean("Fallout4", "SettingsPatch", false))
+	{
+		LoadSettingFromIni();
+		PatchSettings();
+	}
+
 	if (g_INI.GetBoolean("Fallout4", "AchievementsPatch", false))
 	{
 		// opens access to steam achievements with mods
 		if (!PatchAchievements())
 		{
-			MessageBoxA(nullptr, "Failed to find at least one achievement patch address", "???", 0);
+			MessageBoxA(NULL, "Failed to find at least one achievement patch address", "???", 0);
 		}
 	}
 
