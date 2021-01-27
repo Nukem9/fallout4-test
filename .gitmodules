@@ -2,10 +2,6 @@
 	path = Dependencies/meshoptimizer
 	url = https://github.com/zeux/meshoptimizer.git
 	branch = master
-[submodule "Dependencies/imgui"]
-	path = Dependencies/imgui
-	url = https://github.com/ocornut/imgui.git
-	branch = master
 [submodule "Dependencies/tbb"]
 	path = Dependencies/tbb
 	url = https://github.com/01org/tbb.git
