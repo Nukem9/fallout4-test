@@ -21,7 +21,7 @@ BOOL WINAPI hk_QueryPerformanceCounter(LARGE_INTEGER *lpPerformanceCount)
 	__except (EXCEPTION_EXECUTE_HANDLER)
 	{
 	}
-
+	
 	ApplyPatches();
 	return QueryPerformanceCounter(lpPerformanceCount);
 }

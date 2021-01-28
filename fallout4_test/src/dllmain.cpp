@@ -3,6 +3,7 @@
 #include "profiler_internal.h"
 
 void Patch_Fallout4CreationKit();
+void Patch_Fallout4Game();
 
 void ApplyPatches()
 {
@@ -10,7 +11,7 @@ void ApplyPatches()
 	strcpy_s(g_GitVersion, VER_CURRENT_COMMIT_ID);
 	XUtil::SetThreadName(GetCurrentThreadId(), "Main Thread");
 
-#if SKYRIM64_USE_VTUNE
+#if FALLOUT4_USE_VTUNE
 	// Check if VTune is already active
 	const char *libITTPath = getenv("INTEL_LIBITTNOTIFY64");
 
@@ -29,6 +30,9 @@ void ApplyPatches()
 	{
 	case GAME_EXECUTABLE_TYPE::CREATIONKIT_FALLOUT4:
 		Patch_Fallout4CreationKit();
+		break;
+	case GAME_EXECUTABLE_TYPE::GAME_FALLOUT4:
+		Patch_Fallout4Game();
 		break;
 	}
 }
@@ -72,9 +76,14 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD fdwReason, LPVOID lpReserved)
 		{
 		case GAME_EXECUTABLE_TYPE::GAME_FALLOUT4:
 		case GAME_EXECUTABLE_TYPE::CREATIONKIT_FALLOUT4:
-#if SKYRIM64_CREATIONKIT_ONLY
+#if FALLOUT4_CREATIONKIT_ONLY
 			if (g_LoadType != GAME_EXECUTABLE_TYPE::CREATIONKIT_FALLOUT4)
 				return TRUE;
+#else
+			if (!g_INI.GetBoolean("Mode", "Extended", FALSE) && (g_LoadType != GAME_EXECUTABLE_TYPE::CREATIONKIT_FALLOUT4))
+			{
+				return TRUE;
+			}
 #endif
 
 			DumpEnableBreakpoint();
