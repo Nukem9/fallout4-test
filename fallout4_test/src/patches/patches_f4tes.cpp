@@ -69,13 +69,13 @@ void Patch_Fallout4Game()
 	//
 	// Settings
 	//
-	if (g_INI.GetBoolean("Fallout4", "SettingsPatch", false))
+	if (g_INI.GetBoolean("Fallout4", "SettingsPatch", FALSE))
 	{
 		LoadSettingFromIni();
 		PatchSettings();
 	}
 
-	if (g_INI.GetBoolean("Fallout4", "AchievementsPatch", false))
+	if (g_INI.GetBoolean("Fallout4", "AchievementsPatch", FALSE))
 	{
 		// opens access to steam achievements with mods
 		if (!PatchAchievements())
@@ -87,7 +87,7 @@ void Patch_Fallout4Game()
 	//
 	// MemoryManager
 	//
-	if (g_INI.GetBoolean("Fallout4", "MemoryPatch", false))
+	if (g_INI.GetBoolean("Fallout4", "MemoryPatch", FALSE))
 	{
 		PatchMemory();
 
@@ -107,7 +107,7 @@ void Patch_Fallout4Game()
 	//
 	// Threads
 	//
-	if (g_INI.GetBoolean("Fallout4", "ThreadingPatch", false))
+	if (g_INI.GetBoolean("Fallout4", "ThreadingPatch", FALSE))
 	{
 		PatchThreading();
 	}
