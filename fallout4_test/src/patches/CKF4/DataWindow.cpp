@@ -104,7 +104,7 @@ namespace DataWindow
 
 					ComboBox_ClearItems(hSrchEdit);
 
-					if (!Edit_GetTextLength(hSrchEdit))
+					if (ComboBox_GetTextLength(hSrchEdit) <= 2)
 					{
 						ComboBox_ShowDropdown(hSrchEdit, FALSE);
 						return 0;
