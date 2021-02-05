@@ -232,6 +232,8 @@ namespace Core
 
 			void CUIBaseWindow::SetVisible(const BOOL value)
 			{
+				Assert(value != Visible);
+
 				WindowState = (value) ? wsNormal : wsHide;
 			}
 
@@ -288,6 +290,8 @@ namespace Core
 
 			void CUIBaseWindow::SetEnabled(const BOOL value)
 			{
+				Assert(value != Enabled);
+
 				EnableWindow(m_hWnd, value);
 			}
 
@@ -307,10 +311,36 @@ namespace Core
 				return s;
 			}
 
+			WindowState_t CUIBaseWindow::GetWindowState(void) const
+			{ 
+				LONG style = GetWindowLongA(m_hWnd, GWL_STYLE);
+
+				if (!IsWindowVisible(m_hWnd))
+				{
+					return wsHide;
+				}
+				else
+				{
+					if ((style & WS_MAXIMIZE) == WS_MAXIMIZE)
+					{
+						return wsMaximized;
+					}
+					else if ((style & WS_MINIMIZE) == WS_MINIMIZE)
+					{
+						return wsMinimized;
+					}
+					else
+					{
+						return wsNormal;
+					}
+				}
+			}
+
 			void CUIBaseWindow::SetWindowState(const WindowState_t state)
 			{
+				Assert(WindowState != state);
+
 				int flag = SW_NORMAL;
-				m_WindowState = state;
 
 				switch (state)
 				{

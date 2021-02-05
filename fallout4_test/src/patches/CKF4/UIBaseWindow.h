@@ -137,7 +137,6 @@ namespace Core
 			private:
 				BOOL m_LockUpdate;
 				HDC m_hDC;
-				WindowState_t m_WindowState;
 			public:
 				CFont Font;
 			protected:
@@ -146,7 +145,7 @@ namespace Core
 				virtual void __ChangeFont(const CFont* font);
 			public:
 				inline HWND GetHandle(void) const { return m_hWnd; }
-				inline WindowState_t GetWindowState(void) const { return m_WindowState; }
+				WindowState_t GetWindowState(void) const;
 				void SetWindowState(const WindowState_t state);
 				BOOL GetVisible(void);
 				BOOL GetConstVisible(void) const;
@@ -198,11 +197,11 @@ namespace Core
 				LRESULT Perform(UINT uMsg, WPARAM wParam, LPARAM lParam);
 				LRESULT Perform(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 			public:
-				CUIBaseWindow(void) : m_LockUpdate(FALSE), m_hWnd(NULL), m_WindowState(wsNormal), m_hDC(GetDC(0)), Font(this)
+				CUIBaseWindow(void) : m_LockUpdate(FALSE), m_hWnd(NULL), m_hDC(GetDC(0)), Font(this)
 					{ }
-				CUIBaseWindow(const HWND hWnd) : m_LockUpdate(FALSE), m_hWnd(hWnd), m_WindowState(wsNormal), m_hDC(GetDC(hWnd)), Font(m_hDC)
+				CUIBaseWindow(const HWND hWnd) : m_LockUpdate(FALSE), m_hWnd(hWnd), m_hDC(GetDC(hWnd)), Font(m_hDC)
 					{ }
-				CUIBaseWindow(const CUIBaseWindow &base) : m_LockUpdate(base.m_LockUpdate), m_hWnd(base.m_hWnd), m_WindowState(base.m_WindowState), m_hDC(GetDC(m_hWnd)), Font(this)
+				CUIBaseWindow(const CUIBaseWindow &base) : m_LockUpdate(base.m_LockUpdate), m_hWnd(base.m_hWnd), m_hDC(GetDC(m_hWnd)), Font(this)
 					{ }
 				virtual ~CUIBaseWindow(void) { ReleaseDC(m_hWnd, m_hDC); }
 			public:
