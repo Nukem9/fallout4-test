@@ -309,9 +309,6 @@ namespace Core
 
 			void CUIBaseWindow::SetWindowState(const WindowState_t state)
 			{
-				if (state == m_WindowState)
-					return;
-
 				int flag = SW_NORMAL;
 				m_WindowState = state;
 
