@@ -15,7 +15,17 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	if (uMsg == WM_APP_UPDATE_CURSOR)
 	{
-		ClipCursor(NULL);
+		RECT rcClip;
+		GetWindowRect(hwnd, &rcClip);
+
+		// 1 pixel of padding
+		rcClip.left += 1;
+		rcClip.top += 1;
+
+		rcClip.right -= 1;
+		rcClip.bottom -= 1;
+
+		ClipCursor(&rcClip);
 
 		return 0;
 	}
@@ -41,6 +51,8 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			while (ShowCursor(TRUE) < 0) {}
 
 			EnableInput = FALSE;
+
+			//ShowWindow(hwnd, SW_MINIMIZE);
 		}
 
 		return 0;
@@ -119,7 +131,7 @@ HWND WINAPI hk_CreateWindowExA(DWORD dwExStyle, LPCSTR lpClassName, LPCSTR lpWin
 
 	// Wait for completion...
 	auto taskVar = threadTask.get_future();
-	PostThreadMessageA(MessageThreadId, WM_APP_THREAD_TASK, (WPARAM)& threadTask, 0);
+	PostThreadMessageA(MessageThreadId, WM_APP_THREAD_TASK, (WPARAM)&threadTask, 0);
 
 	return taskVar.get();
 }

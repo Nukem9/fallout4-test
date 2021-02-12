@@ -70,7 +70,6 @@ namespace EditorUI
 #else
 		std::string s(MainWindow::GetWindowObj().GetTextToStatusBarA(3));
 #endif
-
 		s.assign(s.begin() + s.find('%') - 2, s.end());
 		sys::ProgressDialog->Position = strtol(s.c_str(), nullptr, 10);
 	}

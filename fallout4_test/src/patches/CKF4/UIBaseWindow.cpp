@@ -232,16 +232,16 @@ namespace Core
 
 			void CUIBaseWindow::SetVisible(const BOOL value)
 			{
-				Assert(value != Visible);
-
-				WindowState = (value) ? wsNormal : wsHide;
+				if (value != Visible)
+					WindowState = (value) ? wsNormal : wsHide;
 			}
 
 			std::string CUIBaseWindow::GetCaption(void) const
 			{
 				std::string s;
-				s.resize(MAX_PATH);
-				GetWindowTextA(m_hWnd, &s[0], MAX_PATH);
+				s.resize(GetWindowTextLengthA(m_hWnd) + 1);
+				INT nLen = GetWindowTextA(m_hWnd, &s[0], MAX_PATH);
+
 				return s;
 			}
 
@@ -253,8 +253,9 @@ namespace Core
 			std::wstring CUIBaseWindow::GetWideCaption(void) const
 			{
 				std::wstring s;
-				s.resize(MAX_PATH);
+				s.resize(GetWindowTextLengthW(m_hWnd) + 1);
 				GetWindowTextW(m_hWnd, &s[0], MAX_PATH);
+
 				return s;
 			}
 
@@ -290,16 +291,18 @@ namespace Core
 
 			void CUIBaseWindow::SetEnabled(const BOOL value)
 			{
-				Assert(value != Enabled);
-
-				EnableWindow(m_hWnd, value);
+				if (value != Enabled)
+					EnableWindow(m_hWnd, value);
 			}
 
 			std::string CUIBaseWindow::GetName(void) const
 			{
 				std::string s;
 				s.resize(MAX_PATH);
-				GetClassNameA(m_hWnd, &s[0], MAX_PATH);
+				INT nLen = GetClassNameA(m_hWnd, &s[0], MAX_PATH);
+				Assert(nLen);
+				s.resize(nLen);
+
 				return s;
 			}
 
@@ -307,7 +310,10 @@ namespace Core
 			{
 				std::wstring s;
 				s.resize(MAX_PATH);
-				GetClassNameW(m_hWnd, &s[0], MAX_PATH);
+				INT nLen = GetClassNameW(m_hWnd, &s[0], MAX_PATH);
+				Assert(nLen);
+				s.resize(nLen);
+
 				return s;
 			}
 
@@ -338,7 +344,8 @@ namespace Core
 
 			void CUIBaseWindow::SetWindowState(const WindowState_t state)
 			{
-				Assert(WindowState != state);
+				if (WindowState == state)
+					return;
 
 				int flag = SW_NORMAL;
 
@@ -567,9 +574,9 @@ namespace Core
 
 					// For some reason, only the standard comparison function finds it...
 
-					if (!strcmp(Tool.Name.c_str(), TOOLBARCLASSNAMEA))
+					if (!stricmp(Tool.Name.c_str(), TOOLBARCLASSNAMEA))
 						main->Toolbar = Tool;
-					else if (!strcmp(Tool.Name.c_str(), STATUSCLASSNAMEA))
+					else if (!stricmp(Tool.Name.c_str(), STATUSCLASSNAMEA))
 						main->Statusbar = Tool;
 					return TRUE;
 				}, (LPARAM)this);
@@ -622,15 +629,13 @@ namespace Core
 
 			std::string CUIMainWindow::GetTextToStatusBarA(const uint32_t index)
 			{
-				LPSTR lpBuffer = NULL;
-				INT nLen = Statusbar.Perform(SB_GETTEXTLENGTHA, index, NULL);
+				std::size_t nLen = (std::size_t)Statusbar.Perform(SB_GETTEXTLENGTHA, index, NULL);
 				if (nLen > 0)
 				{
-					lpBuffer = (LPSTR)malloc(nLen + 1);
-					Statusbar.Perform(SB_GETTEXTA, index, (LPARAM)lpBuffer);
-					std::string s(lpBuffer);
-					free(lpBuffer);
-
+					std::string s;
+					s.resize(++nLen);
+					Statusbar.Perform(SB_GETTEXTA, index, (LPARAM)&s[0]);
+					
 					return s;
 				}
 				else return "";
@@ -638,14 +643,12 @@ namespace Core
 
 			std::wstring CUIMainWindow::GetTextToStatusBarW(const uint32_t index)
 			{
-				LPWSTR lpBuffer = NULL;
 				INT nLen = Statusbar.Perform(SB_GETTEXTLENGTHW, index, NULL);
 				if (nLen > 0)
 				{
-					lpBuffer = (LPWSTR)malloc((nLen + 1) << 1);
-					Statusbar.Perform(SB_GETTEXTW, index, (LPARAM)lpBuffer);
-					std::wstring s(lpBuffer);
-					free(lpBuffer);
+					std::wstring s;
+					s.resize(++nLen);
+					Statusbar.Perform(SB_GETTEXTW, index, (LPARAM)&s[0]);
 
 					return s;
 				}

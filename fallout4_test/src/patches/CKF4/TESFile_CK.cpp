@@ -3,7 +3,7 @@
 #include "TESFile_CK.h"
 #include "LogWindow.h"
 
-INT32 TESFile_CK::hk_LoadTESInfo(void)
+INT32 TESFile_CK::hk_LoadTESInfo(VOID)
 {
 	int error = LoadTESInfo(this);
 
@@ -36,7 +36,7 @@ INT32 TESFile_CK::hk_LoadTESInfo(void)
 	return 0;
 }
 
-INT64 TESFile_CK::hk_WriteTESInfo(void)
+INT64 TESFile_CK::hk_WriteTESInfo(VOID)
 {
 	bool resetEsmFlag = false;
 
@@ -44,7 +44,7 @@ INT64 TESFile_CK::hk_WriteTESInfo(void)
 	{
 		if (IsActive())
 		{
-			const char* extension = strrchr(m_FileName, '.');
+			LPCSTR extension = strrchr(m_FileName, '.');
 
 			if (extension && !_stricmp(extension, ".esm"))
 			{
@@ -64,7 +64,7 @@ INT64 TESFile_CK::hk_WriteTESInfo(void)
 	return form;
 }
 
-BOOL TESFile_CK::IsActiveFileBlacklist(void)
+BOOL TESFile_CK::IsActiveFileBlacklist(VOID)
 {
 	if (IsMaster())
 	{
@@ -80,9 +80,11 @@ BOOL TESFile_CK::IsActiveFileBlacklist(void)
 			!str.compare("dlcworkshop03.esm"))
 		{
 			Core::Classes::UI::CUIMainWindow::MessageWarningDlg("Base game master files cannot be set as the active file.");
-			return true;
+			return TRUE;
 		}
+
+		return FALSE;
 	}
 
-	return false;
+	return FALSE;
 }

@@ -25,20 +25,20 @@ private:
 	CHAR _pad1[0xBC];
 	UINT32 m_Flags;
 public:
-	inline std::string GetFileName(void) const { return m_FileName; }
-	inline std::string GetFilePath(void) const { return m_FilePath; }
-	inline UINT32 GetFlags(void) const { return m_Flags; }
-	inline BOOL IsMaster(void) const { return m_Flags & FILE_RECORD_ESM; }
-	inline BOOL IsSelected(void) const { return m_Flags & FILE_RECORD_CHECKED; }
-	inline BOOL IsActive(void) const { return m_Flags & FILE_RECORD_ACTIVE; }
-	inline BOOL IsLocalized(void) const { return m_Flags & FILE_RECORD_LOCALIZED; }
-	inline BOOL IsSmallMaster(void) const { return m_Flags & FILE_RECORD_ESL; }
+	inline std::string GetFileName(VOID) const { return m_FileName; }
+	inline std::string GetFilePath(VOID) const { return m_FilePath; }
+	inline UINT32 GetFlags(VOID) const { return m_Flags; }
+	inline BOOL IsMaster(VOID) const { return m_Flags & FILE_RECORD_ESM; }
+	inline BOOL IsSelected(VOID) const { return m_Flags & FILE_RECORD_CHECKED; }
+	inline BOOL IsActive(VOID) const { return m_Flags & FILE_RECORD_ACTIVE; }
+	inline BOOL IsLocalized(VOID) const { return m_Flags & FILE_RECORD_LOCALIZED; }
+	inline BOOL IsSmallMaster(VOID) const { return m_Flags & FILE_RECORD_ESL; }
 public:
 	inline static INT32(*LoadTESInfo)(TESFile_CK*);
 	inline static INT64(*WriteTESInfo)(TESFile_CK*);
-	INT32 hk_LoadTESInfo(void);
-	INT64 hk_WriteTESInfo(void);
-	BOOL IsActiveFileBlacklist(void);
+	INT32 hk_LoadTESInfo(VOID);
+	INT64 hk_WriteTESInfo(VOID);
+	BOOL IsActiveFileBlacklist(VOID);
 public:
 	inline static BOOL AllowSaveESM;
 	inline static BOOL AllowMasterESP;
