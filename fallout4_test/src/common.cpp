@@ -1,6 +1,9 @@
 #include "common.h"
 #include "version_info.h"
 
+#include "..\resource.h"
+
+#pragma comment(lib, "msimg32.lib")
 #pragma comment(lib, "winmm.lib")
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "dxgi.lib")
@@ -8,6 +11,7 @@
 #pragma comment(lib, "dinput8.lib")
 #pragma comment(lib, "dxguid.lib")
 #pragma comment(lib, "ws2_32.lib")
+#pragma comment(lib, "uxtheme.lib")
 
 #pragma comment(lib, "tbb.lib")					// Thread Building Blocks
 #pragma comment(lib, "libzydis.lib")			// Zydis
@@ -24,6 +28,7 @@ __itt_heap_function ITT_FreeCallback;
 
 #pragma comment(lib, "tbbmalloc.lib")			// TBB Allocator
 
+HINSTANCE g_hModule;
 INIReader g_INI("fallout4_test.ini");
 
 uintptr_t g_ModuleBase;

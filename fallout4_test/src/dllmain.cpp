@@ -43,6 +43,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD fdwReason, LPVOID lpReserved)
     {
 		// Force this dll to be loaded permanently
 		HMODULE temp;
+		g_hModule = hModule;
 		GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_PIN | GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS, (LPCSTR)hModule, &temp);
 
 		// Then determine which exe is being loaded

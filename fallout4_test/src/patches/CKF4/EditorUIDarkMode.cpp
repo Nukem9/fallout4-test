@@ -1,14 +1,54 @@
 #include "../../common.h"
+
 #include <tbb/concurrent_unordered_map.h>
+#include <tbb/concurrent_vector.h>
 #include <unordered_set>
 #include <vssym32.h>
 #include <Richedit.h>
-#include "EditorUIDarkMode.h"
 
-#pragma comment(lib, "uxtheme.lib")
+#include "EditorUIDarkMode.h"
+#include "UIBaseWindow.h"
+#include "MainWindow.h"
+
+/// THEMES
+
+#include "UITheme/VarCommon.h"
+#include "UITheme/MDIClient.h"
+#include "UITheme/PopupMenu.h"
+#include "UITheme/ListView.h"
+#include "UITheme/TreeView.h"
+#include "UITheme/ToolBar.h"
+#include "UITheme/PushButton.h"
+#include "UITheme/CheckBox.h"
+#include "UITheme/RadioButton.h"
+#include "UITheme/GroupBox.h"
+#include "UITheme/EditText.h"
+#include "UITheme/ComboBox.h"
+#include "UITheme/StatusBar.h"
+#include "UITheme/ScrollBar.h"
+#include "UITheme/TrackBar.h"
+#include "UITheme/UpDown.h"
+#include "UITheme/ListBox.h"
+#include "UITheme/ProgressBar.h"
+#include "UITheme/ColorBox.h"
+
+#include <fstream>
+
+namespace Theme = Core::UI::Theme;
 
 namespace EditorUIDarkMode
 {
+	std::ofstream of;
+
+	typedef struct UITimeOfDayComponentsTag
+	{
+		Core::Classes::UI::CUIToolWindow hWndToolBar;
+		Core::Classes::UI::CUIBaseControl hWndLabel, hWndTrackBar, hWndEdit;
+	} UITimeOfDayComponents, *LPUITimeOfDayComponents, *PUITimeOfDayComponents;
+
+	static UITimeOfDayComponents OldUITimeOfDayComponents;
+	static UITimeOfDayComponents NewUITimeOfDayComponents;
+
 	enum class ThemeType
 	{
 		None,
@@ -21,25 +61,46 @@ namespace EditorUIDarkMode
 		Button,
 		ComboBox,
 		Header,
+		ListBox,
 		ListView,
 		TreeView,
 		TabControl,
+		ToolBar,
+		TrackBar,
+		ProgressBar,
+		PopupMenu,
+		Spin
 	};
 
-	const std::unordered_map<std::string_view, ThemeType> TargetWindowThemes
+	struct string_equal_to
 	{
-		{ "msctls_statusbar32", ThemeType::StatusBar },
-		{ "MDIClient", ThemeType::MDIClient },
-		{ "Static", ThemeType::Static },
-		{ "Edit", ThemeType::Edit },
-		{ "RichEdit20A", ThemeType::RichEdit },
+		inline bool operator()(const std::string_view& lhs, const std::string_view& rhs) const
+		{
+			return !_stricmp(lhs.data(), rhs.data());
+		}
+	};
+
+	const std::unordered_map<std::string_view, ThemeType, std::hash<std::string_view>, string_equal_to> TargetWindowThemes
+	{
+		{ STATUSCLASSNAMEA, ThemeType::StatusBar },
+		{ "mdiclient", ThemeType::MDIClient },
+		{ WC_STATICA, ThemeType::Static },
+		{ UPDOWN_CLASS, ThemeType::Spin },
+		{ WC_EDITA, ThemeType::Edit },
+		{ RICHEDIT_CLASSA, ThemeType::RichEdit },
 		{ "RICHEDIT50W", ThemeType::RichEdit },
-		{ "Button", ThemeType::Button },
-		{ "ComboBox", ThemeType::ComboBox },
-		{ "SysHeader32", ThemeType::Header },
-		{ "SysListView32", ThemeType::ListView },
-		{ "SysTreeView32", ThemeType::TreeView },
-		{ "SysTabControl32", ThemeType::TabControl },
+		{ PROGRESS_CLASSA, ThemeType::ProgressBar },
+		{ WC_BUTTONA, ThemeType::Button },
+		{ WC_LISTBOXA, ThemeType::ListBox },
+		{ WC_COMBOBOXA, ThemeType::ComboBox },
+		{ WC_COMBOBOXEXA, ThemeType::ComboBox },
+		{ WC_HEADERA, ThemeType::Header },
+		{ WC_LISTVIEWA, ThemeType::ListView },
+		{ WC_TREEVIEWA, ThemeType::TreeView },
+		{ WC_TABCONTROLA, ThemeType::TabControl },
+		{ TOOLBARCLASSNAMEA, ThemeType::ToolBar },
+		{ TRACKBAR_CLASSA, ThemeType::TrackBar },
+		{ "#32768", ThemeType::PopupMenu },
 	};
 
 	const std::unordered_set<std::string_view> PermanentWindowSubclasses
@@ -64,56 +125,35 @@ namespace EditorUIDarkMode
 		// "NiTreeCtrl",
 	};
 
-
 	tbb::concurrent_unordered_map<HTHEME, ThemeType> ThemeHandles;
-	bool EnableThemeHooking;
+	BOOL EnableThemeHooking;
 
-	void Initialize()
+	static WNDPROC OldPopupMenuWndClass = NULL;
+
+	VOID Initialize(VOID)
 	{
-		EnableThemeHooking = true;
+		EnableThemeHooking = TRUE;
+
+		of.open("test.log");
 	}
 
-	void InitializeThread()
+	VOID InitializeThread(VOID)
 	{
 		if (EnableThemeHooking)
 			SetWindowsHookExA(WH_CALLWNDPROC, CallWndProcCallback, nullptr, GetCurrentThreadId());
 	}
 
-#ifndef HOTFIX_0001
-
-	bool IsUIDarkMode()
+	BOOL IsUIDarkMode(VOID)
 	{
 		return EnableThemeHooking;
 	}
 
-#endif // !HOTFIX_0001
-
-	LRESULT CALLBACK CallWndProcCallback(int nCode, WPARAM wParam, LPARAM lParam)
+	LRESULT WINAPI TimeOfDayClassWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
-		if (nCode == HC_ACTION)
-		{
-			auto messageData = reinterpret_cast<CWPSTRUCT*>(lParam);
+		PAINTSTRUCT ps;
+		HDC hdc;
 
-			switch (messageData->message)
-			{
-			case WM_CREATE:
-				SetWindowSubclass(messageData->hwnd, WindowSubclass, 0, reinterpret_cast<DWORD_PTR>(WindowSubclass));
-				break;
-
-			case WM_INITDIALOG:
-				SetWindowSubclass(messageData->hwnd, DialogWindowSubclass, 0, reinterpret_cast<DWORD_PTR>(DialogWindowSubclass));
-				break;
-			}
-		}
-
-		return CallNextHookEx(nullptr, nCode, wParam, lParam);
-	}
-
-	LRESULT CALLBACK WindowSubclass(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
-	{
-		constexpr COLORREF generalBackgroundColor = RGB(56, 56, 56);
-		constexpr COLORREF generalTextColor = RGB(255, 255, 255);
-		static HBRUSH generalBackgroundBrush = CreateSolidBrush(generalBackgroundColor);
+		static NMHDR hdr;
 
 		switch (uMsg)
 		{
@@ -123,15 +163,199 @@ namespace EditorUIDarkMode
 		case WM_CTLCOLORDLG:
 		case WM_CTLCOLORSTATIC:
 		{
-			if (HDC hdc = reinterpret_cast<HDC>(wParam); hdc)
+			if (hdc = reinterpret_cast<HDC>(wParam); hdc)
 			{
-				SetTextColor(hdc, generalTextColor);
-				SetBkColor(hdc, generalBackgroundColor);
+				SetTextColor(hdc, Theme::GetThemeSysColor(Theme::ThemeColor_Text_3));
+				SetBkColor(hdc, Theme::GetThemeSysColor(Theme::ThemeColor_Default));
 			}
 
-			return reinterpret_cast<INT_PTR>(generalBackgroundBrush);
+			return reinterpret_cast<INT_PTR>(Theme::Comctl32GetSysColorBrushEx(COLOR_BTNFACE));
+		case WM_HSCROLL:
+			switch (LOWORD(wParam)) {
+			case SB_ENDSCROLL:
+			case SB_LEFT:
+			case SB_RIGHT:
+			case SB_LINELEFT:
+			case SB_LINERIGHT:
+			case SB_PAGELEFT:
+			case SB_PAGERIGHT:
+			case SB_THUMBTRACK:
+			case SB_THUMBPOSITION:
+				if (NewUITimeOfDayComponents.hWndTrackBar.Handle == (HWND)lParam)
+				{
+					hdr.code = NM_RELEASEDCAPTURE;
+					hdr.hwndFrom = (HWND)OldUITimeOfDayComponents.hWndTrackBar.Handle;
+					hdr.idFrom = 0x16D3;
+
+					LONG lPos = (LONG)SendMessageA((HWND)lParam, TBM_GETPOS, 0, 0);
+					OldUITimeOfDayComponents.hWndTrackBar.Perform(TBM_SETPOS, TRUE, lPos);
+
+					// fake change time of day
+					MainWindow::GetWindowObj().Perform(WM_NOTIFY, 0x16D3, (LPARAM)&hdr);
+					MainWindow::GetWindowObj().Perform(WM_NOTIFY, NM_RELEASEDCAPTURE, (LPARAM)&hdr);
+
+					POINT Range = {
+						(LONG)OldUITimeOfDayComponents.hWndTrackBar.Perform(TBM_GETRANGEMIN, 0, 0),
+						(LONG)OldUITimeOfDayComponents.hWndTrackBar.Perform(TBM_GETRANGEMAX, 0, 0)
+					};
+
+					CHAR szBuf[35] = { 0 };
+					FLOAT v = (24.0 * lPos) / (Range.y - Range.x);
+					sprintf_s(szBuf, "%.2f", v);
+					NewUITimeOfDayComponents.hWndEdit.Caption = szBuf;
+				}
+				break;
+			}
+			break;
 		}
-		break;
+		case WM_PAINT:
+			hdc = BeginPaint(hWnd, &ps);
+			EndPaint(hWnd, &ps);
+			break;
+		case WM_DESTROY:
+			PostQuitMessage(0);
+			break;
+		default:
+			return DefWindowProcA(hWnd, uMsg, wParam, lParam);
+		}
+
+		return 0;
+	}
+
+	HWND WINAPI Comctl32CreateToolbarEx_1(HWND hwnd, DWORD ws, UINT wID, INT nBitmaps, HINSTANCE hBMInst, UINT_PTR wBMID, LPCTBBUTTON lpButtons,
+		INT iNumButtons, INT dxButton, INT dyButton, INT dxBitmap, INT dyBitmap, UINT uStructSize)
+	{
+		HIMAGELIST hImageList = ImageList_LoadImageA(g_hModule, MAKEINTRESOURCE(IDB_BITMAP5), 16, 0, RGB(56, 56, 56), IMAGE_BITMAP, LR_COLOR | LR_VGACOLOR);
+		HWND ret = CreateToolbarEx(hwnd, WS_CHILD | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, wID, nBitmaps, 
+			NULL, NULL, lpButtons, iNumButtons - 2 /*delete two divider*/, dxButton, dyButton, dxBitmap, dyBitmap, uStructSize);
+
+		SendMessageA(ret, TB_SETIMAGELIST, 0, (LPARAM)hImageList);
+		SendMessageA(ret, TB_SETBITMAPSIZE, 0, MAKELPARAM(16, 16));
+		ShowWindow(ret, SW_SHOWNORMAL);
+
+		OldUITimeOfDayComponents.hWndToolBar = ret;
+		NewUITimeOfDayComponents.hWndToolBar = ret;
+
+		WNDCLASSEXA wc = { 0 };
+
+		wc.cbSize = sizeof(wc);
+		wc.hbrBackground = (HBRUSH)Theme::Comctl32GetSysColorBrushEx(COLOR_BTNFACE);
+		wc.hInstance = hBMInst;
+		wc.style = CS_HREDRAW | CS_VREDRAW;
+		wc.hCursor = LoadCursorA(hBMInst, IDC_ARROW);
+		wc.lpszClassName = "TimeOfDayClass";
+		wc.lpfnWndProc = (WNDPROC)&TimeOfDayClassWndProc;
+
+		Assert(RegisterClassExA(&wc));
+
+		// To organize the normal operation of another list of components, 
+		// you need to group them into a separate window with the processing of messages, 
+		// I don't know what the developers were thinking, but not for nothing was the behavior of this thing ambiguous, 
+		// not to mention the rendering of the component itself
+
+		HWND hPanel = CreateWindowExA(0, wc.lpszClassName, "", WS_CHILD | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | WS_VISIBLE, 1280, 2, 250, 24, ret, (HMENU)NULL, hBMInst, NULL);
+
+		NewUITimeOfDayComponents.hWndLabel = CreateWindowExA(0, WC_STATICA, "Time of day", WS_CHILD | WS_VISIBLE | SS_CENTER, 0, 5, 90, 20, hPanel, (HMENU)0x16D2, hBMInst, NULL);
+		NewUITimeOfDayComponents.hWndTrackBar = CreateWindowExA(0, TRACKBAR_CLASSA, "", WS_CHILD | WS_VISIBLE | TBS_HORZ | TBS_NOTICKS, 90, 3, 110, 18, hPanel, (HMENU)0x16D3, hBMInst, NULL);
+		NewUITimeOfDayComponents.hWndEdit = CreateWindowExA(0, WC_STATICA, "0.00", WS_CHILD | WS_VISIBLE | ES_CENTER | ES_READONLY, 200, 5, 50, 20, hPanel, (HMENU)0x16D4, hBMInst, NULL);
+
+		Theme::ThemeFont.Apply(NewUITimeOfDayComponents.hWndLabel.Handle);
+		Theme::ThemeFont.Apply(NewUITimeOfDayComponents.hWndEdit.Handle);
+
+		return ret; 
+	}
+
+	HIMAGELIST WINAPI Comctl32ImageList_LoadImageA_1(HINSTANCE hi, LPCSTR lpbmp, INT cx, INT cGrow, COLORREF crMask, UINT uType, UINT uFlags)
+	{
+		return ImageList_LoadImageA(g_hModule, MAKEINTRESOURCE(IDB_BITMAP6), cx, cGrow, crMask, IMAGE_BITMAP, LR_COLOR | LR_VGACOLOR);
+	}
+
+	HWND WINAPI Comctl32CreateWindowEx_1(DWORD dwExStyle, LPCTSTR lpClassName, LPCTSTR lpWindowName, DWORD dwStyle, INT x, INT y,
+		INT nWidth, INT nHeight, HWND hWndParent, HMENU hMenu, HINSTANCE hInstance, LPVOID lpParam)
+	{
+		HWND ret = CreateWindowExA(dwExStyle, lpClassName, lpWindowName, WS_CHILD | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | WS_VISIBLE | SS_LEFT, x, y, nWidth, nHeight, hWndParent, hMenu, hInstance, lpParam);
+
+		return ret;
+	}
+
+	VOID WINAPI HideOldTimeOfDayComponents(VOID)
+	{
+		// I will hide the old ones, but I will rely on them when sending messages, however, in the end, I will fake the event to change the time of day
+
+		OldUITimeOfDayComponents.hWndLabel = GetDlgItem(OldUITimeOfDayComponents.hWndToolBar.Handle, 0x16D2);
+		OldUITimeOfDayComponents.hWndTrackBar = GetDlgItem(OldUITimeOfDayComponents.hWndToolBar.Handle, 0x16D3);
+		OldUITimeOfDayComponents.hWndEdit = GetDlgItem(OldUITimeOfDayComponents.hWndToolBar.Handle, 0x16D4);
+
+		ShowWindow(OldUITimeOfDayComponents.hWndLabel.Handle, SW_HIDE);
+		ShowWindow(OldUITimeOfDayComponents.hWndTrackBar.Handle, SW_HIDE);
+		ShowWindow(OldUITimeOfDayComponents.hWndEdit.Handle, SW_HIDE);
+
+		POINT Range = {
+			(LONG)OldUITimeOfDayComponents.hWndTrackBar.Perform(TBM_GETRANGEMIN, 0, 0),
+			(LONG)OldUITimeOfDayComponents.hWndTrackBar.Perform(TBM_GETRANGEMAX, 0, 0)
+		};
+
+		NewUITimeOfDayComponents.hWndTrackBar.Perform(TBM_SETRANGE, (WPARAM)TRUE, MAKELPARAM(Range.x, Range.y));
+		NewUITimeOfDayComponents.hWndTrackBar.Perform(TBM_SETPOS, (WPARAM)TRUE, (LONG)((10 * (Range.y - Range.x)) / 24));
+		NewUITimeOfDayComponents.hWndEdit.Caption = "10.00";
+	}
+
+	LRESULT CALLBACK CallWndProcCallback(INT nCode, WPARAM wParam, LPARAM lParam)
+	{
+		if (nCode == HC_ACTION)
+		{
+			auto messageData = reinterpret_cast<CWPSTRUCT*>(lParam);
+
+			switch (messageData->message)
+			{
+			case WM_CREATE:
+			{
+				CHAR className[MAX_PATH] = { 0 };
+				GetClassNameA(messageData->hwnd, className, MAX_PATH - 1);
+
+				of << "WM_CREATE: " << className << std::endl;
+
+				SetWindowSubclass(messageData->hwnd, WindowSubclass, 0, reinterpret_cast<DWORD_PTR>(WindowSubclass));
+			}
+			break;
+
+			case WM_INITDIALOG:
+			{
+				SetWindowSubclass(messageData->hwnd, DialogWindowSubclass, 0, reinterpret_cast<DWORD_PTR>(DialogWindowSubclass));
+			}
+			break;
+			}
+		}
+
+		return CallNextHookEx(nullptr, nCode, wParam, lParam);
+	}
+	
+	LRESULT CALLBACK WindowSubclass(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
+	{
+		switch (uMsg)
+		{
+		case WM_CTLCOLOREDIT:
+		{
+			if (HDC hdc = reinterpret_cast<HDC>(wParam); hdc)
+				return Theme::EditText::OnCtlColorEdit(hdc);
+		}
+		case WM_CTLCOLORSTATIC:
+		case WM_CTLCOLORBTN:
+		case WM_CTLCOLORDLG:
+		{
+			if (HDC hdc = reinterpret_cast<HDC>(wParam); hdc)
+			{
+				SetTextColor(hdc, Theme::GetThemeSysColor(Theme::ThemeColor_Text_3));
+				SetBkColor(hdc, Theme::GetThemeSysColor(Theme::ThemeColor_Default));
+			}
+
+			return reinterpret_cast<INT_PTR>(Theme::Comctl32GetSysColorBrushEx(COLOR_BTNFACE));
+		}
+		case WM_CTLCOLORLISTBOX:
+		{
+			if (HDC hdc = reinterpret_cast<HDC>(wParam); hdc)
+				return Theme::ListBox::OnCtlColorListBox(hWnd, hdc);
+		}
 		}
 
 		LRESULT result = DefSubclassProc(hWnd, uMsg, wParam, lParam);
@@ -145,8 +369,10 @@ namespace EditorUIDarkMode
 			auto themeType = ThemeType::None;
 			HTHEME scrollBarTheme = nullptr;
 
-			char className[256] = {};
-			GetClassName(hWnd, className, ARRAYSIZE(className));
+			CHAR className[256] = { 0 };
+			GetClassNameA(hWnd, className, ARRAYSIZE(className));
+			UINT uStyles = GetWindowLongPtrA(hWnd, GWL_STYLE);
+			UINT uStylesEx = GetWindowLongPtrA(hWnd, GWL_EXSTYLE);
 
 			if (auto itr = TargetWindowThemes.find(className); itr != TargetWindowThemes.end())
 				themeType = itr->second;
@@ -154,40 +380,66 @@ namespace EditorUIDarkMode
 			switch (themeType)
 			{
 			case ThemeType::MDIClient:
-				SetWindowSubclass(hWnd, MDIClientSubclass, 0, 0);
+				Theme::MDIClient::Initialize(hWnd);
+				break;
+
+			case ThemeType::PopupMenu:
+				Theme::PopupMenu::Initialize(hWnd);
 				break;
 
 			case ThemeType::RichEdit:
 			{
-				CHARFORMAT2A format = {};
-				format.cbSize = sizeof(format);
+				CHARFORMATA format = { 0 };
+				format.cbSize = sizeof(CHARFORMATA);
 				format.dwMask = CFM_COLOR;
-				format.crTextColor = RGB(255, 255, 255);
+				format.crTextColor = Theme::GetThemeSysColor(Theme::ThemeColor_Text_4);
 				SendMessageA(hWnd, EM_SETCHARFORMAT, SCF_ALL, (LPARAM)&format);
-				SendMessageA(hWnd, EM_SETBKGNDCOLOR, FALSE, RGB(56, 56, 56));
+				SendMessageA(hWnd, EM_SETBKGNDCOLOR, FALSE, Theme::GetThemeSysColor(Theme::ThemeColor_Edit_Color));
 			}
 			break;
 
+			case ThemeType::Button:
+				if (((uStylesEx & WS_EX_CLIENTEDGE) == WS_EX_CLIENTEDGE) && ((uStylesEx & WS_EX_STATICEDGE) == WS_EX_STATICEDGE))
+				{
+					// Imaged
+				}
+				break;
+
+			case ThemeType::ProgressBar:
+				Theme::ProgressBar::Initialize(hWnd);
+				break;
+
+			case ThemeType::ToolBar:
+				Theme::ToolBar::Initialize(hWnd);
+			break;
+
+			case ThemeType::Spin:
+				Theme::UpDown::Initialize(hWnd);
+				break;
+
+			case ThemeType::ListBox:
+				scrollBarTheme = Theme::ListBox::Initialize(hWnd);
+				break;
+
 			case ThemeType::ListView:
-				SetWindowSubclass(hWnd, ListViewSubclass, 0, 0);
-
-				ListView_SetTextColor(hWnd, RGB(255, 255, 255));
-				ListView_SetTextBkColor(hWnd, RGB(32, 32, 32));
-				ListView_SetBkColor(hWnd, RGB(32, 32, 32));
-
-				scrollBarTheme = OpenThemeData(hWnd, VSCLASS_SCROLLBAR);
+				scrollBarTheme = Theme::ListView::Initialize(hWnd);
 				break;
 
 			case ThemeType::TreeView:
-				TreeView_SetTextColor(hWnd, RGB(255, 255, 255));
-				TreeView_SetBkColor(hWnd, RGB(32, 32, 32));
-
-				scrollBarTheme = OpenThemeData(hWnd, VSCLASS_SCROLLBAR);
+				scrollBarTheme = Theme::TreeView::Initialize(hWnd);
 				break;
 
 			case ThemeType::TabControl:
 				SetWindowLongPtrA(hWnd, GWL_STYLE, (GetWindowLongPtrA(hWnd, GWL_STYLE) & ~TCS_BUTTONS) | TCS_TABS);
 				SetWindowTheme(hWnd, nullptr, nullptr);
+				break;
+			default:
+				if ((uStyles & SS_SUNKEN) == SS_SUNKEN)
+					Theme::ColorBox::Initialize(hWnd, (uStyles & SS_OWNERDRAW) == SS_OWNERDRAW);
+				else if (((uStyles & WS_CAPTION) == WS_CAPTION) && ((uStyles & WS_CHILD) == WS_CHILD))
+				{
+					// Window
+				}
 				break;
 			}
 
@@ -196,7 +448,8 @@ namespace EditorUIDarkMode
 				ThemeHandles.emplace(scrollBarTheme, ThemeType::ScrollBar);
 
 				// TODO: This is a hack...the handle should be valid as long as at least one window is still open
-				CloseThemeData(scrollBarTheme);
+				// PS: This kills the scroll rendering in the Cell View (perchik71) (first draw)
+				// CloseThemeData(scrollBarTheme);
 			}
 
 			if (HTHEME windowTheme = GetWindowTheme(hWnd); windowTheme)
@@ -206,6 +459,54 @@ namespace EditorUIDarkMode
 				RemoveWindowSubclass(hWnd, WindowSubclass, 0);
 		}
 		break;
+		
+		case WM_INITMENUPOPUP:
+		{
+			// The message about the initialization of the pop-up menu, set all its elements as owner draw
+			Theme::PopupMenu::OnInitPopupMenu(hWnd, (HMENU)wParam);
+		}
+		return S_OK;
+
+		case WM_MEASUREITEM:
+		{
+			LPMEASUREITEMSTRUCT lpmis = (LPMEASUREITEMSTRUCT)lParam;
+			
+			if (lpmis->CtlType == ODT_MENU)
+				// Calc size menu item
+				Theme::PopupMenu::OnMeasureItem(hWnd, lpmis);
+		}
+		return TRUE;
+
+		case WM_DRAWITEM:
+		{
+			LPDRAWITEMSTRUCT lpdis = (LPDRAWITEMSTRUCT)lParam;
+
+			if (lpdis->CtlType == ODT_MENU)
+				// Paint menu item
+				Theme::PopupMenu::OnDrawItem(hWnd, lpdis);
+		}
+		return TRUE;
+
+		case WM_NOTIFY:
+		{
+			LPNMHDR nmhdr = (LPNMHDR)lParam;
+
+			// Custom drawing (ToolBar)
+			if (nmhdr->code == NM_CUSTOMDRAW)
+			{
+				auto themeType = ThemeType::None;
+
+				CHAR className[256] = { 0 };
+				GetClassNameA(nmhdr->hwndFrom, className, ARRAYSIZE(className));
+
+				if (auto itr = TargetWindowThemes.find(className); itr != TargetWindowThemes.end())
+					themeType = itr->second;
+
+				if (themeType == ThemeType::ToolBar)
+					return Theme::ToolBar::OnCustomDraw(hWnd, (LPNMTBCUSTOMDRAW)lParam);
+			}
+		}
+		break;
 		}
 
 		return result;
@@ -213,28 +514,28 @@ namespace EditorUIDarkMode
 
 	LRESULT CALLBACK DialogWindowSubclass(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
 	{
-		constexpr COLORREF generalBackgroundColor = RGB(56, 56, 56);
-		static HBRUSH generalBackgroundBrush = CreateSolidBrush(generalBackgroundColor);
-
 		LRESULT result = WindowSubclass(hWnd, uMsg, wParam, lParam, uIdSubclass, dwRefData);
 
 		switch (uMsg)
 		{
 		case WM_PAINT:
 		{
+			/// The following code completely kills draw the dialog for selecting a color and saving a file and other standard Windows OS dialogs (perchik71)
+			/// maybe WM_NCPAINT ???
+
 			// Special override for DialogBoxIndirectParam (MessageBox) since the bottom half doesn't get themed correctly. ReactOS
 			// says this is MSGBOX_IDTEXT.
-			if (GetDlgItem(hWnd, 0xFFFF))
+		/*	if (GetDlgItem(hWnd, 0xFFFF))
 			{
 				if (HDC hdc = GetDC(hWnd); hdc)
 				{
 					RECT windowArea;
 					GetClientRect(hWnd, &windowArea);
 
-					FillRect(hdc, &windowArea, generalBackgroundBrush);
+					FillRect(hdc, &windowArea, Comctl32GetSysColorBrush(COLOR_BTNFACE));
 					ReleaseDC(hWnd, hdc);
 				}
-			}
+			}*/
 		}
 		break;
 		}
@@ -242,126 +543,40 @@ namespace EditorUIDarkMode
 		return result;
 	}
 
-	LRESULT CALLBACK ListViewSubclass(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
+	DWORD WINAPI Comctl32GetSysColor(INT nIndex)
 	{
-		switch (uMsg)
-		{
-		case WM_PAINT:
-		{
-			// Paint normally, then apply custom grid lines
-			LRESULT result = DefSubclassProc(hWnd, uMsg, wParam, lParam);
-
-			RECT headerRect;
-			GetClientRect(ListView_GetHeader(hWnd), &headerRect);
-
-			RECT listRect;
-			GetClientRect(hWnd, &listRect);
-
-			if (HDC hdc = GetDC(hWnd); hdc)
-			{
-				HGDIOBJ oldPen = SelectObject(hdc, GetStockObject(DC_PEN));
-				int x = 0 - GetScrollPos(hWnd, SB_HORZ);
-
-				LVCOLUMN colInfo = {};
-				colInfo.mask = LVCF_WIDTH;
-
-				for (int col = 0; ListView_GetColumn(hWnd, col, &colInfo); col++)
-				{
-					x += colInfo.cx;
-
-					// Stop drawing if outside the listview client area
-					if (x >= listRect.right)
-						break;
-
-					// Right border
-					std::array<POINT, 2> verts
-					{{
-						{ x - 2, headerRect.bottom },
-						{ x - 2, listRect.bottom },
-					}};
-
-					SetDCPenColor(hdc, RGB(65, 65, 65));
-					Polyline(hdc, verts.data(), verts.size());
-
-					// Right border shadow
-					verts[0].x += 1;
-					verts[1].x += 1;
-
-					SetDCPenColor(hdc, RGB(29, 38, 48));
-					Polyline(hdc, verts.data(), verts.size());
-				}
-
-				SelectObject(hdc, oldPen);
-				ReleaseDC(hWnd, hdc);
-			}
-
-			return result;
-		}
-
-		case LVM_SETEXTENDEDLISTVIEWSTYLE:
-		{
-			// Prevent the OS grid separators from drawing
-			wParam &= ~static_cast<WPARAM>(LVS_EX_GRIDLINES);
-			lParam &= ~static_cast<LPARAM>(LVS_EX_GRIDLINES);
-		}
-		break;
-		}
-
-		return DefSubclassProc(hWnd, uMsg, wParam, lParam);
+		return Theme::Comctl32GetSysColor(nIndex);
 	}
 
-	LRESULT CALLBACK MDIClientSubclass(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
+	HBRUSH WINAPI Comctl32GetSysColorBrush(INT nIndex)
 	{
-		static HBRUSH backgroundColorBrush = CreateSolidBrush(RGB(32, 32, 32));
-
-		switch (uMsg)
-		{
-		case WM_PAINT:
-		{
-			if (HDC hdc = GetDC(hWnd); hdc)
-			{
-				RECT windowArea;
-				GetClientRect(hWnd, &windowArea);
-
-				FillRect(hdc, &windowArea, backgroundColorBrush);
-				ReleaseDC(hWnd, hdc);
-			}
-		}
-		break;
-		}
-
-		return DefSubclassProc(hWnd, uMsg, wParam, lParam);
+		return Theme::Comctl32GetSysColorBrush(nIndex);
 	}
 
-	DWORD WINAPI Comctl32GetSysColor(int nIndex)
-	{
-		switch (nIndex)
-		{
-		case COLOR_BTNFACE: return RGB(56, 56, 56);
-		case COLOR_BTNTEXT: return RGB(255, 255, 255);
-		}
-
-		return GetSysColor(nIndex);
-	}
-
-	HBRUSH WINAPI Comctl32GetSysColorBrush(int nIndex)
-	{
-		static HBRUSH btnFaceBrush = CreateSolidBrush(Comctl32GetSysColor(COLOR_BTNFACE));
-		static HBRUSH btnTextBrush = CreateSolidBrush(Comctl32GetSysColor(COLOR_BTNTEXT));
-
-		switch (nIndex)
-		{
-		case COLOR_BTNFACE: return btnFaceBrush;
-		case COLOR_BTNTEXT: return btnTextBrush;
-		}
-
-		return GetSysColorBrush(nIndex);
-	}
-
-	HRESULT WINAPI Comctl32DrawThemeText(HTHEME hTheme, HDC hdc, int iPartId, int iStateId, LPCWSTR pszText, int cchText, DWORD dwTextFlags, DWORD dwTextFlags2, LPCRECT pRect)
+	HRESULT WINAPI Comctl32DrawThemeText(HTHEME hTheme, HDC hdc, INT iPartId, INT iStateId, LPCWSTR pszText, INT cchText, DWORD dwTextFlags, DWORD dwTextFlags2, LPCRECT pRect)
 	{
 		SetBkMode(hdc, TRANSPARENT);
-		SetTextColor(hdc, RGB(255, 255, 255));
+
+		auto themeType = ThemeType::None;
+		if (auto itr = ThemeHandles.find(hTheme); itr != ThemeHandles.end())
+			themeType = itr->second;
+
+		switch (themeType)
+		{
+		case ThemeType::StatusBar:
+			dwTextFlags |= DT_CENTER;
+			SetTextColor(hdc, Theme::GetThemeSysColor(Theme::ThemeColor_Text_2));
+			break;
+		case ThemeType::Button:
+			if (iStateId == PBS_DISABLED)
+				SetTextColor(hdc, Theme::GetThemeSysColor(Theme::ThemeColor_Text_1));
+			else
+				SetTextColor(hdc, Theme::GetThemeSysColor(Theme::ThemeColor_Text_4));
+			break;
+		default:
+			SetTextColor(hdc, Theme::GetThemeSysColor(Theme::ThemeColor_Text_4));
+			break;
+		}			
 
 		RECT temp = *pRect;
 		DrawTextW(hdc, pszText, cchText, &temp, dwTextFlags);
@@ -369,37 +584,47 @@ namespace EditorUIDarkMode
 		return S_OK;
 	}
 
-	HRESULT WINAPI Comctl32DrawThemeBackground(HTHEME hTheme, HDC hdc, int iPartId, int iStateId, LPCRECT pRect, LPCRECT pClipRect)
+	HRESULT WINAPI Comctl32DrawThemeBackground(HTHEME hTheme, HDC hdc, INT iPartId, INT iStateId, LPCRECT pRect, LPCRECT pClipRect)
 	{
 		auto themeType = ThemeType::None;
 
 		if (auto itr = ThemeHandles.find(hTheme); itr != ThemeHandles.end())
 			themeType = itr->second;
 
+		Core::Classes::UI::CUICanvas Canvas(hdc);
+
 		if (themeType == ThemeType::ScrollBar)
 		{
-			static HBRUSH scrollbarFill = CreateSolidBrush(RGB(77, 77, 77));
-			static HBRUSH scrollbarFillHighlighted = CreateSolidBrush(RGB(122, 122, 122));
-			static HBRUSH scrollbarBackground = CreateSolidBrush(RGB(23, 23, 23));
-
 			switch (iPartId)
 			{
 			case SBP_THUMBBTNHORZ:	// Horizontal drag bar
+			{
+				if (iStateId == SCRBS_HOT || iStateId == SCRBS_PRESSED)
+					Theme::ScrollBar::Render::DrawSliderHorz_Focused(Canvas, pRect);
+				else
+					Theme::ScrollBar::Render::DrawSliderHorz_Normal(Canvas, pRect);
+			}
+			return S_OK;
 			case SBP_THUMBBTNVERT:	// Vertical drag bar
 			{
 				if (iStateId == SCRBS_HOT || iStateId == SCRBS_PRESSED)
-					FillRect(hdc, pRect, scrollbarFillHighlighted);
+					Theme::ScrollBar::Render::DrawSliderVert_Focused(Canvas, pRect);
 				else
-					FillRect(hdc, pRect, scrollbarFill);
+					Theme::ScrollBar::Render::DrawSliderVert_Normal(Canvas, pRect);
 			}
 			return S_OK;
 
 			case SBP_LOWERTRACKHORZ:// Horizontal background
 			case SBP_UPPERTRACKHORZ:// Horizontal background
+			{
+				Theme::ScrollBar::Render::DrawBackgroundHorz(Canvas, pRect);
+			}
+			return S_OK;
+
 			case SBP_LOWERTRACKVERT:// Vertical background
 			case SBP_UPPERTRACKVERT:// Vertical background
 			{
-				FillRect(hdc, pRect, scrollbarBackground);
+				Theme::ScrollBar::Render::DrawBackgroundVert(Canvas, pRect);
 			}
 			return S_OK;
 
@@ -407,8 +632,8 @@ namespace EditorUIDarkMode
 			{
 				// Assume the perspective of the arrow pointing upward ( /\ ) in GDI coordinates. NOTE: (0, 0) is the
 				// top left corner of the screen. Awful code, but it works.
-				const int arrowWidth = std::ceil(std::abs(pRect->left - pRect->right) * 0.4f);
-				const int arrowHeight = std::ceil(std::abs(pRect->top - pRect->bottom) * 0.35f);
+				const INT arrowWidth = std::ceil(std::abs(pRect->left - pRect->right) * 0.4f);
+				const INT arrowHeight = std::ceil(std::abs(pRect->top - pRect->bottom) * 0.35f);
 
 				std::array<DWORD, 6> counts{ 2, 2, 2, 2, 2, 2 };
 				std::array<POINT, 12> verts
@@ -434,8 +659,9 @@ namespace EditorUIDarkMode
 						{ arrowWidth / 2, -arrowHeight + 1 },
 					} };
 
-				bool isHot = false;
-				bool isDisabled = false;
+				BOOL isHot = FALSE;
+				BOOL isDisabled = FALSE;
+				BOOL isHorz = FALSE;
 
 				for (auto& vert : verts)
 				{
@@ -443,9 +669,9 @@ namespace EditorUIDarkMode
 					{
 					case ABS_UPHOT:// Up
 					case ABS_UPPRESSED:
-						isHot = true;
+						isHot = TRUE;
 					case ABS_UPDISABLED:
-						isDisabled = true;
+						isDisabled = TRUE;
 					case ABS_UPNORMAL:
 					case ABS_UPHOVER:
 						vert.x += pRect->left + arrowHeight - 1;
@@ -454,9 +680,9 @@ namespace EditorUIDarkMode
 
 					case ABS_DOWNHOT:// Down
 					case ABS_DOWNPRESSED:
-						isHot = true;
+						isHot = TRUE;
 					case ABS_DOWNDISABLED:
-						isDisabled = true;
+						isDisabled = TRUE;
 					case ABS_DOWNNORMAL:
 					case ABS_DOWNHOVER:
 						vert.x += pRect->left + arrowHeight - 1;
@@ -465,11 +691,12 @@ namespace EditorUIDarkMode
 
 					case ABS_LEFTHOT:// Left
 					case ABS_LEFTPRESSED:
-						isHot = true;
+						isHot = TRUE;
 					case ABS_LEFTDISABLED:
-						isDisabled = true;
+						isDisabled = TRUE;
 					case ABS_LEFTNORMAL:
 					case ABS_LEFTHOVER:
+						isHorz = TRUE;
 						std::swap(vert.x, vert.y);
 						vert.x += pRect->right - arrowHeight;
 						vert.y += pRect->top + arrowHeight - 1;
@@ -477,11 +704,12 @@ namespace EditorUIDarkMode
 
 					case ABS_RIGHTHOT:// Right
 					case ABS_RIGHTPRESSED:
-						isHot = true;
+						isHot = TRUE;
 					case ABS_RIGHTDISABLED:
-						isDisabled = true;
+						isDisabled = TRUE;
 					case ABS_RIGHTNORMAL:
 					case ABS_RIGHTHOVER:
+						isHorz = TRUE;
 						std::swap(vert.x, vert.y);
 						vert.x = -vert.x + pRect->left + arrowHeight - 1;
 						vert.y += pRect->top + arrowHeight - 1;
@@ -489,41 +717,66 @@ namespace EditorUIDarkMode
 					}
 				}
 
-				HBRUSH fillColor = scrollbarFill;
-				HGDIOBJ oldPen = SelectObject(hdc, GetStockObject(DC_PEN));
-
 				if (isHot)
-					fillColor = scrollbarFillHighlighted;
+				{
+					Theme::ScrollBar::Render::DrawButton_Hot(Canvas, pRect);
+
+					Canvas.Pen.Color = Theme::GetThemeSysColor(Theme::ThemeColor_Shape);
+				}
 				else if (isDisabled)
-					fillColor = scrollbarFill;
+				{
+					Theme::ScrollBar::Render::DrawButton_Disabled(Canvas, pRect);
 
-				FillRect(hdc, pRect, fillColor);
+					Canvas.Pen.Color = Theme::GetThemeSysColor(Theme::ThemeColor_Shape_Disabled);
+				}
+				else
+				{
+					if (isHorz)
+						Theme::ScrollBar::Render::DrawBackgroundHorz(Canvas, pRect);
+					else
+						Theme::ScrollBar::Render::DrawBackgroundVert(Canvas, pRect);
 
-				SetDCPenColor(hdc, RGB(255, 255, 255));
-				PolyPolyline(hdc, verts.data(), counts.data(), counts.size());
+					Canvas.Pen.Color = Theme::GetThemeSysColor(Theme::ThemeColor_Shape);
+				}
 
-				SelectObject(hdc, oldPen);
+				if (isDisabled)
+					Canvas.Pen.Color = Theme::GetThemeSysColor(Theme::ThemeColor_Shape_Shadow_Disabled);
+				else
+					Canvas.Pen.Color = Theme::GetThemeSysColor(Theme::ThemeColor_Shape_Shadow);
+
+				PolyPolyline(Canvas.Handle, verts.data(), counts.data(), counts.size());
+				
+				if (isHot)
+					Canvas.Pen.Color = Theme::GetThemeSysColor(Theme::ThemeColor_Shape);
+				else if (isDisabled)
+					Canvas.Pen.Color = Theme::GetThemeSysColor(Theme::ThemeColor_Shape_Disabled);
+				else
+					Canvas.Pen.Color = Theme::GetThemeSysColor(Theme::ThemeColor_Shape);
+
+				for (auto i = verts.begin(); i != verts.end(); i++)
+					(*i).y++;
+
+				PolyPolyline(Canvas.Handle, verts.data(), counts.data(), counts.size());
 			}
 			return S_OK;
 
 			case SBP_GRIPPERHORZ:	// Horizontal resize scrollbar
 			case SBP_GRIPPERVERT:	// Vertical resize scrollbar
+				break;
 			case SBP_SIZEBOX:		// Resize box, bottom right
 			case SBP_SIZEBOXBKGND:	// Resize box, background, unused
-				break;
+				Canvas.Fill(*pRect, Theme::GetThemeSysColor(Theme::ThemeColor_Default));
+				return S_OK;
 			}
 		}
 		else if (themeType == ThemeType::StatusBar)
 		{
-			static HBRUSH statusBarBorder = CreateSolidBrush(RGB(130, 135, 144));// RGB(83, 83, 83)
-			static HBRUSH statusBarFill = CreateSolidBrush(RGB(56, 56, 56));
-
 			switch (iPartId)
 			{
 			case 0:
 			{
 				// Outside border (top, right)
-				FillRect(hdc, pRect, statusBarBorder);
+				Theme::StatusBar::Render::DrawBorder(Canvas, pRect);
 			}
 			return S_OK;
 
@@ -532,87 +785,346 @@ namespace EditorUIDarkMode
 			case SP_GRIPPER:
 			{
 				// Everything else
-				FillRect(hdc, pRect, statusBarFill);
+				Theme::StatusBar::Render::DrawBackground(Canvas, pRect);
 			}
 			return S_OK;
+			}
+		}
+		else if (themeType == ThemeType::Spin)
+		{
+			switch (iPartId)
+			{
+				case SPNP_UP:
+				{
+					switch (iStateId)
+					{
+					case DNS_HOT:
+						Theme::UpDown::Render::DrawUp_Hot(Canvas, pRect);
+						break;
+					case DNS_PRESSED:
+						Theme::UpDown::Render::DrawUp_Pressed(Canvas, pRect);
+						break;
+					case DNS_DISABLED:
+						Theme::UpDown::Render::DrawUp_Disabled(Canvas, pRect);
+						break;
+					default:
+						Theme::UpDown::Render::DrawUp_Normal(Canvas, pRect);
+						break;
+					}
+				}
+				return S_OK;
+
+				case SPNP_DOWN:
+				{
+					switch (iStateId)
+					{
+					case UPS_HOT:
+						Theme::UpDown::Render::DrawDown_Hot(Canvas, pRect);
+						break;
+					case UPS_PRESSED:
+						Theme::UpDown::Render::DrawDown_Pressed(Canvas, pRect);
+						break;
+					case UPS_DISABLED:
+						Theme::UpDown::Render::DrawDown_Disabled(Canvas, pRect);
+						break;
+					default:
+						Theme::UpDown::Render::DrawDown_Normal(Canvas, pRect);
+						break;
+					}
+				}
+				return S_OK;
+				
 			}
 		}
 		else if (themeType == ThemeType::Edit)
 		{
-			static HBRUSH editControlBorder = CreateSolidBrush(RGB(130, 135, 144));// RGB(83, 83, 83)
-			static HBRUSH editControlFill = CreateSolidBrush(RGB(32, 32, 32));
-
 			switch (iPartId)
 			{
 			case EP_EDITBORDER_NOSCROLL:
 			{
-				FillRect(hdc, pRect, editControlFill);
-				FrameRect(hdc, pRect, editControlBorder);
+				switch (iStateId)
+				{
+				case ETS_DISABLED:
+					Theme::EditText::Render::DrawEditText_Disabled(Canvas, pRect);
+					break;
+				case ETS_SELECTED:
+				case ETS_FOCUSED:
+					Theme::EditText::Render::DrawEditText_Focused(Canvas, pRect);
+					break;
+				case ETS_HOT:
+					Theme::EditText::Render::DrawEditText_Hot(Canvas, pRect);
+					break;
+				default:
+					Theme::EditText::Render::DrawEditText_Normal(Canvas, pRect);
+					break;
+				}
+			}
+			return S_OK;
+
+			case EP_EDITBORDER_VSCROLL:
+			{
+				switch (iStateId)
+				{
+				case EPSV_DISABLED:
+					Theme::EditText::Render::DrawEditText_Disabled(Canvas, pRect);
+					break;
+				case EPSV_FOCUSED:
+					Theme::EditText::Render::DrawEditText_Focused(Canvas, pRect);
+					break;
+				case EPSV_HOT:
+					Theme::EditText::Render::DrawEditText_Hot(Canvas, pRect);
+					break;
+				default:
+					Theme::EditText::Render::DrawEditText_Normal(Canvas, pRect);
+					break;
+				}
+			}
+			return S_OK;
+
+			case EP_EDITBORDER_HSCROLL:
+			{
+				switch (iStateId)
+				{
+				case EPSH_DISABLED:
+					Theme::EditText::Render::DrawEditText_Disabled(Canvas, pRect);
+					break;
+				case EPSH_FOCUSED:
+					Theme::EditText::Render::DrawEditText_Focused(Canvas, pRect);
+					break;
+				case EPSH_HOT:
+					Theme::EditText::Render::DrawEditText_Hot(Canvas, pRect);
+					break;
+				default:
+					Theme::EditText::Render::DrawEditText_Normal(Canvas, pRect);
+					break;
+				}
+			}
+			return S_OK;
+
+			case EP_EDITBORDER_HVSCROLL:
+			{
+				switch (iStateId)
+				{
+				case EPSHV_DISABLED:
+					Theme::EditText::Render::DrawEditText_Disabled(Canvas, pRect);
+					break;
+				case EPSHV_FOCUSED:
+					Theme::EditText::Render::DrawEditText_Focused(Canvas, pRect);
+					break;
+				case EPSHV_HOT:
+					Theme::EditText::Render::DrawEditText_Hot(Canvas, pRect);
+					break;
+				default:
+					Theme::EditText::Render::DrawEditText_Normal(Canvas, pRect);
+					break;
+				}
 			}
 			return S_OK;
 			}
 		}
+		else if (themeType == ThemeType::ProgressBar)
+		{
+			switch (iPartId)
+			{
+			case PP_BAR:
+			case PP_TRANSPARENTBAR:
+			{
+				Theme::ProgressBar::Render::DrawBar(Canvas, pRect);
+			}
+			return S_OK;
+
+			case PP_FILL:
+			{
+				Theme::ProgressBar::Render::DrawFill(Canvas, pRect);
+			}
+			return S_OK;
+			}
+
+			// skip other
+			return S_OK;
+		}
 		else if (themeType == ThemeType::Button)
 		{
-			static HBRUSH buttonBorder = CreateSolidBrush(RGB(130, 135, 144));
-			static HBRUSH buttonBorderHighlighted = CreateSolidBrush(RGB(0, 120, 215));
-			static HBRUSH buttonFill = CreateSolidBrush(RGB(32, 32, 32));
-			static HBRUSH buttonPressed = CreateSolidBrush(RGB(83, 83, 83));
-
 			switch (iPartId)
 			{
 			case BP_PUSHBUTTON:
 			{
-				HBRUSH frameColor = buttonBorder;
-				HBRUSH fillColor = buttonFill;
-
 				switch (iStateId)
 				{
 				case PBS_HOT:
-				case PBS_DEFAULTED:
-					frameColor = buttonBorderHighlighted;
+					Theme::PushButton::Render::DrawPushButton_Hot(Canvas, pRect);
 					break;
-
 				case PBS_DISABLED:
-					fillColor = buttonBorder;
+					Theme::PushButton::Render::DrawPushButton_Disabled(Canvas, pRect);
 					break;
-
 				case PBS_PRESSED:
-					fillColor = buttonPressed;
+					Theme::PushButton::Render::DrawPushButton_Pressed(Canvas, pRect);
+					break;
+				default:
+					Theme::PushButton::Render::DrawPushButton_Normal(Canvas, pRect);
 					break;
 				}
+			}
+			return S_OK;
 
-				FillRect(hdc, pRect, fillColor);
-				FrameRect(hdc, pRect, frameColor);
+			case BP_GROUPBOX:
+			{
+				switch (iStateId)
+				{
+				case GBS_DISABLED:
+					Theme::GroupBox::Render::DrawGroupBox_Disabled(Canvas, pRect);
+					break;
+				default:
+					Theme::GroupBox::Render::DrawGroupBox_Normal(Canvas, pRect);
+					break;
+				}
 			}
 			return S_OK;
 
 			case BP_CHECKBOX:
 			{
-				if (iStateId == CBS_UNCHECKEDDISABLED ||
-					iStateId == CBS_CHECKEDDISABLED ||
-					iStateId == CBS_MIXEDDISABLED ||
-					iStateId == CBS_IMPLICITDISABLED ||
-					iStateId == CBS_EXCLUDEDDISABLED)
+				switch (iStateId)
 				{
-					FrameRect(hdc, pRect, buttonBorder);
-					return S_OK;
+				case CBS_MIXEDDISABLED:
+				case CBS_IMPLICITDISABLED:
+				case CBS_EXCLUDEDDISABLED:
+				case CBS_UNCHECKEDDISABLED:
+					Theme::PushButton::Render::DrawPushButton_Disabled(Canvas, pRect);
+					break;
+				case CBS_UNCHECKEDNORMAL:
+					Theme::PushButton::Render::DrawPushButton_Normal(Canvas, pRect);
+					break;
+				case CBS_UNCHECKEDHOT:
+					Theme::PushButton::Render::DrawPushButton_Hot(Canvas, pRect);
+					break;
+				case CBS_UNCHECKEDPRESSED:
+					Theme::PushButton::Render::DrawPushButton_Pressed(Canvas, pRect);
+					break;
+				case CBS_CHECKEDDISABLED:
+					Theme::PushButton::Render::DrawPushButton_Disabled(Canvas, pRect);
+					Theme::CheckBox::Render::DrawCheck_Disabled(Canvas, pRect);
+					break;
+				case CBS_CHECKEDNORMAL:
+					Theme::PushButton::Render::DrawPushButton_Normal(Canvas, pRect);
+					Theme::CheckBox::Render::DrawCheck_Normal(Canvas, pRect);
+					break;
+				case CBS_CHECKEDHOT:
+					Theme::PushButton::Render::DrawPushButton_Hot(Canvas, pRect);
+					Theme::CheckBox::Render::DrawCheck_Hot(Canvas, pRect);
+					break;
+				case CBS_CHECKEDPRESSED:
+					Theme::PushButton::Render::DrawPushButton_Pressed(Canvas, pRect);
+					Theme::CheckBox::Render::DrawCheck_Pressed(Canvas, pRect);
+					break;
+				default:
+					return DrawThemeBackground(hTheme, hdc, iPartId, iStateId, pRect, pClipRect);
 				}
 			}
-			break;
+			return S_OK;
+
+			case BP_RADIOBUTTON:
+			{
+				switch (iStateId)
+				{
+				case CBS_MIXEDDISABLED:
+				case CBS_IMPLICITDISABLED:
+				case CBS_EXCLUDEDDISABLED:
+				case CBS_UNCHECKEDDISABLED:
+					Theme::PushButton::Render::DrawPushButton_Disabled(Canvas, pRect);
+					break;
+				case CBS_UNCHECKEDNORMAL:
+					Theme::PushButton::Render::DrawPushButton_Normal(Canvas, pRect);
+					break;
+				case CBS_UNCHECKEDHOT:
+					Theme::PushButton::Render::DrawPushButton_Hot(Canvas, pRect);
+					break;
+				case CBS_UNCHECKEDPRESSED:
+					Theme::PushButton::Render::DrawPushButton_Pressed(Canvas, pRect);
+					break;
+				case CBS_CHECKEDDISABLED:
+					Theme::PushButton::Render::DrawPushButton_Disabled(Canvas, pRect);
+					Theme::RadioButton::Render::DrawRadioButton_Disabled(Canvas, pRect);
+					break;
+				case CBS_CHECKEDNORMAL:
+					Theme::PushButton::Render::DrawPushButton_Normal(Canvas, pRect);
+					Theme::RadioButton::Render::DrawRadioButton_Normal(Canvas, pRect);
+					break;
+				case CBS_CHECKEDHOT:
+					Theme::PushButton::Render::DrawPushButton_Hot(Canvas, pRect);
+					Theme::RadioButton::Render::DrawRadioButton_Hot(Canvas, pRect);
+					break;
+				case CBS_CHECKEDPRESSED:
+					Theme::PushButton::Render::DrawPushButton_Pressed(Canvas, pRect);
+					Theme::RadioButton::Render::DrawRadioButton_Pressed(Canvas, pRect);
+					break;
+				default:
+					return DrawThemeBackground(hTheme, hdc, iPartId, iStateId, pRect, pClipRect);
+				}
 			}
+			return S_OK;
+			}
+		}
+		else if (themeType == ThemeType::TrackBar)
+		{
+			switch (iPartId)
+			{
+			case TKP_TRACK:
+			case TKP_TRACKVERT:
+			{
+				Theme::TrackBar::Render::DrawTrack(Canvas, pRect);
+			}
+			return S_OK;
+			case TKP_THUMB:
+			case TKP_THUMBVERT:
+			case TKP_THUMBBOTTOM:
+			case TKP_THUMBTOP:
+			case TKP_THUMBLEFT:
+			case TKP_THUMBRIGHT:
+			{
+				switch (iStateId)
+				{
+				case TUS_HOT:
+					Theme::TrackBar::Render::DrawSlider_Hot(Canvas, pRect);
+					break;
+				case TUS_PRESSED:
+					Theme::TrackBar::Render::DrawSlider_Pressed(Canvas, pRect);
+					break;
+				case TUS_FOCUSED:
+					Theme::TrackBar::Render::DrawSlider_Focused(Canvas, pRect);
+					break;
+				case TUS_DISABLED:
+					Theme::TrackBar::Render::DrawSlider_Disabled(Canvas, pRect);
+					break;
+				default:
+					Theme::TrackBar::Render::DrawSlider_Normal(Canvas, pRect);
+					break;
+				}
+			}
+			}
+
+			return S_OK;
 		}
 		else if (themeType == ThemeType::ComboBox)
 		{
-			static HBRUSH comboBoxBorder = CreateSolidBrush(RGB(130, 135, 144));// RGB(83, 83, 83)
-			static HBRUSH comboBoxFill = CreateSolidBrush(RGB(32, 32, 32));
-
 			switch (iPartId)
 			{
 			case CP_READONLY:			// Main control
 			{
-				FillRect(hdc, pRect, iStateId == CBRO_DISABLED ? comboBoxBorder : comboBoxFill);
-				FrameRect(hdc, pRect, comboBoxBorder);
+				switch (iStateId)
+				{
+				case CBRO_HOT:
+					Theme::PushButton::Render::DrawPushButton_Hot(Canvas, pRect);
+					break;
+				case CBRO_DISABLED:
+					Theme::PushButton::Render::DrawPushButton_Disabled(Canvas, pRect);
+					break;
+				case CBRO_PRESSED:
+					Theme::PushButton::Render::DrawPushButton_Pressed(Canvas, pRect);
+					break;
+				default:
+					Theme::PushButton::Render::DrawPushButton_Normal(Canvas, pRect);
+					break;
+				}
 			}
 			return S_OK;
 
@@ -620,18 +1132,32 @@ namespace EditorUIDarkMode
 			{
 				// Special case: dropdown arrow needs to be drawn
 				DrawThemeBackground(hTheme, hdc, iPartId, iStateId, pRect, pClipRect);
-				FillRect(hdc, pRect, comboBoxFill);
 
-				if (iStateId == CBB_DISABLED)
-					FillRect(hdc, pRect, comboBoxBorder);
-				else
-					FrameRect(hdc, pRect, comboBoxBorder);
+				switch (iStateId)
+				{
+				case CBB_HOT:
+					Theme::EditText::Render::DrawEditText_Hot(Canvas, pRect);
+					break;
+				case CBB_DISABLED:
+					Theme::EditText::Render::DrawEditText_Disabled(Canvas, pRect);
+					break;
+				case CBB_FOCUSED:
+					Theme::EditText::Render::DrawEditText_Focused(Canvas, pRect);
+					break;
+				default:
+					Theme::EditText::Render::DrawEditText_Normal(Canvas, pRect);
+					break;
+				}
 			}
 			return S_OK;
 
 			case CP_DROPDOWNBUTTONRIGHT:// Dropdown arrow
 			case CP_DROPDOWNBUTTONLEFT:	// Dropdown arrow
-				break;
+				if (iStateId == CBXS_DISABLED)
+					Theme::ComboBox::Render::DrawArrow_Disabled(Canvas, pRect);
+				else
+					Theme::ComboBox::Render::DrawArrow_Normal(Canvas, pRect);
+				return S_OK;
 
 			case CP_DROPDOWNBUTTON:
 			case CP_BACKGROUND:

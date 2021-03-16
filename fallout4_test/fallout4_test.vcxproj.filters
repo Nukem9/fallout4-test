@@ -72,6 +72,15 @@
     <Filter Include="Source Files\Patches\TES">
       <UniqueIdentifier>{21b55ee5-b253-45aa-b06c-c363d0179815}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{c58ef404-38ca-4c41-b94f-f535f6add608}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\UI\Theme">
+      <UniqueIdentifier>{4cb3eb36-9af6-4fad-b001-bffbaf9675bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\UI\Theme">
+      <UniqueIdentifier>{15465807-fb72-43fe-a815-6fe39cdff7e4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\profiler.h">
@@ -284,6 +293,72 @@
     <ClInclude Include="src\patches\CKF4\DataWindow.h">
       <Filter>Header Files\UI\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="src\patches\CKF4\UIImageList.h">
+      <Filter>Header Files\UI\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\UIGraphics.h">
+      <Filter>Header Files\UI\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\UIDWMWindow.h">
+      <Filter>Header Files\UI\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\UITheme\PopupMenu.h">
+      <Filter>Header Files\UI\Theme</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\UITheme\VarCommon.h">
+      <Filter>Header Files\UI\Theme</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\UITheme\MDIClient.h">
+      <Filter>Header Files\UI\Theme</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\UITheme\ListView.h">
+      <Filter>Header Files\UI\Theme</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\UITheme\TreeView.h">
+      <Filter>Header Files\UI\Theme</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\UITheme\ToolBar.h">
+      <Filter>Header Files\UI\Theme</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\UITheme\CheckBox.h">
+      <Filter>Header Files\UI\Theme</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\UITheme\RadioButton.h">
+      <Filter>Header Files\UI\Theme</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\UITheme\PushButton.h">
+      <Filter>Header Files\UI\Theme</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\UITheme\GroupBox.h">
+      <Filter>Header Files\UI\Theme</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\UITheme\EditText.h">
+      <Filter>Header Files\UI\Theme</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\UITheme\ComboBox.h">
+      <Filter>Header Files\UI\Theme</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\UITheme\StatusBar.h">
+      <Filter>Header Files\UI\Theme</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\UITheme\ScrollBar.h">
+      <Filter>Header Files\UI\Theme</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\UITheme\TrackBar.h">
+      <Filter>Header Files\UI\Theme</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\UITheme\UpDown.h">
+      <Filter>Header Files\UI\Theme</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\UITheme\ListBox.h">
+      <Filter>Header Files\UI\Theme</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\UITheme\ProgressBar.h">
+      <Filter>Header Files\UI\Theme</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\UITheme\ColorBox.h">
+      <Filter>Header Files\UI\Theme</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\dllmain.cpp">
@@ -421,6 +496,72 @@
     <ClCompile Include="src\patches\settings.cpp">
       <Filter>Source Files\Patches\TES</Filter>
     </ClCompile>
+    <ClCompile Include="src\patches\CKF4\UIImageList.cpp">
+      <Filter>Source Files\UI\Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\UIGraphics.cpp">
+      <Filter>Source Files\UI\Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\UIDWMWindow.cpp">
+      <Filter>Source Files\UI\Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\UITheme\PopupMenu.cpp">
+      <Filter>Source Files\UI\Theme</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\UITheme\VarCommon.cpp">
+      <Filter>Source Files\UI\Theme</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\UITheme\MDIClient.cpp">
+      <Filter>Source Files\UI\Theme</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\UITheme\ListView.cpp">
+      <Filter>Source Files\UI\Theme</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\UITheme\TreeView.cpp">
+      <Filter>Source Files\UI\Theme</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\UITheme\ToolBar.cpp">
+      <Filter>Source Files\UI\Theme</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\UITheme\CheckBox.cpp">
+      <Filter>Source Files\UI\Theme</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\UITheme\RadioButton.cpp">
+      <Filter>Source Files\UI\Theme</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\UITheme\PushButton.cpp">
+      <Filter>Source Files\UI\Theme</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\UITheme\GroupBox.cpp">
+      <Filter>Source Files\UI\Theme</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\UITheme\EditText.cpp">
+      <Filter>Source Files\UI\Theme</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\UITheme\ComboBox.cpp">
+      <Filter>Source Files\UI\Theme</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\UITheme\StatusBar.cpp">
+      <Filter>Source Files\UI\Theme</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\UITheme\ScrollBar.cpp">
+      <Filter>Source Files\UI\Theme</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\UITheme\TrackBar.cpp">
+      <Filter>Source Files\UI\Theme</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\UITheme\UpDown.cpp">
+      <Filter>Source Files\UI\Theme</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\UITheme\ListBox.cpp">
+      <Filter>Source Files\UI\Theme</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\UITheme\ProgressBar.cpp">
+      <Filter>Source Files\UI\Theme</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\UITheme\ColorBox.cpp">
+      <Filter>Source Files\UI\Theme</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\typeinfo\ni_rtti.inl">
@@ -432,6 +573,28 @@
     <None Include="cpp.hint" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="resource.rc" />
+    <Image Include="..\Resources\check_darktheme.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="..\Resources\check.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="..\Resources\uncheck.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="..\Resources\uncheck_darktheme.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="..\Resources\toolbar.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="..\Resources\types.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="resource.rc">
+      <Filter>Resources</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

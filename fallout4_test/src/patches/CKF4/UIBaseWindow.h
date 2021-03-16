@@ -2,6 +2,7 @@
 
 #include"..\ComClasses.h"
 #include "UIMenus.h"
+#include "UIGraphics.h"
 
 namespace Core
 {
@@ -22,127 +23,13 @@ namespace Core
 			class CUIMainWindow;
 			class CUIToolWindow;
 
-			class CRECT
-			{
-			private:
-				LONG m_left;
-				LONG m_top;
-				LONG m_right;
-				LONG m_bottom;
-			public:
-				CRECT() : m_left(0), m_top(0), m_right(0), m_bottom(0) {}
-				CRECT(const LONG l, const LONG t, const LONG r, const LONG b) : m_left(l), m_top(t), m_right(r), m_bottom(b) {}
-				CRECT(const RECT &r) : m_left(r.left), m_top(r.top), m_right(r.right), m_bottom(r.bottom) {}
-				CRECT(const CRECT &r) : m_left(r.m_left), m_top(r.m_top), m_right(r.m_right), m_bottom(r.m_bottom) {}
-			public:
-				inline LONG GetWidth(void) const { return m_right - m_left; }
-				inline LONG GetHeight(void) const { return m_bottom - m_top; }
-				inline LONG GetLeft(void) const { return m_left; }
-				inline LONG GetTop(void) const { return m_top; }
-				inline LONG GetRight(void) const { return m_right; }
-				inline LONG GetBottom(void) const { return m_bottom; }
-				inline void SetWidth(const LONG value) { m_right = value + m_left; }
-				inline void SetHeight(const LONG value) { m_bottom = value + m_top; }
-				inline void SetLeft(const LONG value) { m_right = GetWidth() + value; m_left = value; }
-				inline void SetTop(const LONG value) { m_bottom = GetHeight() + value; m_top = value; }
-				inline void SetRight(const LONG value) { m_right = value; }
-				inline void SetBottom(const LONG value) { m_bottom = value; }
-			public:
-				inline CRECT& Inflate(const LONG x, const LONG y) { m_left -= x; m_top -= y; m_right += x; m_bottom += y; return *this; }
-				inline BOOL IsEmpty(void) const { return GetWidth() == 0 || GetHeight() == 0; }
-				inline CRECT Dublicate(void) const { return *this; }
-			public:
-				PROPERTY(GetWidth, SetWidth) LONG Width;
-				PROPERTY(GetHeight, SetHeight) LONG Height;
-				PROPERTY(GetLeft, SetLeft) LONG Left;
-				PROPERTY(GetTop, SetTop) LONG Top;
-				PROPERTY(GetRight, SetRight) LONG Right;
-				PROPERTY(GetBottom, SetBottom) LONG Bottom;
-			};
-
-			enum CFontStyle {
-				fsBold,
-				fsItalic,
-				fsUnderline,
-				fsStrikeOut
-			};
-			typedef std::set<CFontStyle> CFontStyles;
-			enum CFontQuality {
-				fqDefault,
-				fqClearType,
-				fqClearTypeNatural,
-				fqProof,
-				fqAntialiased,
-				fqNoAntialiased,
-			};
-			enum CFontPitch {
-				fpDefault,
-				fpFixed,
-				fpVariable,
-				fpMono
-			};
-
-			class CFont
-			{
-			private:
-				HFONT m_Handle;
-				std::string m_Name;
-				CUIBaseWindow* m_Cnt;
-				CFontStyles m_FontStyles;
-				CFontQuality m_Quality;
-				CFontPitch m_Pitch;
-				LONG m_Height;
-			private:
-				void Change(void);
-			public:
-				inline HFONT GetHandle(void) const { return m_Handle; }
-				std::string GetName(void) const { return m_Name; }
-				void SetName(const std::string &name);
-				LONG GetSize(void) const;
-				void SetSize(const LONG value);
-				inline LONG GetHeight(void) const { return m_Height; }
-				void SetHeight(const LONG value);
-				inline CFontStyles GetStyles(void) const { return m_FontStyles; }
-				void SetStyles(const CFontStyles &styles);
-				inline CFontQuality GetQuality(void) const { return m_Quality; }
-				void SetQuality(const CFontQuality quality);
-				inline CFontPitch GetPitch(void) const { return m_Pitch; }
-				void SetPitch(const CFontPitch pitch);
-			private:
-				void Recreate(void);
-				void Recreate(const HDC hDC);
-			public:
-				void Apply(HWND window);
-				void Apply(CUIBaseWindow* window);
-				inline void Release(void) { DeleteObject(m_Handle); }
-			public:
-				READ_PROPERTY(GetHandle) HFONT Handle;
-				PROPERTY(GetName, SetName) const std::string Name;
-				PROPERTY(GetSize, SetSize) const LONG Size;
-				PROPERTY(GetHeight, SetHeight) const LONG Height;
-				PROPERTY(GetStyles, SetStyles) const CFontStyles Styles;
-				PROPERTY(GetQuality, SetQuality) const CFontQuality Quality;
-				PROPERTY(GetPitch, SetPitch) const CFontPitch Pitch;
-			public:
-				CFont(const std::string &name, const LONG size, const CFontStyles &styles = {}, const CFontQuality quality = fqClearTypeNatural,
-					const CFontPitch pitch = fpVariable);
-				CFont(const HDC hDC);
-				CFont(const CFont &parent) : m_Cnt(NULL), m_FontStyles(parent.m_FontStyles), m_Quality(parent.m_Quality), m_Pitch(parent.m_Pitch),
-					m_Name(parent.m_Name), m_Height(parent.m_Height) { Recreate(); }
-				CFont(CUIBaseWindow* Cnt);
-			};
-
 			class CUIBaseWindow
 			{
 			private:
 				BOOL m_LockUpdate;
 				HDC m_hDC;
-			public:
-				CFont Font;
 			protected:
 				HWND m_hWnd;
-			public:
-				virtual void __ChangeFont(const CFont* font);
 			public:
 				inline HWND GetHandle(void) const { return m_hWnd; }
 				WindowState_t GetWindowState(void) const;
@@ -197,11 +84,11 @@ namespace Core
 				LRESULT Perform(UINT uMsg, WPARAM wParam, LPARAM lParam);
 				LRESULT Perform(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 			public:
-				CUIBaseWindow(void) : m_LockUpdate(FALSE), m_hWnd(NULL), m_hDC(GetDC(0)), Font(this)
+				CUIBaseWindow(void) : m_LockUpdate(FALSE), m_hWnd(NULL), m_hDC(GetDC(0))
 					{ }
-				CUIBaseWindow(const HWND hWnd) : m_LockUpdate(FALSE), m_hWnd(hWnd), m_hDC(GetDC(hWnd)), Font(m_hDC)
+				CUIBaseWindow(const HWND hWnd) : m_LockUpdate(FALSE), m_hWnd(hWnd), m_hDC(GetDC(hWnd))
 					{ }
-				CUIBaseWindow(const CUIBaseWindow &base) : m_LockUpdate(base.m_LockUpdate), m_hWnd(base.m_hWnd), m_hDC(GetDC(m_hWnd)), Font(this)
+				CUIBaseWindow(const CUIBaseWindow &base) : m_LockUpdate(base.m_LockUpdate), m_hWnd(base.m_hWnd), m_hDC(GetDC(m_hWnd))
 					{ }
 				virtual ~CUIBaseWindow(void) { ReleaseDC(m_hWnd, m_hDC); }
 			public:

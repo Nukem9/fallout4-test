@@ -105,7 +105,7 @@ namespace ObjectWindow
 
 			// Set font default
 			// This is the default value, but I need an object record to create the missing controls
-			ObjectWindow.Font = Core::Classes::UI::CFont("Microsoft Sans Serif", 8, {}, Core::Classes::UI::fqClearTypeNatural, Core::Classes::UI::fpVariable);
+//			ObjectWindow.Font = Core::Classes::UI::CFont("Microsoft Sans Serif", 8, {}, Core::Classes::UI::fqClearTypeNatural, Core::Classes::UI::fpVariable);
 
 			ObjectWindowControls.TreeList = ObjectWindow.GetControl(2093);
 			ObjectWindowControls.ItemList = ObjectWindow.GetControl(1041);

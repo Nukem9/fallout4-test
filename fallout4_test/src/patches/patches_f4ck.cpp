@@ -143,6 +143,13 @@ void Patch_Fallout4CreationKit()
 		Detours::IATHook(comDll, "USER32.dll", "GetSysColorBrush", (uintptr_t)&EditorUIDarkMode::Comctl32GetSysColorBrush);
 		Detours::IATDelayedHook(comDll, "UxTheme.dll", "DrawThemeBackground", (uintptr_t)&EditorUIDarkMode::Comctl32DrawThemeBackground);
 		Detours::IATDelayedHook(comDll, "UxTheme.dll", "DrawThemeText", (uintptr_t)&EditorUIDarkMode::Comctl32DrawThemeText);
+
+		// replace main toolbar
+		XUtil::DetourCall(OFFSET(0x5FE166, 0), EditorUIDarkMode::Comctl32CreateToolbarEx_1);
+		XUtil::DetourJump(OFFSET(0x5FE401, 0), EditorUIDarkMode::HideOldTimeOfDayComponents);
+
+		// replace ImageList_LoadImage for item type
+		XUtil::DetourCall(OFFSET(0x5B63E7, 0), EditorUIDarkMode::Comctl32ImageList_LoadImageA_1);
 	}
 
 	if (g_INI.GetBoolean("CreationKit", "UI", false))

@@ -185,8 +185,30 @@
     <ClInclude Include="src\patches\CKF4\TESForm_CK.h" />
     <ClInclude Include="src\patches\CKF4\UIBaseWindow.h" />
     <ClInclude Include="src\patches\CKF4\UICheckboxControl.h" />
+    <ClInclude Include="src\patches\CKF4\UIDWMWindow.h" />
+    <ClInclude Include="src\patches\CKF4\UIGraphics.h" />
+    <ClInclude Include="src\patches\CKF4\UIImageList.h" />
     <ClInclude Include="src\patches\CKF4\UIMenus.h" />
     <ClInclude Include="src\patches\CKF4\UIProgressDialog.h" />
+    <ClInclude Include="src\patches\CKF4\UITheme\CheckBox.h" />
+    <ClInclude Include="src\patches\CKF4\UITheme\ColorBox.h" />
+    <ClInclude Include="src\patches\CKF4\UITheme\ComboBox.h" />
+    <ClInclude Include="src\patches\CKF4\UITheme\EditText.h" />
+    <ClInclude Include="src\patches\CKF4\UITheme\GroupBox.h" />
+    <ClInclude Include="src\patches\CKF4\UITheme\ListBox.h" />
+    <ClInclude Include="src\patches\CKF4\UITheme\ListView.h" />
+    <ClInclude Include="src\patches\CKF4\UITheme\MDIClient.h" />
+    <ClInclude Include="src\patches\CKF4\UITheme\ProgressBar.h" />
+    <ClInclude Include="src\patches\CKF4\UITheme\PushButton.h" />
+    <ClInclude Include="src\patches\CKF4\UITheme\RadioButton.h" />
+    <ClInclude Include="src\patches\CKF4\UITheme\ScrollBar.h" />
+    <ClInclude Include="src\patches\CKF4\UITheme\StatusBar.h" />
+    <ClInclude Include="src\patches\CKF4\UITheme\ToolBar.h" />
+    <ClInclude Include="src\patches\CKF4\UITheme\TrackBar.h" />
+    <ClInclude Include="src\patches\CKF4\UITheme\TreeView.h" />
+    <ClInclude Include="src\patches\CKF4\UITheme\UpDown.h" />
+    <ClInclude Include="src\patches\CKF4\UITheme\VarCommon.h" />
+    <ClInclude Include="src\patches\CKF4\UITheme\PopupMenu.h" />
     <ClInclude Include="src\patches\ComClasses.h" />
     <ClInclude Include="src\patches\offsets.h" />
     <ClInclude Include="src\patches\TES\bhkThreadMemorySource.h" />
@@ -253,8 +275,30 @@
     <ClCompile Include="src\patches\CKF4\TESForm_CK.cpp" />
     <ClCompile Include="src\patches\CKF4\UIBaseWindow.cpp" />
     <ClCompile Include="src\patches\CKF4\UICheckboxControl.cpp" />
+    <ClCompile Include="src\patches\CKF4\UIDWMWindow.cpp" />
+    <ClCompile Include="src\patches\CKF4\UIGraphics.cpp" />
+    <ClCompile Include="src\patches\CKF4\UIImageList.cpp" />
     <ClCompile Include="src\patches\CKF4\UIMenus.cpp" />
     <ClCompile Include="src\patches\CKF4\UIProgressDialog.cpp" />
+    <ClCompile Include="src\patches\CKF4\UITheme\CheckBox.cpp" />
+    <ClCompile Include="src\patches\CKF4\UITheme\ColorBox.cpp" />
+    <ClCompile Include="src\patches\CKF4\UITheme\ComboBox.cpp" />
+    <ClCompile Include="src\patches\CKF4\UITheme\EditText.cpp" />
+    <ClCompile Include="src\patches\CKF4\UITheme\GroupBox.cpp" />
+    <ClCompile Include="src\patches\CKF4\UITheme\ListBox.cpp" />
+    <ClCompile Include="src\patches\CKF4\UITheme\ListView.cpp" />
+    <ClCompile Include="src\patches\CKF4\UITheme\MDIClient.cpp" />
+    <ClCompile Include="src\patches\CKF4\UITheme\ProgressBar.cpp" />
+    <ClCompile Include="src\patches\CKF4\UITheme\PushButton.cpp" />
+    <ClCompile Include="src\patches\CKF4\UITheme\RadioButton.cpp" />
+    <ClCompile Include="src\patches\CKF4\UITheme\ScrollBar.cpp" />
+    <ClCompile Include="src\patches\CKF4\UITheme\StatusBar.cpp" />
+    <ClCompile Include="src\patches\CKF4\UITheme\ToolBar.cpp" />
+    <ClCompile Include="src\patches\CKF4\UITheme\TrackBar.cpp" />
+    <ClCompile Include="src\patches\CKF4\UITheme\TreeView.cpp" />
+    <ClCompile Include="src\patches\CKF4\UITheme\UpDown.cpp" />
+    <ClCompile Include="src\patches\CKF4\UITheme\VarCommon.cpp" />
+    <ClCompile Include="src\patches\CKF4\UITheme\PopupMenu.cpp" />
     <ClCompile Include="src\patches\offsets.cpp" />
     <ClCompile Include="src\patches\patches_f4ck.cpp" />
     <ClCompile Include="src\patches\patches_f4tes.cpp" />
@@ -288,6 +332,14 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\Resources\check.bmp" />
+    <Image Include="..\Resources\check_darktheme.bmp" />
+    <Image Include="..\Resources\toolbar.bmp" />
+    <Image Include="..\Resources\types.bmp" />
+    <Image Include="..\Resources\uncheck.bmp" />
+    <Image Include="..\Resources\uncheck_darktheme.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

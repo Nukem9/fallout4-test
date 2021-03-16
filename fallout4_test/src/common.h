@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../resource.h"
 #include "config.h"
 
 #include <windows.h>
@@ -42,6 +43,7 @@ extern __itt_heap_function ITT_FreeCallback;
 
 extern "C" IMAGE_DOS_HEADER __ImageBase;
 
+extern HINSTANCE g_hModule;
 extern INIReader g_INI;
 
 extern uintptr_t g_ModuleBase;

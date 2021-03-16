@@ -3,17 +3,26 @@
 #include "CellViewWindow.h"
 #include "ObjectWindow.h"
 #include "RenderWindow.h"
+#include "EditorUIDarkMode.h"
 #include "Editor.h"
+#include "UIDWMWindow.h"
 
 #include <commdlg.h>
 #include <shellapi.h>
 
+#include <Uxtheme.h>
+
 namespace MainWindow
 {
+	/*constexpr INT TOPEXTENDWIDTH = 2;
+	constexpr INT LEFTEXTENDWIDTH = 3;
+	constexpr INT RIGHTEXTENDWIDTH = 3;
+	constexpr INT BOTTOMEXTENDWIDTH = 3;*/
 	Core::Classes::UI::CUIMainWindow MainWindow;
+	Core::Classes::UI::CUIBaseControl ToolbarPanel_1;
 
 	WNDPROC OldWndProc;
-
+	
 	HWND GetWindow(void)
 	{
 		return MainWindow.Handle;
@@ -64,6 +73,17 @@ namespace MainWindow
 		return result;
 	}
 
+	// Paint the title on the custom frame.
+	void PaintCustomCaption(HWND hWnd, HDC hdc)
+	{
+		RECT rcClient;
+		GetWindowRect(hWnd, &rcClient);
+
+		Core::Classes::UI::CUICanvas canvas = GetWindowDC(hWnd);
+
+		canvas.Fill(rcClient, RGB(32, 32, 0));
+	}
+
 	LRESULT CALLBACK WndProc(HWND Hwnd, UINT Message, WPARAM wParam, LPARAM lParam)
 	{
 		Core::Classes::UI::CUIMenuItem MenuItem;
@@ -79,10 +99,6 @@ namespace MainWindow
 				// The entire API is in the Creation Kit ANSI, so it's better to use A
 				LRESULT status = CallWindowProcA(OldWndProc, Hwnd, Message, wParam, lParam);
 				MainWindow = Hwnd;
-
-				// Set font default
-				// This is the default value, but I need an object record to create the missing controls
-				MainWindow.Font = Core::Classes::UI::CFont("Microsoft Sans Serif", 8, {}, Core::Classes::UI::fqClearTypeNatural, Core::Classes::UI::fpVariable);
 
 				// Create custom menu controls
 				MainWindow.MainMenu = createInfo->hMenu;

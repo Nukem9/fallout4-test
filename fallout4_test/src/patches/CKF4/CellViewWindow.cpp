@@ -58,7 +58,7 @@ namespace CellViewWindow
 
 				// Set font default
 				// This is the default value, but I need an object record to create the missing controls
-				CellViewWindow.Font = Core::Classes::UI::CFont("Microsoft Sans Serif", 8, {}, Core::Classes::UI::fqClearTypeNatural, Core::Classes::UI::fpVariable);
+//				CellViewWindow.Font = Core::Classes::UI::CFont("Microsoft Sans Serif", 8, {}, Core::Classes::UI::fqClearTypeNatural, Core::Classes::UI::fpVariable);
 
 				CellViewWindowControls.LabelWorldSpace = CellViewWindow.GetControl(1164);
 				CellViewWindowControls.NoCellSellected = CellViewWindow.GetControl(1163);

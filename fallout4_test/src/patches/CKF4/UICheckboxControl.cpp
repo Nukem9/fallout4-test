@@ -16,8 +16,8 @@ namespace Core
 				Assert(parent.Is());
 
 				m_hWnd = control.Handle;
-				Font = parent.Font;
-				Font.Apply(m_hWnd);
+//				Font = parent.Font;
+//				Font.Apply(m_hWnd);
 
 				Assert(m_hWnd);
 				m_MenuId = menu_id;
@@ -37,8 +37,8 @@ namespace Core
 					(HMENU)menu_id,
 					GetModuleHandle(NULL), NULL);
 
-				Font = parent.Font;
-				Font.Apply(m_hWnd);
+//				Font = parent.Font;
+//				Font.Apply(m_hWnd);
 
 				Assert(m_hWnd);
 

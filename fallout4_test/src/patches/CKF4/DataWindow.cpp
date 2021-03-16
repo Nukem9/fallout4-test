@@ -1,4 +1,7 @@
 #include "DataWindow.h"
+#include "UIImageList.h"
+#include "EditorUIDarkMode.h"
+#include "../../../resource.h"
 
 #include <windowsx.h>
 
@@ -60,6 +63,7 @@ namespace DataWindow
 		Core::Classes::UI::CUIBaseControl ListViewPluginsResult;
 		Core::Classes::UI::CUIBaseControl ListViewDependences;
 		Core::Classes::UI::CUIBaseControl EditSearch;
+		Core::Classes::UI::CUIImageList ImageList;
 	} DataWindowControls;
 
 	DLGPROC OldDlgProc;
@@ -100,10 +104,7 @@ namespace DataWindow
 
 		if (bShowResultListView)
 		{
-			// Bethesda probably doesn't know about the existence of Check. 
-			// They have created icons that mimic pictorially for the user.
-			// I completely take everything from there, although I'm not happy about it, but this is a ready-made mechanism, and I'm just trying to make a search in it.
-			ListView_SetImageList(hWndResult, ListView_GetImageList(hWnd, LVSIL_SMALL), LVSIL_SMALL);
+			
 
 			// The width could be changed, will repeat for list
 			ListView_SetColumnWidth(hWndResult, 0, ListView_GetColumnWidth(hWnd, 0));
@@ -181,6 +182,30 @@ namespace DataWindow
 		SendMessageA(hSrchEdit, WM_SETCURSOR, 0, 0);
 	}
 
+	BOOL CKF4Fixes_LoadImageFromFileA(HBITMAP &bitmap, const std::string& filename)
+	{
+		bitmap = (HBITMAP)LoadImageA(NULL, filename.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+		return bitmap != NULL;
+	}
+
+	BOOL CKF4Fixes_LoadImageFromResourceA(HBITMAP &bitmap, const std::string& name)
+	{
+		bitmap = (HBITMAP)LoadImageA(NULL, name.c_str(), IMAGE_BITMAP, 0, 0, 0);
+		return bitmap != NULL;
+	}
+
+	BOOL CKF4Fixes_ImageListReplaceA(HIMAGELIST imglst, INT idx, const std::string& filename)
+	{
+		HBITMAP bmp;
+		if (!CKF4Fixes_LoadImageFromFileA(bmp, filename))
+			return FALSE;
+
+		BOOL bRes = ImageList_Replace(imglst, idx, NULL, bmp);
+		DeleteObject(bmp);
+
+		return bRes;
+	}
+
 	HWND GetWindow(void)
 	{
 		return DataWindow.Handle;
@@ -199,7 +224,7 @@ namespace DataWindow
 
 			// Set font default
 			// This is the default value, but I need an object record to create the missing controls
-			DataWindow.Font = Core::Classes::UI::CFont("Microsoft Sans Serif", 8, {}, Core::Classes::UI::fqClearTypeNatural, Core::Classes::UI::fpVariable);
+//			DataWindow.Font = Core::Classes::UI::CFont("Microsoft Sans Serif", 8, {}, Core::Classes::UI::fqClearTypeNatural, Core::Classes::UI::fpVariable);
 
 			DataWindowControls.ListViewPlugins = DataWindow.GetControl(UI_LISTVIEW_PLUGINS);
 			DataWindowControls.ListViewPluginsResult = DataWindow.GetControl(UI_NEW_LISTVIEW_CONTROL_TO_RESULT);
@@ -212,6 +237,33 @@ namespace DataWindow
 
 			// Initialize listview for result search
 			CKF4Fixes_ListViewResultInitialize();
+
+			INT_PTR nRes = OldDlgProc(DialogHwnd, Message, wParam, lParam);
+
+			// Bethesda probably doesn't know about the existence of Check. 
+			// They have created icons that mimic pictorially for the user.
+			// I completely take everything from there, although I'm not happy about it, but this is a ready-made mechanism, and I'm just trying to make a search in it.
+			HIMAGELIST hImageList = ListView_GetImageList(DataWindowControls.ListViewPlugins.Handle, LVSIL_SMALL);
+			
+        	DataWindowControls.ImageList.ReCreate(16, 16, FALSE, Core::Classes::UI::ilct24Bit);
+
+			if (EditorUIDarkMode::IsUIDarkMode())
+			{
+				DataWindowControls.ImageList.AddFromResource(g_hModule, MAKEINTRESOURCEA(IDB_BITMAP4));
+				DataWindowControls.ImageList.AddFromResource(g_hModule, MAKEINTRESOURCEA(IDB_BITMAP2));
+			}
+			else
+			{
+				DataWindowControls.ImageList.AddFromResource(g_hModule, MAKEINTRESOURCEA(IDB_BITMAP3));
+				DataWindowControls.ImageList.AddFromResource(g_hModule, MAKEINTRESOURCEA(IDB_BITMAP1));
+			}
+			
+			ListView_SetImageList(DataWindowControls.ListViewPluginsResult.Handle, DataWindowControls.ImageList.Handle, LVSIL_SMALL);
+			ListView_SetImageList(DataWindowControls.ListViewPlugins.Handle, DataWindowControls.ImageList.Handle, LVSIL_SMALL);
+
+			ImageList_Destroy(hImageList);
+
+			return nRes;
 		}
 		else if (Message == WM_COMMAND)
 		{

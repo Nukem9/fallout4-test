@@ -9,12 +9,23 @@ namespace Core
 	{
 		namespace UI
 		{
-			void CUIMenuItem::Click(void) const
+			BOOL CUIMenuItem::IsSubMenu(VOID) const
+			{
+				MENUITEMINFOA m_mif = { 0 };
+				m_mif.cbSize = sizeof(MENUITEMINFOA);
+				m_mif.fMask = MIIM_SUBMENU;
+				
+				GetMenuItemInfoA(m_Menu->Handle, m_Pos, m_ByPos, &m_mif);
+
+				return (BOOL)m_mif.hSubMenu;
+			}
+
+			VOID CUIMenuItem::Click(VOID) const
 			{
 				PostMessageA(MainWindow::GetWindow(), WM_COMMAND, GetID(), 0);
 			}
 
-			void CUIMenuItem::SetText(const std::string& text)
+			VOID CUIMenuItem::SetText(const std::string& text)
 			{
 				MENUITEMINFOA m_mif = {0};
 				m_mif.cbSize = sizeof(MENUITEMINFOA);
@@ -26,7 +37,7 @@ namespace Core
 				SetMenuItemInfoA(m_Menu->Handle, m_Pos, m_ByPos, &m_mif);
 			}
 
-			std::string CUIMenuItem::GetText(void) const
+			std::string CUIMenuItem::GetText(VOID) const
 			{
 				std::string str;
 			
@@ -42,12 +53,42 @@ namespace Core
 					str.resize(m_mif.cch);
 					m_mif.dwTypeData = &str[0];
 					GetMenuItemInfoA(m_Menu->Handle, m_Pos, m_ByPos, &m_mif);
+
+					// skip shortcut
+					if (LPSTR s = strchr(&str[0], '\t'); s) *s = '\0';
 				}
 
 				return str;
 			}
 
-			void CUIMenuItem::SetID(const UINT menu_id)
+			std::string CUIMenuItem::GetShortCutText(VOID) const
+			{
+				std::string str;
+
+				MENUITEMINFOA m_mif = { 0 };
+				m_mif.cbSize = sizeof(MENUITEMINFOA);
+				m_mif.fMask = MIIM_STRING;
+				m_mif.fType = MFT_STRING;
+				m_mif.dwTypeData = NULL;
+
+				if (GetMenuItemInfoA(m_Menu->Handle, m_Pos, m_ByPos, &m_mif))
+				{
+					m_mif.cch++;
+					str.resize(m_mif.cch);
+					m_mif.dwTypeData = &str[0];
+					GetMenuItemInfoA(m_Menu->Handle, m_Pos, m_ByPos, &m_mif);
+
+					// skip text
+					if (LPSTR s = strchr(&str[0], '\t'); s)
+						memmove((LPVOID)str.data(), (LPVOID)s, strlen(s) + 1);
+					else
+						return "";
+				}
+
+				return str;
+			}
+
+			VOID CUIMenuItem::SetID(const UINT menu_id)
 			{
 				MENUITEMINFOA m_mif = { 0 };
 				m_mif.cbSize = sizeof(MENUITEMINFOA);
@@ -57,7 +98,7 @@ namespace Core
 				SetMenuItemInfoA(m_Menu->Handle, m_Pos, m_ByPos, &m_mif);
 			}
 
-			UINT CUIMenuItem::GetID(void) const
+			UINT CUIMenuItem::GetID(VOID) const
 			{
 				MENUITEMINFOA m_mif = { 0 };
 				m_mif.cbSize = sizeof(MENUITEMINFOA);
@@ -68,7 +109,7 @@ namespace Core
 				return m_mif.wID;
 			}
 
-			void CUIMenuItem::SetChecked(const BOOL value)
+			VOID CUIMenuItem::SetChecked(const BOOL value)
 			{
 				if (GetChecked() == value)
 					return;
@@ -85,7 +126,7 @@ namespace Core
 				SetMenuItemInfoA(m_Menu->Handle, m_Pos, m_ByPos, &m_mif);
 			}
 
-			BOOL CUIMenuItem::GetChecked(void) const
+			BOOL CUIMenuItem::GetChecked(VOID) const
 			{
 				MENUITEMINFOA m_mif = { 0 };
 				m_mif.cbSize = sizeof(MENUITEMINFOA);
@@ -95,7 +136,7 @@ namespace Core
 				return (m_mif.fState & MFS_CHECKED) == MFS_CHECKED;
 			}
 
-			void CUIMenuItem::SetEnabled(const BOOL value)
+			VOID CUIMenuItem::SetEnabled(const BOOL value)
 			{
 				if (GetEnabled() == value)
 					return;
@@ -112,7 +153,7 @@ namespace Core
 				SetMenuItemInfoA(m_Menu->Handle, m_Pos, m_ByPos, &m_mif);
 			}
 
-			BOOL CUIMenuItem::GetEnabled(void) const
+			BOOL CUIMenuItem::GetEnabled(VOID) const
 			{
 				MENUITEMINFOA m_mif = { 0 };
 				m_mif.cbSize = sizeof(MENUITEMINFOA);
@@ -122,7 +163,55 @@ namespace Core
 				return (m_mif.fState & MFS_ENABLED) == MFS_ENABLED;
 			}
 
-			BOOL CUIMenuItem::IsSeparate(void) const
+			VOID CUIMenuItem::SetOwnerDraw(const BOOL value)
+			{
+				if (GetOwnerDraw() == value)
+					return;
+
+				MENUITEMINFOA m_mif = { 0 };
+				m_mif.cbSize = sizeof(MENUITEMINFOA);
+				m_mif.fMask = MIIM_FTYPE;
+				GetMenuItemInfoA(m_Menu->Handle, m_Pos, m_ByPos, &m_mif);
+
+				if (value)
+					m_mif.fType |= MFT_OWNERDRAW;
+				else
+					m_mif.fType &= ~MFT_OWNERDRAW;
+
+				SetMenuItemInfoA(m_Menu->Handle, m_Pos, m_ByPos, &m_mif);
+			}
+
+			BOOL CUIMenuItem::GetOwnerDraw(VOID) const
+			{
+				MENUITEMINFOA m_mif = { 0 };
+				m_mif.cbSize = sizeof(MENUITEMINFOA);
+				m_mif.fMask = MIIM_FTYPE;
+				GetMenuItemInfoA(m_Menu->Handle, m_Pos, m_ByPos, &m_mif);
+
+				return (m_mif.fType & MFT_OWNERDRAW) == MFT_OWNERDRAW;
+			}
+
+			VOID CUIMenuItem::SetTag(const LONG_PTR data_ptr)
+			{
+				MENUITEMINFOA m_mif = { 0 };
+				m_mif.cbSize = sizeof(MENUITEMINFOA);
+				m_mif.fMask = MIIM_DATA;
+				m_mif.dwItemData = data_ptr;
+		
+				SetMenuItemInfoA(m_Menu->Handle, m_Pos, m_ByPos, &m_mif);
+			}
+
+			LONG_PTR CUIMenuItem::GetTag(VOID) const
+			{
+				MENUITEMINFOA m_mif = { 0 };
+				m_mif.cbSize = sizeof(MENUITEMINFOA);
+				m_mif.fMask = MIIM_DATA;
+				GetMenuItemInfoA(m_Menu->Handle, m_Pos, m_ByPos, &m_mif);
+
+				return (LONG_PTR)m_mif.dwItemData;
+			}
+
+			BOOL CUIMenuItem::IsSeparate(VOID) const
 			{
 				MENUITEMINFOA m_mif = { 0 };
 				m_mif.cbSize = sizeof(MENUITEMINFOA);
@@ -132,47 +221,47 @@ namespace Core
 				return (m_mif.fType & MFT_SEPARATOR) == MFT_SEPARATOR;
 			}
 
-			void CUIMenuItem::Remove(CUIMenuItem* MenuItem)
+			VOID CUIMenuItem::Remove(CUIMenuItem* MenuItem)
 			{
 				Assert(MenuItem && IsMenu(MenuItem->Menu()->Handle));
 				DeleteMenu(MenuItem->Menu()->Handle, MenuItem->ID, MenuItem->ByPosition() ? MF_BYPOSITION : MF_BYCOMMAND);
 			}
 
-			void CUIMenuItem::Remove(CUIMenuItem& MenuItem)
+			VOID CUIMenuItem::Remove(CUIMenuItem& MenuItem)
 			{
 				Remove(&MenuItem);
 			}
 
 			// CUIMenu
 
-			void CUIMenu::SetHandle(const HMENU value)
+			VOID CUIMenu::SetHandle(const HMENU value)
 			{
 				Assert(IsMenu(value));
 				m_Handle = value;
 			}
 
-			HMENU CUIMenu::GetHandle(void) const
+			HMENU CUIMenu::GetHandle(VOID) const
 			{
 				return m_Handle;
 			}
 
-			CUIMenu CUIMenu::CreateSubMenu(void)
+			CUIMenu CUIMenu::CreateSubMenu(VOID)
 			{
 				return CreateMenu();
 			}
 
-			UINT CUIMenu::Count(void) const
+			UINT CUIMenu::Count(VOID) const
 			{
 				return GetMenuItemCount(m_Handle);
 			}
 
-			void CUIMenu::Remove(const UINT MenuID)
+			VOID CUIMenu::Remove(const UINT MenuID)
 			{
 				Assert(IsMenu(m_Handle));
 				DeleteMenu(m_Handle, MenuID, MF_BYCOMMAND);
 			}
 
-			void CUIMenu::RemoveByPos(const UINT Position)
+			VOID CUIMenu::RemoveByPos(const UINT Position)
 			{
 				Assert(IsMenu(m_Handle));
 				DeleteMenu(m_Handle, Position, MF_BYPOSITION);
@@ -192,9 +281,10 @@ namespace Core
 			{
 				MENUITEMINFOA minfo = { 0 };
 				minfo.cbSize = sizeof(MENUITEMINFOA);
-				minfo.fMask = MIIM_STRING | MIIM_ID | MIIM_STATE;
+				minfo.fMask = MIIM_FTYPE | MIIM_STRING | MIIM_ID | MIIM_STATE;
 				minfo.wID = (UINT)MenuID;
 				minfo.cch = Text.length();
+				minfo.fType = MFT_STRING;
 				minfo.dwTypeData = const_cast<char*>(&Text[0]);
 				minfo.fState = (Enabled ? MFS_ENABLED : MFS_DISABLED) | (Checked ? MFS_CHECKED : MFS_UNCHECKED);
 				return InsertMenuItemA(m_Handle, Position, TRUE, &minfo);
@@ -209,7 +299,8 @@ namespace Core
 			{
 				MENUITEMINFOA minfo = { 0 };
 				minfo.cbSize = sizeof(MENUITEMINFOA);
-				minfo.fMask = MIIM_STRING | MIIM_SUBMENU | MIIM_STATE;
+				minfo.fMask = MIIM_FTYPE | MIIM_STRING | MIIM_SUBMENU | MIIM_STATE;
+				minfo.fType = MFT_STRING;
 				minfo.hSubMenu = Menu.Handle;
 				minfo.cch = Text.length();
 				minfo.dwTypeData = const_cast<char*>(&Text[0]);
@@ -231,7 +322,7 @@ namespace Core
 				return InsertMenuItemA(m_Handle, Position, TRUE, &minfo);
 			}
 
-			BOOL CUIMenu::AppendSeparator(void)
+			BOOL CUIMenu::AppendSeparator(VOID)
 			{
 				return InsertSeparator(-1);
 			}
@@ -241,12 +332,12 @@ namespace Core
 				return GetSubMenu(m_Handle, Position);
 			}
 
-			CUIMenuItem CUIMenu::First(void)
+			CUIMenuItem CUIMenu::First(VOID)
 			{
 				return CUIMenuItem(*this, 0, TRUE);
 			}
 
-			CUIMenuItem CUIMenu::Last(void)
+			CUIMenuItem CUIMenu::Last(VOID)
 			{
 				return CUIMenuItem(*this, Count() - 1, TRUE);
 			}
