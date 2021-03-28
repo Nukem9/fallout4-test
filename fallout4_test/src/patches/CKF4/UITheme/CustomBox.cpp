@@ -1,6 +1,6 @@
 #include "..\UIBaseWindow.h"
 #include "VarCommon.h"
-#include "ColorBox.h"
+#include "CustomBox.h"
 
 #include <Uxtheme.h>
 #include <fstream>
@@ -11,30 +11,34 @@ namespace Core
 	{
 		namespace Theme
 		{
-			namespace ColorBox
+			namespace CustomBox
 			{
 				namespace Render
 				{
 					VOID WINAPI DrawBorder(Graphics::CUICanvas& canvas, Graphics::CRECT& rc)
 					{
 						Graphics::CRECT rc_temp = rc;
-						canvas.GradientFrame(rc_temp, GetThemeSysColor(ThemeColor::ThemeColor_Divider_Highlighter_Gradient_Start),
+						canvas.GradientFill(rc_temp, GetThemeSysColor(ThemeColor::ThemeColor_Divider_Highlighter_Gradient_Start),
 							GetThemeSysColor(ThemeColor::ThemeColor_Divider_Highlighter_Gradient_End), Core::Classes::UI::gdVert);
-
 						rc_temp.Inflate(-1, -1);
 						canvas.Frame(rc_temp, GetThemeSysColor(ThemeColor::ThemeColor_Divider_Color));
 					}
 				}
 
-				VOID WINAPI Initialize(HWND hWindow, BOOL bColored)
+				VOID WINAPI Initialize(HWND hWindow, AllowBox eAllowBox)
 				{
-					if (bColored)
+					switch (eAllowBox)
+					{
+					case Core::UI::Theme::CustomBox::abColor:
 						SetWindowSubclass(hWindow, ColorBoxSubclass, 0, 0);
-					else
-						SetWindowSubclass(hWindow, IconSubclass, 0, 0);
+						break;
+					default:
+						SetWindowSubclass(hWindow, NormalBoxSubclass, 0, 0);
+						break;
+					}				
 				}
 
-				LRESULT CALLBACK IconSubclass(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
+				LRESULT CALLBACK NormalBoxSubclass(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
 				{
 					if (uMsg == WM_PAINT)
 					{
@@ -43,8 +47,12 @@ namespace Core
 						HDC hdc = GetWindowDC(hWnd);
 						Core::Classes::UI::CUICanvas Canvas(hdc);
 						Core::Classes::UI::CRECT rc;
-						GetWindowRect(hWnd, (LPRECT)& rc);
+						GetWindowRect(hWnd, (LPRECT)&rc);
 						rc.Offset(-rc.Left, -rc.Top);
+
+						rc.Inflate(-2, -2);
+						ExcludeClipRect(hdc, rc.Left, rc.Top, rc.Right, rc.Bottom);
+						rc.Inflate(2, 2);
 
 						Render::DrawBorder(Canvas, rc);
 
@@ -74,7 +82,7 @@ namespace Core
 
 					// there is't a single message that would tell me where it gets the color from
 					// PS: the application itself draws on its client area without send message the control.
-					// Let's draw it once taking into account the border of 3 pixels
+					// Let's draw it once taking into account the border of 3 pixels (Windows 10)
 
 					if (uMsg == WM_NCPAINT)
 					{
@@ -85,6 +93,10 @@ namespace Core
 						Core::Classes::UI::CRECT rc;
 						GetWindowRect(hWnd, (LPRECT)&rc);
 						rc.Offset(-rc.Left, -rc.Top);
+
+						rc.Inflate(-3, -3);
+						ExcludeClipRect(hdc, rc.Left, rc.Top, rc.Right, rc.Bottom);
+						rc.Inflate(3, 3);
 
 						Canvas.Frame(rc, GetThemeSysColor(ThemeColor::ThemeColor_Default));
 						rc.Inflate(-1, -1);

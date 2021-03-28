@@ -4,9 +4,7 @@
 
 #include <algorithm>
 #include <Uxtheme.h>
-
-#define WM_MOUSEENTERPOPUPITEM 0x1E5
-#define WM_UNKNOWNMESSAGEPOPUPMENU 0x1EB
+#include <unordered_map>
 
 namespace Core
 {
@@ -16,6 +14,8 @@ namespace Core
 		{
 			namespace PopupMenu
 			{
+				static std::unordered_map<HWND, HMENU> globalStoragePopupMenu;
+
 				namespace Render
 				{
 					namespace Themes = Core::UI::Theme;
@@ -141,6 +141,31 @@ namespace Core
 					SetWindowSubclass(hWindow, PopupMenuSubclass, 0, 0);
 				}
 
+				BOOL WINAPI IsSystemPopupMenu(HWND hWindow, HMENU hMenu)
+				{
+					return hMenu && (GetSystemMenu(hWindow, FALSE) == hMenu);
+				}
+
+				BOOL WINAPI IsSystemPopupMenuBlindly(HWND hWindow)
+				{
+					HMENU hMenu = (HMENU)SendMessageA(hWindow, MN_GETHMENU, 0, 0);
+					if (HWND hParent = GetParent(hWindow); hParent)
+					{
+						if (hMenu == GetSystemMenu(hParent, FALSE))
+							return TRUE;
+					}
+					else
+					{
+						HWND hWindow = GetForegroundWindow();
+						HWND hFocus = GetFocus();
+
+						if ((hMenu == GetSystemMenu(hWindow, FALSE)) || (hMenu == GetSystemMenu(hFocus, FALSE)))
+							return TRUE;
+					}
+
+					return FALSE;
+				}
+
 				LRESULT CALLBACK PopupMenuSubclass(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
 				{
 					// Test: Windows 10 (2004)
@@ -154,6 +179,8 @@ namespace Core
 					// They are outside the client rendering area, in addition, periodically restored.
 					// I haven't been able to solve this problem yet.
 
+					HMENU hMenu = 0;
+
 					// Let it work as it should
 					LRESULT lResult = DefSubclassProc(hWnd, uMsg, wParam, lParam);
 
@@ -164,227 +191,157 @@ namespace Core
 						// If the border is drawn, redraw it
 						if (((lParam & PRF_ERASEBKGND) == PRF_ERASEBKGND) &&
 							((lParam & PRF_NONCLIENT) == PRF_NONCLIENT) &&
-							((lParam & PRF_CHILDREN) != PRF_CHILDREN))
-						{
-							//Core::Classes::UI::CUIBaseWindow Window = hWnd;
-							Graphics::CUICanvas Canvas((HDC)wParam);
-							/*Core::Classes::UI::CRECT rc = Window.WindowRect();
-							Core::Classes::UI::CUIMonitor monitor = Core::Classes::UI::Screen.MonitorFromWindow(hWnd);*/
-
-							// draw border
-							Render::DrawBackground_NonClientArray(Canvas);
-
-							// The size of the window does't fit into the working area of the display, probably, there will be up and down arrows
-					/*		if ((monitor.WorkAreaRect.Height - rc.Height) <= 40)
-							{
-								rc.Offset(-rc.Left, -rc.Top);
-								Core::Classes::UI::CRECT rc_temp = rc;
-
-								rc_temp.Height = 22;
-								rc_temp.Inflate(-1, -1);
-								Canvas.Fill(rc_temp, generalColor);
-
-								rc_temp = rc;
-								rc_temp.Height = 22;
-								rc_temp.Top = rc.Height - rc_temp.Height;
-								rc_temp.Inflate(-1, -1);
-
-								Canvas.Fill(rc_temp, generalColor);
-							}*/
-						}
+							((lParam & PRF_CHILDREN) != PRF_CHILDREN) &&
+							((!IsSystemPopupMenuBlindly(hWnd))))
+							Event::OnDrawNoClientPopupMenu(hWnd, (HDC)wParam);
 					}
 					break;
+					
 					case WM_NCPAINT:
 					{
-						HDC hdc = GetWindowDC(hWnd);
-						Graphics::CUICanvas Canvas(hdc);
-						Render::DrawBackground_NonClientArray(Canvas);
-
-					/*	Core::Classes::UI::CUIBaseWindow Window = hWnd;
-						Core::Classes::UI::CRECT rc = Window.WindowRect();
-						Core::Classes::UI::CUIMonitor monitor = Core::Classes::UI::Screen.MonitorFromWindow(hWnd);*/
-
-						// The size of the window does't fit into the working area of the display, probably, there will be up and down arrows
-					/*	if ((monitor.WorkAreaRect.Height - rc.Height) <= 40)
+						if (!IsSystemPopupMenuBlindly(hWnd))
 						{
-							rc.Offset(-rc.Left, -rc.Top);
-							Core::Classes::UI::CRECT rc_temp = rc;
-							rc_temp.Height = 22;
-							rc_temp.Inflate(-1, -1);
-
-							Canvas.Fill(rc_temp, generalColor);
-
-							rc_temp = rc;
-							rc_temp.Height = 22;
-							rc_temp.Top = rc.Height - rc_temp.Height;
-							rc_temp.Inflate(-1, -1);
-
-							Canvas.Fill(rc_temp, generalColor);
-						}*/
-
-						ReleaseDC(hWnd, hdc);
-					}
-					break;
-					// The tip was this information:
-					// https://www.codeproject.com/Articles/3696/A-Revolutionary-New-Approach-to-Custom-Drawn-Menus
-				/*	case WM_MOUSEENTERPOPUPITEM:
-					{
-						// These numbers are like an up and down arrow if the menu doesn't fit
-
-						if ((wParam == (UINT)-3) || (wParam == (UINT)-4))
-						{
-							HDC hdc = GetWindowDC(hWnd);
-							Core::Classes::UI::CUICanvas Canvas(hdc);
-							Core::Classes::UI::CRECT rc;
-							GetWindowRect(hWnd, (LPRECT)& rc);
-							rc.Offset(-rc.Left, -rc.Top);
-
-							// up
-							if (wParam == (UINT)-3)
-							{
-								//rc.Inflate(-GetSystemMetrics(SM_CXEDGE), -GetSystemMetrics(SM_CYEDGE));
-								rc.Height = 12;
-								Canvas.Fill(rc, generalColor);
-								//ExcludeClipRect(hdc, rc.Left, rc.Top, rc.Right, rc.Bottom);
-							}
-							// down
-							else
-							{
-
-							}
-
-
-
-
-							//CHAR szV[54] = { 0 };
-							//_itoa_s(wParam, szV, 16);
-							//Canvas.TextInput(4, 4, szV);
-
-							ReleaseDC(hWnd, hdc);
+							HDC hDC = GetWindowDC(hWnd);
+							Event::OnDrawNoClientPopupMenu(hWnd, hDC);
+							ReleaseDC(hWnd, hDC);
 						}
 					}
-					break;*/
+					break;
+
 					}
 
 					return lResult;
 				}
 
-				VOID WINAPI OnInitPopupMenu(HWND hWindow, HMENU hMenu)
+				namespace Event
 				{
-					// https://www.codeproject.com/Articles/8715/Owner-drawn-menus-in-two-lines-of-code
-
-					// iterate any menu about to be displayed and make sure
-					// all the items have the ownerdrawn style set
-					// We receive a WM_INITMENUPOPUP as each menu is displayed, even if the user
-					// switches menus or brings up a sub menu. This means we only need to
-					// set the style at the current popup level.
-					// we also set the user item data to the index into the menu to allow
-					// us to measure/draw the item correctly later
-					//
-					if (hMenu && IsMenu(hMenu))
+					VOID WINAPI OnDrawNoClientPopupMenu(HWND hWindow, HDC hDC)
 					{
-						Core::Classes::UI::CUIMenu Menu = hMenu;
-						UINT itemCount = Menu.Count();
+						Graphics::CUICanvas Canvas(hDC);
+						Render::DrawBackground_NonClientArray(Canvas);
+					}
 
-						for (UINT item = 0; item < itemCount; item++)
+					VOID WINAPI OnInitPopupMenu(HWND hWindow, HMENU hMenu)
+					{
+						// https://www.codeproject.com/Articles/8715/Owner-drawn-menus-in-two-lines-of-code
+
+						// iterate any menu about to be displayed and make sure
+						// all the items have the ownerdrawn style set
+						// We receive a WM_INITMENUPOPUP as each menu is displayed, even if the user
+						// switches menus or brings up a sub menu. This means we only need to
+						// set the style at the current popup level.
+						// we also set the user item data to the index into the menu to allow
+						// us to measure/draw the item correctly later
+						//
+						if (hMenu && IsMenu(hMenu) && !IsSystemPopupMenu(hWindow, hMenu))
 						{
-							Graphics::CUIMenuItem menuItem = Menu.GetItemByPos(item);
-							// make sure we do not change the state of the menu items as
-							// we set the owner drawn style
-							menuItem.OwnerDraw = TRUE;
-							// set userdata
-							menuItem.Tag = (LONG_PTR)hMenu;
+							Core::Classes::UI::CUIMenu Menu = hMenu;
+							UINT itemCount = Menu.Count();
+
+							for (UINT item = 0; item < itemCount; item++)
+							{
+								Graphics::CUIMenuItem menuItem = Menu.GetItemByPos(item);
+								// make sure we do not change the state of the menu items as
+								// we set the owner drawn style
+								menuItem.OwnerDraw = TRUE;
+								// set userdata
+								menuItem.Tag = (LONG_PTR)hMenu;
+							}
+
+						//	HDC hdc = GetWindowDC(hWnd);
+						//	Event::OnDrawNoClientPopupMenu(hWnd, hdc);
+						//	ReleaseDC(hWnd, hdc);
 						}
 					}
-				}
 
-				VOID WINAPI OnMeasureItem(HWND hWindow, LPMEASUREITEMSTRUCT lpMeasureItem)
-				{
-					Graphics::CUIMenu Menu = (HMENU)lpMeasureItem->itemData;
-					Graphics::CUIMenuItem menuItem = Menu.GetItem(lpMeasureItem->itemID);
-
-					if (menuItem.IsSeparate())
+					VOID WINAPI OnMeasureItem(HWND hWindow, LPMEASUREITEMSTRUCT lpMeasureItem)
 					{
-						lpMeasureItem->itemWidth = 65;
-						lpMeasureItem->itemHeight = 4;
-					}
-					else
-					{
-						std::string text = menuItem.Text;
+						Graphics::CUIMenu Menu = (HMENU)lpMeasureItem->itemData;
+						Graphics::CUIMenuItem menuItem = Menu.GetItem(lpMeasureItem->itemID);
 
-						Graphics::CUICanvas canvas = GetDC(hWindow);
-						canvas.Font.Assign(Core::UI::Theme::ThemeFont);
-
-						INT width, height;
-						UINT nEdgeWidth = GetSystemMetrics(SM_CXEDGE);
-
-						canvas.TextSize(text.c_str(), width, height);
-
-						lpMeasureItem->itemWidth = std::max(width + Render::generalCheckSize + (nEdgeWidth << 1) + 4, (UINT)65);
-						lpMeasureItem->itemHeight = std::max((UINT)height, Render::generalCheckSize);
-					}
-				}
-
-				VOID WINAPI OnDrawItem(HWND hWindow, LPDRAWITEMSTRUCT lpDrawItem)
-				{
-					Graphics::CUIMenu Menu = (HMENU)lpDrawItem->itemData;
-					Graphics::CUIMenuItem menuItem = Menu.GetItem(lpDrawItem->itemID);
-					Graphics::CUICanvas canvas = lpDrawItem->hDC;
-					Graphics::CRECT rc = lpDrawItem->rcItem, rc_shortcut = lpDrawItem->rcItem;
-
-					if (!menuItem.IsSeparate())
-					{
-						SetBkMode(lpDrawItem->hDC, TRANSPARENT);
-						canvas.Font.Assign(Core::UI::Theme::ThemeFont);
-						COLORREF clrPrevText;
-
-						BOOL bSelected = (lpDrawItem->itemState & ODS_SELECTED) == ODS_SELECTED;
-
-						if (bSelected)
+						if (menuItem.IsSeparate())
 						{
-							Render::DrawItem_Focused(canvas, (LPRECT)& rc);
-							clrPrevText = SetTextColor(lpDrawItem->hDC, Core::UI::Theme::GetThemeSysColor(ThemeColor::ThemeColor_Text_4));
+							lpMeasureItem->itemWidth = 65;
+							lpMeasureItem->itemHeight = 4;
 						}
 						else
 						{
-							Render::DrawItem_Normal(canvas, (LPRECT)& rc);
-							clrPrevText = SetTextColor(lpDrawItem->hDC, Core::UI::Theme::GetThemeSysColor(ThemeColor::ThemeColor_Text_3));
-						}
+							std::string text = menuItem.Text;
 
-						if ((lpDrawItem->itemState & ODS_CHECKED) == ODS_CHECKED)
-							Render::DrawItem_Checkbox(canvas, (LPRECT)& rc, bSelected);
+							Graphics::CUICanvas canvas = GetDC(hWindow);
+							canvas.Font.Assign(Core::UI::Theme::ThemeFont);
 
-						std::string text = menuItem.Text;
-						canvas.TextRect(rc, text.c_str(), DT_CALCRECT | DT_HIDEPREFIX);
-						rc.Left += Render::generalCheckSize + 4;
-						rc.Top += ((lpDrawItem->rcItem.bottom - lpDrawItem->rcItem.top) - rc.Height) >> 1;
-						canvas.TextRect(rc, text.c_str(), DT_VCENTER | DT_HIDEPREFIX);
+							INT width, height;
+							UINT nEdgeWidth = GetSystemMetrics(SM_CXEDGE);
 
-						text = menuItem.ShortCut;
-						if (text.length())
-						{
-							rc_shortcut.Top = rc.Top;
-							rc_shortcut.Right -= 4;
-							canvas.TextRect(rc_shortcut, text.c_str(), DT_VCENTER | DT_HIDEPREFIX | DT_RIGHT);
-						}
+							canvas.TextSize(text.c_str(), width, height);
 
-						SetTextColor(lpDrawItem->hDC, clrPrevText);
-
-						if (menuItem.IsSubMenu())
-						{
-							Core::Classes::UI::CRECT rc_arrow = lpDrawItem->rcItem, rc_exclude;
-							rc_arrow.Left += rc_arrow.Width - 20;
-							rc_exclude = rc_arrow;
-							rc_arrow.Top += ((lpDrawItem->rcItem.bottom - lpDrawItem->rcItem.top) - 20) >> 1;
-
-							Render::DrawItem_Arrow(canvas, (LPRECT)& rc_arrow, bSelected);
-
-							// Excluding the area for drawing the arrow
-							ExcludeClipRect(lpDrawItem->hDC, rc_exclude.Left, rc_exclude.Top, rc_exclude.Right, rc_exclude.Bottom);
+							lpMeasureItem->itemWidth = std::max(width + Render::generalCheckSize + (nEdgeWidth << 1) + 4, (UINT)65);
+							lpMeasureItem->itemHeight = std::max((UINT)height, Render::generalCheckSize);
 						}
 					}
-					else
-						Render::DrawItem_Divider(canvas, (LPRECT)& rc);
+
+					VOID WINAPI OnDrawItem(HWND hWindow, LPDRAWITEMSTRUCT lpDrawItem)
+					{
+						Graphics::CUIMenu Menu = (HMENU)lpDrawItem->itemData;
+						Graphics::CUIMenuItem menuItem = Menu.GetItem(lpDrawItem->itemID);
+						Graphics::CUICanvas canvas = lpDrawItem->hDC;
+						Graphics::CRECT rc = lpDrawItem->rcItem, rc_shortcut = lpDrawItem->rcItem;
+
+						if (!menuItem.IsSeparate())
+						{
+							SetBkMode(lpDrawItem->hDC, TRANSPARENT);
+							canvas.Font.Assign(Core::UI::Theme::ThemeFont);
+							COLORREF clrPrevText;
+
+							BOOL bSelected = (lpDrawItem->itemState & ODS_SELECTED) == ODS_SELECTED;
+
+							if (bSelected)
+							{
+								Render::DrawItem_Focused(canvas, (LPRECT)& rc);
+								clrPrevText = SetTextColor(lpDrawItem->hDC, Core::UI::Theme::GetThemeSysColor(ThemeColor::ThemeColor_Text_4));
+							}
+							else
+							{
+								Render::DrawItem_Normal(canvas, (LPRECT)& rc);
+								clrPrevText = SetTextColor(lpDrawItem->hDC, Core::UI::Theme::GetThemeSysColor(ThemeColor::ThemeColor_Text_3));
+							}
+
+							if ((lpDrawItem->itemState & ODS_CHECKED) == ODS_CHECKED)
+								Render::DrawItem_Checkbox(canvas, (LPRECT)& rc, bSelected);
+
+							std::string text = menuItem.Text;
+							canvas.TextRect(rc, text.c_str(), DT_CALCRECT | DT_HIDEPREFIX);
+							rc.Left += Render::generalCheckSize + 4;
+							rc.Top += ((lpDrawItem->rcItem.bottom - lpDrawItem->rcItem.top) - rc.Height) >> 1;
+							canvas.TextRect(rc, text.c_str(), DT_VCENTER | DT_HIDEPREFIX);
+
+							text = menuItem.ShortCut;
+							if (text.length())
+							{
+								rc_shortcut.Top = rc.Top;
+								rc_shortcut.Right -= 4;
+								canvas.TextRect(rc_shortcut, text.c_str(), DT_VCENTER | DT_HIDEPREFIX | DT_RIGHT);
+							}
+
+							SetTextColor(lpDrawItem->hDC, clrPrevText);
+
+							if (menuItem.IsSubMenu())
+							{
+								Core::Classes::UI::CRECT rc_arrow = lpDrawItem->rcItem, rc_exclude;
+								rc_arrow.Left += rc_arrow.Width - 20;
+								rc_exclude = rc_arrow;
+								rc_arrow.Top += ((lpDrawItem->rcItem.bottom - lpDrawItem->rcItem.top) - 20) >> 1;
+
+								Render::DrawItem_Arrow(canvas, (LPRECT)& rc_arrow, bSelected);
+
+								// Excluding the area for drawing the arrow
+								ExcludeClipRect(lpDrawItem->hDC, rc_exclude.Left, rc_exclude.Top, rc_exclude.Right, rc_exclude.Bottom);
+							}
+						}
+						else
+							Render::DrawItem_Divider(canvas, (LPRECT)& rc);
+					}
 				}
 			}
 		}

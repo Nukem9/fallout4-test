@@ -3,6 +3,7 @@
 #include "Editor.h"
 
 #include <commctrl.h>
+#include <map>
 
 namespace Core
 {
@@ -10,6 +11,8 @@ namespace Core
 	{
 		namespace UI
 		{
+			static std::map<HWND, CRECT> SafeSize;
+
 			// CUIBaseWindow
 
 			void CUIBaseWindow::LockUpdate(void)
@@ -30,14 +33,40 @@ namespace Core
 				SendMessageA(m_hWnd, WM_SETREDRAW, TRUE, 0);
 			}
 
-			void CUIBaseWindow::Move(const LONG x, const LONG y)
+			void CUIBaseWindow::Move(const LONG x, const LONG y, const BOOL topmost)
 			{
-				SetWindowPos(m_hWnd, NULL, x, y, 0, 0, SWP_NOOWNERZORDER | SWP_NOSIZE);
+				SetWindowPos(m_hWnd, NULL, x, y, 0, 0, SWP_NOOWNERZORDER | SWP_NOSIZE | ((topmost) ? 0 : SWP_NOZORDER));
 			}
 
 			void CUIBaseWindow::Invalidate(void)
 			{
 				InvalidateRect(m_hWnd, NULL, FALSE);
+			}
+
+			void CUIBaseWindow::Invalidate(const LPRECT r)
+			{
+				InvalidateRect(m_hWnd, r, FALSE);
+			}
+
+			void CUIBaseWindow::Invalidate(const CRECT& r)
+			{
+				InvalidateRect(m_hWnd, (LPRECT)&r, FALSE);
+			}
+
+			void CUIBaseWindow::Refresh(void)
+			{
+				InvalidateRect(m_hWnd, NULL, TRUE);
+				UpdateWindow(m_hWnd);
+			}
+
+			void CUIBaseWindow::SetParent(HWND hParent)
+			{
+				::SetParent(m_hWnd, hParent);
+			}
+
+			void CUIBaseWindow::SetParent(const CUIBaseWindow& Parent)
+			{
+				::SetParent(m_hWnd, Parent.Handle);
 			}
 
 			void CUIBaseWindow::Repaint(void)
@@ -55,10 +84,10 @@ namespace Core
 				return IsWindowVisible(m_hWnd);
 			}
 
-			void CUIBaseWindow::SetSize(const LONG cx, const LONG cy)
+			void CUIBaseWindow::SetSize(const LONG cx, const LONG cy, const BOOL topmost)
 			{
 				CRECT r = BoundsRect;
-				SetWindowPos(m_hWnd, NULL, 0, 0, cx + r.Left, cy + r.Top, SWP_NOOWNERZORDER | SWP_NOMOVE);
+				SetWindowPos(m_hWnd, NULL, 0, 0, cx + r.Left, cy + r.Top, SWP_NOOWNERZORDER | SWP_NOMOVE | ((topmost) ? 0 : SWP_NOZORDER | SWP_FRAMECHANGED));
 			}
 
 			void CUIBaseWindow::SetFocus(void)
@@ -163,17 +192,39 @@ namespace Core
 				}
 				else
 				{
-					if ((style & WS_MAXIMIZE) == WS_MAXIMIZE)
+					if ((style & WS_POPUP) == WS_POPUP)
 					{
-						return wsMaximized;
-					}
-					else if ((style & WS_MINIMIZE) == WS_MINIMIZE)
-					{
-						return wsMinimized;
+						CRECT WorkArea, WndRect;
+						SystemParametersInfoA(SPI_GETWORKAREA, 0, &WorkArea, 0);
+						WndRect = WindowRect();
+
+						if (WorkArea == WndRect)
+						{
+							return wsMaximized;
+						}
+						else if ((style & WS_MINIMIZE) == WS_MINIMIZE)
+						{
+							return wsMinimized;
+						}
+						else
+						{
+							return wsNormal;
+						}
 					}
 					else
 					{
-						return wsNormal;
+						if ((style & WS_MAXIMIZE) == WS_MAXIMIZE)
+						{
+							return wsMaximized;
+						}
+						else if ((style & WS_MINIMIZE) == WS_MINIMIZE)
+						{
+							return wsMinimized;
+						}
+						else
+						{
+							return wsNormal;
+						}
 					}
 				}
 			}
@@ -185,26 +236,72 @@ namespace Core
 
 				int flag = SW_NORMAL;
 
-				switch (state)
-				{
-				case wsMaximized:
-				{
-					flag = SW_MAXIMIZE;
-					break;
-				}
-				case wsMinimized:
-				{
-					flag = SW_MINIMIZE;
-					break;
-				}
-				case wsHide:
-				{
-					flag = SW_HIDE;
-					break;
-				}
-				}
+				LONG style = GetWindowLongA(m_hWnd, GWL_STYLE);
 
-				ShowWindow(m_hWnd, flag);
+				if ((style & WS_POPUP) == WS_POPUP)
+				{
+					if (state == wsMaximized)
+					{
+						CRECT WorkArea, WndRect;
+						SystemParametersInfoA(SPI_GETWORKAREA, 0, &WorkArea, 0);
+						WndRect = WindowRect();
+
+						SafeSize.emplace(m_hWnd, WndRect);
+
+						SetWindowPos(m_hWnd, NULL, WorkArea.Left, WorkArea.Top, WorkArea.Right, WorkArea.Bottom,
+							SWP_NOOWNERZORDER | ((StyleEx & WS_EX_TOPMOST) == WS_EX_TOPMOST ? 0 : SWP_NOZORDER) | SWP_FRAMECHANGED);
+						Perform(UI_CHANGEWINDOWSTATE, (WPARAM)state, 0);
+						return;
+					}
+					else if (wsMinimized == state)
+					{
+						flag = SW_MINIMIZE;
+					}
+					else if (wsHide == state)
+					{
+						flag = SW_HIDE;
+					}
+					else
+					{
+						if ((WindowState == wsMaximized) && (SafeSize.count(m_hWnd) > 0))
+						{
+							CRECT WndRect = SafeSize.at(m_hWnd);
+							SafeSize.erase(m_hWnd);
+
+							SetWindowPos(m_hWnd, NULL, WndRect.Left, WndRect.Top, WndRect.Right, WndRect.Bottom,
+								SWP_NOOWNERZORDER | ((StyleEx & WS_EX_TOPMOST) == WS_EX_TOPMOST ? 0 : SWP_NOZORDER) | SWP_FRAMECHANGED);
+							Perform(UI_CHANGEWINDOWSTATE, (WPARAM)state, 0);
+							return;
+						}
+					}
+
+					ShowWindow(m_hWnd, flag);
+					Perform(UI_CHANGEWINDOWSTATE, (WPARAM)state, 0);
+				}
+				else
+				{
+					switch (state)
+					{
+					case wsMaximized:
+					{
+						flag = SW_MAXIMIZE;
+						break;
+					}
+					case wsMinimized:
+					{
+						flag = SW_MINIMIZE;
+						break;
+					}
+					case wsHide:
+					{
+						flag = SW_HIDE;
+						break;
+					}
+					}
+
+					ShowWindow(m_hWnd, flag);
+					Perform(UI_CHANGEWINDOWSTATE, (WPARAM)state, 0);
+				}
 			}
 
 			CRECT CUIBaseWindow::WindowRect(void) const

@@ -23,6 +23,11 @@ namespace Core
 					VOID WINAPI DrawPushButton_Pressed(Graphics::CUICanvas& canvas, LPCRECT pRect);
 					VOID WINAPI DrawPushButton_Disabled(Graphics::CUICanvas& canvas, LPCRECT pRect);
 				}
+
+				namespace Event
+				{
+					VOID WINAPI OnBeforeDrawText(Graphics::CUICanvas& canvas, DWORD& flags, INT iStateId);
+				}
 			}
 		}
 	}

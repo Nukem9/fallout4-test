@@ -3,6 +3,7 @@
 #include "UpDown.h"
 
 #include <Uxtheme.h>
+#include <vsstyle.h>
 
 namespace Core
 {
@@ -181,7 +182,9 @@ namespace Core
 
 				VOID WINAPI Initialize(HWND hWindow)
 				{
-					SetWindowTheme(hWindow, nullptr, nullptr);
+					OpenThemeData(hWindow, VSCLASS_SPIN);
+					// This function spoils the rendering process
+					// SetWindowTheme(hWindow, nullptr, nullptr);
 					SetWindowSubclass(hWindow, UpDownSubclass, 0, 0);
 				}
 

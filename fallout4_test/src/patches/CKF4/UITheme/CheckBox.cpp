@@ -66,6 +66,49 @@ namespace Core
 						DrawCheck_Stylesheet(canvas, pRect, GetThemeSysColor(ThemeColor::ThemeColor_Shape_Shadow_Disabled),
 							GetThemeSysColor(ThemeColor::ThemeColor_Shape_Disabled));
 					}
+
+					VOID WINAPI DrawIdeterminate_Stylesheet(Graphics::CUICanvas& canvas, LPCRECT pRect, COLORREF clColor)
+					{
+						Core::Classes::UI::CRECT rc_temp[2];
+
+						rc_temp[0] = *pRect;
+						rc_temp[0].Inflate(-3, -3);
+						rc_temp[1] = rc_temp[0];
+						rc_temp[1].Inflate(-1, -1);
+
+						canvas.GradientFill(rc_temp[0], GetThemeSysColor(ThemeColor::ThemeColor_CheckBox_Gradient_Start),
+							GetThemeSysColor(ThemeColor::ThemeColor_CheckBox_Gradient_End), Core::Classes::UI::gdVert);
+						canvas.Fill(rc_temp[1], clColor);
+					}
+
+					VOID WINAPI DrawIdeterminate_Normal(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					{
+						DrawIdeterminate_Stylesheet(canvas, pRect, GetThemeSysColor(ThemeColor::ThemeColor_Shape));
+					}
+
+					VOID WINAPI DrawIdeterminate_Hot(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					{
+						DrawIdeterminate_Stylesheet(canvas, pRect, GetThemeSysColor(ThemeColor::ThemeColor_Shape_Hot));
+					}
+
+					VOID WINAPI DrawIdeterminate_Pressed(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					{
+						DrawIdeterminate_Stylesheet(canvas, pRect, GetThemeSysColor(ThemeColor::ThemeColor_Shape_Pressed));
+					}
+
+					VOID WINAPI DrawIdeterminate_Disabled(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					{
+						DrawIdeterminate_Stylesheet(canvas, pRect, GetThemeSysColor(ThemeColor::ThemeColor_Shape_Disabled));
+					}
+				}
+
+				namespace Event
+				{
+					VOID WINAPI OnBeforeDrawText(Graphics::CUICanvas& canvas, DWORD& flags, INT iStateId)
+					{
+						flags |= DT_END_ELLIPSIS;
+						canvas.ColorText = GetThemeSysColor(ThemeColor_Text_3);
+					}
 				}
 			}
 		}

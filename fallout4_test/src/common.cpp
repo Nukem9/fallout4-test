@@ -3,6 +3,7 @@
 
 #include "..\resource.h"
 
+#pragma comment(lib, "dwmapi.lib")
 #pragma comment(lib, "msimg32.lib")
 #pragma comment(lib, "winmm.lib")
 #pragma comment(lib, "d3d11.lib")

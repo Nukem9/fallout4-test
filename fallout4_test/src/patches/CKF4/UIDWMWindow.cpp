@@ -1,5 +1,4 @@
 #include <dwmapi.h>
-#pragma comment(lib, "dwmapi.lib")
 
 #include "UIDWMWindow.h"
 #include "UIGraphics.h"
@@ -10,34 +9,46 @@ namespace Core
 	{
 		namespace UI
 		{
-			LRESULT CUIDWMWindow::ProcessMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+			BOOL CUIDWMWindow::IsCompositionEnabled(VOID)
 			{
-				LRESULT lRet = S_OK;
-				m_Enabled = FALSE;
-
-				if (!IsWindow(hWnd))
-					return S_FALSE;
-
-				DwmDefWindowProc(hWnd, uMsg, wParam, lParam, &lRet);
-
-				m_hWnd = hWnd;
-				m_Enabled = TRUE;
-
-				return S_OK;
-			}
-
-			VOID CUIDWMWindow::CloseProcessMessage(VOID)
-			{
-				m_Enabled = FALSE;
-				m_hWnd = NULL;
-			}
-
-			BOOL CUIDWMWindow::ExtendFrameIntoClientArea(MARGINS* lpMargins) const
-			{
-				if (!m_Enabled)
+				BOOL bEnabled = FALSE;
+				if (DwmIsCompositionEnabled(&bEnabled) != S_OK)
 					return FALSE;
+				return bEnabled;
+			}
 
-				return DwmExtendFrameIntoClientArea(m_hWnd, lpMargins) == S_OK;
+			BOOL CUIDWMWindow::GetEnabledNonClientRendering(VOID) const
+			{
+				DWMNCRENDERINGPOLICY ncrp;
+				DwmGetWindowAttribute(m_hWnd, DWMWA_NCRENDERING_POLICY, &ncrp, sizeof(ncrp));
+				return ncrp == DWMNCRP_ENABLED;
+			}
+
+			VOID CUIDWMWindow::SetEnabledNonClientRendering(const BOOL value)
+			{
+				DWMNCRENDERINGPOLICY ncrp;
+
+				if (value)
+					ncrp = DWMNCRP_ENABLED;
+				else
+					ncrp = DWMNCRP_DISABLED;
+
+				DwmSetWindowAttribute(m_hWnd, DWMWA_NCRENDERING_POLICY, &ncrp, sizeof(ncrp));
+			}
+
+			BOOL CUIDWMWindow::ProcessMessage(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT* lResult)
+			{
+				return DwmDefWindowProc(hWnd, uMsg, wParam, lParam, lResult);
+			}
+
+			BOOL CUIDWMWindow::ExtendFrameIntoClientArea(HWND hWnd, const MARGINS* lpMargins)
+			{
+				return DwmExtendFrameIntoClientArea(hWnd, lpMargins) == S_OK;
+			}
+
+			BOOL CUIDWMWindow::ExtendFrameIntoClientArea(const MARGINS& pMargins) const
+			{
+				return ExtendFrameIntoClientArea(m_hWnd, &pMargins);
 			}
 		}
 	}

@@ -27,27 +27,27 @@ namespace Core
 
 					VOID WINAPI DrawEditText_Normal(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
-						DrawEditText_Stylesheet(canvas, pRect, GetThemeSysColor(ThemeColor::ThemeColor_Edit_Color),
+						DrawEditText_Stylesheet(canvas, pRect, GetThemeSysColor(ThemeColor::ThemeColor_Divider_Color),
 							GetThemeSysColor(ThemeColor::ThemeColor_Divider_Highlighter_Gradient_Start), 
 							GetThemeSysColor(ThemeColor::ThemeColor_Divider_Highlighter_Gradient_End));
 					}
 
 					VOID WINAPI DrawEditText_Hot(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
-						DrawEditText_Stylesheet(canvas, pRect, GetThemeSysColor(ThemeColor::ThemeColor_Edit_Color),
+						DrawEditText_Stylesheet(canvas, pRect, GetThemeSysColor(ThemeColor::ThemeColor_Divider_Color),
 							GetThemeSysColor(ThemeColor::ThemeColor_Divider_Highlighter_Hot_Gradient_Start),
 							GetThemeSysColor(ThemeColor::ThemeColor_Divider_Highlighter_Hot_Gradient_End));
 					}
 					VOID WINAPI DrawEditText_Focused(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
-						DrawEditText_Stylesheet(canvas, pRect, GetThemeSysColor(ThemeColor::ThemeColor_Edit_Color),
+						DrawEditText_Stylesheet(canvas, pRect, GetThemeSysColor(ThemeColor::ThemeColor_Divider_Color),
 							GetThemeSysColor(ThemeColor::ThemeColor_Divider_Highlighter_Pressed),
 							GetThemeSysColor(ThemeColor::ThemeColor_Divider_Highlighter_Pressed));
 					}
 
 					VOID WINAPI DrawEditText_Disabled(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
-						DrawEditText_Stylesheet(canvas, pRect, GetThemeSysColor(ThemeColor::ThemeColor_Edit_Color_Disabled),
+						DrawEditText_Stylesheet(canvas, pRect, GetThemeSysColor(ThemeColor::ThemeColor_Divider_Color_Disabled),
 							GetThemeSysColor(ThemeColor::ThemeColor_Divider_Highlighter_Disabled_Gradient_Start),
 							GetThemeSysColor(ThemeColor::ThemeColor_Divider_Highlighter_Disabled_Gradient_End));
 					}
@@ -57,7 +57,7 @@ namespace Core
 				{
 					SetTextColor(hDC, GetThemeSysColor(ThemeColor_Text_4));
 					SetBkColor(hDC, GetThemeSysColor(ThemeColor_Edit_Color));
-					return reinterpret_cast<INT_PTR>(Comctl32GetSysColorBrushEx(COLOR_WINDOW));
+					return reinterpret_cast<INT_PTR>(/*Comctl32GetSysColorBrush(COLOR_WINDOW)*/hThemeEditBackBrush);
 				}
 			}
 		}

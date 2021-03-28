@@ -9,6 +9,7 @@ namespace Core
 		namespace Theme
 		{
 			extern const Core::Classes::UI::CUIFont ThemeFont;
+			extern HBRUSH hThemeEditBackBrush;
 
 			enum Theme
 			{
@@ -18,7 +19,7 @@ namespace Core
 				Theme_Dark
 			};
 
-			inline VOID WINAPI SetTheme(Theme theme);
+			VOID WINAPI SetTheme(Theme theme);
 
 			enum ThemeColor
 			{
@@ -70,7 +71,14 @@ namespace Core
 				ThemeColor_Progress_Fill_Gradient_Start,
 				ThemeColor_Progress_Fill_Gradient_End,
 				ThemeColor_Progress_Fill_Highlighter,
-				ThemeColor_Progress_Fill_Highlighter_Up
+				ThemeColor_Progress_Fill_Highlighter_Up,
+				ThemeColor_Border_Window,
+				ThemeColor_StatusBar_Text,
+				ThemeColor_Caption_Text,
+				ThemeColor_Header_Normal_Gradient_Start,
+				ThemeColor_Header_Normal_Gradient_End,
+				ThemeColor_Header_Hot_Gradient_Start,
+				ThemeColor_Header_Hot_Gradient_End
 			};
 
 			inline COLORREF WINAPI GetThemeSysColor(const ThemeColor color);

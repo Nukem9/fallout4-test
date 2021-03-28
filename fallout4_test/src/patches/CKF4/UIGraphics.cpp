@@ -197,13 +197,13 @@ namespace Core
 
 			// CUIFont
 
-			CUIFont::CUIFont(const HDC hDC) : CUIObjectGUI(), m_lock(FALSE)
+			CUIFont::CUIFont(const HDC hDC) : CUIObjectGUI(4), m_lock(FALSE)
 			{
 				Recreate(hDC);
 			}
 
 			CUIFont::CUIFont(const std::string& name, const LONG size, const CUIFontStyles& styles, const CUIFontQuality quality,
-				const CUIFontPitch pitch) : CUIObjectGUI(), m_lock(FALSE),
+				const CUIFontPitch pitch) : CUIObjectGUI(4), m_lock(FALSE),
 				m_Name(name), m_Quality(quality), m_FontStyles(styles), m_Pitch(pitch)
 			{
 				Size = size;
@@ -426,11 +426,33 @@ namespace Core
 				DoChange();
 			}
 
-			CUIBitmap::CUIBitmap(const CUIBitmap& bitmap) : CUIObjectGUI(bitmap)
+			VOID CUIBitmap::Assign(const CUIBitmap& bitmap)
 			{
 				Release();
 				if (!bitmap.Empty())
-					m_fHandle = CopyImage(bitmap.Handle, IMAGE_BITMAP, 0, 0, LR_DEFAULTSIZE);
+				{
+					m_fHandle = CopyImage(bitmap.Handle, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
+					Assert(m_fHandle);
+				}
+				DoChange();
+			}
+
+			CUIBitmap::CUIBitmap(HBITMAP bitmap) : CUIObjectGUI(1)
+			{ 
+				if (bitmap)
+				{
+					m_fHandle = CopyImage(bitmap, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
+					Assert(m_fHandle);
+				}
+			}
+
+			CUIBitmap::CUIBitmap(const CUIBitmap& bitmap) : CUIObjectGUI(bitmap)
+			{
+				if (!bitmap.Empty())
+				{
+					m_fHandle = CopyImage(bitmap.Handle, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
+					Assert(m_fHandle);
+				}
 			}
 
 			// CUIPen
@@ -492,6 +514,12 @@ namespace Core
 				Create(style, Width, Color);
 			}
 
+			VOID CUIPen::Assign(const CUIPen& pen)
+			{
+				Release();
+				Create(pen.Style, pen.Width, pen.Color);
+			}
+
 			CUIPen WINAPI CreateSolidPen(INT width, COLORREF color)
 			{
 				return CUIPen(psSolid, width, color);
@@ -509,6 +537,30 @@ namespace Core
 
 			// CUIBrush
 
+			VOID CUIBrush::Assign(const CUIBrush& brush)
+			{
+				Release();
+
+				switch (brush.Style)
+				{
+				case bsClear:
+					{
+						m_fStyle = bsClear;
+						DoChange();
+					}
+					break;
+				case bsSolid:
+					Create(brush.Color);
+					break;
+				case bsHatch:
+					Create(brush.Hatch, brush.Color);
+					break;
+				case bsBitmap:
+					Create(brush.Bitmap);
+					break;
+				}
+			}
+
 			VOID CUIBrush::Create(const COLORREF color)
 			{
 				m_fHandle = ::CreateSolidBrush(color);
@@ -518,20 +570,47 @@ namespace Core
 				DoChange();
 			}
 
+			VOID CUIBrush::Create(const INT iHatch, const COLORREF color)
+			{
+				m_fHandle = ::CreateHatchBrush(iHatch, color);
+				Assert(m_fHandle);
+				m_fHatch = iHatch;
+				m_fColor = color;
+				m_fStyle = bsHatch;
+				DoChange();
+			}
+
 			VOID CUIBrush::Create(const CUIBitmap& bitmap)
 			{
 				Assert(!bitmap.Empty());
-				m_fBitmap = bitmap;
+				m_fBitmap.Assign(bitmap);
 				m_fHandle = ::CreatePatternBrush((HBITMAP)m_fBitmap.Handle);
 				Assert(m_fHandle);
 				m_fStyle = bsBitmap;
 				DoChange();
 			}
 
+			VOID CUIBrush::SetHatch(const INT value)
+			{
+				if (m_fStyle == CUIBrushStyle::bsHatch)
+				{
+					Release();
+					Create(value, m_fColor);
+				}
+				else m_fHatch = value;
+			}
+
 			VOID CUIBrush::SetColor(const COLORREF color)
 			{
-				Release();
-				Create(color);
+				if ((m_fStyle == CUIBrushStyle::bsHatch) || (m_fStyle == CUIBrushStyle::bsSolid))
+				{
+					Release();
+					if (m_fStyle == CUIBrushStyle::bsHatch) 
+						Create(m_fHatch, color);
+					else
+						Create(color);
+				}
+				else m_fColor = color;
 			}
 
 			VOID CUIBrush::SetStyle(const CUIBrushStyle style)
@@ -542,7 +621,26 @@ namespace Core
 				if (m_fStyle == bsBitmap)
 					m_fBitmap.FreeImage();
 
-				m_fStyle = style;
+				Release();
+
+				switch (style)
+				{
+				case CUIBrushStyle::bsBitmap:
+					/* bitmap empty */
+					break;
+				case CUIBrushStyle::bsHatch:
+					Create(m_fHatch, m_fColor);
+					break;
+				case CUIBrushStyle::bsClear:
+					{
+						m_fStyle = bsClear;
+						DoChange();
+					}
+					break;
+				default:
+					Create(m_fColor);
+					break;
+				}
 			}
 
 			VOID CUIBrush::SetBitmap(const CUIBitmap& bitmap)
@@ -553,10 +651,21 @@ namespace Core
 
 			CUIBrush::CUIBrush(const CUIBrush& brush) : CUIObjectGUI(brush)
 			{ 
-				if (brush.m_fBitmap.Empty())
-					Create(brush.m_fColor); 
-				else
-					Create(brush.m_fBitmap);
+				switch (brush.Style)
+				{
+				case bsClear:
+					m_fStyle = bsClear;
+					break;
+				case bsSolid:
+					Create(brush.Color);
+					break;
+				case bsHatch:
+					Create(brush.Hatch, brush.Color);
+					break;
+				case bsBitmap:
+					Create(brush.Bitmap);
+					break;
+				}
 			}
 
 			CUIBrush WINAPI CreateSolidBrush(const COLORREF color)
@@ -567,6 +676,11 @@ namespace Core
 			CUIBrush WINAPI CreatePatternBrush(const CUIBitmap& bitmap)
 			{
 				return bitmap;
+			}
+
+			CUIBrush WINAPI CreateHatchBrush(const INT iHatch, const COLORREF color)
+			{
+				return CUIBrush(iHatch, color);
 			}
 
 			CUIBrush WINAPI CreateGradientBrush(const COLORREF start_color, const COLORREF end_color, const INT size, const CUIGradientDirect direct)
@@ -608,6 +722,21 @@ namespace Core
 
 			// CUICanvas
 
+			VOID CUICanvas::SetBrush(const CUIBrush& brush)
+			{
+				m_fBrush.Assign(brush);
+			}
+
+			VOID CUICanvas::SetPen(const CUIPen& pen)
+			{
+				m_fPen.Assign(pen);
+			}
+
+			VOID CUICanvas::SetFont(const CUIFont& font)
+			{
+				m_fFont.Assign(font);
+			}
+
 			VOID CUICanvas::MoveTo(INT x, INT y) const
 			{
 				::MoveToEx(m_hDC, x, y, NULL);
@@ -628,6 +757,36 @@ namespace Core
 				LineTo(p.x, p.y);
 			}
 
+			VOID CUICanvas::RoundRect(const RECT& area, const INT w, const INT h) const
+			{
+				::RoundRect(m_hDC, area.left, area.top, area.right, area.bottom, w, h);
+			}
+
+			VOID CUICanvas::RoundRect(const CRECT& area, const INT w, const INT h) const
+			{
+				::RoundRect(m_hDC, area.Left, area.Top, area.Right, area.Bottom, w, h);
+			}
+
+			VOID CUICanvas::Ellipse(const RECT& area) const
+			{
+				::Ellipse(m_hDC, area.left, area.top, area.right, area.bottom);
+			}
+
+			VOID CUICanvas::Ellipse(const CRECT& area) const
+			{
+				::Ellipse(m_hDC, area.Left, area.Top, area.Right, area.Bottom);
+			}
+
+			VOID CUICanvas::Rectangle(const RECT& area) const
+			{
+				::Rectangle(m_hDC, area.left, area.top, area.right, area.bottom);
+			}
+
+			VOID CUICanvas::Rectangle(const CRECT& area) const
+			{
+				::Rectangle(m_hDC, area.Left, area.Top, area.Right, area.Bottom);
+			}
+
 			VOID CUICanvas::Fill(const COLORREF color)
 			{
 				RECT rc;
@@ -638,18 +797,21 @@ namespace Core
 			VOID CUICanvas::Fill(const RECT& area, const COLORREF color)
 			{
 				m_fBrush.Color = color;
+				m_fBrush.Style = bsSolid;
 				FillRect(m_hDC, &area, (HBRUSH)m_fBrush.Handle);
 			}
 
 			VOID CUICanvas::Fill(const CRECT& area, const COLORREF color)
 			{
 				m_fBrush.Color = color;
+				m_fBrush.Style = bsSolid;
 				FillRect(m_hDC, (LPRECT)&area, (HBRUSH)m_fBrush.Handle);
 			}
 
 			VOID CUICanvas::Fill(const LPCRECT area, const INT nCount, const COLORREF color)
 			{
 				m_fBrush.Color = color;
+				m_fBrush.Style = bsSolid;
 
 				for (INT i = 0; i < nCount; i++)
 					FillRect(m_hDC, &area[i], (HBRUSH)m_fBrush.Handle);
@@ -658,9 +820,28 @@ namespace Core
 			VOID CUICanvas::Fill(const LPCCRECT area, const INT nCount, const COLORREF color)
 			{
 				m_fBrush.Color = color;
+				m_fBrush.Style = bsSolid;
 
 				for (INT i = 0; i < nCount; i++)
 					FillRect(m_hDC, (LPCRECT)&area[i], (HBRUSH)m_fBrush.Handle);
+			}
+
+			VOID CUICanvas::EllipseFill(const RECT& area, const COLORREF color)
+			{
+				m_fPen.Style = psClear;
+				m_fBrush.Color = color;
+				m_fBrush.Style = bsSolid;
+
+				::Ellipse(m_hDC, area.left, area.top, area.right, area.bottom);
+			}
+
+			VOID CUICanvas::EllipseFill(const CRECT& area, const COLORREF color)
+			{
+				m_fPen.Style = psClear;
+				m_fBrush.Color = color;
+				m_fBrush.Style = bsSolid;
+
+				::Ellipse(m_hDC, area.Left, area.Top, area.Right, area.Bottom);
 			}
 
 			VOID CUICanvas::GradientFill(const RECT& area, const COLORREF start_color, const COLORREF end_color, const CUIGradientDirect direct)
@@ -689,12 +870,14 @@ namespace Core
 			VOID CUICanvas::Frame(const RECT& area, const COLORREF color)
 			{
 				m_fBrush.Color = color;
+				m_fBrush.Style = bsSolid;
 				FrameRect(m_hDC, &area, (HBRUSH)m_fBrush.Handle);
 			}
 
 			VOID CUICanvas::Frame(const CRECT& area, const COLORREF color)
 			{
 				m_fBrush.Color = color;
+				m_fBrush.Style = bsSolid;
 				FrameRect(m_hDC, (LPRECT)&area, (HBRUSH)m_fBrush.Handle);
 			}
 
@@ -755,6 +938,15 @@ namespace Core
 
 			VOID CUICanvas::DoChange(CUIObjectGUI* sender, CUICanvas* canvas)
 			{
+				if (sender->ObjectType == 3)
+				{
+					if (((CUIBrush*)sender)->Style == bsClear)
+					{
+						SelectObject(canvas->Handle, GetStockObject(NULL_BRUSH));
+						return;
+					}
+				}
+
 				sender->Select(*canvas);
 			}
 
@@ -772,6 +964,16 @@ namespace Core
 				return rc;
 			}
 
+			BOOL CUICanvas::GetTransparentMode(VOID) const
+			{
+				return GetBkMode(m_hDC) == TRANSPARENT;
+			}
+
+			VOID CUICanvas::SetTransparentMode(BOOL value)
+			{
+				SetBkMode(m_hDC, value ? TRANSPARENT : OPAQUE);
+			}
+
 			VOID CUICanvas::TextRect(RECT& area, LPCSTR text, UINT flags) const
 			{
 				if (text)
@@ -782,6 +984,48 @@ namespace Core
 			{
 				if (text)
 					DrawTextA(m_hDC, text, strlen(text), (LPRECT)&area, flags);
+			}
+
+			VOID CUICanvas::TextRect(RECT& area, LPCWSTR text, UINT flags) const
+			{
+				if (text)
+					DrawTextW(m_hDC, text, wcslen(text), &area, flags);
+			}
+
+			VOID CUICanvas::TextRect(CRECT& area, LPCWSTR text, UINT flags) const
+			{
+				if (text)
+					DrawTextW(m_hDC, text, wcslen(text), (LPRECT)&area, flags);
+			}
+
+			VOID CUICanvas::IncludeRect(const RECT& area) const
+			{
+				IntersectClipRect(m_hDC, area.left, area.top, area.right, area.bottom);
+			}
+
+			VOID CUICanvas::IncludeRect(const CRECT& area) const
+			{
+				IntersectClipRect(m_hDC, area.Left, area.Top, area.Right, area.Bottom);
+			}
+
+			VOID CUICanvas::ExcludeRect(const RECT& area) const
+			{
+				ExcludeClipRect(m_hDC, area.left, area.top, area.right, area.bottom);
+			}
+
+			VOID CUICanvas::ExcludeRect(const CRECT& area) const
+			{
+				ExcludeClipRect(m_hDC, area.Left, area.Top, area.Right, area.Bottom);
+			}
+
+			COLORREF CUICanvas::GetColorText(VOID) const
+			{
+				return ::GetTextColor(m_hDC);
+			}
+
+			VOID CUICanvas::SetColorText(COLORREF value)
+			{
+				::SetTextColor(m_hDC, value);
 			}
 
 			CUICanvas::CUICanvas(HDC hDC) : m_hDC(hDC), m_fPen(psSolid, 1, RGB(255, 0, 0)), m_fBrush(RGB(255, 255, 255)), m_fFont(hDC)

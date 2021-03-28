@@ -9,31 +9,34 @@
 
 #include <commdlg.h>
 #include <shellapi.h>
+#include <filesystem>
 
 #include <Uxtheme.h>
 
 namespace MainWindow
 {
-	/*constexpr INT TOPEXTENDWIDTH = 2;
-	constexpr INT LEFTEXTENDWIDTH = 3;
-	constexpr INT RIGHTEXTENDWIDTH = 3;
-	constexpr INT BOTTOMEXTENDWIDTH = 3;*/
-	Core::Classes::UI::CUIMainWindow MainWindow;
-	Core::Classes::UI::CUIBaseControl ToolbarPanel_1;
+	static BOOL bActiveApp = FALSE;
+	static Core::Classes::UI::CUIMainWindow MainWindow;
+	static Core::Classes::UI::CUIBaseControl ToolbarPanel_1;
 
 	WNDPROC OldWndProc;
 	
-	HWND GetWindow(void)
+	BOOL GetActiveApp(VOID)
+	{
+		return bActiveApp;
+	}
+
+	HWND GetWindow(VOID)
 	{
 		return MainWindow.Handle;
 	}
 
-	Core::Classes::UI::CUIMainWindow& GetWindowObj(void)
+	Core::Classes::UI::CUIMainWindow& GetWindowObj(VOID)
 	{
 		return MainWindow;
 	}
 
-	Core::Classes::UI::CUIMenu& GetMainMenuObj(void)
+	Core::Classes::UI::CUIMenu& GetMainMenuObj(VOID)
 	{
 		return MainWindow.MainMenu;
 	}
@@ -62,6 +65,7 @@ namespace MainWindow
 		result = result && MainWindow.MainMenu.Append("Extensions", *ExtensionSubMenu);
 
 		result = result && LinksSubMenu->Append("Cascadia Wiki", UI_EXTMENU_LINKS_WIKI);
+		result = result && LinksSubMenu->Append("Material Editor official page", UI_EXTMENU_LINKS_MATERIALEDITOR);
 		result = result && MainWindow.MainMenu.Append("Links", *LinksSubMenu);
 
 		// I don't use DeleteMenu when destroying, I don't need to store a pointer and all that.
@@ -74,7 +78,7 @@ namespace MainWindow
 	}
 
 	// Paint the title on the custom frame.
-	void PaintCustomCaption(HWND hWnd, HDC hdc)
+	VOID PaintCustomCaption(HWND hWnd, HDC hdc)
 	{
 		RECT rcClient;
 		GetWindowRect(hWnd, &rcClient);
@@ -132,6 +136,10 @@ namespace MainWindow
 				return status;
 			}
 		}
+		else if (Message == WM_NCACTIVATE)
+		{
+			bActiveApp = (BOOL)wParam;
+		}
 		else if (Message == WM_COMMAND)
 		{
 			const uint32_t param = LOWORD(wParam);
@@ -145,7 +153,7 @@ namespace MainWindow
 				if (form)
 					(*(void(__fastcall **)(TESForm_CK*, HWND, __int64, __int64))(*(__int64*)form + 0x340))(form, Hwnd, 0, 1);
 			}
-			return 0;
+			return S_OK;
 
 			case UI_EXTMENU_SHOWLOG:
 			{
@@ -164,13 +172,13 @@ namespace MainWindow
 				MenuItem = MainWindow.MainMenu.GetItem(UI_EXTMENU_SHOWLOG);
 				MenuItem.Checked = !MenuItem.Checked;
 			}
-			return 0;
+			return S_OK;
 
 			case UI_EXTMENU_CLEARLOG:
 			{
 				PostMessageA(LogWindow::GetWindow(), UI_LOG_CMD_CLEARTEXT, 0, 0);
 			}
-			return 0;
+			return S_OK;
 
 			case UI_EXTMENU_AUTOSCROLL:
 			{
@@ -180,7 +188,7 @@ namespace MainWindow
 
 				PostMessageA(LogWindow::GetWindow(), UI_LOG_CMD_AUTOSCROLL, (WPARAM)MenuItem.Checked, 0);
 			}
-			return 0;
+			return S_OK;
 
 			case UI_EXTMENU_LOADEDESPINFO:
 			{
@@ -270,7 +278,7 @@ namespace MainWindow
 					fclose(f);
 				}
 			}
-			return 0;
+			return S_OK;
 
 			case UI_EXTMENU_HARDCODEDFORMS:
 			{
@@ -288,13 +296,29 @@ namespace MainWindow
 				// Fake the click on "Save"
 				PostMessageA(Hwnd, WM_COMMAND, 40127, 0);
 			}
-			return 0;
+			return S_OK;
 
 			case UI_EXTMENU_LINKS_WIKI:
 			{
-				ShellExecuteA(nullptr, "open", "https://wiki.falloutcascadia.com/index.php?title=Main_Page", "", "", SW_SHOW);
+				ShellExecuteA(NULL, "open", "https://wiki.falloutcascadia.com/index.php?title=Main_Page", "", "", SW_SHOW);
 			}
-			return 0;
+			return S_OK;
+
+			case UI_EXTMENU_LINKS_MATERIALEDITOR:
+			{
+				ShellExecuteA(NULL, "open", "https://www.nexusmods.com/fallout4/mods/3635", "", "", SW_SHOW);
+			}
+			return S_OK;
+
+			case UI_SHOW_MATERIALEDITOR:
+			{
+				constexpr LPSTR lpMaterialEditorPath = ".\\Tools\\MaterialEditor\\Material Editor.exe";
+				if (std::filesystem::exists(lpMaterialEditorPath))
+					ShellExecuteA(NULL, "open", lpMaterialEditorPath, "", "", SW_SHOW);
+				else
+					MainWindow::GetWindowObj().MessageWarningDlg(std::string("File: \"") + lpMaterialEditorPath + "\" no found.");
+			}
+			return S_OK;
 
 			case UI_CMD_SHOWHIDE_OBJECTWINDOW:
 			{
@@ -308,7 +332,7 @@ namespace MainWindow
 				MenuItem = MainWindow.MainMenu.GetItem(UI_CMD_SHOWHIDE_OBJECTWINDOW);
 				MenuItem.Checked = !MenuItem.Checked;
 			}
-			return 0;
+			return S_OK;
 
 			case UI_CMD_SHOWHIDE_CELLVIEWWINDOW:
 			{
@@ -322,7 +346,7 @@ namespace MainWindow
 				MenuItem = MainWindow.MainMenu.GetItem(UI_CMD_SHOWHIDE_CELLVIEWWINDOW);
 				MenuItem.Checked = !MenuItem.Checked;
 			}
-			return 0;
+			return S_OK;
 
 			case UI_COLLISION_GEOM_CMD:
 			{
@@ -367,6 +391,19 @@ namespace MainWindow
 			sprintf_s(customTitle, "%s [CK64Fixes Rev. F4-%s]", (const char*)lParam, g_GitVersion);
 
 			return CallWindowProcA(OldWndProc, Hwnd, Message, wParam, (LPARAM)customTitle);
+		}
+		else if (Message == WM_GETMINMAXINFO)
+		{
+			// https://social.msdn.microsoft.com/Forums/vstudio/en-US/fb4de52d-66d4-44da-907c-0357d6ba894c/swmaximize-is-same-as-fullscreen?forum=vcgeneral
+
+			RECT WorkArea;
+			SystemParametersInfoA(SPI_GETWORKAREA, 0, &WorkArea, 0);
+			((MINMAXINFO*)lParam)->ptMaxSize.x = (WorkArea.right - WorkArea.left);
+			((MINMAXINFO*)lParam)->ptMaxSize.y = (WorkArea.bottom - WorkArea.top);
+			((MINMAXINFO*)lParam)->ptMaxPosition.x = WorkArea.left;
+			((MINMAXINFO*)lParam)->ptMaxPosition.y = WorkArea.top;
+
+			return S_OK;
 		}
 
 		return CallWindowProcA(OldWndProc, Hwnd, Message, wParam, lParam);

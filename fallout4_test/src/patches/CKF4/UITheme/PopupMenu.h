@@ -22,12 +22,20 @@ namespace Core
 					VOID WINAPI DrawItem_Arrow(Graphics::CUICanvas& canvas, LPCRECT pRect, BOOL bSelected);
 				}
 
+				BOOL WINAPI IsSystemPopupMenu(HWND hWindow, HMENU hMenu);
+				BOOL WINAPI IsSystemPopupMenuBlindly(HWND hWindow);
+
 				VOID WINAPI Initialize(HWND hWindow);
 				LRESULT CALLBACK PopupMenuSubclass(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData);
 
-				VOID WINAPI OnInitPopupMenu(HWND hWindow, HMENU hMenu);
-				VOID WINAPI OnMeasureItem(HWND hWindow, LPMEASUREITEMSTRUCT lpMeasureItem);
-				VOID WINAPI OnDrawItem(HWND hWindow, LPDRAWITEMSTRUCT lpDrawItem);
+				namespace Event
+				{
+					VOID WINAPI OnInitPopupMenu(HWND hWindow, HMENU hMenu);
+					VOID WINAPI OnDrawNoClientPopupMenu(HWND hWindow, HDC hDC);
+					VOID WINAPI OnMeasureItem(HWND hWindow, LPMEASUREITEMSTRUCT lpMeasureItem);
+					VOID WINAPI OnDrawItem(HWND hWindow, LPDRAWITEMSTRUCT lpDrawItem);
+					LRESULT WINAPI OnNcCalcSize(HWND hWnd, WPARAM wParam, LPARAM lParam);
+				}
 			}
 		}
 	}

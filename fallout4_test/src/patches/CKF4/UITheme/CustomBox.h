@@ -8,18 +8,24 @@ namespace Core
 	{
 		namespace Theme
 		{
-			namespace ColorBox
+			namespace CustomBox
 			{
 				namespace Graphics = Core::Classes::UI;
+
+				enum AllowBox
+				{
+					abNormal,
+					abColor
+				};
 
 				namespace Render
 				{
 					VOID WINAPI DrawBorder(Graphics::CUICanvas& canvas, Graphics::CRECT& rc);
 				}
 
-				VOID WINAPI Initialize(HWND hWindow, BOOL bColored);
+				VOID WINAPI Initialize(HWND hWindow, AllowBox eAllowBox);
 
-				LRESULT CALLBACK IconSubclass(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData);
+				LRESULT CALLBACK NormalBoxSubclass(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData);
 				LRESULT CALLBACK ColorBoxSubclass(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData);
 			}
 		}

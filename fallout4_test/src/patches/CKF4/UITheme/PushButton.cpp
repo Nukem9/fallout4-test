@@ -2,6 +2,8 @@
 #include "VarCommon.h"
 #include "PushButton.h"
 
+#include <vsstyle.h>
+
 namespace Core
 {
 	namespace UI
@@ -65,6 +67,18 @@ namespace Core
 							GetThemeSysColor(ThemeColor::ThemeColor_Button_Disabled_Gradient_End), GetThemeSysColor(ThemeColor::ThemeColor_Divider_Highlighter_Disabled_Gradient_Start),
 							GetThemeSysColor(ThemeColor::ThemeColor_Divider_Highlighter_Disabled_Gradient_End), GetThemeSysColor(ThemeColor::ThemeColor_Button_Light_Disabled_Divider),
 							GetThemeSysColor(ThemeColor::ThemeColor_Divider_Color_Disabled));
+					}
+				}
+
+				namespace Event
+				{
+					VOID WINAPI OnBeforeDrawText(Graphics::CUICanvas& canvas, DWORD& flags, INT iStateId)
+					{
+						flags |= DT_END_ELLIPSIS;
+						if (iStateId == PBS_DISABLED)
+							canvas.ColorText = GetThemeSysColor(ThemeColor_Text_1);
+						else
+							canvas.ColorText = GetThemeSysColor(ThemeColor_Text_4);
 					}
 				}
 			}

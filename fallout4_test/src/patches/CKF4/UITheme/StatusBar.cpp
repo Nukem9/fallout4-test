@@ -2,6 +2,8 @@
 #include "VarCommon.h"
 #include "StatusBar.h"
 
+#include "..\MainWindow.h"
+
 namespace Core
 {
 	namespace UI
@@ -14,18 +16,21 @@ namespace Core
 				{
 					VOID WINAPI DrawBorder(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
-						canvas.Fill(*pRect, RGB(38, 38, 38));
-						canvas.Pen.Color = GetThemeSysColor(ThemeColor::ThemeColor_Divider_Color);
-						canvas.MoveTo(pRect->left, pRect->top);
-						canvas.LineTo(pRect->right - pRect->left, pRect->top);
-						canvas.Pen.Color = RGB(69, 69, 69);
-						canvas.MoveTo(pRect->left, pRect->top + 1);
-						canvas.LineTo(pRect->right - pRect->left, pRect->top + 1);
+						canvas.Fill(*pRect, GetThemeSysColor(ThemeColor::ThemeColor_Border_Window));
 					}
 
 					VOID WINAPI DrawBackground(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
-						canvas.Fill(*pRect, GetThemeSysColor(ThemeColor::ThemeColor_Default));
+						canvas.Fill(*pRect, GetThemeSysColor(ThemeColor::ThemeColor_Border_Window));
+					}
+				}
+
+				namespace Event
+				{
+					VOID WINAPI OnBeforeDrawText(Graphics::CUICanvas& canvas, DWORD& flags)
+					{
+						flags |= DT_CENTER | DT_END_ELLIPSIS;
+						canvas.ColorText = GetThemeSysColor(ThemeColor_StatusBar_Text);
 					}
 				}
 			}

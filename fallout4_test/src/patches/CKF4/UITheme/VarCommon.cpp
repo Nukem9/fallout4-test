@@ -8,7 +8,7 @@ namespace Core
 		{
 			const Core::Classes::UI::CUIFont ThemeFont("Microsoft Sans Serif", 8, {}, Core::Classes::UI::fqClearTypeNatural, Core::Classes::UI::fpVariable);
 
-			constexpr COLORREF szConstDark[49]
+			constexpr COLORREF szConstDark[56]
 			{
 				RGB(52, 52, 52),											// ThemeColor_Default
 				RGB(32, 32, 32),											// ThemeColor_ListView_Color
@@ -58,16 +58,26 @@ namespace Core
 				RGB(70, 149, 205),											// ThemeColor_Progress_Fill_Gradient_Start
 				RGB(42, 101, 143),											// ThemeColor_Progress_Fill_Gradient_End
 				RGB(87, 159, 209),											// ThemeColor_Progress_Fill_Highlighter
-				RGB(103, 175, 225)											// ThemeColor_Progress_Fill_Highlighter_Up
+				RGB(103, 175, 225),											// ThemeColor_Progress_Fill_Highlighter_Up
+				RGB(0, 122, 204),											// ThemeColor_Border_Window,
+				RGB(255, 255, 255),											// ThemeColor_StatusBar_Text
+				RGB(255, 255, 255),											// ThemeColor_Caption_Text
+				RGB(34, 34, 34),											// ThemeColor_Header_Normal_Gradient_Start
+				RGB(27, 27, 27),											// ThemeColor_Header_Normal_Gradient_End
+				RGB(44, 44, 44),											// ThemeColor_Header_Hot_Gradient_Start
+				RGB(37, 37, 37)												// ThemeColor_Header_Hot_Gradient_End
 			};
 
-			const HBRUSH szConstDarkBrush[5]
+			HBRUSH hThemeEditBackBrush;
+			static HBRUSH szConstDarkBrush[7]
 			{
 				CreateSolidBrush(szConstDark[ThemeColor_Default - 1]),
 				CreateSolidBrush(szConstDark[ThemeColor_Text_3 - 1]),
 				CreateSolidBrush(szConstDark[ThemeColor_Edit_Color - 1]),
 				CreateSolidBrush(szConstDark[ThemeColor_Divider_Color - 1]),
 				CreateSolidBrush(szConstDark[ThemeColor_Text_4 - 1]),
+				CreateSolidBrush(szConstDark[ThemeColor_Border_Window - 1]),
+				CreateSolidBrush(szConstDark[ThemeColor_Divider_Color - 1])
 			};
 
 			static Theme generalCurentTheme = Theme_Dark;
@@ -75,6 +85,9 @@ namespace Core
 			VOID WINAPI SetTheme(Theme theme)
 			{
 				generalCurentTheme = theme;
+
+				// ???
+				hThemeEditBackBrush = CreateSolidBrush(GetThemeSysColor(ThemeColor_Edit_Color));
 			}
 
 			COLORREF WINAPI GetThemeSysColor(const ThemeColor color)
@@ -91,6 +104,8 @@ namespace Core
 				case COLOR_WINDOW: return GetThemeSysColor(ThemeColor_Edit_Color);
 				case COLOR_WINDOWFRAME: return GetThemeSysColor(ThemeColor_Divider_Color);
 				case COLOR_WINDOWTEXT: return GetThemeSysColor(ThemeColor_Text_4);
+				case COLOR_ACTIVEBORDER: return GetThemeSysColor(ThemeColor_Border_Window);
+				case COLOR_INACTIVEBORDER: return GetThemeSysColor(ThemeColor_Divider_Color);
 				default:
 					return ::GetSysColor(nIndex);
 				}
@@ -113,6 +128,8 @@ namespace Core
 				case COLOR_WINDOW: return szConstDarkBrush[2];
 				case COLOR_WINDOWFRAME: return szConstDarkBrush[3];
 				case COLOR_WINDOWTEXT: return szConstDarkBrush[4];
+				case COLOR_ACTIVEBORDER: return szConstDarkBrush[5];
+				case COLOR_INACTIVEBORDER: return szConstDarkBrush[6];
 				default:
 					return ::GetSysColorBrush(nIndex);
 				}

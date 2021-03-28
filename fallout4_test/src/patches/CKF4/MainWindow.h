@@ -20,6 +20,8 @@
 #define UI_EXTMENU_HARDCODEDFORMS			51007
 #define UI_EXTMENU_LINKS_ID					51010
 #define UI_EXTMENU_LINKS_WIKI				51011
+#define UI_EXTMENU_LINKS_MATERIALEDITOR		51012
+#define UI_SHOW_MATERIALEDITOR				41514
 #define UI_COLLISION_GEOM_CMD				0x9CFD
 #define UI_FOG_CMD							0x9FE9
 #define UI_SKY_TOGGLE_CMD					0x9D1F
@@ -31,9 +33,11 @@ namespace MainWindow
 {
 	extern WNDPROC OldWndProc;
 
-	HWND GetWindow(void);
-	Core::Classes::UI::CUIMainWindow& GetWindowObj(void);
-	Core::Classes::UI::CUIMenu& GetMainMenuObj(void);
+	BOOL GetActiveApp(VOID);
+
+	HWND GetWindow(VOID);
+	Core::Classes::UI::CUIMainWindow& GetWindowObj(VOID);
+	Core::Classes::UI::CUIMenu& GetMainMenuObj(VOID);
 
 	LRESULT CALLBACK WndProc(HWND Hwnd, UINT Message, WPARAM wParam, LPARAM lParam);
 }

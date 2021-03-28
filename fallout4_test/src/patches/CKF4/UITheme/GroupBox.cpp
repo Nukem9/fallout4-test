@@ -37,6 +37,15 @@ namespace Core
 							GetThemeSysColor(ThemeColor::ThemeColor_Divider_Highlighter_Disabled_Ver2));
 					}
 				}
+
+				namespace Event
+				{
+					VOID WINAPI OnBeforeDrawText(Graphics::CUICanvas& canvas, DWORD& flags)
+					{
+						flags |= DT_END_ELLIPSIS;
+						canvas.ColorText = GetThemeSysColor(ThemeColor_Text_4);
+					}
+				}
 			}
 		}
 	}

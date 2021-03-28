@@ -17,6 +17,11 @@ namespace Core
 					VOID WINAPI DrawBorder(Graphics::CUICanvas& canvas, LPCRECT pRect);
 					VOID WINAPI DrawBackground(Graphics::CUICanvas& canvas, LPCRECT pRect);
 				}
+
+				namespace Event
+				{
+					VOID WINAPI OnBeforeDrawText(Graphics::CUICanvas& canvas, DWORD& flags);
+				}
 			}
 		}
 	}

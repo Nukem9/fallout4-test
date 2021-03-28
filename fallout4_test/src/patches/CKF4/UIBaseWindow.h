@@ -4,6 +4,8 @@
 #include "UIMenus.h"
 #include "UIGraphics.h"
 
+#define UI_CHANGEWINDOWSTATE (WM_USER + 0xC10)
+
 namespace Core
 {
 	enum WindowState_t {
@@ -65,16 +67,21 @@ namespace Core
 				CRECT ClientRect(void) const;
 				LONG ClientWidth(void) const;
 				LONG ClientHeight(void) const;
-				void Move(const LONG x, const LONG y);
-				void SetSize(const LONG cx, const LONG cy);
+				void Move(const LONG x, const LONG y, const BOOL topmost = TRUE);
+				void SetSize(const LONG cx, const LONG cy, const BOOL topmost = TRUE);
+				void SetParent(HWND hParent);
+				void SetParent(const CUIBaseWindow& Parent);
 				HWND Parent(void) const;
 				CUIBaseWindow ParentWindow(void) const;
 				POINT ScreenToControl(const POINT &p) const;
 				POINT ControlToScreen(const POINT &p) const;
 				inline BOOL IsLockUpdate(void) const { return m_LockUpdate; }
+				void Refresh(void);
 				void LockUpdate(void);
 				void UnlockUpdate(void);
 				void Invalidate(void);
+				void Invalidate(const LPRECT r);
+				void Invalidate(const CRECT& r);
 				void Repaint(void);
 				void SetFocus(void);
 				inline HDC DeviceContext(void) const { return m_hDC; }

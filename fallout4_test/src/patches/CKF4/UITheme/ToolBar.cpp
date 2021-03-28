@@ -1,4 +1,5 @@
 #include "..\UIBaseWindow.h"
+#include "..\MainWindow.h"
 #include "VarCommon.h"
 #include "ToolBar.h"
 
@@ -40,21 +41,7 @@ namespace Core
 						Graphics::CRECT rc_temp = *pRect;
 						rc_temp.Inflate(0, -2);
 
-						Core::Classes::UI::CRECT rc_temp_v[2];
-
-						rc_temp_v[0] = rc_temp;
-						rc_temp_v[0].Inflate(-1, -1);
-						rc_temp_v[1] = rc_temp_v[0];
-						rc_temp_v[1].Inflate(-1, -1);
-
-						canvas.GradientFill(rc_temp, GetThemeSysColor(ThemeColor::ThemeColor_Divider_Highlighter_Gradient_Start),
-							GetThemeSysColor(ThemeColor::ThemeColor_Divider_Highlighter_Gradient_End), Core::Classes::UI::gdVert);
-						canvas.Fill(rc_temp_v[0], GetThemeSysColor(ThemeColor::ThemeColor_Divider_Color));
-						canvas.GradientFill(rc_temp_v[1], GetThemeSysColor(ThemeColor::ThemeColor_Default_Gradient_Start),
-							GetThemeSysColor(ThemeColor::ThemeColor_Default_Gradient_End), Core::Classes::UI::gdVert);
-						canvas.Pen.Color = GetThemeSysColor(ThemeColor::ThemeColor_Divider_Highlighter);
-						canvas.MoveTo(rc_temp_v[1].Left, rc_temp_v[1].Top);
-						canvas.LineTo(rc_temp_v[1].Right, rc_temp_v[1].Top);
+						canvas.Fill(rc_temp, GetThemeSysColor(ThemeColor::ThemeColor_Button_Hot_Gradient_End));
 					}
 
 					VOID WINAPI DrawButton_Checked(Graphics::CUICanvas& canvas, LPCRECT pRect)
@@ -118,18 +105,19 @@ namespace Core
 
 				VOID WINAPI Initialize(HWND hWindow)
 				{
-					SendMessageA(hWindow, CCM_SETVERSION, (WPARAM)5, 0);
+					SendMessageA(hWindow, CCM_SETVERSION, (WPARAM)6, 0);
 					SendMessageA(hWindow, TB_SETSTYLE, 0, TBSTYLE_FLAT | CCS_TOP | TBSTYLE_TOOLTIPS |
 						//wrapable style doesn't work with separators
 						//use nodivider to remove the two stupid pixel lines on top of the toolbar
 						CCS_ADJUSTABLE | CCS_NODIVIDER | TBSTYLE_ALTDRAG); // | TBSTYLE_WRAPABLE);// );
-					SendMessageA(hWindow, TB_SETBUTTONSIZE, 0, MAKELPARAM(25, 27));
+					SendMessageA(hWindow, TB_SETBUTTONSIZE, 0, MAKELPARAM(21, 25));
 
 					TBMETRICS metrics = { 0 };
 					metrics.cbSize = sizeof(TBMETRICS);
 					metrics.dwMask = TBMF_BUTTONSPACING;
 					SendMessageA(hWindow, TB_GETMETRICS, 0, (LPARAM)&metrics);
-					metrics.cxButtonSpacing = 1;
+					// Dialogs are designed for 0 spacing
+					metrics.cxButtonSpacing = 0;
 					SendMessageA(hWindow, TB_SETMETRICS, 0, (LPARAM)&metrics);
 
 					SendMessageA(hWindow, TB_AUTOSIZE, 0, 0);
