@@ -12,7 +12,7 @@
 // include patches for editor
 #include "CKF4/Editor.h"
 #include "CKF4/EditorUI.h"
-#include "CKF4/EditorUIDarkMode.h"
+#include "CKF4/UIThemeMode.h"
 #include "CKF4/EditorUIProgressDialog.h"
 
 // include windows
@@ -133,23 +133,23 @@ void Patch_Fallout4CreationKit()
 	PatchIAT(hk_EndDialog, "USER32.DLL", "EndDialog");
 	PatchIAT(hk_SendMessageA, "USER32.DLL", "SendMessageA");
 
-	if (g_INI.GetBoolean("CreationKit", "UIDarkTheme", false))
+	if (auto ThemeID = g_INI.GetInteger("CreationKit", "UITheme", 0); ((ThemeID > 0) && (ThemeID < 5)))
 	{
-		auto comDll = (uintptr_t)GetModuleHandle("comctl32.dll");
+		auto comDll = (uintptr_t)GetModuleHandleA("comctl32.dll");
 		Assert(comDll);
 
-		EditorUIDarkMode::Initialize();
-		Detours::IATHook(comDll, "USER32.dll", "GetSysColor", (uintptr_t)&EditorUIDarkMode::Comctl32GetSysColor);
-		Detours::IATHook(comDll, "USER32.dll", "GetSysColorBrush", (uintptr_t)&EditorUIDarkMode::Comctl32GetSysColorBrush);
-		Detours::IATDelayedHook(comDll, "UxTheme.dll", "DrawThemeBackground", (uintptr_t)&EditorUIDarkMode::Comctl32DrawThemeBackground);
-		Detours::IATDelayedHook(comDll, "UxTheme.dll", "DrawThemeText", (uintptr_t)&EditorUIDarkMode::Comctl32DrawThemeText);
+		UITheme::Initialize((UITheme::Theme::Theme)ThemeID);
+		Detours::IATHook(comDll, "USER32.dll", "GetSysColor", (uintptr_t)&UITheme::Comctl32GetSysColor);
+		Detours::IATHook(comDll, "USER32.dll", "GetSysColorBrush", (uintptr_t)&UITheme::Comctl32GetSysColorBrush);
+		Detours::IATDelayedHook(comDll, "UxTheme.dll", "DrawThemeBackground", (uintptr_t)&UITheme::Comctl32DrawThemeBackground);
+		Detours::IATDelayedHook(comDll, "UxTheme.dll", "DrawThemeText", (uintptr_t)&UITheme::Comctl32DrawThemeText);
 
 		// replace main toolbar
-		XUtil::DetourCall(OFFSET(0x5FE166, 0), EditorUIDarkMode::Comctl32CreateToolbarEx_1);
-		XUtil::DetourJump(OFFSET(0x5FE401, 0), EditorUIDarkMode::HideOldTimeOfDayComponents);
+		XUtil::DetourCall(OFFSET(0x5FE166, 0), UITheme::Comctl32CreateToolbarEx_1);
+		XUtil::DetourJump(OFFSET(0x5FE401, 0), UITheme::HideOldTimeOfDayComponents);
 
 		// replace ImageList_LoadImage for item type
-		XUtil::DetourCall(OFFSET(0x5B63E7, 0), EditorUIDarkMode::Comctl32ImageList_LoadImageA_1);
+		XUtil::DetourCall(OFFSET(0x5B63E7, 0), UITheme::Comctl32ImageList_LoadImageA_1);
 	}
 
 	if (g_INI.GetBoolean("CreationKit", "UI", false))

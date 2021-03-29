@@ -4,7 +4,7 @@
 #include <Richedit.h>
 #include <unordered_set>
 #include "EditorUI.h"
-#include "EditorUIDarkMode.h"
+#include "UIThemeMode.h"
 #include "LogWindow.h"
 #include "MainWindow.h"
 
@@ -62,7 +62,7 @@ namespace LogWindow
 
 		std::thread asyncLogThread([]()
 		{
-			EditorUIDarkMode::InitializeThread();
+			UITheme::InitializeThread();
 
 			// Output window
 			auto instance = (HINSTANCE)GetModuleHandle(nullptr);

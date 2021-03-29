@@ -191,9 +191,6 @@
     <ClInclude Include="src\patches\CKF4\Editor.h">
       <Filter>Header Files\UI</Filter>
     </ClInclude>
-    <ClInclude Include="src\patches\CKF4\EditorUIDarkMode.h">
-      <Filter>Header Files\UI</Filter>
-    </ClInclude>
     <ClInclude Include="src\dump.h">
       <Filter>Header Files\Patches</Filter>
     </ClInclude>
@@ -359,21 +356,6 @@
     <ClInclude Include="src\patches\CKF4\UITheme\CustomBox.h">
       <Filter>Header Files\UI\Theme</Filter>
     </ClInclude>
-    <ClInclude Include="src\patches\CKF4\UITheme\TitleBar.h">
-      <Filter>Header Files\UI\Theme</Filter>
-    </ClInclude>
-    <ClInclude Include="src\patches\CKF4\UITheme\FlatMainWindow.h">
-      <Filter>Header Files\UI\Theme</Filter>
-    </ClInclude>
-    <ClInclude Include="src\patches\CKF4\UITheme\MoveWndBar.h">
-      <Filter>Header Files\UI\Theme</Filter>
-    </ClInclude>
-    <ClInclude Include="src\patches\CKF4\UITheme\SysMenu.h">
-      <Filter>Header Files\UI\Theme</Filter>
-    </ClInclude>
-    <ClInclude Include="src\patches\CKF4\UITheme\Panel.h">
-      <Filter>Header Files\UI\Theme</Filter>
-    </ClInclude>
     <ClInclude Include="src\patches\CKF4\UITheme\TimeOfDay.h">
       <Filter>Header Files\UI\Theme</Filter>
     </ClInclude>
@@ -382,6 +364,12 @@
     </ClInclude>
     <ClInclude Include="src\patches\CKF4\UITheme\PageControl.h">
       <Filter>Header Files\UI\Theme</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\UITheme\RichEdit20.h">
+      <Filter>Header Files\UI\Theme</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\UIThemeMode.h">
+      <Filter>Header Files\UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -435,9 +423,6 @@
     </ClCompile>
     <ClCompile Include="src\typeinfo\ms_rtti.cpp">
       <Filter>Source Files\RTTI</Filter>
-    </ClCompile>
-    <ClCompile Include="src\patches\CKF4\EditorUIDarkMode.cpp">
-      <Filter>Source Files\UI</Filter>
     </ClCompile>
     <ClCompile Include="src\patches\CKF4\EditorUI.cpp">
       <Filter>Source Files\UI</Filter>
@@ -586,21 +571,6 @@
     <ClCompile Include="src\patches\CKF4\UITheme\CustomBox.cpp">
       <Filter>Source Files\UI\Theme</Filter>
     </ClCompile>
-    <ClCompile Include="src\patches\CKF4\UITheme\TitleBar.cpp">
-      <Filter>Source Files\UI\Theme</Filter>
-    </ClCompile>
-    <ClCompile Include="src\patches\CKF4\UITheme\FlatMainWindow.cpp">
-      <Filter>Source Files\UI\Theme</Filter>
-    </ClCompile>
-    <ClCompile Include="src\patches\CKF4\UITheme\MoveWndBar.cpp">
-      <Filter>Source Files\UI\Theme</Filter>
-    </ClCompile>
-    <ClCompile Include="src\patches\CKF4\UITheme\SysMenu.cpp">
-      <Filter>Source Files\UI\Theme</Filter>
-    </ClCompile>
-    <ClCompile Include="src\patches\CKF4\UITheme\Panel.cpp">
-      <Filter>Source Files\UI\Theme</Filter>
-    </ClCompile>
     <ClCompile Include="src\patches\CKF4\UITheme\TimeOfDay.cpp">
       <Filter>Source Files\UI\Theme</Filter>
     </ClCompile>
@@ -609,6 +579,12 @@
     </ClCompile>
     <ClCompile Include="src\patches\CKF4\UITheme\PageControl.cpp">
       <Filter>Source Files\UI\Theme</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\UITheme\RichEdit20.cpp">
+      <Filter>Source Files\UI\Theme</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\UIThemeMode.cpp">
+      <Filter>Source Files\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

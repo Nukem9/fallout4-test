@@ -104,8 +104,13 @@ namespace Core
 			std::string CUIBaseWindow::GetCaption(void) const
 			{
 				std::string s;
-				s.resize(GetWindowTextLengthA(m_hWnd) + 1);
-				INT nLen = GetWindowTextA(m_hWnd, &s[0], MAX_PATH);
+				INT nLen = GetWindowTextLengthA(m_hWnd) + 1;
+
+				if (!nLen)
+					return "";
+
+				s.resize(nLen);
+				GetWindowTextA(m_hWnd, &s[0], MAX_PATH);
 
 				return s;
 			}
@@ -118,7 +123,12 @@ namespace Core
 			std::wstring CUIBaseWindow::GetWideCaption(void) const
 			{
 				std::wstring s;
-				s.resize(GetWindowTextLengthW(m_hWnd) + 1);
+				INT nLen = GetWindowTextLengthW(m_hWnd) + 1;
+
+				if (!nLen)
+					return L"";
+
+				s.resize(nLen);
 				GetWindowTextW(m_hWnd, &s[0], MAX_PATH);
 
 				return s;
@@ -165,8 +175,10 @@ namespace Core
 				std::string s;
 				s.resize(MAX_PATH);
 				INT nLen = GetClassNameA(m_hWnd, &s[0], MAX_PATH);
-				Assert(nLen);
-				s.resize(nLen);
+				if (nLen)
+					s.resize(nLen);
+				else
+					s = "";
 
 				return s;
 			}
@@ -176,8 +188,10 @@ namespace Core
 				std::wstring s;
 				s.resize(MAX_PATH);
 				INT nLen = GetClassNameW(m_hWnd, &s[0], MAX_PATH);
-				Assert(nLen);
-				s.resize(nLen);
+				if (nLen)
+					s.resize(nLen);
+				else
+					s = L"";
 
 				return s;
 			}

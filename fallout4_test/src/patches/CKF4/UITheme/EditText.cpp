@@ -57,7 +57,7 @@ namespace Core
 				{
 					SetTextColor(hDC, GetThemeSysColor(ThemeColor_Text_4));
 					SetBkColor(hDC, GetThemeSysColor(ThemeColor_Edit_Color));
-					return reinterpret_cast<INT_PTR>(/*Comctl32GetSysColorBrush(COLOR_WINDOW)*/hThemeEditBackBrush);
+					return reinterpret_cast<INT_PTR>(hThemeEditBrush);
 				}
 			}
 		}

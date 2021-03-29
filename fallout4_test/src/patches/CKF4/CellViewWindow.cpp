@@ -2,38 +2,38 @@
 
 namespace CellViewWindow
 {
-	Core::Classes::UI::CUICustomWindow CellViewWindow;
+	Classes::CUICustomWindow CellViewWindow;
 
 	struct CellViewWindowControls_t
 	{
 		BOOL Initialize = FALSE;
 
-		Core::Classes::UI::CUIBaseControl LabelWorldSpace;
-		Core::Classes::UI::CUIBaseControl NoCellSellected;
-		Core::Classes::UI::CUIBaseControl Interiors;
-		Core::Classes::UI::CUIBaseControl LoadedAtTop;
-		Core::Classes::UI::CUIBaseControl FilteredOnly;
-		Core::Classes::UI::CUIBaseControl VisibleOnly;
-		Core::Classes::UI::CUIBaseControl SelectedOnly;
-		Core::Classes::UI::CUIBaseControl LabelX;
-		Core::Classes::UI::CUIBaseControl LabelY;
-		Core::Classes::UI::CUIBaseControl EditX;
-		Core::Classes::UI::CUIBaseControl EditY;
-		Core::Classes::UI::CUIBaseControl EditCellFiltered;
-		Core::Classes::UI::CUIBaseControl BtnGo;
-		Core::Classes::UI::CUIBaseControl Lst1;
-		Core::Classes::UI::CUIBaseControl Lst2;
-		Core::Classes::UI::CUICheckbox ActiveOnly;
+		Classes::CUIBaseControl LabelWorldSpace;
+		Classes::CUIBaseControl NoCellSellected;
+		Classes::CUIBaseControl Interiors;
+		Classes::CUIBaseControl LoadedAtTop;
+		Classes::CUIBaseControl FilteredOnly;
+		Classes::CUIBaseControl VisibleOnly;
+		Classes::CUIBaseControl SelectedOnly;
+		Classes::CUIBaseControl LabelX;
+		Classes::CUIBaseControl LabelY;
+		Classes::CUIBaseControl EditX;
+		Classes::CUIBaseControl EditY;
+		Classes::CUIBaseControl EditCellFiltered;
+		Classes::CUIBaseControl BtnGo;
+		Classes::CUIBaseControl Lst1;
+		Classes::CUIBaseControl Lst2;
+		Classes::CUICheckbox ActiveOnly;
 	} CellViewWindowControls;
 
 	DLGPROC OldDlgProc;
 
-	HWND GetWindow(void)
+	HWND WINAPI GetWindow(VOID)
 	{
 		return CellViewWindow.Handle;
 	}
 
-	Core::Classes::UI::CUICustomWindow& GetWindowObj(void)
+	Classes::CUICustomWindow& WINAPI GetWindowObj(VOID)
 	{
 		return CellViewWindow;
 	}
@@ -55,10 +55,6 @@ namespace CellViewWindow
 			{
 				CellViewWindowControls.Initialize = TRUE;
 				CellViewWindow = DialogHwnd;
-
-				// Set font default
-				// This is the default value, but I need an object record to create the missing controls
-//				CellViewWindow.Font = Core::Classes::UI::CFont("Microsoft Sans Serif", 8, {}, Core::Classes::UI::fqClearTypeNatural, Core::Classes::UI::fpVariable);
 
 				CellViewWindowControls.LabelWorldSpace = CellViewWindow.GetControl(1164);
 				CellViewWindowControls.NoCellSellected = CellViewWindow.GetControl(1163);

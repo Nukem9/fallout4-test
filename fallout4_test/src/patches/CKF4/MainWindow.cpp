@@ -3,7 +3,6 @@
 #include "CellViewWindow.h"
 #include "ObjectWindow.h"
 #include "RenderWindow.h"
-#include "EditorUIDarkMode.h"
 #include "Editor.h"
 #include "UIDWMWindow.h"
 
@@ -16,27 +15,27 @@
 namespace MainWindow
 {
 	static BOOL bActiveApp = FALSE;
-	static Core::Classes::UI::CUIMainWindow MainWindow;
-	static Core::Classes::UI::CUIBaseControl ToolbarPanel_1;
+	static Classes::CUIMainWindow MainWindow;
+	static Classes::CUIBaseControl ToolbarPanel_1;
 
 	WNDPROC OldWndProc;
 	
-	BOOL GetActiveApp(VOID)
+	BOOL WINAPI IsActive(VOID)
 	{
 		return bActiveApp;
 	}
 
-	HWND GetWindow(VOID)
+	HWND WINAPI GetWindow(VOID)
 	{
 		return MainWindow.Handle;
 	}
 
-	Core::Classes::UI::CUIMainWindow& GetWindowObj(VOID)
+	Classes::CUIMainWindow& WINAPI GetWindowObj(VOID)
 	{
 		return MainWindow;
 	}
 
-	Core::Classes::UI::CUIMenu& GetMainMenuObj(VOID)
+	Classes::CUIMenu& WINAPI GetMainMenuObj(VOID)
 	{
 		return MainWindow.MainMenu;
 	}
@@ -47,8 +46,8 @@ namespace MainWindow
 
 		// I tend to write object-oriented
 
-		Core::Classes::UI::CUIMenu* ExtensionSubMenu = new Core::Classes::UI::CUIMenu(Core::Classes::UI::CUIMenu::CreateSubMenu());
-		Core::Classes::UI::CUIMenu* LinksSubMenu = new Core::Classes::UI::CUIMenu(Core::Classes::UI::CUIMenu::CreateSubMenu());
+		Classes::CUIMenu* ExtensionSubMenu = new Classes::CUIMenu(Classes::CUIMenu::CreateSubMenu());
+		Classes::CUIMenu* LinksSubMenu = new Classes::CUIMenu(Classes::CUIMenu::CreateSubMenu());
 
 		Assert(ExtensionSubMenu);
 		Assert(LinksSubMenu);
@@ -77,20 +76,9 @@ namespace MainWindow
 		return result;
 	}
 
-	// Paint the title on the custom frame.
-	VOID PaintCustomCaption(HWND hWnd, HDC hdc)
-	{
-		RECT rcClient;
-		GetWindowRect(hWnd, &rcClient);
-
-		Core::Classes::UI::CUICanvas canvas = GetWindowDC(hWnd);
-
-		canvas.Fill(rcClient, RGB(32, 32, 0));
-	}
-
 	LRESULT CALLBACK WndProc(HWND Hwnd, UINT Message, WPARAM wParam, LPARAM lParam)
 	{
-		Core::Classes::UI::CUIMenuItem MenuItem;
+		Classes::CUIMenuItem MenuItem;
 
 		if (Message == WM_CREATE)
 		{
@@ -115,7 +103,7 @@ namespace MainWindow
 					MenuItem.Text = XUtil::Str::UpperCase(MenuItem.Text);
 				}
 
-				Core::Classes::UI::CUIMenu ViewMenu = MainWindow.MainMenu.GetSubMenuItem(2);
+				Classes::CUIMenu ViewMenu = MainWindow.MainMenu.GetSubMenuItem(2);
 
 				// How annoying is this window Warnings, delete from the menu.
 				ViewMenu.RemoveByPos(34);
@@ -322,7 +310,7 @@ namespace MainWindow
 
 			case UI_CMD_SHOWHIDE_OBJECTWINDOW:
 			{
-				Core::Classes::UI::CUICustomWindow Wnd = ObjectWindow::GetWindowObj();
+				Classes::CUICustomWindow Wnd = ObjectWindow::GetWindowObj();
 
 				Wnd.Visible = !Wnd.Visible;
 				if (Wnd.Visible)
@@ -336,7 +324,7 @@ namespace MainWindow
 
 			case UI_CMD_SHOWHIDE_CELLVIEWWINDOW:
 			{
-				Core::Classes::UI::CUICustomWindow Wnd = CellViewWindow::GetWindowObj();
+				Classes::CUICustomWindow Wnd = CellViewWindow::GetWindowObj();
 
 				Wnd.Visible = !Wnd.Visible;
 				if (Wnd.Visible)

@@ -1,6 +1,6 @@
 #include "DataWindow.h"
+#include "UIThemeMode.h"
 #include "UIImageList.h"
-#include "EditorUIDarkMode.h"
 #include "../../../resource.h"
 
 #include <windowsx.h>
@@ -55,15 +55,15 @@ namespace DataWindow
 		return -1;
 	}
 
-	Core::Classes::UI::CUICustomWindow DataWindow;
+	Classes::CUICustomWindow DataWindow;
 
 	struct DataWindowControls_t
 	{
-		Core::Classes::UI::CUIBaseControl ListViewPlugins;
-		Core::Classes::UI::CUIBaseControl ListViewPluginsResult;
-		Core::Classes::UI::CUIBaseControl ListViewDependences;
-		Core::Classes::UI::CUIBaseControl EditSearch;
-		Core::Classes::UI::CUIImageList ImageList;
+		Classes::CUIBaseControl ListViewPlugins;
+		Classes::CUIBaseControl ListViewPluginsResult;
+		Classes::CUIBaseControl ListViewDependences;
+		Classes::CUIBaseControl EditSearch;
+		Classes::CUIImageList ImageList;
 	} DataWindowControls;
 
 	DLGPROC OldDlgProc;
@@ -206,12 +206,12 @@ namespace DataWindow
 		return bRes;
 	}
 
-	HWND GetWindow(void)
+	HWND WINAPI GetWindow(VOID)
 	{
 		return DataWindow.Handle;
 	}
 
-	Core::Classes::UI::CUICustomWindow& GetWindowObj(void)
+	Classes::CUICustomWindow& WINAPI GetWindowObj(VOID)
 	{
 		return DataWindow;
 	}
@@ -221,10 +221,6 @@ namespace DataWindow
 		if (Message == WM_INITDIALOG)
 		{
 			DataWindow = DialogHwnd;
-
-			// Set font default
-			// This is the default value, but I need an object record to create the missing controls
-//			DataWindow.Font = Core::Classes::UI::CFont("Microsoft Sans Serif", 8, {}, Core::Classes::UI::fqClearTypeNatural, Core::Classes::UI::fpVariable);
 
 			DataWindowControls.ListViewPlugins = DataWindow.GetControl(UI_LISTVIEW_PLUGINS);
 			DataWindowControls.ListViewPluginsResult = DataWindow.GetControl(UI_NEW_LISTVIEW_CONTROL_TO_RESULT);
@@ -247,7 +243,8 @@ namespace DataWindow
 			
         	DataWindowControls.ImageList.ReCreate(16, 16, FALSE, Core::Classes::UI::ilct24Bit);
 
-			if (EditorUIDarkMode::IsUIDarkMode())
+			if (UITheme::IsEnabledMode() && ((UITheme::Theme::GetTheme() == UITheme::Theme::Theme_Dark) || 
+				(UITheme::Theme::GetTheme() == UITheme::Theme::Theme_DarkGray)))
 			{
 				DataWindowControls.ImageList.AddFromResource(g_hModule, MAKEINTRESOURCEA(IDB_BITMAP4));
 				DataWindowControls.ImageList.AddFromResource(g_hModule, MAKEINTRESOURCEA(IDB_BITMAP2));

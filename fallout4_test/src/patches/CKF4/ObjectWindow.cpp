@@ -5,42 +5,42 @@
 
 namespace ObjectWindow
 {
-	Core::Classes::UI::CUICustomWindow ObjectWindow;
+	Classes::CUICustomWindow ObjectWindow;
 
 	struct ObjectWindowControls_t
 	{
 		BOOL StartResize = FALSE;
 
-		Core::Classes::UI::CUIBaseControl TreeList;
-		Core::Classes::UI::CUIBaseControl ItemList;
-		Core::Classes::UI::CUIBaseControl ToggleDecompose;
-		Core::Classes::UI::CUIBaseControl BtnObjLayout;
-		Core::Classes::UI::CUIBaseControl ComboLayout;
-		Core::Classes::UI::CUIBaseControl EditFilter;
-		Core::Classes::UI::CUIBaseControl Spliter;
-		Core::Classes::UI::CUICheckbox ActiveOnly;
+		Classes::CUIBaseControl TreeList;
+		Classes::CUIBaseControl ItemList;
+		Classes::CUIBaseControl ToggleDecompose;
+		Classes::CUIBaseControl BtnObjLayout;
+		Classes::CUIBaseControl ComboLayout;
+		Classes::CUIBaseControl EditFilter;
+		Classes::CUIBaseControl Spliter;
+		Classes::CUICheckbox ActiveOnly;
 	} ObjectWindowControls;
 
 	DLGPROC OldDlgProc;
 
-	HWND GetWindow(void)
+	HWND WINAPI GetWindow(VOID)
 	{
 		return ObjectWindow.Handle;
 	}
 
-	Core::Classes::UI::CUICustomWindow& GetWindowObj(void)
+	Classes::CUICustomWindow& WINAPI GetWindowObj(VOID)
 	{
 		return ObjectWindow;
 	}
 
-	LRESULT WINAPI hk_0x5669D8(void)
+	LRESULT WINAPI hk_0x5669D8(VOID)
 	{
 		ObjectWindow.Perform(WM_COMMAND, UI_CMD_CHANGE_SPLITTER_OBJECTWINDOW, 0);
 
 		return 0;
 	}
 
-	void ResizeObjectWndChildControls(void)
+	VOID ResizeObjectWndChildControls(VOID)
 	{
 		// The perfectionist in me is dying....
 
@@ -102,10 +102,6 @@ namespace ObjectWindow
 		if (Message == WM_INITDIALOG)
 		{
 			ObjectWindow = DialogHwnd;
-
-			// Set font default
-			// This is the default value, but I need an object record to create the missing controls
-//			ObjectWindow.Font = Core::Classes::UI::CFont("Microsoft Sans Serif", 8, {}, Core::Classes::UI::fqClearTypeNatural, Core::Classes::UI::fpVariable);
 
 			ObjectWindowControls.TreeList = ObjectWindow.GetControl(2093);
 			ObjectWindowControls.ItemList = ObjectWindow.GetControl(1041);

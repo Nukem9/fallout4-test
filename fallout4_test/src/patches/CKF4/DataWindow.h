@@ -17,10 +17,12 @@
 
 namespace DataWindow
 {
+	namespace Classes = Core::Classes::UI;
+
 	extern DLGPROC OldDlgProc;
 
-	HWND GetWindow(void);
-	Core::Classes::UI::CUICustomWindow& GetWindowObj(void);
+	HWND WINAPI GetWindow(VOID);
+	Classes::CUICustomWindow& WINAPI GetWindowObj(VOID);
 
 	INT_PTR CALLBACK DlgProc(HWND DialogHwnd, UINT Message, WPARAM wParam, LPARAM lParam);
 }

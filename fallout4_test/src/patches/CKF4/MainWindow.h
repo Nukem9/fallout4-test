@@ -31,13 +31,14 @@
 
 namespace MainWindow
 {
+	namespace Classes = Core::Classes::UI;
+
 	extern WNDPROC OldWndProc;
 
-	BOOL GetActiveApp(VOID);
-
-	HWND GetWindow(VOID);
-	Core::Classes::UI::CUIMainWindow& GetWindowObj(VOID);
-	Core::Classes::UI::CUIMenu& GetMainMenuObj(VOID);
+	BOOL WINAPI IsActive(VOID);
+	HWND WINAPI GetWindow(VOID);
+	Classes::CUIMainWindow& WINAPI GetWindowObj(VOID);
+	Classes::CUIMenu& WINAPI GetMainMenuObj(VOID);
 
 	LRESULT CALLBACK WndProc(HWND Hwnd, UINT Message, WPARAM wParam, LPARAM lParam);
 }

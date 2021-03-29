@@ -1,7 +1,7 @@
 #include "../../common.h"
 #include <CommCtrl.h>
 #include "EditorUI.h"
-#include "EditorUIDarkMode.h"
+#include "UIThemeMode.h"
 #include "LogWindow.h"
 #include "MainWindow.h"
 
@@ -26,7 +26,7 @@ namespace EditorUI
 	void Initialize()
 	{
 		InitCommonControls();
-		EditorUIDarkMode::InitializeThread();
+		UITheme::InitializeThread();
 
 		if (!LogWindow::Initialize())
 			MessageBoxA(nullptr, "Failed to create console log window", "Error", MB_ICONERROR);

@@ -1,6 +1,5 @@
 #include "..\..\Common.h"
 #include "EditorUI.h"
-#include "EditorUIDarkMode.h"
 #include "UIProgressDialog.h"
 #include "LogWindow.h"
 #include <CommCtrl.h>

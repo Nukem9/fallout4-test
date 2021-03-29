@@ -1,10 +1,14 @@
 #pragma once
 
 #include "../../common.h"
+#include "UITheme/VarCommon.h"
+
 #include <Uxtheme.h>
 
-namespace EditorUIDarkMode
+namespace UITheme
 {
+	namespace Theme = Core::UI::Theme;
+
 	enum class ThemeType
 	{
 		None,
@@ -13,7 +17,8 @@ namespace EditorUIDarkMode
 		MDIClient,
 		Static,
 		Edit,
-		RichEdit,
+		RichEdit20,
+		RichEdit50,
 		Button,
 		ComboBox,
 		Header,
@@ -28,9 +33,9 @@ namespace EditorUIDarkMode
 		Spin
 	};
 
-	VOID Initialize(VOID);
+	VOID Initialize(Theme::Theme ThemeID);
 	VOID InitializeThread(VOID);
-	BOOL IsUIDarkMode(VOID);
+	BOOL IsEnabledMode(VOID);
 
 	// Returns a valid visual theme type, depending on the window class
 	ThemeType WINAPI GetThemeTypeFromWindow(HWND hWindow);

@@ -15,13 +15,15 @@
 
 namespace ObjectWindow
 {
+	namespace Classes = Core::Classes::UI;
+
 	extern DLGPROC OldDlgProc;
 
-	HWND GetWindow(void);
-	Core::Classes::UI::CUICustomWindow& GetWindowObj(void);
+	HWND WINAPI GetWindow(VOID);
+	Classes::CUICustomWindow& WINAPI GetWindowObj(VOID);
 
 	INT_PTR CALLBACK DlgProc(HWND DialogHwnd, UINT Message, WPARAM wParam, LPARAM lParam);
 
-	LRESULT WINAPI hk_0x5669D8(void);
+	LRESULT WINAPI hk_0x5669D8(VOID);
 	int32_t WINAPI hk_7FF72F57F8F0(const int64_t ObjectListInsertData, TESForm_CK* Form);
 }

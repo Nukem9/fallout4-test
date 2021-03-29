@@ -9,16 +9,23 @@ namespace Core
 		namespace Theme
 		{
 			extern const Core::Classes::UI::CUIFont ThemeFont;
-			extern HBRUSH hThemeEditBackBrush;
+
+			extern HBRUSH hThemeDefaultBrush;
+			extern HBRUSH hThemeText3Brush;
+			extern HBRUSH hThemeEditBrush;
+			extern HBRUSH hThemeDividerBrush;
+			extern HBRUSH hThemeText4Brush;
+			extern HBRUSH hThemeBorderWindowBrush;
 
 			enum Theme
 			{
-				Theme_Light,
+				Theme_Light = 1,
 				Theme_Gray,
 				Theme_DarkGray,
 				Theme_Dark
 			};
 
+			Theme WINAPI GetTheme(VOID);
 			VOID WINAPI SetTheme(Theme theme);
 
 			enum ThemeColor
@@ -62,6 +69,12 @@ namespace Core
 				ThemeColor_CheckBox_Gradient_End,
 				ThemeColor_ScrollBar_Gradient_Start,
 				ThemeColor_ScrollBar_Gradient_End,
+				ThemeColor_ScrollBar_Thumb_Gradient_Start,
+				ThemeColor_ScrollBar_Thumb_Gradient_End,
+				ThemeColor_ScrollBar_Thumb_Gradient_Hot_Start,
+				ThemeColor_ScrollBar_Thumb_Gradient_Hot_End,
+				ThemeColor_ScrollBar_Thumb_Highlighter,
+				ThemeColor_ScrollBar_Thumb_Highlighter_Hot,
 				ThemeColor_Shape,
 				ThemeColor_Shape_Hot,
 				ThemeColor_Shape_Pressed,

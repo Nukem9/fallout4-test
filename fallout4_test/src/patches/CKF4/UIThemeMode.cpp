@@ -1,12 +1,14 @@
 #include "../../common.h"
 
+#define THEME_DEBUG 0
+
 #include <tbb/concurrent_unordered_map.h>
 #include <tbb/concurrent_vector.h>
 #include <unordered_set>
 #include <vssym32.h>
 #include <Richedit.h>
 
-#include "EditorUIDarkMode.h"
+#include "UIThemeMode.h"
 #include "UIBaseWindow.h"
 #include "MainWindow.h"
 
@@ -34,11 +36,16 @@
 #include "UITheme/TimeOfDay.h"
 #include "UITheme/Header.h"
 #include "UITheme/PageControl.h"
+#include "UITheme/RichEdit20.h"
 
 namespace Theme = Core::UI::Theme;
 namespace Classes = Core::Classes::UI;
 
-namespace EditorUIDarkMode
+#if THEME_DEBUG
+#include <fstream>
+#endif
+
+namespace UITheme
 {
 	struct string_equal_to
 	{
@@ -73,12 +80,20 @@ namespace EditorUIDarkMode
 	tbb::concurrent_unordered_map<HTHEME, ThemeType> ThemeHandles;
 	BOOL EnableThemeHooking;
 
+#if THEME_DEBUG
+	std::ofstream ofs;
+#endif
+
 	static WNDPROC OldPopupMenuWndClass = NULL;
 
-	VOID Initialize(VOID)
+	VOID Initialize(Theme::Theme ThemeID)
 	{
-		Theme::SetTheme(Theme::Theme_Dark);
+		Theme::SetTheme(ThemeID);
 		EnableThemeHooking = TRUE;
+
+#if THEME_DEBUG
+		ofs.open("__theme_debug.log");
+#endif
 	}
 
 	VOID InitializeThread(VOID)
@@ -87,7 +102,7 @@ namespace EditorUIDarkMode
 			SetWindowsHookExA(WH_CALLWNDPROC, CallWndProcCallback, nullptr, GetCurrentThreadId());
 	}
 
-	BOOL IsUIDarkMode(VOID)
+	BOOL IsEnabledMode(VOID)
 	{
 		return EnableThemeHooking;
 	}
@@ -95,7 +110,13 @@ namespace EditorUIDarkMode
 	HWND WINAPI Comctl32CreateToolbarEx_1(HWND hwnd, DWORD ws, UINT wID, INT nBitmaps, HINSTANCE hBMInst, UINT_PTR wBMID, LPCTBBUTTON lpButtons,
 		INT iNumButtons, INT dxButton, INT dyButton, INT dxBitmap, INT dyBitmap, UINT uStructSize)
 	{
-		HIMAGELIST hImageList = ImageList_LoadImageA(g_hModule, MAKEINTRESOURCE(IDB_BITMAP5), 16, 0, RGB(56, 56, 56), IMAGE_BITMAP, LR_CREATEDIBSECTION | LR_LOADTRANSPARENT);
+		HIMAGELIST hImageList;
+
+		if ((Theme::GetTheme() != Theme::Theme_Light) && (Theme::GetTheme() != Theme::Theme_Gray))
+			hImageList = ImageList_LoadImageA(g_hModule, MAKEINTRESOURCEA(IDB_BITMAP5), 16, 0, RGB(56, 56, 56), IMAGE_BITMAP, LR_CREATEDIBSECTION | LR_LOADTRANSPARENT);
+		else
+			hImageList = ImageList_LoadImageA(hBMInst, MAKEINTRESOURCEA(152), 16, 0, RGB(192, 192, 192), IMAGE_BITMAP, LR_CREATEDIBSECTION | LR_LOADTRANSPARENT);
+		
 		HWND ret = CreateToolbarEx(hwnd, WS_CHILD | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, wID, nBitmaps,
 			NULL, NULL, lpButtons, iNumButtons - 2 /*delete two divider*/, dxButton, dyButton, dxBitmap, dyBitmap, uStructSize);
 
@@ -111,7 +132,10 @@ namespace EditorUIDarkMode
 
 	HIMAGELIST WINAPI Comctl32ImageList_LoadImageA_1(HINSTANCE hi, LPCSTR lpbmp, INT cx, INT cGrow, COLORREF crMask, UINT uType, UINT uFlags)
 	{
-		return ImageList_LoadImageA(g_hModule, MAKEINTRESOURCE(IDB_BITMAP6), cx, cGrow, crMask, IMAGE_BITMAP, LR_CREATEDIBSECTION | LR_LOADTRANSPARENT);
+		if ((Theme::GetTheme() != Theme::Theme_Light) && (Theme::GetTheme() != Theme::Theme_Gray))
+			return ImageList_LoadImageA(g_hModule, MAKEINTRESOURCEA(IDB_BITMAP6), cx, cGrow, crMask, IMAGE_BITMAP, LR_CREATEDIBSECTION | LR_LOADTRANSPARENT);
+		else
+			return ImageList_LoadImageA(hi, lpbmp, cx, cGrow, crMask, uType, uFlags);
 	}
 
 	HWND WINAPI Comctl32CreateWindowEx_1(DWORD dwExStyle, LPCTSTR lpClassName, LPCTSTR lpWindowName, DWORD dwStyle, INT x, INT y,
@@ -154,8 +178,8 @@ namespace EditorUIDarkMode
 			{ WC_STATICA, ThemeType::Static },
 			{ UPDOWN_CLASS, ThemeType::Spin },
 			{ WC_EDITA, ThemeType::Edit },
-			{ RICHEDIT_CLASSA, ThemeType::RichEdit },
-			{ "RICHEDIT50W", ThemeType::RichEdit },
+			{ RICHEDIT_CLASSA, ThemeType::RichEdit20 },
+			{ "RICHEDIT50W", ThemeType::RichEdit50 },
 			{ PROGRESS_CLASSA, ThemeType::ProgressBar },
 			{ WC_BUTTONA, ThemeType::Button },
 			{ WC_LISTBOXA, ThemeType::ListBox },
@@ -215,7 +239,38 @@ namespace EditorUIDarkMode
 		if (nCode == HC_ACTION)
 		{
 			if (auto messageData = reinterpret_cast<CWPSTRUCT*>(lParam); (messageData->message == WM_CREATE)/* || messageData->message == WM_INITDIALOG*/)
-				SetWindowSubclass(messageData->hwnd, WindowSubclass, 0, reinterpret_cast<DWORD_PTR>(WindowSubclass));
+			{
+				LPCREATESTRUCTA lpCreateStruct = (LPCREATESTRUCTA)messageData->lParam;
+				if (lpCreateStruct)
+				{
+#if THEME_DEBUG		
+					ofs << "WM_CREATE: " << std::endl
+						<< "cx: " << lpCreateStruct->cx << " "
+						<< "cy: " << lpCreateStruct->cy << " "
+						<< "hInstance: " << lpCreateStruct->hInstance << " "
+						<< "dwExStyle: " << lpCreateStruct->dwExStyle << " "
+						<< "hMenu: " << lpCreateStruct->hMenu << " "
+						<< "hwndParent: " << lpCreateStruct->hwndParent << " "
+						<< "lpCreateParams: " << lpCreateStruct->lpCreateParams << " ";
+
+						/*			if (lpCreateStruct->lpszClass)
+										ofs << "lpszClass: " << (std::string(lpCreateStruct->lpszClass)).c_str() << " ";
+									else
+										ofs << "lpszClass: <NULL> ";*/
+
+					if (lpCreateStruct->lpszName)
+						ofs << "lpszName: " << (std::string(lpCreateStruct->lpszName)).c_str() << " ";
+					else
+						ofs << "lpszName: <NULL> ";
+
+					ofs << "style: " << lpCreateStruct->style << " "
+						<< "x: " << lpCreateStruct->x << " "
+						<< "y: " << lpCreateStruct->y << std::endl;
+#endif
+					if ((lpCreateStruct->hInstance) && (lpCreateStruct->hInstance != GetModuleHandleA("comdlg32.dll")))
+						SetWindowSubclass(messageData->hwnd, WindowSubclass, 0, reinterpret_cast<DWORD_PTR>(WindowSubclass));
+				}
+			}
 		}
 
 		return CallNextHookEx(NULL, nCode, wParam, lParam);
@@ -273,7 +328,8 @@ namespace EditorUIDarkMode
 			case ThemeType::MDIClient:
 				Theme::MDIClient::Initialize(hWnd);
 				break;
-			case ThemeType::RichEdit:
+			case ThemeType::RichEdit20:
+			case ThemeType::RichEdit50:
 				{
 					CHARFORMATA format = { 0 };
 					format.cbSize = sizeof(CHARFORMATA);
@@ -282,6 +338,9 @@ namespace EditorUIDarkMode
 					SendMessageA(hWnd, EM_SETCHARFORMAT, SCF_ALL, (LPARAM)&format);
 					SendMessageA(hWnd, EM_SETCHARFORMAT, SCF_SELECTION, (LPARAM)&format);
 					SendMessageA(hWnd, EM_SETBKGNDCOLOR, FALSE, Theme::GetThemeSysColor(Theme::ThemeColor_Edit_Color));
+
+					if (themeType == ThemeType::RichEdit20)
+						scrollBarTheme = Theme::RichEdit::Initialize(hWnd);
 				}
 				break;
 			case ThemeType::Button:
@@ -728,6 +787,45 @@ namespace EditorUIDarkMode
 				}
 				return S_OK;
 				
+				case SPNP_UPHORZ:
+				{
+					switch (iStateId)
+					{
+					case UPHZS_HOT:
+						Theme::UpDown::Render::DrawRight_Hot(Canvas, pRect);
+						break;
+					case UPHZS_PRESSED:
+						Theme::UpDown::Render::DrawRight_Pressed(Canvas, pRect);
+						break;
+					case UPHZS_DISABLED:
+						Theme::UpDown::Render::DrawRight_Disabled(Canvas, pRect);
+						break;
+					default:
+						Theme::UpDown::Render::DrawRight_Normal(Canvas, pRect);
+						break;
+					}
+				}
+				return S_OK;
+
+				case SPNP_DOWNHORZ:
+				{
+					switch (iStateId)
+					{
+					case DNHZS_HOT:
+						Theme::UpDown::Render::DrawLeft_Hot(Canvas, pRect);
+						break;
+					case DNHZS_PRESSED:
+						Theme::UpDown::Render::DrawLeft_Pressed(Canvas, pRect);
+						break;
+					case DNHZS_DISABLED:
+						Theme::UpDown::Render::DrawLeft_Disabled(Canvas, pRect);
+						break;
+					default:
+						Theme::UpDown::Render::DrawLeft_Normal(Canvas, pRect);
+						break;
+					}
+				}
+				return S_OK;
 			}
 		}
 		else if (themeType == ThemeType::Edit)

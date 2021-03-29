@@ -63,9 +63,9 @@ namespace Core
 						rc_temp[1].Inflate(-1, -1);
 
 						canvas.Fill(rc_temp[0], GetThemeSysColor(ThemeColor::ThemeColor_Divider_Color));
-						canvas.GradientFill(rc_temp[1], GetThemeSysColor(ThemeColor::ThemeColor_Default_Gradient_Start),
-							GetThemeSysColor(ThemeColor::ThemeColor_Default_Gradient_End), Core::Classes::UI::gdVert);
-						canvas.Pen.Color = GetThemeSysColor(ThemeColor::ThemeColor_Divider_Highlighter);
+						canvas.GradientFill(rc_temp[1], GetThemeSysColor(ThemeColor::ThemeColor_ScrollBar_Thumb_Gradient_Start),
+							GetThemeSysColor(ThemeColor::ThemeColor_ScrollBar_Thumb_Gradient_End), Core::Classes::UI::gdVert);
+						canvas.Pen.Color = GetThemeSysColor(ThemeColor::ThemeColor_ScrollBar_Thumb_Highlighter);
 						canvas.MoveTo(rc_temp[1].Left, rc_temp[1].Top);
 						canvas.LineTo(rc_temp[1].Right, rc_temp[1].Top);
 					}
@@ -79,9 +79,9 @@ namespace Core
 						rc_temp[1].Inflate(-1, -1);
 
 						canvas.Fill(rc_temp[0], GetThemeSysColor(ThemeColor::ThemeColor_Divider_Color));
-						canvas.GradientFill(rc_temp[1], GetThemeSysColor(ThemeColor::ThemeColor_Button_Hot_Gradient_Start),
-							GetThemeSysColor(ThemeColor::ThemeColor_Button_Hot_Gradient_End), Core::Classes::UI::gdVert);
-						canvas.Pen.Color = GetThemeSysColor(ThemeColor::ThemeColor_Divider_Highlighter_Hot);
+						canvas.GradientFill(rc_temp[1], GetThemeSysColor(ThemeColor::ThemeColor_ScrollBar_Thumb_Gradient_Hot_Start),
+							GetThemeSysColor(ThemeColor::ThemeColor_ScrollBar_Thumb_Gradient_Hot_End), Core::Classes::UI::gdVert);
+						canvas.Pen.Color = GetThemeSysColor(ThemeColor::ThemeColor_ScrollBar_Thumb_Highlighter_Hot);
 						canvas.MoveTo(rc_temp[1].Left, rc_temp[1].Top);
 						canvas.LineTo(rc_temp[1].Right, rc_temp[1].Top);
 					}
@@ -95,9 +95,9 @@ namespace Core
 						rc_temp[1].Inflate(-1, -1);
 
 						canvas.Fill(rc_temp[0], GetThemeSysColor(ThemeColor::ThemeColor_Divider_Color));
-						canvas.GradientFill(rc_temp[1], GetThemeSysColor(ThemeColor::ThemeColor_Default_Gradient_Start),
-							GetThemeSysColor(ThemeColor::ThemeColor_Default_Gradient_End), Core::Classes::UI::gdHorz);
-						canvas.Pen.Color = GetThemeSysColor(ThemeColor::ThemeColor_Divider_Highlighter);
+						canvas.GradientFill(rc_temp[1], GetThemeSysColor(ThemeColor::ThemeColor_ScrollBar_Thumb_Gradient_Start),
+							GetThemeSysColor(ThemeColor::ThemeColor_ScrollBar_Thumb_Gradient_End), Core::Classes::UI::gdHorz);
+						canvas.Pen.Color = GetThemeSysColor(ThemeColor::ThemeColor_ScrollBar_Thumb_Highlighter);
 						canvas.MoveTo(rc_temp[1].Left, rc_temp[1].Top);
 						canvas.LineTo(rc_temp[1].Left, rc_temp[1].Bottom);
 					}
@@ -111,9 +111,9 @@ namespace Core
 						rc_temp[1].Inflate(-1, -1);
 
 						canvas.Fill(rc_temp[0], GetThemeSysColor(ThemeColor::ThemeColor_Divider_Color));
-						canvas.GradientFill(rc_temp[1], GetThemeSysColor(ThemeColor::ThemeColor_Button_Hot_Gradient_Start),
-							GetThemeSysColor(ThemeColor::ThemeColor_Button_Hot_Gradient_End), Core::Classes::UI::gdHorz);
-						canvas.Pen.Color = GetThemeSysColor(ThemeColor::ThemeColor_Divider_Highlighter_Hot);
+						canvas.GradientFill(rc_temp[1], GetThemeSysColor(ThemeColor::ThemeColor_ScrollBar_Thumb_Gradient_Hot_Start),
+							GetThemeSysColor(ThemeColor::ThemeColor_ScrollBar_Thumb_Gradient_Hot_End), Core::Classes::UI::gdHorz);
+						canvas.Pen.Color = GetThemeSysColor(ThemeColor::ThemeColor_ScrollBar_Thumb_Highlighter_Hot);
 						canvas.MoveTo(rc_temp[1].Left, rc_temp[1].Top);
 						canvas.LineTo(rc_temp[1].Left, rc_temp[1].Bottom);
 					}

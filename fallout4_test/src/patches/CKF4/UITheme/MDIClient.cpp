@@ -12,10 +12,11 @@ namespace Core
 		{
 			namespace MDIClient
 			{
-				static HBRUSH generalMDIBackgroundBrush = CreateSolidBrush(GetThemeSysColor(ThemeColor::ThemeColor_MDIWindow));
+				HBRUSH generalMDIBackgroundBrush;
 
 				VOID WINAPI Initialize(HWND hWindow)
 				{
+					generalMDIBackgroundBrush = CreateSolidBrush(GetThemeSysColor(ThemeColor::ThemeColor_MDIWindow));
 					SetWindowSubclass(hWindow, MDIClientSubclass, 0, 0);
 					SetClassLongPtrA(hWindow, GCLP_HBRBACKGROUND, (LONG_PTR)generalMDIBackgroundBrush);
 				}
