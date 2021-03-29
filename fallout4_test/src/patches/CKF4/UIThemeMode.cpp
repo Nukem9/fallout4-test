@@ -115,7 +115,7 @@ namespace UITheme
 		if ((Theme::GetTheme() != Theme::Theme_Light) && (Theme::GetTheme() != Theme::Theme_Gray))
 			hImageList = ImageList_LoadImageA(g_hModule, MAKEINTRESOURCEA(IDB_BITMAP5), 16, 0, RGB(56, 56, 56), IMAGE_BITMAP, LR_CREATEDIBSECTION | LR_LOADTRANSPARENT);
 		else
-			hImageList = ImageList_LoadImageA(hBMInst, MAKEINTRESOURCEA(152), 16, 0, RGB(192, 192, 192), IMAGE_BITMAP, LR_CREATEDIBSECTION | LR_LOADTRANSPARENT);
+			hImageList = ImageList_LoadImageA(g_hModule, MAKEINTRESOURCEA(IDB_BITMAP7), 16, 0, RGB(192, 192, 192), IMAGE_BITMAP, LR_CREATEDIBSECTION | LR_LOADTRANSPARENT);
 		
 		HWND ret = CreateToolbarEx(hwnd, WS_CHILD | WS_CLIPCHILDREN | WS_CLIPSIBLINGS, wID, nBitmaps,
 			NULL, NULL, lpButtons, iNumButtons - 2 /*delete two divider*/, dxButton, dyButton, dxBitmap, dyBitmap, uStructSize);
@@ -494,6 +494,14 @@ namespace UITheme
 		Classes::CUICanvas Canvas(hdc);
 		Canvas.TransparentMode = TRUE;
 		Canvas.Font.Assign(Theme::ThemeFont);
+
+		if ((Theme::GetTheme() == Theme::Theme_Dark) || (Theme::GetTheme() == Theme::Theme_DarkGray))
+		{
+			// detected standart OS theme (comdlg32)
+			COLORREF clTest = GetPixel(hdc, pRect->left, pRect->top);
+			if (((GetRValue(clTest) + GetGValue(clTest) + GetBValue(clTest)) / 3) > 128)
+				return DrawThemeText(hTheme, hdc, iPartId, iStateId, pszText, cchText, dwTextFlags, dwTextFlags2, pRect);
+		}
 
 		auto themeType = ThemeType::None;
 		if (auto itr = ThemeHandles.find(hTheme); itr != ThemeHandles.end())

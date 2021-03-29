@@ -23,7 +23,7 @@ namespace Core
 					SetTextColor(hDC, GetThemeSysColor(ThemeColor_Text_3));
 					SetBkColor(hDC, GetThemeSysColor(ThemeColor_ListView_Color));
 		
-					return reinterpret_cast<INT_PTR>(Comctl32GetSysColorBrush(COLOR_WINDOW));
+					return reinterpret_cast<INT_PTR>(hThemeEditBrush);
 				}
 
 				LRESULT CALLBACK ListBoxSubclass(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
