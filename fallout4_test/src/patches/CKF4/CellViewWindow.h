@@ -10,10 +10,11 @@
 
 #include <CommCtrl.h>
 
-#define UI_CELL_VIEW_ADD_CELL_ITEM		2579
-#define UI_CELL_VIEW_CHECKBOX			2580	// See: resource.rc
-
-#define UI_CELL_WINDOW_ADD_ITEM			2579
+#define UI_CELL_VIEW_ADD_CELL_ITEM				2579
+#define UI_CELL_VIEW_CHECKBOX					2580	// See: resource.rc
+#define UI_CELL_VIEW_CHECK_ACTIVE_CELL_OBJECTS	2582	// See: resource.rc
+#define UI_CELL_VIEW_ADD_CELL_OBJECT_ITEM		2583	
+#define UI_CELL_WINDOW_ADD_ITEM					2579
 
 namespace CellViewWindow
 {
@@ -26,5 +27,6 @@ namespace CellViewWindow
 
 	INT_PTR CALLBACK DlgProc(HWND DialogHwnd, UINT Message, WPARAM wParam, LPARAM lParam);
 
-	void WINAPI hk_7FF70C322BC0(HWND ListViewHandle, TESForm_CK* Form, bool UseImage, int32_t ItemIndex);
+	VOID WINAPI hk_7FF70C322BC0(HWND ListViewHandle, TESForm_CK* Form, bool UseImage, int32_t ItemIndex);
+	INT32 WINAPI hk_call_5A43B5(HWND** ListViewHandle, TESForm_CK** Form, INT64 a3);
 }

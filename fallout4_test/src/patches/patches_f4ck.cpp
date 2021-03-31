@@ -200,6 +200,7 @@ void Patch_Fallout4CreationKit()
 		// Allow forms to be filtered in CellViewProc
 		XUtil::DetourCall(OFFSET(0x6435BF, 0), &CellViewWindow::hk_7FF70C322BC0);
 
+		XUtil::DetourCall(OFFSET(0x5A43B5, 0), &CellViewWindow::hk_call_5A43B5);
 		//
 		//  Experimantal functions
 		//
