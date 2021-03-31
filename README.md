@@ -26,7 +26,7 @@ To hide errors, create a file *CreationKitWarnings.txt*.
 **IMPORTANT**: Errors should be copied from the mod's Log window and one error is one line.  
 Additionally, you can create a Localize folder and place a file with the same name, but with a different encoding.  
 The file must be in **ANSI** encoding.  
-*fallout4_test* .ini the main file with the settings and comes with the code, be sure to read and read.
+*fallout4_test.ini* the main file with the settings and comes with the code, be sure to read and read.
 
 # Unicode
 For understanding, the application uses the ancient **ANSI** type string representation.  
