@@ -1,5 +1,7 @@
 #include "../../common.h"
 #include <CommCtrl.h>
+#include <math.h>
+
 #include "EditorUI.h"
 #include "UIThemeMode.h"
 #include "LogWindow.h"
@@ -9,30 +11,58 @@ namespace EditorUI
 {
 	WNDPROC OldWndProc;
 	DLGPROC OldResponseWindowProc;
+	BOOL bReplaceTips = FALSE;
 
-	LRESULT WINAPI hk_SetSettingsPartStatusBar(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+	static UINT64 timeInterval = 0;
+	static UINT64 timeStartTick = 0;
+	static UINT64 timeCurrentTick = 0;
+
+	LRESULT FIXAPI hk_SetSettingsPartStatusBar(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
-		int parts[4] = { 200, 300, 700, 5000 /* over 5000 for if -1, the text is erased */ };
-		return SendMessageA(hWnd, SB_SETPARTS, sizeof(parts), (LPARAM)parts);
+		// https://github.com/Nukem9/SkyrimSETest/commit/d1181a346ccfe6a655fa9da6544ee1b808f89d2f
+		// Scale the status bar segments to fit the window size
+
+		auto scale = [&](INT32 Width)
+		{
+			return static_cast<INT32>(Width * (LOWORD(lParam) / 1024.0f));
+		};
+
+		std::array<INT32, 4> spacing
+		{
+			scale(150),
+			scale(300),
+			scale(600),
+			-1,
+		};
+
+		return SendMessageA(hWnd, SB_SETPARTS, spacing.size(), (LPARAM)spacing.data());
 	}
 
-	LRESULT WINAPI hk_SetTextPartStatusBar(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+	VOID FIXAPI hk_SpamFPSToStatusBar(INT64 a1)
 	{
-		BYTE bId = LOBYTE(wParam);
-		if (bId == 1) bId = 2;
-		return SendMessageA(hWnd, SB_SETTEXTA, MAKEWORD(bId, 0), lParam);
+		timeCurrentTick = GetTickCount64();
+		if ((timeCurrentTick - timeStartTick) >= timeInterval)
+		{
+			((VOID(__fastcall*)(INT64))OFFSET(0x45EBB0, 0))(a1);
+			
+			timeStartTick = GetTickCount64();
+			timeCurrentTick = timeStartTick;
+		}
 	}
 
-	void Initialize()
+	VOID FIXAPI Initialize(VOID)
 	{
 		InitCommonControls();
+		bReplaceTips = g_INI.GetBoolean("CreationKit", "UI", FALSE) && g_INI.GetBoolean("CreationKit", "ReplacingTipsWithProgressBar", FALSE);
+		timeInterval = std::min(std::max(g_INI.GetInteger("CreationKit", "FPSSpamInterval", 1000), (LONG)42), (LONG)1000);
+		timeStartTick = GetTickCount64();
 		UITheme::InitializeThread();
 
 		if (!LogWindow::Initialize())
-			MessageBoxA(nullptr, "Failed to create console log window", "Error", MB_ICONERROR);
+			MessageBoxA(NULL, "Failed to create console log window", "Error", MB_ICONERROR);
 	}
 
-	BOOL ListViewCustomSetItemState(HWND ListViewHandle, WPARAM Index, UINT Data, UINT Mask)
+	BOOL FIXAPI ListViewCustomSetItemState(HWND ListViewHandle, WPARAM Index, UINT Data, UINT Mask)
 	{
 		// Microsoft's implementation of this define is broken (ListView_SetItemState)
 		LVITEMA item = { 0 };
@@ -43,7 +73,7 @@ namespace EditorUI
 		return (BOOL)SendMessageA(ListViewHandle, LVM_SETITEMSTATE, Index, (LPARAM)&item);
 	}
 
-	void ListViewSelectItem(HWND ListViewHandle, int ItemIndex, bool KeepOtherSelections)
+	VOID FIXAPI ListViewSelectItem(HWND ListViewHandle, INT32 ItemIndex, bool KeepOtherSelections)
 	{
 		if (!KeepOtherSelections)
 			ListViewCustomSetItemState(ListViewHandle, -1, 0, LVIS_SELECTED);
@@ -55,7 +85,7 @@ namespace EditorUI
 		}
 	}
 
-	void ListViewFindAndSelectItem(HWND ListViewHandle, void *Parameter, bool KeepOtherSelections)
+	VOID FIXAPI ListViewFindAndSelectItem(HWND ListViewHandle, LPVOID Parameter, bool KeepOtherSelections)
 	{
 		if (!KeepOtherSelections)
 			ListViewCustomSetItemState(ListViewHandle, -1, 0, LVIS_SELECTED);
@@ -70,25 +100,25 @@ namespace EditorUI
 			ListViewSelectItem(ListViewHandle, index, KeepOtherSelections);
 	}
 
-	void *ListViewGetSelectedItem(HWND ListViewHandle)
+	LPVOID FIXAPI ListViewGetSelectedItem(HWND ListViewHandle)
 	{
 		if (!ListViewHandle)
-			return nullptr;
+			return NULL;
 
 		int index = ListView_GetNextItem(ListViewHandle, -1, LVNI_SELECTED);
 
 		if (index == -1)
-			return nullptr;
+			return NULL;
 
 		LVITEMA item = { 0 };
 		item.mask = LVIF_PARAM;
 		item.iItem = index;
 
 		ListView_GetItem(ListViewHandle, &item);
-		return (void *)item.lParam;
+		return (LPVOID)item.lParam;
 	}
 
-	void ListViewDeselectItem(HWND ListViewHandle, void *Parameter)
+	VOID FIXAPI ListViewDeselectItem(HWND ListViewHandle, LPVOID Parameter)
 	{
 		LVFINDINFOA findInfo = { 0 };
 		findInfo.flags = LVFI_PARAM;
@@ -100,7 +130,7 @@ namespace EditorUI
 			ListViewCustomSetItemState(ListViewHandle, index, 0, LVIS_SELECTED);
 	}
 
-	void TabControlDeleteItem(HWND TabControlHandle, uint32_t TabIndex)
+	VOID FIXAPI TabControlDeleteItem(HWND TabControlHandle, uint32_t TabIndex)
 	{
 		TCITEMA itemInfo = {};
 

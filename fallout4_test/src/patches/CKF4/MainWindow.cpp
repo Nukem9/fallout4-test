@@ -4,7 +4,7 @@
 #include "ObjectWindow.h"
 #include "RenderWindow.h"
 #include "Editor.h"
-#include "UIDWMWindow.h"
+#include "EditorUI.h"
 
 #include <commdlg.h>
 #include <shellapi.h>
@@ -20,22 +20,22 @@ namespace MainWindow
 
 	WNDPROC OldWndProc;
 	
-	BOOL WINAPI IsActive(VOID)
+	BOOL FIXAPI IsActive(VOID)
 	{
 		return bActiveApp;
 	}
 
-	HWND WINAPI GetWindow(VOID)
+	HWND FIXAPI GetWindow(VOID)
 	{
 		return MainWindow.Handle;
 	}
 
-	Classes::CUIMainWindow& WINAPI GetWindowObj(VOID)
+	Classes::CUIMainWindow& FIXAPI GetWindowObj(VOID)
 	{
 		return MainWindow;
 	}
 
-	Classes::CUIMenu& WINAPI GetMainMenuObj(VOID)
+	Classes::CUIMenu& FIXAPI GetMainMenuObj(VOID)
 	{
 		return MainWindow.MainMenu;
 	}
@@ -123,6 +123,12 @@ namespace MainWindow
 
 				return status;
 			}
+		}
+		else if (Message == WM_SIZE && Hwnd == GetWindow())
+		{
+			LRESULT lResult = CallWindowProcA(OldWndProc, Hwnd, Message, wParam, lParam);
+			EditorUI::hk_SetSettingsPartStatusBar(MainWindow::GetWindowObj().Statusbar.Handle, Message, wParam, lParam);
+			return lResult;
 		}
 		else if (Message == WM_NCACTIVATE)
 		{
@@ -342,13 +348,13 @@ namespace MainWindow
 				// So I'll create a variable. By the way, when loading a new process, the flag is not set, as is the function itself.
 
 				RenderWindow::SetCollisionView(!RenderWindow::IsCollisionView());
-				MainWindow.MainMenu.GetSubMenuItem(2).GetItemByPos(24).Checked = RenderWindow::IsCollisionView();
+				MainWindow.MainMenu.GetItem(UI_COLLISION_GEOM_CMD).Checked = RenderWindow::IsCollisionView();
 			}
 			return CallWindowProcA(OldWndProc, Hwnd, Message, wParam, lParam);
 
 			case UI_FOG_CMD:
 			{
-				MenuItem = MainWindow.MainMenu.GetSubMenuItem(2).GetItem(wParam);
+				MenuItem = MainWindow.MainMenu.GetItem(UI_FOG_CMD);
 				MenuItem.Checked = !MenuItem.Checked;
 				bFogToggle = MenuItem.Checked;
 
@@ -360,7 +366,7 @@ namespace MainWindow
 					if (ptr2)
 					{
 						// Fake update scene
-						((void(__stdcall*)(uintptr_t, uintptr_t))OFFSET(0x7B1E80, 0))(ptr1, ptr2);
+						((VOID(__stdcall*)(uintptr_t, uintptr_t))OFFSET(0x7B1E80, 0))(ptr1, ptr2);
 					}
 				}
 			}
@@ -376,7 +382,7 @@ namespace MainWindow
 		{
 			// Continue normal execution but with a custom string
 			char customTitle[1024];
-			sprintf_s(customTitle, "%s [CK64Fixes Rev. F4-%s]", (const char*)lParam, g_GitVersion);
+			sprintf_s(customTitle, "%s [CK64Fixes Rev. F4-%s]", (LPCSTR)lParam, g_GitVersion);
 
 			return CallWindowProcA(OldWndProc, Hwnd, Message, wParam, (LPARAM)customTitle);
 		}

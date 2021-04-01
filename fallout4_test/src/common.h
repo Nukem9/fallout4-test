@@ -71,3 +71,5 @@ extern char g_GitVersion[64];
 #define PatchIAT(detour, module, procname) Detours::IATHook(g_ModuleBase, (module), (procname), (uintptr_t)(detour));
 
 #define UI_CUSTOM_MESSAGE	52000
+
+#define FIXAPI __stdcall

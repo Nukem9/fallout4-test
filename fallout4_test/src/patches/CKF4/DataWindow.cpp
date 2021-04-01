@@ -16,20 +16,20 @@ namespace DataWindow
 	// need static (so not crash)
 	NMITEMACTIVATE nmItemFake;
 
-	VOID WINAPI ListView_SetSelectItem(HWND hLV, INT idx)
+	VOID FIXAPI ListView_SetSelectItem(HWND hLV, INT idx)
 	{
 		ListView_SetItemState(hLV, -1, 0, LVIS_SELFLAG);
 		ListView_SetItemState(hLV, idx, LVIS_SELFLAG, LVIS_SELFLAG);
 		ListView_EnsureVisible(hLV, idx, FALSE);
 	}
 
-	INT WINAPI ListView_GetSelectedItemIndex(HWND hLV)
+	INT FIXAPI ListView_GetSelectedItemIndex(HWND hLV)
 	{
 		// Get the first focused item
 		return ListView_GetNextItem(hLV, -1, LVNI_FOCUSED);
 	}
 
-	INT WINAPI ListView_FindItemByString(HWND hLV, const std::string str, INT start_idx = 0)
+	INT FIXAPI ListView_FindItemByString(HWND hLV, const std::string str, INT start_idx = 0)
 	{
 		// The standard search engine is too weak. 
 		// Mine allows you to find the first match in the list even if the word is somewhere in the middle. 
@@ -68,7 +68,7 @@ namespace DataWindow
 
 	DLGPROC OldDlgProc;
 
-	VOID CKF4Fixes_ListViewResultInitialize(VOID)
+	VOID FIXAPI CKF4Fixes_ListViewResultInitialize(VOID)
 	{
 		HWND hWnd = DataWindowControls.ListViewPluginsResult.Handle;
 
@@ -94,7 +94,7 @@ namespace DataWindow
 		ListView_SetExtendedListViewStyleEx(hWnd, LVS_EX_DOUBLEBUFFER, LVS_EX_DOUBLEBUFFER);
 	}
 
-	VOID CKF4Fixes_ToggleListView(const BOOL bShowResultListView)
+	VOID FIXAPI CKF4Fixes_ToggleListView(const BOOL bShowResultListView)
 	{
 		HWND hWnd = DataWindowControls.ListViewPlugins.Handle;
 		HWND hWndResult = DataWindowControls.ListViewPluginsResult.Handle;
@@ -112,7 +112,7 @@ namespace DataWindow
 		}
 	}
 
-	BOOL CKF4Fixes_AppendToListViewResult(const std::string sFileName, const std::string sType, const BOOL bCheck)
+	BOOL FIXAPI CKF4Fixes_AppendToListViewResult(const std::string sFileName, const std::string sType, const BOOL bCheck)
 	{
 		HWND hWnd = DataWindowControls.ListViewPluginsResult.Handle;
 		INT iLastIndex = ListView_GetItemCount(hWnd);
@@ -133,7 +133,7 @@ namespace DataWindow
 		return TRUE;
 	}
 
-	VOID CKF4Fixes_UpdateListViewResult(VOID)
+	VOID FIXAPI CKF4Fixes_UpdateListViewResult(VOID)
 	{
 		INT idx, idx_safe;
 		LVITEMA lvi = { 0 };
@@ -182,19 +182,19 @@ namespace DataWindow
 		SendMessageA(hSrchEdit, WM_SETCURSOR, 0, 0);
 	}
 
-	BOOL CKF4Fixes_LoadImageFromFileA(HBITMAP &bitmap, const std::string& filename)
+	BOOL FIXAPI CKF4Fixes_LoadImageFromFileA(HBITMAP &bitmap, const std::string& filename)
 	{
 		bitmap = (HBITMAP)LoadImageA(NULL, filename.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
 		return bitmap != NULL;
 	}
 
-	BOOL CKF4Fixes_LoadImageFromResourceA(HBITMAP &bitmap, const std::string& name)
+	BOOL FIXAPI CKF4Fixes_LoadImageFromResourceA(HBITMAP &bitmap, const std::string& name)
 	{
 		bitmap = (HBITMAP)LoadImageA(NULL, name.c_str(), IMAGE_BITMAP, 0, 0, 0);
 		return bitmap != NULL;
 	}
 
-	BOOL CKF4Fixes_ImageListReplaceA(HIMAGELIST imglst, INT idx, const std::string& filename)
+	BOOL FIXAPI CKF4Fixes_ImageListReplaceA(HIMAGELIST imglst, INT idx, const std::string& filename)
 	{
 		HBITMAP bmp;
 		if (!CKF4Fixes_LoadImageFromFileA(bmp, filename))
@@ -206,12 +206,12 @@ namespace DataWindow
 		return bRes;
 	}
 
-	HWND WINAPI GetWindow(VOID)
+	HWND FIXAPI GetWindow(VOID)
 	{
 		return DataWindow.Handle;
 	}
 
-	Classes::CUICustomWindow& WINAPI GetWindowObj(VOID)
+	Classes::CUICustomWindow& FIXAPI GetWindowObj(VOID)
 	{
 		return DataWindow;
 	}

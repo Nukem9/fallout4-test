@@ -86,7 +86,7 @@ namespace UITheme
 
 	static WNDPROC OldPopupMenuWndClass = NULL;
 
-	VOID Initialize(Theme::Theme ThemeID)
+	VOID FIXAPI Initialize(Theme::Theme ThemeID)
 	{
 		Theme::SetTheme(ThemeID);
 		EnableThemeHooking = TRUE;
@@ -96,18 +96,18 @@ namespace UITheme
 #endif
 	}
 
-	VOID InitializeThread(VOID)
+	VOID FIXAPI InitializeThread(VOID)
 	{
 		if (EnableThemeHooking)
 			SetWindowsHookExA(WH_CALLWNDPROC, CallWndProcCallback, nullptr, GetCurrentThreadId());
 	}
 
-	BOOL IsEnabledMode(VOID)
+	BOOL FIXAPI IsEnabledMode(VOID)
 	{
 		return EnableThemeHooking;
 	}
 
-	HWND WINAPI Comctl32CreateToolbarEx_1(HWND hwnd, DWORD ws, UINT wID, INT nBitmaps, HINSTANCE hBMInst, UINT_PTR wBMID, LPCTBBUTTON lpButtons,
+	HWND FIXAPI Comctl32CreateToolbarEx_1(HWND hwnd, DWORD ws, UINT wID, INT nBitmaps, HINSTANCE hBMInst, UINT_PTR wBMID, LPCTBBUTTON lpButtons,
 		INT iNumButtons, INT dxButton, INT dyButton, INT dxBitmap, INT dyBitmap, UINT uStructSize)
 	{
 		HIMAGELIST hImageList;
@@ -130,7 +130,7 @@ namespace UITheme
 		return ret; 
 	}
 
-	HIMAGELIST WINAPI Comctl32ImageList_LoadImageA_1(HINSTANCE hi, LPCSTR lpbmp, INT cx, INT cGrow, COLORREF crMask, UINT uType, UINT uFlags)
+	HIMAGELIST FIXAPI Comctl32ImageList_LoadImageA_1(HINSTANCE hi, LPCSTR lpbmp, INT cx, INT cGrow, COLORREF crMask, UINT uType, UINT uFlags)
 	{
 		if ((Theme::GetTheme() != Theme::Theme_Light) && (Theme::GetTheme() != Theme::Theme_Gray))
 			return ImageList_LoadImageA(g_hModule, MAKEINTRESOURCEA(IDB_BITMAP6), cx, cGrow, crMask, IMAGE_BITMAP, LR_CREATEDIBSECTION | LR_LOADTRANSPARENT);
@@ -138,7 +138,7 @@ namespace UITheme
 			return ImageList_LoadImageA(hi, lpbmp, cx, cGrow, crMask, uType, uFlags);
 	}
 
-	HWND WINAPI Comctl32CreateWindowEx_1(DWORD dwExStyle, LPCTSTR lpClassName, LPCTSTR lpWindowName, DWORD dwStyle, INT x, INT y,
+	HWND FIXAPI Comctl32CreateWindowEx_1(DWORD dwExStyle, LPCTSTR lpClassName, LPCTSTR lpWindowName, DWORD dwStyle, INT x, INT y,
 		INT nWidth, INT nHeight, HWND hWndParent, HMENU hMenu, HINSTANCE hInstance, LPVOID lpParam)
 	{
 		HWND ret = CreateWindowExA(dwExStyle, lpClassName, lpWindowName, WS_CHILD | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | WS_VISIBLE | SS_LEFT, x, y, nWidth, nHeight, hWndParent, hMenu, hInstance, lpParam);
@@ -146,7 +146,7 @@ namespace UITheme
 		return ret;
 	}
 
-	VOID WINAPI HideOldTimeOfDayComponents(VOID)
+	VOID FIXAPI HideOldTimeOfDayComponents(VOID)
 	{
 		// I will hide the old ones, but I will rely on them when sending messages, however, in the end, I will fake the event to change the time of day
 
@@ -169,7 +169,7 @@ namespace UITheme
 	}
 
 	// Returns a valid visual theme type, depending on the window class
-	ThemeType WINAPI GetThemeTypeFromWindow(HWND hWindow)
+	ThemeType FIXAPI GetThemeTypeFromWindow(HWND hWindow)
 	{
 		static std::unordered_map<std::string_view, ThemeType, std::hash<std::string_view>, string_equal_to> TargetWindowThemes
 		{
@@ -206,7 +206,7 @@ namespace UITheme
 
 	// Binds the specified class type to the visual theme. hWindow takes only HTHEME
 	// Returns TRUE if successful
-	BOOL WINAPI RegisterThemeHandle(HWND hWindow, ThemeType eTheme)
+	BOOL FIXAPI RegisterThemeHandle(HWND hWindow, ThemeType eTheme)
 	{
 		HTHEME windowTheme = GetWindowTheme(hWindow);
 		if (!windowTheme)
@@ -217,7 +217,7 @@ namespace UITheme
 
 	// Binds the specified class type to the visual theme
 	// Returns TRUE if successful
-	BOOL WINAPI RegisterThemeHandle(HTHEME hTheme, ThemeType eTheme)
+	BOOL FIXAPI RegisterThemeHandle(HTHEME hTheme, ThemeType eTheme)
 	{
 		if (ThemeType::None == eTheme)
 			return FALSE;
@@ -479,17 +479,17 @@ namespace UITheme
 		return DefSubclassProc(hWnd, uMsg, wParam, lParam);
 	}
 
-	DWORD WINAPI Comctl32GetSysColor(INT nIndex)
+	DWORD FIXAPI Comctl32GetSysColor(INT nIndex)
 	{
 		return Theme::Comctl32GetSysColor(nIndex);
 	}
 
-	HBRUSH WINAPI Comctl32GetSysColorBrush(INT nIndex)
+	HBRUSH FIXAPI Comctl32GetSysColorBrush(INT nIndex)
 	{
 		return Theme::Comctl32GetSysColorBrush(nIndex);
 	}
 
-	HRESULT WINAPI Comctl32DrawThemeText(HTHEME hTheme, HDC hdc, INT iPartId, INT iStateId, LPCWSTR pszText, INT cchText, DWORD dwTextFlags, DWORD dwTextFlags2, LPCRECT pRect)
+	HRESULT FIXAPI Comctl32DrawThemeText(HTHEME hTheme, HDC hdc, INT iPartId, INT iStateId, LPCWSTR pszText, INT cchText, DWORD dwTextFlags, DWORD dwTextFlags2, LPCRECT pRect)
 	{
 		Classes::CUICanvas Canvas(hdc);
 		Canvas.TransparentMode = TRUE;
@@ -545,7 +545,7 @@ namespace UITheme
 		return S_OK;
 	}
 
-	HRESULT WINAPI Comctl32DrawThemeBackground(HTHEME hTheme, HDC hdc, INT iPartId, INT iStateId, LPCRECT pRect, LPCRECT pClipRect)
+	HRESULT FIXAPI Comctl32DrawThemeBackground(HTHEME hTheme, HDC hdc, INT iPartId, INT iStateId, LPCRECT pRect, LPCRECT pClipRect)
 	{
 		auto themeType = ThemeType::None;
 

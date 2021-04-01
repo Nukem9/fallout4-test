@@ -31,30 +31,30 @@ void PatchThreading();
 
 void Patch_Fallout4CreationKit()
 {
-	if (!_stricmp((const char *)(g_ModuleBase + 0x3896168), "1.10.162.0"))
+	if (!_stricmp((LPCSTR)(g_ModuleBase + 0x3896168), "1.10.162.0"))
 	{
 		// ???
 	}
 	else
 	{
-		char modulePath[MAX_PATH];
-		GetModuleFileNameA(GetModuleHandle(nullptr), modulePath, ARRAYSIZE(modulePath));
+		CHAR modulePath[MAX_PATH];
+		GetModuleFileNameA(GetModuleHandleA(NULL), modulePath, ARRAYSIZE(modulePath));
 
-		char message[1024];
+		CHAR message[1024];
 		sprintf_s(message,
 			"Unknown Creation Kit version detected. Patches are disabled.\n\n"
 			"Required versions:\n"
 			"CreationKit.exe 1.10.162.0 released on 2019-11-20\n"
 			"\nExecutable path: %s", modulePath);
 
-		MessageBoxA(nullptr, message, "Version Check", MB_ICONERROR);
+		MessageBoxA(NULL, message, "Version Check", MB_ICONERROR);
 		return;
 	}
 
 	//
 	// Replace broken crash dump functionality
 	//
-	if (g_INI.GetBoolean("CreationKit", "GenerateCrashdumps", true))
+	if (g_INI.GetBoolean("CreationKit", "GenerateCrashdumps", TRUE))
 	{
 		SetUnhandledExceptionFilter(DumpExceptionHandler);
 
@@ -63,33 +63,33 @@ void Patch_Fallout4CreationKit()
 		XUtil::PatchMemory(OFFSET(0x204D1A0, 0), { 0xC3 });// SetUnhandledExceptionFilter, BSWin32ExceptionHandler
 		XUtil::PatchMemory(OFFSET(0x204D1E0, 0), { 0xC3 });// SetUnhandledExceptionFilter, BSWin32ExceptionHandler
 
-		_set_invalid_parameter_handler([](const wchar_t *, const wchar_t *, const wchar_t *, uint32_t, uintptr_t)
+		_set_invalid_parameter_handler([](LPCWSTR, LPCWSTR, LPCWSTR, uint32_t, uintptr_t)
 		{
-			RaiseException('PARM', EXCEPTION_NONCONTINUABLE, 0, nullptr);
+			RaiseException('PARM', EXCEPTION_NONCONTINUABLE, 0, NULL);
 		});
 
 		auto purecallHandler = []()
 		{
-			RaiseException('PURE', EXCEPTION_NONCONTINUABLE, 0, nullptr);
+			RaiseException('PURE', EXCEPTION_NONCONTINUABLE, 0, NULL);
 		};
 
 		auto terminateHandler = []()
 		{
-			RaiseException('TERM', EXCEPTION_NONCONTINUABLE, 0, nullptr);
+			RaiseException('TERM', EXCEPTION_NONCONTINUABLE, 0, NULL);
 		};
 
-		PatchIAT((void(*)())terminateHandler, "MSVCR110.dll", "_cexit");
-		PatchIAT((void(*)())terminateHandler, "MSVCR110.dll", "_exit");
-		PatchIAT((void(*)())terminateHandler, "MSVCR110.dll", "exit");
-		PatchIAT((void(*)())terminateHandler, "MSVCR110.dll", "abort");
-		PatchIAT((void(*)())terminateHandler, "MSVCR110.dll", "terminate");
-		PatchIAT((void(*)())purecallHandler, "MSVCR110.dll", "_purecall");
+		PatchIAT((VOID(*)())terminateHandler, "MSVCR110.dll", "_cexit");
+		PatchIAT((VOID(*)())terminateHandler, "MSVCR110.dll", "_exit");
+		PatchIAT((VOID(*)())terminateHandler, "MSVCR110.dll", "exit");
+		PatchIAT((VOID(*)())terminateHandler, "MSVCR110.dll", "abort");
+		PatchIAT((VOID(*)())terminateHandler, "MSVCR110.dll", "terminate");
+		PatchIAT((VOID(*)())purecallHandler, "MSVCR110.dll", "_purecall");
 	}
 
 	//
 	// MemoryManager
 	//
-	if (g_INI.GetBoolean("CreationKit", "MemoryPatch", false))
+	if (g_INI.GetBoolean("CreationKit", "MemoryPatch", FALSE))
 	{
 		PatchMemory();
 
@@ -110,7 +110,7 @@ void Patch_Fallout4CreationKit()
 	//
 	// Threads
 	//
-	if (g_INI.GetBoolean("CreationKit", "ThreadingPatch", false))
+	if (g_INI.GetBoolean("CreationKit", "ThreadingPatch", FALSE))
 	{
 		PatchThreading();
 	}
@@ -118,7 +118,7 @@ void Patch_Fallout4CreationKit()
 	//
 	// Steam API
 	//
-	if (g_INI.GetBoolean("CreationKit", "SteamPatch", false))
+	if (g_INI.GetBoolean("CreationKit", "SteamPatch", FALSE))
 	{
 		XUtil::PatchMemory(OFFSET(0x2881F84, 0), { 0x74, 0x1B, 0x90, 0x90, 0x90, 0x90 });
 		XUtil::PatchMemory(OFFSET(0x2881FB4, 0), { 0x74, 0x26, 0x90, 0x90, 0x90, 0x90 });
@@ -152,7 +152,7 @@ void Patch_Fallout4CreationKit()
 		XUtil::DetourCall(OFFSET(0x5B63E7, 0), UITheme::Comctl32ImageList_LoadImageA_1);
 	}
 
-	if (g_INI.GetBoolean("CreationKit", "UI", false))
+	if (g_INI.GetBoolean("CreationKit", "UI", FALSE))
 	{
 		EditorUI::Initialize();
 
@@ -199,8 +199,9 @@ void Patch_Fallout4CreationKit()
 		XUtil::DetourCall(OFFSET(0x3FE4CA, 0), &ObjectWindow::hk_7FF72F57F8F0);
 		// Allow forms to be filtered in CellViewProc
 		XUtil::DetourCall(OFFSET(0x6435BF, 0), &CellViewWindow::hk_7FF70C322BC0);
-
+		// Allow objects to be filtered in CellViewProc
 		XUtil::DetourCall(OFFSET(0x5A43B5, 0), &CellViewWindow::hk_call_5A43B5);
+
 		//
 		//  Experimantal functions
 		//
@@ -213,14 +214,16 @@ void Patch_Fallout4CreationKit()
 
 		// Setting section sizes statusbar
 		XUtil::DetourCall(OFFSET(0x5FDFC8, 0), &EditorUI::hk_SetSettingsPartStatusBar);
-		// Ban on sending text to section 2 statusbar and send in 3 section
-		XUtil::DetourJump(OFFSET(0x5FDFF2, 0), &EditorUI::hk_SetTextPartStatusBar);
+		// Spam in the status bar no more than 1 second
+		XUtil::DetourCall(OFFSET(0x45E287, 0), &EditorUI::hk_SpamFPSToStatusBar);
+		// Send text to 4 part StatusBar (Game cam: .....)
+		XUtil::PatchMemory(OFFSET(0x45EB2A, 0), { 0x03 });
 
 		//
 		// Replacing the Tips window "Do you know...". Which appears when the plugin is loaded.
 		//
 
-		if (g_INI.GetBoolean("CreationKit", "ReplacingTipsWithProgressBar", false))
+		if (g_INI.GetBoolean("CreationKit", "ReplacingTipsWithProgressBar", FALSE))
 		{
 			XUtil::PatchMemory(OFFSET(0x392260, 0), { 0xC3 });
 			XUtil::PatchMemory(OFFSET(0x3923C3, 0), { 0xC3 });
@@ -255,10 +258,8 @@ void Patch_Fallout4CreationKit()
 	// Raise the papyrus script editor text limit to 500k characters from 64k
 	XUtil::DetourCall(OFFSET(0x12E852C, 0), &hk_call_12E852C);
 
-	if (g_INI.GetBoolean("CreationKit", "DisableWindowGhosting", false))
-	{
+	if (g_INI.GetBoolean("CreationKit", "DisableWindowGhosting", FALSE))
 		DisableProcessWindowsGhosting();
-	}
 
 	TESDataFileHandler_CK::Initialize();
 
@@ -283,8 +284,8 @@ void Patch_Fallout4CreationKit()
 	// AllowSaveESM   - Allow saving ESMs directly without version control
 	// AllowMasterESP - Allow ESP files to act as master files while saving
 	//
-	TESFile_CK::AllowSaveESM = g_INI.GetBoolean("CreationKit", "AllowSaveESM", false);
-	TESFile_CK::AllowMasterESP = g_INI.GetBoolean("CreationKit", "AllowMasterESP", false);
+	TESFile_CK::AllowSaveESM = g_INI.GetBoolean("CreationKit", "AllowSaveESM", FALSE);
+	TESFile_CK::AllowMasterESP = g_INI.GetBoolean("CreationKit", "AllowMasterESP", FALSE);
 
 	if (TESFile_CK::AllowSaveESM || TESFile_CK::AllowMasterESP)
 	{
@@ -298,7 +299,7 @@ void Patch_Fallout4CreationKit()
 			XUtil::PatchMemoryNop(OFFSET(0x7D9CD8, 0), 2);
 
 			// Disable: "File '%s' is a master file or is in use.\n\nPlease select another file to save to."
-			const char* newFormat = "File '%s' is in use.\n\nPlease select another file to save to.";
+			LPCSTR newFormat = "File '%s' is in use.\n\nPlease select another file to save to.";
 
 			XUtil::PatchMemoryNop(OFFSET(0x7DDBC9, 0), 13);
 			XUtil::PatchMemory(OFFSET(0x38840B0, 0), (uint8_t*)newFormat, strlen(newFormat) + 1);
@@ -335,21 +336,21 @@ void Patch_Fallout4CreationKit()
 	//
 	// Force the render window to draw at 60fps while idle (SetTimer(1ms)). 
 	//
-	if (g_INI.GetBoolean("CreationKit", "RenderWindowUnlockedFPS", false))
+	if (g_INI.GetBoolean("CreationKit", "RenderWindowUnlockedFPS", FALSE))
 	{
 		// SetTimer minimum value 10ms
 		// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-settimer
 		XUtil::PatchMemory(OFFSET(0x0463383, 0), { (uint8_t)USER_TIMER_MINIMUM });
 
 		// In a separate option VSync
-		if (!g_INI.GetBoolean("CreationKit", "VSyncRender", false))
+		if (!g_INI.GetBoolean("CreationKit", "VSyncRender", FALSE))
 			XUtil::PatchMemory(OFFSET(0x2A39142, 0), { 0x33, 0xD2, 0x90 });
 	}
 
 	//
 	// Convert Utf-8 to WinCP when loading and back when saving
 	//
-	if (g_INI.GetBoolean("CreationKit", "Unicode", false))
+	if (g_INI.GetBoolean("CreationKit", "Unicode", FALSE))
 	{
 #if FALLOUT4_LAZ_UNICODE_PLUGIN
 		// Initialization CreationKitUnicodePlugin.dll
@@ -434,7 +435,7 @@ void Patch_Fallout4CreationKit()
 	//
 	// Plugin loading optimizations
 	//
-	int cpuinfo[4];
+	INT32 cpuinfo[4];
 	__cpuid(cpuinfo, 1);
 
 	// Utilize SSE4.1 instructions if available

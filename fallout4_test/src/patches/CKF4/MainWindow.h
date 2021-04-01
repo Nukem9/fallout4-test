@@ -35,10 +35,10 @@ namespace MainWindow
 
 	extern WNDPROC OldWndProc;
 
-	BOOL WINAPI IsActive(VOID);
-	HWND WINAPI GetWindow(VOID);
-	Classes::CUIMainWindow& WINAPI GetWindowObj(VOID);
-	Classes::CUIMenu& WINAPI GetMainMenuObj(VOID);
+	BOOL FIXAPI IsActive(VOID);
+	HWND FIXAPI GetWindow(VOID);
+	Classes::CUIMainWindow& FIXAPI GetWindowObj(VOID);
+	Classes::CUIMenu& FIXAPI GetMainMenuObj(VOID);
 
 	LRESULT CALLBACK WndProc(HWND Hwnd, UINT Message, WPARAM wParam, LPARAM lParam);
 }

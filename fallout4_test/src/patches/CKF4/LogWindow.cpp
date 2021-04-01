@@ -25,20 +25,20 @@ namespace LogWindow
 	tbb::concurrent_vector<std::string> PendingMessages;
 	std::unordered_set<uint64_t> MessageBlacklist;
 
-	HWND GetWindow()
+	HWND FIXAPI GetWindow(VOID)
 	{
 		return LogWindowHandle;
 	}
 
-	HANDLE GetStdoutListenerPipe()
+	HANDLE FIXAPI GetStdoutListenerPipe(VOID)
 	{
 		return ExternalPipeWriterHandle;
 	}
 
-	bool Initialize()
+	BOOL FIXAPI Initialize(VOID)
 	{
 		if (!LoadLibraryA("MSFTEDIT.dll"))
-			return false;
+			return FALSE;
 
 		// Build warning blacklist stored in the ini file
 		LoadWarningBlacklist();
@@ -49,7 +49,7 @@ namespace LogWindow
 		if (strcmp(logPath.c_str(), "none") != 0)
 		{
 			if (fopen_s(&OutputFileHandle, logPath.c_str(), "w") != 0)
-				OutputFileHandle = nullptr;
+				OutputFileHandle = NULL;
 
 			AssertMsgVa(OutputFileHandle, "Unable to open the log file '%s' for writing. To disable, set the 'OutputFile' INI option to 'none'.", logPath.c_str());
 
@@ -65,70 +65,70 @@ namespace LogWindow
 			UITheme::InitializeThread();
 
 			// Output window
-			auto instance = (HINSTANCE)GetModuleHandle(nullptr);
+			auto instance = (HINSTANCE)GetModuleHandleA(NULL);
 
 			WNDCLASSEX wc = { 0 };
 			wc.cbSize = sizeof(WNDCLASSEX);
 			wc.style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
 			wc.lpfnWndProc = WndProc;
 			wc.hInstance = instance;
-			wc.hIcon = LoadIcon(instance, MAKEINTRESOURCE(0x13E));
-			wc.hCursor = LoadCursor(nullptr, IDC_ARROW);
+			wc.hIcon = LoadIconA(instance, MAKEINTRESOURCE(0x13E));
+			wc.hCursor = LoadCursorA(NULL, IDC_ARROW);
 			wc.hbrBackground = (HBRUSH)GetStockObject(LTGRAY_BRUSH);
 			wc.lpszClassName = TEXT("RTEDITLOG");
 			wc.hIconSm = wc.hIcon;
 
-			if (!RegisterClassEx(&wc))
+			if (!RegisterClassExA(&wc))
 				return false;
 
-			LogWindowHandle = CreateWindowEx(0, TEXT("RTEDITLOG"), TEXT("Log"), WS_OVERLAPPEDWINDOW, 64, 64, 1024, 480, nullptr, nullptr, instance, nullptr);
+			LogWindowHandle = CreateWindowExA(0, TEXT("RTEDITLOG"), TEXT("Log"), WS_OVERLAPPEDWINDOW, 64, 64, 1024, 480, NULL, NULL, instance, NULL);
 
 			if (!LogWindowHandle)
 				return false;
 
 			// Poll every 100ms for new lines
-			SetTimer(LogWindowHandle, UI_LOG_CMD_ADDTEXT, 100, nullptr);
+			SetTimer(LogWindowHandle, UI_LOG_CMD_ADDTEXT, 100, NULL);
 			ShowWindow(LogWindowHandle, SW_SHOW);
 			UpdateWindow(LogWindowHandle);
 
 			MSG msg;
-			while (GetMessage(&msg, nullptr, 0, 0) > 0)
+			while (GetMessageA(&msg, NULL, 0, 0) > 0)
 			{
 				TranslateMessage(&msg);
-				DispatchMessage(&msg);
+				DispatchMessageA(&msg);
 			}
 
 			return true;
 		});
 
 		asyncLogThread.detach();
-		return true;
+		return TRUE;
 	}
 
-	bool CreateStdoutListener()
+	BOOL FIXAPI CreateStdoutListener(VOID)
 	{
 		SECURITY_ATTRIBUTES saAttr = { 0 };
 		saAttr.nLength = sizeof(SECURITY_ATTRIBUTES);
-		saAttr.lpSecurityDescriptor = nullptr;
+		saAttr.lpSecurityDescriptor = NULL;
 		saAttr.bInheritHandle = TRUE;
 
 		if (!CreatePipe(&ExternalPipeReaderHandle, &ExternalPipeWriterHandle, &saAttr, 0))
-			return false;
+			return FALSE;
 
 		// Ensure the read handle to the pipe for STDOUT is not inherited
 		if (!SetHandleInformation(ExternalPipeReaderHandle, HANDLE_FLAG_INHERIT, 0))
-			return false;
+			return FALSE;
 
 		std::thread pipeReader([]()
 		{
-			char logBuffer[16384] = {};
+			CHAR logBuffer[16384] = {};
 
-			while (true)
+			while (TRUE)
 			{
-				char buffer[4096] = {};
+				CHAR buffer[4096] = {};
 				DWORD bytesRead;
 
-				bool succeeded = ReadFile(ExternalPipeReaderHandle, buffer, ARRAYSIZE(buffer) - 1, &bytesRead, nullptr) != 0;
+				BOOL succeeded = ReadFile(ExternalPipeReaderHandle, buffer, ARRAYSIZE(buffer) - 1, &bytesRead, NULL) != 0;
 
 				// Bail if there's nothing left or the process exited
 				if (!succeeded || bytesRead <= 0)
@@ -137,7 +137,7 @@ namespace LogWindow
 				strcat_s(logBuffer, buffer);
 
 				// Flush on every newline and skip empty/whitespace strings
-				while (char *end = strchr(logBuffer, '\n'))
+				while (LPSTR end = strchr(logBuffer, '\n'))
 				{
 					*end = '\0';
 					size_t len = (size_t)(end - logBuffer);
@@ -157,12 +157,12 @@ namespace LogWindow
 		});
 
 		pipeReader.detach();
-		return true;
+		return TRUE;
 	}
 
-	void LoadWarningBlacklist()
+	VOID FIXAPI LoadWarningBlacklist(VOID)
 	{
-		if (!g_INI.GetBoolean("CreationKit", "WarningBlacklist", false))
+		if (!g_INI.GetBoolean("CreationKit", "WarningBlacklist", FALSE))
 			return;
 
 		// Keep reading entries until an empty one is hit
@@ -223,7 +223,7 @@ namespace LogWindow
 	LRESULT CALLBACK WndProc(HWND Hwnd, UINT Message, WPARAM wParam, LPARAM lParam)
 	{
 		static HWND richEditHwnd;
-		static bool autoScroll;
+		static BOOL autoScroll;
 
 		switch (Message)
 		{
@@ -234,15 +234,15 @@ namespace LogWindow
 			// Create the rich edit control (https://docs.microsoft.com/en-us/windows/desktop/Controls/rich-edit-controls)
 			uint32_t style = WS_VISIBLE | WS_CHILD | WS_VSCROLL | ES_MULTILINE | ES_LEFT | ES_NOHIDESEL | ES_AUTOVSCROLL | ES_READONLY;
 
-			richEditHwnd = CreateWindowExW(0, MSFTEDIT_CLASS, L"", style, 0, 0, info->cx, info->cy, Hwnd, nullptr, info->hInstance, nullptr);
-			autoScroll = true;
+			richEditHwnd = CreateWindowExW(0, MSFTEDIT_CLASS, L"", style, 0, 0, info->cx, info->cy, Hwnd, NULL, info->hInstance, NULL);
+			autoScroll = TRUE;
 
 			if (!richEditHwnd)
 				return -1;
 
 			// Set default position
-			int winW = g_INI.GetInteger("CreationKit_Log", "Width", info->cx);
-			int winH = g_INI.GetInteger("CreationKit_Log", "Height", info->cy);
+			INT32 winW = g_INI.GetInteger("CreationKit_Log", "Width", info->cx);
+			INT32 winH = g_INI.GetInteger("CreationKit_Log", "Height", info->cy);
 
 			MoveWindow(Hwnd, info->x, info->y, winW, winH, FALSE);
 
@@ -259,11 +259,11 @@ namespace LogWindow
 			// Subscribe to EN_MSGFILTER and EN_SELCHANGE
 			SendMessageA(richEditHwnd, EM_SETEVENTMASK, 0, ENM_MOUSEEVENTS | ENM_SELCHANGE);
 		}
-		return 0;
+		return S_OK;
 
 		case WM_DESTROY:
 			DestroyWindow(richEditHwnd);
-			return 0;
+			return S_OK;
 
 		case WM_SIZE:
 		{
@@ -278,12 +278,12 @@ namespace LogWindow
 			if (wParam != WA_INACTIVE)
 				SetFocus(richEditHwnd);
 		}
-		return 0;
+		return S_OK;
 
 		case WM_CLOSE:
 			ShowWindow(Hwnd, SW_HIDE);
 			MainWindow::GetMainMenuObj().GetItem(UI_EXTMENU_SHOWLOG).Checked = FALSE;
-			return 0;
+			return S_OK;
 
 		case WM_NOTIFY:
 		{
@@ -305,7 +305,7 @@ namespace LogWindow
 				if ((GetTickCount64() - lastClickTime > 1000) || selChange->seltyp == SEL_EMPTY)
 					break;
 
-				char lineData[4096];
+				CHAR lineData[4096];
 				*(uint16_t *)&lineData[0] = ARRAYSIZE(lineData);
 
 				// Get the line number & text from the selected range
@@ -317,11 +317,11 @@ namespace LogWindow
 					lineData[charCount - 1] = '\0';
 
 					// Capture each hexadecimal form id in the format of "(XXXXXXXX)"
-					for (char *p = lineData; p[0] != '\0'; p++)
+					for (LPSTR p = lineData; p[0] != '\0'; p++)
 					{
 						if (p[0] == '(' && strlen(p) >= 10 && p[9] == ')')
 						{
-							uint32_t id = strtoul(&p[1], nullptr, 16);
+							uint32_t id = strtoul(&p[1], NULL, 16);
 							PostMessageA(MainWindow::GetWindow(), WM_COMMAND, UI_EDITOR_OPENFORMBYID, id);
 						}
 					}
@@ -342,7 +342,7 @@ namespace LogWindow
 
 			return WndProc(Hwnd, UI_LOG_CMD_ADDTEXT, 0, 0);
 		}
-		return 0;
+		return S_OK;
 
 		case UI_LOG_CMD_ADDTEXT:
 		{
@@ -372,9 +372,9 @@ namespace LogWindow
 				SendMessageA(richEditHwnd, EM_SETSCROLLPOS, 0, (WPARAM)&scrollRange);
 
 			SendMessageA(richEditHwnd, WM_SETREDRAW, TRUE, 0);
-			RedrawWindow(richEditHwnd, nullptr, nullptr, RDW_ERASE | RDW_INVALIDATE | RDW_NOCHILDREN);
+			RedrawWindow(richEditHwnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_NOCHILDREN);
 		}
-		return 0;
+		return S_OK;
 
 		case UI_LOG_CMD_CLEARTEXT:
 		{
@@ -384,17 +384,17 @@ namespace LogWindow
 
 			SendMessageA(richEditHwnd, WM_SETTEXT, 0, (LPARAM)&emptyString);
 		}
-		return 0;
+		return S_OK;
 
 		case UI_LOG_CMD_AUTOSCROLL:
-			autoScroll = (bool)wParam;
-			return 0;
+			autoScroll = (BOOL)wParam;
+			return S_OK;
 		}
 
 		return DefWindowProc(Hwnd, Message, wParam, lParam);
 	}
 
-	void LogVa(const char *Format, va_list Va)
+	VOID FIXAPI LogVa(LPCSTR Format, va_list Va)
 	{
 		std::string message;
 		message.resize(2048);
@@ -424,7 +424,7 @@ namespace LogWindow
 			PendingMessages.emplace_back(message.c_str());
 	}
 
-	void Log(const char *Format, ...)
+	VOID FIXAPI Log(LPCSTR Format, ...)
 	{
 		va_list va;
 
@@ -433,9 +433,9 @@ namespace LogWindow
 		va_end(va);
 	}
 
-	void LogWarningVa(int Type, const char *Format, va_list& Va)
+	VOID FIXAPI LogWarningVa(INT32 Type, LPCSTR Format, va_list& Va)
 	{
-		static const char *typeList[34] =
+		static LPCSTR typeList[34] =
 		{
 			"DEFAULT", 
 			"SYSTEM",
@@ -473,13 +473,13 @@ namespace LogWindow
 			"WORKSHOP",
 		};
 
-		char buffer[2048];
+		CHAR buffer[2048];
 		_vsnprintf_s(buffer, _TRUNCATE, Format, Va);
 
 		Log("%s: %s", typeList[Type], buffer);
 	}
 
-	void LogWarning(int Type, const char *Format, ...)
+	VOID FIXAPI LogWarning(INT32 Type, LPCSTR Format, ...)
 	{
 		va_list va;
 
@@ -488,7 +488,7 @@ namespace LogWindow
 		va_end(va);
 	}
 
-	void LogWarningUnknown1(const char *Format, ...)
+	VOID FIXAPI LogWarningUnknown1(LPCSTR Format, ...)
 	{
 		va_list va;
 
@@ -497,7 +497,7 @@ namespace LogWindow
 		va_end(va);
 	}
 
-	void LogWarningUnknown2(__int64 Unused, const char *Format, ...)
+	VOID FIXAPI LogWarningUnknown2(INT64 Unused, LPCSTR Format, ...)
 	{
 		va_list va;
 
@@ -506,12 +506,12 @@ namespace LogWindow
 		va_end(va);
 	}
 
-	void LogAssert(const char *File, int Line, const char *Message, ...)
+	VOID FIXAPI LogAssert(LPCSTR File, INT32 Line, LPCSTR Message, ...)
 	{
 		if (!Message)
 			Message = "<No message>";
 
-		char buffer[2048];
+		CHAR buffer[2048];
 		va_list va;
 
 		va_start(va, Message);

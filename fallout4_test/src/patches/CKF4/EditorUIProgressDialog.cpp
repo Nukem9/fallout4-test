@@ -8,21 +8,17 @@
 #include "RenderWindow.h"
 #include "MainWindow.h"
 
-#ifndef HOTFIX_0001
-#include "EditorUIDarkMode.h"
-#endif // !HOTFIX_0001
-
 namespace EditorUI
 {
 	namespace sys = Core::Classes::UI;
 
-	bool __stdcall hk_CallLoadFile(TESDataFileHandler_CK* io_handler, int _zero_only)
+	BOOL FIXAPI hk_CallLoadFile(TESDataFileHandler_CK* io_handler, INT32 _zero_only)
 	{
 		// get and save F4FileDataHandler from CK
 		// FileHandler = io_handler; 0x6D67960 and doesn't change
 
 		// Replacing Tips with a progress Bar
-		if (g_INI.GetBoolean("CreationKit", "UI", false) && g_INI.GetBoolean("CreationKit", "ReplacingTipsWithProgressBar", false))
+		if (bReplaceTips)
 		{
 			Assert(!sys::ProgressDialog);
 			// show Progress
@@ -37,14 +33,14 @@ namespace EditorUI
 		return io_handler->Load(_zero_only);
 	}
 
-	void __stdcall hk_EndLoadFile(void)
+	VOID FIXAPI hk_EndLoadFile(VOID)
 	{
 		// Replacing Tips with a progress Bar
-		if (g_INI.GetBoolean("CreationKit", "UI", false) && g_INI.GetBoolean("CreationKit", "ReplacingTipsWithProgressBar", false))
+		if (bReplaceTips)
 		{
 			// close Progress
 			delete sys::ProgressDialog;
-			sys::ProgressDialog = nullptr;
+			sys::ProgressDialog = NULL;
 		}
 
 		RenderWindow::GetWindowObj().Foreground();
@@ -52,53 +48,42 @@ namespace EditorUI
 		ObjectWindow::GetWindowObj().Foreground();
 	}
 
-	void __stdcall hk_StepItProgress(const char** str)
+	VOID FIXAPI hk_StepItProgress(LPCSTR* str)
 	{
 		Assert(sys::ProgressDialog);
 
 		// set position 0..95%
-
-#ifndef HOTFIX_0001
-		std::string s = "";
-
-		if (EditorUIDarkMode::IsUIDarkMode())
-			// fix crash DarkUI
-			// when you enable the dark theme, the string is not available, because it is located in a different address spaceand is protected.
-			s = GetMainWindowObj().GetTextToStatusBarA(3);
-		else
-			s = *str;
-#else
 		std::string s(MainWindow::GetWindowObj().GetTextToStatusBarA(3));
-#endif
+
 		s.assign(s.begin() + s.find('%') - 2, s.end());
-		sys::ProgressDialog->Position = strtol(s.c_str(), nullptr, 10);
+		sys::ProgressDialog->Position = strtol(s.c_str(), NULL, 10);
 	}
 
-	bool __stdcall hk_UpdateProgress(void* __this, int __1)
+	BOOL FIXAPI hk_UpdateProgress(LPVOID __this, INT32 __1)
 	{
 		// Fallout CK is generally cut out.....
 
-		static float lastPercent = 0.0f;
+		static FLOAT lastPercent = 0.0f;
 
 		// Only update every quarter percent, rather than every single form load
-		float newPercent = ((float) * (uint32_t*)OFFSET(0x6D6A7D8, 0) / (float) * (uint32_t*)OFFSET(0x6D6A7D4, 0)) * 100.0f;
+		FLOAT newPercent = ((FLOAT) * (UINT32*)OFFSET(0x6D6A7D8, 0) / (FLOAT) * (UINT32*)OFFSET(0x6D6A7D4, 0)) * 100.0f;
 
 		if (abs(lastPercent - newPercent) > 0.25f)
 			Core::Classes::UI::CUIMainWindow::ProcessMessages();
 
-		return ((bool(__fastcall*)(void* __this, int __1))OFFSET(0x8027C0, 0))(__this, __1);
+		return ((BOOL(__fastcall*)(LPVOID __this, INT32 __1))OFFSET(0x8027C0, 0))(__this, __1);
 	}
 
-	void __stdcall hk_SetTextAndSendStatusBar(const uint32_t index, const char* message)
+	VOID FIXAPI hk_SetTextAndSendStatusBar(UINT32 index, LPCSTR message)
 	{
 		// send Status Bar
-		((void(__stdcall*)(const uint32_t, const char*))OFFSET(0x5FDFE0, 0))(index, message);
+		((VOID(__stdcall*)(UINT32, LPCSTR))OFFSET(0x5FDFE0, 0))(index, message);
 		// set Text 
 		sys::ProgressDialog->MessageText = message;
 		Core::Classes::UI::CUIMainWindow::ProcessMessages();
 	}
 
-	void __stdcall hk_SendFromCellViewToRender(void* Unknown1, void* Unknown2, int Unknown3)
+	VOID FIXAPI hk_SendFromCellViewToRender(LPVOID Unknown1, LPVOID Unknown2, INT32 Unknown3)
 	{
 		Assert(!sys::ProgressDialog);
 		// show Progress
@@ -110,17 +95,17 @@ namespace EditorUI
 		sys::ProgressDialog->MessageText = "Please wait while requested cell loads ...";
 
 		// send
-		((void(__fastcall*)(void*, void*, int))OFFSET(0x45FE60, 0))(Unknown1, Unknown2, Unknown3);
+		((VOID(__fastcall*)(LPVOID, LPVOID, INT32))OFFSET(0x45FE60, 0))(Unknown1, Unknown2, Unknown3);
 	}
 
-	void __stdcall hk_EndSendFromCellViewToRender(void)
+	VOID FIXAPI hk_EndSendFromCellViewToRender(VOID)
 	{
 		// Replacing Tips with a progress Bar
-		if (g_INI.GetBoolean("CreationKit", "ReplacingTipsWithProgressBar", false))
+		if (bReplaceTips)
 		{
 			// close Progress
 			delete sys::ProgressDialog;
-			sys::ProgressDialog = nullptr;
+			sys::ProgressDialog = NULL;
 		}
 
 		// enabled all markers

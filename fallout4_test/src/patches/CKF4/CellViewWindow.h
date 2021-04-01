@@ -22,11 +22,11 @@ namespace CellViewWindow
 
 	extern DLGPROC OldDlgProc;
 
-	HWND WINAPI GetWindow(VOID);
-	Classes::CUICustomWindow& WINAPI GetWindowObj(VOID);
+	HWND FIXAPI GetWindow(VOID);
+	Classes::CUICustomWindow& FIXAPI GetWindowObj(VOID);
 
 	INT_PTR CALLBACK DlgProc(HWND DialogHwnd, UINT Message, WPARAM wParam, LPARAM lParam);
 
-	VOID WINAPI hk_7FF70C322BC0(HWND ListViewHandle, TESForm_CK* Form, bool UseImage, int32_t ItemIndex);
-	INT32 WINAPI hk_call_5A43B5(HWND** ListViewHandle, TESForm_CK** Form, INT64 a3);
+	VOID FIXAPI hk_7FF70C322BC0(HWND ListViewHandle, TESForm_CK* Form, bool UseImage, int32_t ItemIndex);
+	INT32 FIXAPI hk_call_5A43B5(HWND** ListViewHandle, TESForm_CK** Form, INT64 a3);
 }

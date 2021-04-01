@@ -21,8 +21,8 @@ namespace DataWindow
 
 	extern DLGPROC OldDlgProc;
 
-	HWND WINAPI GetWindow(VOID);
-	Classes::CUICustomWindow& WINAPI GetWindowObj(VOID);
+	HWND FIXAPI GetWindow(VOID);
+	Classes::CUICustomWindow& FIXAPI GetWindowObj(VOID);
 
 	INT_PTR CALLBACK DlgProc(HWND DialogHwnd, UINT Message, WPARAM wParam, LPARAM lParam);
 }

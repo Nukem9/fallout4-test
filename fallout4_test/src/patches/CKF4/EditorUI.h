@@ -4,15 +4,18 @@
 
 namespace EditorUI
 {
-	void Initialize();
+	extern BOOL bReplaceTips;
 
-	BOOL ListViewCustomSetItemState(HWND ListViewHandle, WPARAM Index, UINT Data, UINT Mask);
-	void ListViewSelectItem(HWND ListViewHandle, int ItemIndex, bool KeepOtherSelections);
-	void ListViewFindAndSelectItem(HWND ListViewHandle, void *Parameter, bool KeepOtherSelections);
-	void *ListViewGetSelectedItem(HWND ListViewHandle);
-	void ListViewDeselectItem(HWND ListViewHandle, void *Parameter);
-	void TabControlDeleteItem(HWND TabControlHandle, uint32_t TabIndex);
+	VOID FIXAPI Initialize(VOID);
 
-	LRESULT WINAPI hk_SetSettingsPartStatusBar(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-	LRESULT WINAPI hk_SetTextPartStatusBar(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+	BOOL   FIXAPI ListViewCustomSetItemState(HWND ListViewHandle, WPARAM Index, UINT Data, UINT Mask);
+	VOID   FIXAPI ListViewSelectItem(HWND ListViewHandle, INT32 ItemIndex, bool KeepOtherSelections);
+	VOID   FIXAPI ListViewFindAndSelectItem(HWND ListViewHandle, LPVOID Parameter, bool KeepOtherSelections);
+	LPVOID FIXAPI ListViewGetSelectedItem(HWND ListViewHandle);
+	VOID   FIXAPI ListViewDeselectItem(HWND ListViewHandle, LPVOID Parameter);
+	VOID   FIXAPI TabControlDeleteItem(HWND TabControlHandle, uint32_t TabIndex);
+
+	LRESULT FIXAPI hk_SetSettingsPartStatusBar(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+
+	VOID FIXAPI hk_SpamFPSToStatusBar(INT64 a1);
 }

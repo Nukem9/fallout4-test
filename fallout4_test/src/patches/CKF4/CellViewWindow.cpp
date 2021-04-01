@@ -29,24 +29,24 @@ namespace CellViewWindow
 
 	DLGPROC OldDlgProc;
 
-	HWND WINAPI GetWindow(VOID)
+	HWND FIXAPI GetWindow(VOID)
 	{
 		return CellViewWindow.Handle;
 	}
 
-	Classes::CUICustomWindow& WINAPI GetWindowObj(VOID)
+	Classes::CUICustomWindow& FIXAPI GetWindowObj(VOID)
 	{
 		return CellViewWindow;
 	}
 
-	VOID SetCellWindowFilter(const BOOL actived)
+	VOID FIXAPI SetCellWindowFilter(const BOOL actived)
 	{
 		CellViewWindowControls.ActiveOnly.Checked = actived;
 		// Fake the dropdown list being activated
 		CellViewWindow.Perform(WM_COMMAND, MAKEWPARAM(2083, 1), 0);
 	}
 
-	VOID SetCellObjectsWindowFilter(const BOOL actived)
+	VOID FIXAPI SetCellObjectsWindowFilter(const BOOL actived)
 	{
 		CellViewWindowControls.ActiveOnlyObjs.Checked = actived;
 		// Fake a filter text box change
@@ -160,7 +160,7 @@ namespace CellViewWindow
 		return OldDlgProc(DialogHwnd, Message, wParam, lParam);
 	}
 
-	VOID WINAPI hk_7FF70C322BC0(HWND ListViewHandle, TESForm_CK* Form, bool UseImage, int32_t ItemIndex)
+	VOID FIXAPI hk_7FF70C322BC0(HWND ListViewHandle, TESForm_CK* Form, bool UseImage, int32_t ItemIndex)
 	{
 		BOOL allowInsert = TRUE;
 		CellViewWindow.Perform(UI_CELL_WINDOW_ADD_ITEM, (WPARAM)Form, (LPARAM)&allowInsert);
@@ -168,10 +168,10 @@ namespace CellViewWindow
 		if (!allowInsert)
 			return;
 
-		return ((void(__fastcall*)(HWND, TESForm_CK*, bool, int32_t))OFFSET(0x562BC0, 0))(ListViewHandle, Form, UseImage, ItemIndex);
+		return ((VOID(__fastcall*)(HWND, TESForm_CK*, bool, int32_t))OFFSET(0x562BC0, 0))(ListViewHandle, Form, UseImage, ItemIndex);
 	}
 
-	INT32 WINAPI hk_call_5A43B5(HWND** ListViewHandle, TESForm_CK** Form, INT64 a3)
+	INT32 FIXAPI hk_call_5A43B5(HWND** ListViewHandle, TESForm_CK** Form, INT64 a3)
 	{
 		BOOL allowInsert = TRUE;
 		CellViewWindow.Perform(UI_CELL_VIEW_ADD_CELL_OBJECT_ITEM, (WPARAM)*Form, (LPARAM)&allowInsert);
