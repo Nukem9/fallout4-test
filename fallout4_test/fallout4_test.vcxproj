@@ -171,6 +171,7 @@
     <ClInclude Include="src\patches\CKF4\DataWindow.h" />
     <ClInclude Include="src\patches\CKF4\Editor.h" />
     <ClInclude Include="src\patches\CKF4\EditorUI.h" />
+    <ClInclude Include="src\patches\CKF4\PreferencesWindow.h" />
     <ClInclude Include="src\patches\CKF4\UIThemeMode.h" />
     <ClInclude Include="src\patches\CKF4\EditorUIProgressDialog.h" />
     <ClInclude Include="src\patches\CKF4\ExperimentalNuukem.h" />
@@ -265,6 +266,7 @@
     <ClCompile Include="src\patches\CKF4\CellViewWindow.cpp" />
     <ClCompile Include="src\patches\CKF4\DataWindow.cpp" />
     <ClCompile Include="src\patches\CKF4\Editor.cpp" />
+    <ClCompile Include="src\patches\CKF4\PreferencesWindow.cpp" />
     <ClCompile Include="src\patches\CKF4\UIThemeMode.cpp" />
     <ClCompile Include="src\patches\CKF4\EditorUIProgressDialog.cpp" />
     <ClCompile Include="src\patches\CKF4\ExperimentalNuukem.cpp" />

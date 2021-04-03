@@ -23,6 +23,7 @@
 #include "CKF4/MainWindow.h"
 #include "CKF4/ResponseWindow.h"
 #include "CKF4/DataWindow.h"
+#include "CKF4/PreferencesWindow.h"
 
 #include <xbyak/xbyak.h>
 
@@ -125,6 +126,30 @@ void Patch_Fallout4CreationKit()
 		XUtil::PatchMemory(OFFSET(0x2881FF4, 0), { 0x74, 0x1D, 0x90, 0x90, 0x90, 0x90 });
 	}
 
+	if (auto ThemeID = g_INI.GetInteger("CreationKit", "UITheme", 0); ((ThemeID > 0) && (ThemeID < 5)))
+	{
+		// need MainWindow
+		if (g_INI.GetBoolean("CreationKit", "UI", FALSE))
+		{
+			auto comDll = (uintptr_t)GetModuleHandleA("comctl32.dll");
+			Assert(comDll);
+
+			UITheme::Initialize((UITheme::Theme::Theme)ThemeID);
+			Detours::IATHook(comDll, "USER32.dll", "GetSysColor", (uintptr_t)&UITheme::Comctl32GetSysColor);
+			Detours::IATHook(comDll, "USER32.dll", "GetSysColorBrush", (uintptr_t)&UITheme::Comctl32GetSysColorBrush);
+			Detours::IATDelayedHook(comDll, "UxTheme.dll", "DrawThemeBackground", (uintptr_t)&UITheme::Comctl32DrawThemeBackground);
+			Detours::IATDelayedHook(comDll, "UxTheme.dll", "DrawThemeText", (uintptr_t)&UITheme::Comctl32DrawThemeText);
+
+			// replace main toolbar
+			XUtil::DetourCall(OFFSET(0x5FE166, 0), UITheme::Comctl32CreateToolbarEx_1);
+			XUtil::DetourJump(OFFSET(0x5FE401, 0), UITheme::HideOldTimeOfDayComponents);
+			// replace ImageList_LoadImage for item type
+			XUtil::DetourCall(OFFSET(0x5B63E7, 0), UITheme::Comctl32ImageList_LoadImageA_1);
+			// Sync TimeOfDay set value (from Preferences dialogs)
+			XUtil::DetourCall(OFFSET(0x5ED96A, 0), PreferencesWindow::hk_SetInPreferencesToTimeOfDay);
+		}
+	}
+
 	//
 	// UI
 	//
@@ -132,25 +157,6 @@ void Patch_Fallout4CreationKit()
 	PatchIAT(hk_DialogBoxParamA, "USER32.DLL", "DialogBoxParamA");
 	PatchIAT(hk_EndDialog, "USER32.DLL", "EndDialog");
 	PatchIAT(hk_SendMessageA, "USER32.DLL", "SendMessageA");
-
-	if (auto ThemeID = g_INI.GetInteger("CreationKit", "UITheme", 0); ((ThemeID > 0) && (ThemeID < 5)))
-	{
-		auto comDll = (uintptr_t)GetModuleHandleA("comctl32.dll");
-		Assert(comDll);
-
-		UITheme::Initialize((UITheme::Theme::Theme)ThemeID);
-		Detours::IATHook(comDll, "USER32.dll", "GetSysColor", (uintptr_t)&UITheme::Comctl32GetSysColor);
-		Detours::IATHook(comDll, "USER32.dll", "GetSysColorBrush", (uintptr_t)&UITheme::Comctl32GetSysColorBrush);
-		Detours::IATDelayedHook(comDll, "UxTheme.dll", "DrawThemeBackground", (uintptr_t)&UITheme::Comctl32DrawThemeBackground);
-		Detours::IATDelayedHook(comDll, "UxTheme.dll", "DrawThemeText", (uintptr_t)&UITheme::Comctl32DrawThemeText);
-
-		// replace main toolbar
-		XUtil::DetourCall(OFFSET(0x5FE166, 0), UITheme::Comctl32CreateToolbarEx_1);
-		XUtil::DetourJump(OFFSET(0x5FE401, 0), UITheme::HideOldTimeOfDayComponents);
-
-		// replace ImageList_LoadImage for item type
-		XUtil::DetourCall(OFFSET(0x5B63E7, 0), UITheme::Comctl32ImageList_LoadImageA_1);
-	}
 
 	if (g_INI.GetBoolean("CreationKit", "UI", FALSE))
 	{
@@ -162,6 +168,9 @@ void Patch_Fallout4CreationKit()
 		*(uintptr_t*)&ResponseWindow::OldDlgProc = Detours::X64::DetourFunctionClass(OFFSET(0x0B5EB50, 0), &ResponseWindow::DlgProc);
 		*(uintptr_t*)&RenderWindow::OldDlgProc = Detours::X64::DetourFunctionClass(OFFSET(0x460570, 0), &RenderWindow::DlgProc);
 		*(uintptr_t*)&DataWindow::OldDlgProc = Detours::X64::DetourFunctionClass(OFFSET(0x5A8250, 0), &DataWindow::DlgProc);
+
+		if(UITheme::IsEnabledMode())
+			*(uintptr_t*)&PreferencesWindow::OldDlgProc = Detours::X64::DetourFunctionClass(OFFSET(0x1335AF0, 0), &PreferencesWindow::DlgProc);
 
 		// CheckMenuItem is called, however, it always gets zero, but eight is written on top, which is equal to MFS_CHECKED.
 		XUtil::PatchMemoryNop(OFFSET(0x5B820D, 0), 6);
@@ -202,10 +211,7 @@ void Patch_Fallout4CreationKit()
 		// Allow objects to be filtered in CellViewProc
 		XUtil::DetourCall(OFFSET(0x5A43B5, 0), &CellViewWindow::hk_call_5A43B5);
 
-		//
-		//  Experimantal functions
-		//
-
+		// Fix fog
 		PatchFogToggle();
 
 		//

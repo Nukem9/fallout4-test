@@ -8,6 +8,8 @@
 #include <vssym32.h>
 #include <Richedit.h>
 
+#include <stdlib.h>
+
 #include "UIThemeMode.h"
 #include "UIBaseWindow.h"
 #include "MainWindow.h"
@@ -434,30 +436,44 @@ namespace UITheme
 			Classes::CUIMonitor Monitor = Classes::Screen.MonitorFromWindow(hWnd);
 			// Avoid the up and down arrows in PopupMenu
 			if (Monitor.WorkAreaRect.Height > 768)
+			{
 				// The message about the initialization of the pop-up menu, set all its elements as owner draw
 				Theme::PopupMenu::Event::OnInitPopupMenu(hWnd, (HMENU)wParam);
+
+				return S_OK;
+			}
 		}
-		return S_OK;
+		break;
 
 		case WM_MEASUREITEM:
 		{
 			LPMEASUREITEMSTRUCT lpmis = (LPMEASUREITEMSTRUCT)lParam;
 
 			if (lpmis->CtlType == ODT_MENU)
+			{
 				// Calc size menu item
 				Theme::PopupMenu::Event::OnMeasureItem(hWnd, lpmis);
-		}
-		return TRUE;
 
+				return TRUE;
+			}
+		}
+		break;
+		
+		// WHAT? They use this message to render the preview
+		// Fixed
 		case WM_DRAWITEM:
 		{
 			LPDRAWITEMSTRUCT lpdis = (LPDRAWITEMSTRUCT)lParam;
 
-				if (lpdis->CtlType == ODT_MENU)
-					// Paint menu item
-					Theme::PopupMenu::Event::OnDrawItem(hWnd, lpdis);
+			if (lpdis->CtlType == ODT_MENU)
+			{
+				// Paint menu item
+				Theme::PopupMenu::Event::OnDrawItem(hWnd, lpdis);
+
+				return TRUE;
+			}		
 		}
-		return TRUE;
+		break;
 
 		case WM_NOTIFY:
 		{

@@ -51,11 +51,11 @@ namespace Core
 						rc.Offset(-rc.Left, -rc.Top);
 
 						rc.Inflate(-2, -2);
-						ExcludeClipRect(hdc, rc.Left, rc.Top, rc.Right, rc.Bottom);
+						Canvas.ExcludeRect(rc);
 						rc.Inflate(2, 2);
 
 						Render::DrawBorder(Canvas, rc);
-
+						
 						ReleaseDC(hWnd, hdc);
 						return result;
 					}
@@ -93,15 +93,15 @@ namespace Core
 						Core::Classes::UI::CRECT rc;
 						GetWindowRect(hWnd, (LPRECT)&rc);
 						rc.Offset(-rc.Left, -rc.Top);
-
+						
 						rc.Inflate(-3, -3);
-						ExcludeClipRect(hdc, rc.Left, rc.Top, rc.Right, rc.Bottom);
+						Canvas.ExcludeRect(rc);
 						rc.Inflate(3, 3);
 
 						Canvas.Frame(rc, GetThemeSysColor(ThemeColor::ThemeColor_Default));
 						rc.Inflate(-1, -1);
 						Render::DrawBorder(Canvas, rc);
-
+						
 						ReleaseDC(hWnd, hdc);
 						return result;
 					}
