@@ -22,6 +22,22 @@ namespace PreferencesWindow
 		return PreferencesWindow;
 	}
 
+	VOID FIXAPI SetNewValueTimeOfDay(VOID)
+	{
+		CHAR szBuf[24];
+		sprintf_s(szBuf, "%.2f", TimeOfDayValueChanged);
+
+		POINT Range = {
+			(LONG)ToD::OldUITimeOfDayComponents.hWndTrackBar.Perform(TBM_GETRANGEMIN, 0, 0),
+			(LONG)ToD::OldUITimeOfDayComponents.hWndTrackBar.Perform(TBM_GETRANGEMAX, 0, 0)
+		};
+
+		INT32 iPos = (INT32)(((Range.y - Range.x) * TimeOfDayValueChanged) / 24.0f);
+
+		ToD::NewUITimeOfDayComponents.hWndTrackBar.Perform(TBM_SETPOS, TRUE, (LPARAM)iPos);
+		ToD::NewUITimeOfDayComponents.hWndEdit.Caption = szBuf;
+	}
+
 	INT_PTR CALLBACK DlgProc(HWND DialogHwnd, UINT Message, WPARAM wParam, LPARAM lParam)
 	{
 		if ((Message == WM_INITDIALOG) && (!GetWindow()))
@@ -31,6 +47,7 @@ namespace PreferencesWindow
 		}
 		else if (Message == WM_NCACTIVATE && (!wParam))
 		{
+			SetNewValueTimeOfDay();
 			PreferencesWindow.Perform(WM_CLOSE, 0, 0);
 			PreferencesWindow = NULL;
 
@@ -39,20 +56,7 @@ namespace PreferencesWindow
 		else if (Message == WM_COMMAND)
 		{
 			if (LOWORD(wParam) == 0x5C5)
-			{
-				CHAR szBuf[24];
-				sprintf_s(szBuf, "%.2f", TimeOfDayValueChanged);
-
-				POINT Range = {
-					(LONG)ToD::OldUITimeOfDayComponents.hWndTrackBar.Perform(TBM_GETRANGEMIN, 0, 0),
-					(LONG)ToD::OldUITimeOfDayComponents.hWndTrackBar.Perform(TBM_GETRANGEMAX, 0, 0)
-				};
-
-				INT32 iPos = (INT32)(((Range.y - Range.x) * TimeOfDayValueChanged) / 24.0f);
-
-				ToD::NewUITimeOfDayComponents.hWndTrackBar.Perform(TBM_SETPOS, TRUE, (LPARAM)iPos);
-				ToD::NewUITimeOfDayComponents.hWndEdit.Caption = szBuf;
-			}
+				SetNewValueTimeOfDay();
 		}
 		else if (Message == WM_NOTIFY)
 		{
