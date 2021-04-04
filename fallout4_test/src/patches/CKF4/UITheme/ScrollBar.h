@@ -1,5 +1,6 @@
 #pragma once
 
+#include "..\..\..\common.h"
 #include "..\UIGraphics.h"
 
 namespace Core
@@ -14,14 +15,14 @@ namespace Core
 
 				namespace Render
 				{
-					VOID WINAPI DrawBackgroundHorz(Graphics::CUICanvas& canvas, LPCRECT pRect);
-					VOID WINAPI DrawBackgroundVert(Graphics::CUICanvas& canvas, LPCRECT pRect);
-					VOID WINAPI DrawSliderHorz_Normal(Graphics::CUICanvas& canvas, LPCRECT pRect);
-					VOID WINAPI DrawSliderHorz_Focused(Graphics::CUICanvas& canvas, LPCRECT pRect);
-					VOID WINAPI DrawSliderVert_Normal(Graphics::CUICanvas& canvas, LPCRECT pRect);
-					VOID WINAPI DrawSliderVert_Focused(Graphics::CUICanvas& canvas, LPCRECT pRect);
-					VOID WINAPI DrawButton_Hot(Graphics::CUICanvas& canvas, LPCRECT pRect);
-					VOID WINAPI DrawButton_Disabled(Graphics::CUICanvas& canvas, LPCRECT pRect);
+					VOID FIXAPI DrawBackgroundHorz(Graphics::CUICanvas& canvas, LPCRECT pRect);
+					VOID FIXAPI DrawBackgroundVert(Graphics::CUICanvas& canvas, LPCRECT pRect);
+					VOID FIXAPI DrawSliderHorz_Normal(Graphics::CUICanvas& canvas, LPCRECT pRect);
+					VOID FIXAPI DrawSliderHorz_Focused(Graphics::CUICanvas& canvas, LPCRECT pRect);
+					VOID FIXAPI DrawSliderVert_Normal(Graphics::CUICanvas& canvas, LPCRECT pRect);
+					VOID FIXAPI DrawSliderVert_Focused(Graphics::CUICanvas& canvas, LPCRECT pRect);
+					VOID FIXAPI DrawButton_Hot(Graphics::CUICanvas& canvas, LPCRECT pRect);
+					VOID FIXAPI DrawButton_Disabled(Graphics::CUICanvas& canvas, LPCRECT pRect);
 				}
 			}
 		}

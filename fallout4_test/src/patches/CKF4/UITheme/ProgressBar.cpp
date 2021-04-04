@@ -25,7 +25,7 @@ namespace Core
 
 				namespace Render
 				{
-					VOID WINAPI DrawBar(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawBar(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						Graphics::CRECT rc = *pRect;
 
@@ -36,7 +36,7 @@ namespace Core
 						canvas.Frame(rc, GetThemeSysColor(ThemeColor::ThemeColor_Divider_Color));
 					}
 
-					VOID WINAPI DrawFill(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawFill(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						Graphics::CRECT rc = *pRect;
 						rc.Inflate(-1, -1);
@@ -55,7 +55,7 @@ namespace Core
 					}
 				}
 
-				VOID WINAPI Initialize(HWND hWindow)
+				VOID FIXAPI Initialize(HWND hWindow)
 				{
 					// for marquee style
 					SetWindowSubclass(hWindow, ProgressBarSubclass, 0, 0);

@@ -15,7 +15,7 @@ namespace Core
 			{
 				namespace Render
 				{
-					VOID WINAPI DrawBorder(Graphics::CUICanvas& canvas, Graphics::CRECT& rc)
+					VOID FIXAPI DrawBorder(Graphics::CUICanvas& canvas, Graphics::CRECT& rc)
 					{
 						Graphics::CRECT rc_temp = rc;
 						canvas.GradientFill(rc_temp, GetThemeSysColor(ThemeColor::ThemeColor_Divider_Highlighter_Gradient_Start),
@@ -25,7 +25,7 @@ namespace Core
 					}
 				}
 
-				VOID WINAPI Initialize(HWND hWindow, AllowBox eAllowBox)
+				VOID FIXAPI Initialize(HWND hWindow, AllowBox eAllowBox)
 				{
 					switch (eAllowBox)
 					{

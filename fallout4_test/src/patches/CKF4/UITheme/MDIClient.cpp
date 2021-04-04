@@ -14,7 +14,7 @@ namespace Core
 			{
 				HBRUSH generalMDIBackgroundBrush;
 
-				VOID WINAPI Initialize(HWND hWindow)
+				VOID FIXAPI Initialize(HWND hWindow)
 				{
 					generalMDIBackgroundBrush = CreateSolidBrush(GetThemeSysColor(ThemeColor::ThemeColor_MDIWindow));
 					SetWindowSubclass(hWindow, MDIClientSubclass, 0, 0);

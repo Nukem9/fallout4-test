@@ -12,13 +12,13 @@ namespace Core
 		{
 			namespace ListBox
 			{
-				HTHEME WINAPI Initialize(HWND hWindow)
+				HTHEME FIXAPI Initialize(HWND hWindow)
 				{
 					SetWindowSubclass(hWindow, ListBoxSubclass, 0, 0);
 					return OpenThemeData(hWindow, VSCLASS_SCROLLBAR);
 				}
 
-				INT_PTR WINAPI OnCtlColorListBox(HWND hWindow, HDC hDC)
+				INT_PTR FIXAPI OnCtlColorListBox(HWND hWindow, HDC hDC)
 				{
 					SetTextColor(hDC, GetThemeSysColor(ThemeColor_Text_3));
 					SetBkColor(hDC, GetThemeSysColor(ThemeColor_ListView_Color));

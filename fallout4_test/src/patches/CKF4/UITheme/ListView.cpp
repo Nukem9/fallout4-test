@@ -12,10 +12,10 @@ namespace Core
 		{
 			namespace ListView
 			{
-				HTHEME WINAPI Initialize(HWND hWindow)
+				HTHEME FIXAPI Initialize(HWND hWindow)
 				{
 					SetWindowSubclass(hWindow, ListViewSubclass, 0, 0);
-
+					
 					ListView_SetTextColor(hWindow, GetThemeSysColor(ThemeColor::ThemeColor_Text_4));
 					ListView_SetTextBkColor(hWindow, GetThemeSysColor(ThemeColor::ThemeColor_ListView_Color));
 					ListView_SetBkColor(hWindow, GetThemeSysColor(ThemeColor::ThemeColor_ListView_Color));

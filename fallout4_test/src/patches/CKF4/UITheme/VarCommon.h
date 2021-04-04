@@ -1,5 +1,6 @@
 #pragma once
 
+#include "..\..\..\common.h"
 #include "..\UIGraphics.h"
 
 namespace Core
@@ -25,8 +26,8 @@ namespace Core
 				Theme_Dark
 			};
 
-			Theme WINAPI GetTheme(VOID);
-			VOID WINAPI SetTheme(Theme theme);
+			Theme FIXAPI GetTheme(VOID);
+			VOID FIXAPI SetTheme(Theme theme);
 
 			enum ThemeColor
 			{
@@ -94,11 +95,11 @@ namespace Core
 				ThemeColor_Header_Hot_Gradient_End
 			};
 
-			inline COLORREF WINAPI GetThemeSysColor(const ThemeColor color);
+			inline COLORREF FIXAPI GetThemeSysColor(const ThemeColor color);
 
-			DWORD WINAPI Comctl32GetSysColor(INT nIndex);
-			HBRUSH WINAPI Comctl32GetSysColorBrush(INT nIndex);
-			HBRUSH WINAPI Comctl32GetSysColorBrushEx(INT nIndex, BOOL reCreate = TRUE);
+			DWORD FIXAPI Comctl32GetSysColor(INT nIndex);
+			HBRUSH FIXAPI Comctl32GetSysColorBrush(INT nIndex);
+			HBRUSH FIXAPI Comctl32GetSysColorBrushEx(INT nIndex, BOOL reCreate = TRUE);
 		}
 	}
 }

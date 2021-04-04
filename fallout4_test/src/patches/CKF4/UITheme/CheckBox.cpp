@@ -12,7 +12,7 @@ namespace Core
 			{
 				namespace Render
 				{
-					VOID WINAPI DrawCheck_Stylesheet(Graphics::CUICanvas& canvas, LPCRECT pRect, COLORREF clShadow, COLORREF clColor)
+					VOID FIXAPI DrawCheck_Stylesheet(Graphics::CUICanvas& canvas, LPCRECT pRect, COLORREF clShadow, COLORREF clColor)
 					{
 						Graphics::CRECT rc_temp = *pRect;
 
@@ -43,31 +43,31 @@ namespace Core
 						canvas.Polygon(p, 6);
 					}
 
-					VOID WINAPI DrawCheck_Normal(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawCheck_Normal(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						DrawCheck_Stylesheet(canvas, pRect, GetThemeSysColor(ThemeColor::ThemeColor_Shape_Shadow),
 							GetThemeSysColor(ThemeColor::ThemeColor_Shape));
 					}
 
-					VOID WINAPI DrawCheck_Hot(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawCheck_Hot(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						DrawCheck_Stylesheet(canvas, pRect, GetThemeSysColor(ThemeColor::ThemeColor_Shape_Shadow),
 							GetThemeSysColor(ThemeColor::ThemeColor_Shape_Hot));
 					}
 
-					VOID WINAPI DrawCheck_Pressed(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawCheck_Pressed(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						DrawCheck_Stylesheet(canvas, pRect, GetThemeSysColor(ThemeColor::ThemeColor_Shape_Shadow),
 							GetThemeSysColor(ThemeColor::ThemeColor_Shape_Pressed));
 					}
 
-					VOID WINAPI DrawCheck_Disabled(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawCheck_Disabled(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						DrawCheck_Stylesheet(canvas, pRect, GetThemeSysColor(ThemeColor::ThemeColor_Shape_Shadow_Disabled),
 							GetThemeSysColor(ThemeColor::ThemeColor_Shape_Disabled));
 					}
 
-					VOID WINAPI DrawIdeterminate_Stylesheet(Graphics::CUICanvas& canvas, LPCRECT pRect, COLORREF clColor)
+					VOID FIXAPI DrawIdeterminate_Stylesheet(Graphics::CUICanvas& canvas, LPCRECT pRect, COLORREF clColor)
 					{
 						Core::Classes::UI::CRECT rc_temp[2];
 
@@ -81,22 +81,22 @@ namespace Core
 						canvas.Fill(rc_temp[1], clColor);
 					}
 
-					VOID WINAPI DrawIdeterminate_Normal(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawIdeterminate_Normal(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						DrawIdeterminate_Stylesheet(canvas, pRect, GetThemeSysColor(ThemeColor::ThemeColor_Shape));
 					}
 
-					VOID WINAPI DrawIdeterminate_Hot(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawIdeterminate_Hot(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						DrawIdeterminate_Stylesheet(canvas, pRect, GetThemeSysColor(ThemeColor::ThemeColor_Shape_Hot));
 					}
 
-					VOID WINAPI DrawIdeterminate_Pressed(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawIdeterminate_Pressed(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						DrawIdeterminate_Stylesheet(canvas, pRect, GetThemeSysColor(ThemeColor::ThemeColor_Shape_Pressed));
 					}
 
-					VOID WINAPI DrawIdeterminate_Disabled(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawIdeterminate_Disabled(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						DrawIdeterminate_Stylesheet(canvas, pRect, GetThemeSysColor(ThemeColor::ThemeColor_Shape_Disabled));
 					}
@@ -104,7 +104,7 @@ namespace Core
 
 				namespace Event
 				{
-					VOID WINAPI OnBeforeDrawText(Graphics::CUICanvas& canvas, DWORD& flags, INT iStateId)
+					VOID FIXAPI OnBeforeDrawText(Graphics::CUICanvas& canvas, DWORD& flags, INT iStateId)
 					{
 						flags |= DT_END_ELLIPSIS;
 						canvas.ColorText = GetThemeSysColor(ThemeColor_Text_3);

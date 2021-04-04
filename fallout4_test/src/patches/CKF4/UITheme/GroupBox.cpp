@@ -12,7 +12,7 @@ namespace Core
 			{
 				namespace Render
 				{
-					VOID WINAPI DrawGroupBox_Stylesheet(Graphics::CUICanvas& canvas, LPCRECT pRect, COLORREF clColor, COLORREF clColorShadow)
+					VOID FIXAPI DrawGroupBox_Stylesheet(Graphics::CUICanvas& canvas, LPCRECT pRect, COLORREF clColor, COLORREF clColorShadow)
 					{
 						Core::Classes::UI::CRECT rc_temp(*pRect);
 
@@ -25,13 +25,13 @@ namespace Core
 						canvas.LineTo(rc_temp.Right, rc_temp.Bottom);
 					}
 
-					VOID WINAPI DrawGroupBox_Normal(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawGroupBox_Normal(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						DrawGroupBox_Stylesheet(canvas, pRect, GetThemeSysColor(ThemeColor::ThemeColor_Divider_Color_Ver2), 
 							GetThemeSysColor(ThemeColor::ThemeColor_Divider_Highlighter_Ver2));
 					}
 
-					VOID WINAPI DrawGroupBox_Disabled(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawGroupBox_Disabled(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						DrawGroupBox_Stylesheet(canvas, pRect, GetThemeSysColor(ThemeColor::ThemeColor_Divider_Color_Disabled_Ver2),
 							GetThemeSysColor(ThemeColor::ThemeColor_Divider_Highlighter_Disabled_Ver2));
@@ -40,7 +40,7 @@ namespace Core
 
 				namespace Event
 				{
-					VOID WINAPI OnBeforeDrawText(Graphics::CUICanvas& canvas, DWORD& flags)
+					VOID FIXAPI OnBeforeDrawText(Graphics::CUICanvas& canvas, DWORD& flags)
 					{
 						flags |= DT_END_ELLIPSIS;
 						canvas.ColorText = GetThemeSysColor(ThemeColor_Text_4);

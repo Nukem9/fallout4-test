@@ -12,7 +12,7 @@ namespace Core
 			{
 				namespace Render
 				{
-					VOID WINAPI DrawBackgroundHorz(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawBackgroundHorz(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						Graphics::CRECT rc_temp[2];
 
@@ -33,7 +33,7 @@ namespace Core
 						canvas.LineTo(rc_temp[0].Right, rc_temp[0].Top);
 					}
 
-					VOID WINAPI DrawBackgroundVert(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawBackgroundVert(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						Graphics::CRECT rc_temp[2];
 
@@ -54,7 +54,7 @@ namespace Core
 						canvas.LineTo(rc_temp[0].Left, rc_temp[0].Bottom);
 					}
 
-					VOID WINAPI DrawSliderHorz_Normal(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawSliderHorz_Normal(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						Graphics::CRECT rc_temp[2];
 
@@ -70,7 +70,7 @@ namespace Core
 						canvas.LineTo(rc_temp[1].Right, rc_temp[1].Top);
 					}
 
-					VOID WINAPI DrawSliderHorz_Focused(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawSliderHorz_Focused(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						Graphics::CRECT rc_temp[2];
 
@@ -86,7 +86,7 @@ namespace Core
 						canvas.LineTo(rc_temp[1].Right, rc_temp[1].Top);
 					}
 
-					VOID WINAPI DrawSliderVert_Normal(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawSliderVert_Normal(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						Graphics::CRECT rc_temp[2];
 
@@ -102,7 +102,7 @@ namespace Core
 						canvas.LineTo(rc_temp[1].Left, rc_temp[1].Bottom);
 					}
 
-					VOID WINAPI DrawSliderVert_Focused(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawSliderVert_Focused(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						Graphics::CRECT rc_temp[2];
 
@@ -118,7 +118,7 @@ namespace Core
 						canvas.LineTo(rc_temp[1].Left, rc_temp[1].Bottom);
 					}
 
-					VOID WINAPI DrawButton_Hot(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawButton_Hot(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						Graphics::CRECT rc_temp[2];
 
@@ -130,7 +130,7 @@ namespace Core
 						canvas.Fill(rc_temp[1], GetThemeSysColor(ThemeColor::ThemeColor_Default));
 					}
 
-					VOID WINAPI DrawButton_Disabled(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawButton_Disabled(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						Graphics::CRECT rc_temp[2];
 

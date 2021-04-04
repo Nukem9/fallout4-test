@@ -14,12 +14,12 @@ namespace Core
 			{
 				namespace Render
 				{
-					VOID WINAPI DrawBorder(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawBorder(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						canvas.Fill(*pRect, GetThemeSysColor(ThemeColor::ThemeColor_Border_Window));
 					}
 
-					VOID WINAPI DrawBackground(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawBackground(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						canvas.Fill(*pRect, GetThemeSysColor(ThemeColor::ThemeColor_Border_Window));
 					}
@@ -27,7 +27,7 @@ namespace Core
 
 				namespace Event
 				{
-					VOID WINAPI OnBeforeDrawText(Graphics::CUICanvas& canvas, DWORD& flags)
+					VOID FIXAPI OnBeforeDrawText(Graphics::CUICanvas& canvas, DWORD& flags)
 					{
 						flags |= DT_CENTER | DT_END_ELLIPSIS;
 						canvas.ColorText = GetThemeSysColor(ThemeColor_StatusBar_Text);

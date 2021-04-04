@@ -1,5 +1,6 @@
 #pragma once
 
+#include "..\..\..\common.h"
 #include "..\UIGraphics.h"
 
 namespace Core
@@ -14,12 +15,12 @@ namespace Core
 
 				namespace Render
 				{
-					VOID WINAPI DrawTrack(Graphics::CUICanvas& canvas, LPCRECT pRect);
-					VOID WINAPI DrawSlider_Normal(Graphics::CUICanvas& canvas, LPCRECT pRect);
-					VOID WINAPI DrawSlider_Hot(Graphics::CUICanvas& canvas, LPCRECT pRect);
-					VOID WINAPI DrawSlider_Focused(Graphics::CUICanvas& canvas, LPCRECT pRect);
-					VOID WINAPI DrawSlider_Pressed(Graphics::CUICanvas& canvas, LPCRECT pRect);
-					VOID WINAPI DrawSlider_Disabled(Graphics::CUICanvas& canvas, LPCRECT pRect);
+					VOID FIXAPI DrawTrack(Graphics::CUICanvas& canvas, LPCRECT pRect);
+					VOID FIXAPI DrawSlider_Normal(Graphics::CUICanvas& canvas, LPCRECT pRect);
+					VOID FIXAPI DrawSlider_Hot(Graphics::CUICanvas& canvas, LPCRECT pRect);
+					VOID FIXAPI DrawSlider_Focused(Graphics::CUICanvas& canvas, LPCRECT pRect);
+					VOID FIXAPI DrawSlider_Pressed(Graphics::CUICanvas& canvas, LPCRECT pRect);
+					VOID FIXAPI DrawSlider_Disabled(Graphics::CUICanvas& canvas, LPCRECT pRect);
 				}
 			}
 		}

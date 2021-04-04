@@ -14,7 +14,7 @@ namespace Core
 			{
 				namespace Render
 				{
-					VOID WINAPI DrawArrow_Stylesheet(Graphics::CUICanvas& canvas, LPCRECT pRect, COLORREF cColor, COLORREF cShadowColor)
+					VOID FIXAPI DrawArrow_Stylesheet(Graphics::CUICanvas& canvas, LPCRECT pRect, COLORREF cColor, COLORREF cShadowColor)
 					{
 						Graphics::CRECT rc_temp(*pRect);
 						rc_temp.Inflate(-((rc_temp.Width - 4) >> 1), -((rc_temp.Height - 4) >> 1));
@@ -40,13 +40,13 @@ namespace Core
 						canvas.Polygon(p[1]);
 					}
 
-					VOID WINAPI DrawArrow_Normal(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawArrow_Normal(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						DrawArrow_Stylesheet(canvas, pRect, GetThemeSysColor(ThemeColor::ThemeColor_Shape),
 							GetThemeSysColor(ThemeColor::ThemeColor_Shape_Shadow));
 					}
 
-					VOID WINAPI DrawArrow_Disabled(Graphics::CUICanvas & canvas, LPCRECT pRect)
+					VOID FIXAPI DrawArrow_Disabled(Graphics::CUICanvas & canvas, LPCRECT pRect)
 					{
 						DrawArrow_Stylesheet(canvas, pRect, GetThemeSysColor(ThemeColor::ThemeColor_Shape_Disabled),
 							GetThemeSysColor(ThemeColor::ThemeColor_Shape_Shadow_Disabled));
@@ -55,7 +55,7 @@ namespace Core
 
 				namespace Event
 				{
-					VOID WINAPI OnBeforeDrawText(Graphics::CUICanvas& canvas, DWORD& flags, INT iStateId)
+					VOID FIXAPI OnBeforeDrawText(Graphics::CUICanvas& canvas, DWORD& flags, INT iStateId)
 					{
 						flags |= DT_END_ELLIPSIS;
 						if (iStateId == CBB_DISABLED)

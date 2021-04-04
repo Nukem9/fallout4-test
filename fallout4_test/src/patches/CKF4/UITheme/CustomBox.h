@@ -1,5 +1,6 @@
 #pragma once
 
+#include "..\..\..\common.h"
 #include "..\UIGraphics.h"
 
 namespace Core
@@ -20,10 +21,10 @@ namespace Core
 
 				namespace Render
 				{
-					VOID WINAPI DrawBorder(Graphics::CUICanvas& canvas, Graphics::CRECT& rc);
+					VOID FIXAPI DrawBorder(Graphics::CUICanvas& canvas, Graphics::CRECT& rc);
 				}
 
-				VOID WINAPI Initialize(HWND hWindow, AllowBox eAllowBox);
+				VOID FIXAPI Initialize(HWND hWindow, AllowBox eAllowBox);
 
 				LRESULT CALLBACK NormalBoxSubclass(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData);
 				LRESULT CALLBACK ColorBoxSubclass(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData);

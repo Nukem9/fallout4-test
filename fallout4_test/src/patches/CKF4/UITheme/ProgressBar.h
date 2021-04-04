@@ -1,5 +1,6 @@
 #pragma once
 
+#include "..\..\..\common.h"
 #include "..\UIGraphics.h"
 
 namespace Core
@@ -14,11 +15,11 @@ namespace Core
 
 				namespace Render
 				{
-					VOID WINAPI DrawBar(Graphics::CUICanvas& canvas, LPCRECT pRect);
-					VOID WINAPI DrawFill(Graphics::CUICanvas& canvas, LPCRECT pRect);
+					VOID FIXAPI DrawBar(Graphics::CUICanvas& canvas, LPCRECT pRect);
+					VOID FIXAPI DrawFill(Graphics::CUICanvas& canvas, LPCRECT pRect);
 				}
 
-				VOID WINAPI Initialize(HWND hWindow);
+				VOID FIXAPI Initialize(HWND hWindow);
 				LRESULT CALLBACK ProgressBarSubclass(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData);
 			}
 		}

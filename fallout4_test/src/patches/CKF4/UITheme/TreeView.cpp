@@ -12,7 +12,7 @@ namespace Core
 		{
 			namespace TreeView
 			{
-				HTHEME WINAPI Initialize(HWND hWindow)
+				HTHEME FIXAPI Initialize(HWND hWindow)
 				{
 					SetWindowSubclass(hWindow, TreeViewSubclass, 0, 0);
 

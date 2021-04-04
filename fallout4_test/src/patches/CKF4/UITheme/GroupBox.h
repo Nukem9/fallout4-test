@@ -1,5 +1,6 @@
 #pragma once
 
+#include "..\..\..\common.h"
 #include "..\UIGraphics.h"
 
 namespace Core
@@ -14,14 +15,14 @@ namespace Core
 
 				namespace Render
 				{
-					VOID WINAPI DrawGroupBox_Stylesheet(Graphics::CUICanvas& canvas, LPCRECT pRect, COLORREF clColor, COLORREF clColorShadow);
-					VOID WINAPI DrawGroupBox_Normal(Graphics::CUICanvas& canvas, LPCRECT pRect);
-					VOID WINAPI DrawGroupBox_Disabled(Graphics::CUICanvas& canvas, LPCRECT pRect);
+					VOID FIXAPI DrawGroupBox_Stylesheet(Graphics::CUICanvas& canvas, LPCRECT pRect, COLORREF clColor, COLORREF clColorShadow);
+					VOID FIXAPI DrawGroupBox_Normal(Graphics::CUICanvas& canvas, LPCRECT pRect);
+					VOID FIXAPI DrawGroupBox_Disabled(Graphics::CUICanvas& canvas, LPCRECT pRect);
 				}
 
 				namespace Event
 				{
-					VOID WINAPI OnBeforeDrawText(Graphics::CUICanvas& canvas, DWORD& flags);
+					VOID FIXAPI OnBeforeDrawText(Graphics::CUICanvas& canvas, DWORD& flags);
 				}
 			}
 		}

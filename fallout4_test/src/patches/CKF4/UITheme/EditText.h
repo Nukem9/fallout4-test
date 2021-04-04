@@ -1,5 +1,6 @@
 #pragma once
 
+#include "..\..\..\common.h"
 #include "..\UIGraphics.h"
 
 namespace Core
@@ -14,16 +15,16 @@ namespace Core
 
 				namespace Render
 				{
-					VOID WINAPI DrawEditText_Stylesheet(Graphics::CUICanvas& canvas, LPCRECT pRect, COLORREF clColor, 
-						COLORREF clColorDividerStart, COLORREF clColorDividerEnd);
+					VOID FIXAPI DrawEditText_Stylesheet(Graphics::CUICanvas& canvas, LPCRECT pRect, COLORREF clBorderColor,
+						COLORREF clColor, COLORREF clColorDividerStart, COLORREF clColorDividerEnd);
 
-					VOID WINAPI DrawEditText_Normal(Graphics::CUICanvas& canvas, LPCRECT pRect);
-					VOID WINAPI DrawEditText_Hot(Graphics::CUICanvas& canvas, LPCRECT pRect);
-					VOID WINAPI DrawEditText_Focused(Graphics::CUICanvas& canvas, LPCRECT pRect);
-					VOID WINAPI DrawEditText_Disabled(Graphics::CUICanvas& canvas, LPCRECT pRect);
+					VOID FIXAPI DrawEditText_Normal(Graphics::CUICanvas& canvas, LPCRECT pRect);
+					VOID FIXAPI DrawEditText_Hot(Graphics::CUICanvas& canvas, LPCRECT pRect);
+					VOID FIXAPI DrawEditText_Focused(Graphics::CUICanvas& canvas, LPCRECT pRect);
+					VOID FIXAPI DrawEditText_Disabled(Graphics::CUICanvas& canvas, LPCRECT pRect);
 				}
 
-				INT_PTR WINAPI OnCtlColorEdit(HDC hDC);
+				INT_PTR FIXAPI OnCtlColorEdit(HDC hDC);
 			}
 		}
 	}

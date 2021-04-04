@@ -1,5 +1,6 @@
 #pragma once
 
+#include "..\..\..\common.h"
 #include "..\UIGraphics.h"
 
 namespace Core
@@ -14,14 +15,14 @@ namespace Core
 
 				namespace Render
 				{
-					VOID WINAPI DrawArrow_Stylesheet(Graphics::CUICanvas& canvas, LPCRECT pRect, COLORREF cColor, COLORREF cShadowColor);
-					VOID WINAPI DrawArrow_Normal(Graphics::CUICanvas& canvas, LPCRECT pRect);
-					VOID WINAPI DrawArrow_Disabled(Graphics::CUICanvas& canvas, LPCRECT pRect);
+					VOID FIXAPI DrawArrow_Stylesheet(Graphics::CUICanvas& canvas, LPCRECT pRect, COLORREF cColor, COLORREF cShadowColor);
+					VOID FIXAPI DrawArrow_Normal(Graphics::CUICanvas& canvas, LPCRECT pRect);
+					VOID FIXAPI DrawArrow_Disabled(Graphics::CUICanvas& canvas, LPCRECT pRect);
 				}
 
 				namespace Event
 				{
-					VOID WINAPI OnBeforeDrawText(Graphics::CUICanvas& canvas, DWORD& flags, INT iStateId);
+					VOID FIXAPI OnBeforeDrawText(Graphics::CUICanvas& canvas, DWORD& flags, INT iStateId);
 				}
 			}
 		}

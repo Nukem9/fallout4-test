@@ -1,6 +1,8 @@
 #pragma once
 
 #include <Uxtheme.h>
+
+#include "..\..\..\common.h"
 #include "..\UIGraphics.h"
 
 namespace Core
@@ -15,18 +17,18 @@ namespace Core
 
 				namespace Render
 				{
-					VOID WINAPI DrawBackground(Graphics::CUICanvas& canvas, LPCRECT pRect);
-					VOID WINAPI DrawButton_Normal(Graphics::CUICanvas& canvas, LPCRECT pRect);
-					VOID WINAPI DrawButton_Hot(Graphics::CUICanvas& canvas, LPCRECT pRect);
-					VOID WINAPI DrawButton_Checked(Graphics::CUICanvas& canvas, LPCRECT pRect);
-					VOID WINAPI DrawButton_Pressed(Graphics::CUICanvas& canvas, LPCRECT pRect);
-					VOID WINAPI DrawButton_Disabled(Graphics::CUICanvas& canvas, LPCRECT pRect);
-					VOID WINAPI DrawButton_Icon(Graphics::CUICanvas& canvas, LPCRECT pRect, HIMAGELIST hImageList, INT nIndex);
+					VOID FIXAPI DrawBackground(Graphics::CUICanvas& canvas, LPCRECT pRect);
+					VOID FIXAPI DrawButton_Normal(Graphics::CUICanvas& canvas, LPCRECT pRect);
+					VOID FIXAPI DrawButton_Hot(Graphics::CUICanvas& canvas, LPCRECT pRect);
+					VOID FIXAPI DrawButton_Checked(Graphics::CUICanvas& canvas, LPCRECT pRect);
+					VOID FIXAPI DrawButton_Pressed(Graphics::CUICanvas& canvas, LPCRECT pRect);
+					VOID FIXAPI DrawButton_Disabled(Graphics::CUICanvas& canvas, LPCRECT pRect);
+					VOID FIXAPI DrawButton_Icon(Graphics::CUICanvas& canvas, LPCRECT pRect, HIMAGELIST hImageList, INT nIndex);
 				}
 
-				VOID WINAPI Initialize(HWND hWindow);
+				VOID FIXAPI Initialize(HWND hWindow);
 
-				LRESULT WINAPI OnCustomDraw(HWND hWindow, LPNMTBCUSTOMDRAW lpToolBar);
+				LRESULT FIXAPI OnCustomDraw(HWND hWindow, LPNMTBCUSTOMDRAW lpToolBar);
 			}
 		}
 	}

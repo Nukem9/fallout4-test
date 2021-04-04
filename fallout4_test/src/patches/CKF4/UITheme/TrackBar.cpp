@@ -12,7 +12,7 @@ namespace Core
 			{
 				namespace Render
 				{
-					VOID WINAPI DrawTrack(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawTrack(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						Graphics::CRECT rc_temp = *pRect;
 
@@ -26,7 +26,7 @@ namespace Core
 						canvas.Fill(rc_temp, GetThemeSysColor(ThemeColor::ThemeColor_Divider_Color_Ver2));
 					}
 
-					VOID WINAPI DrawSlider_Normal(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawSlider_Normal(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						Graphics::CRECT rc_temp[2];
 
@@ -42,7 +42,7 @@ namespace Core
 						canvas.LineTo(rc_temp[1].Right, rc_temp[1].Top);
 					}
 
-					VOID WINAPI DrawSlider_Hot(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawSlider_Hot(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						Graphics::CRECT rc_temp[2];
 
@@ -58,7 +58,7 @@ namespace Core
 						canvas.LineTo(rc_temp[1].Right, rc_temp[1].Top);
 					}
 
-					VOID WINAPI DrawSlider_Focused(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawSlider_Focused(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						Graphics::CRECT rc_temp[2];
 
@@ -75,7 +75,7 @@ namespace Core
 						canvas.Frame(rc_temp[1], GetThemeSysColor(ThemeColor::ThemeColor_Divider_Color));
 					}
 
-					VOID WINAPI DrawSlider_Pressed(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawSlider_Pressed(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						Graphics::CRECT rc_temp[2];
 
@@ -92,7 +92,7 @@ namespace Core
 						canvas.Frame(rc_temp[1], GetThemeSysColor(ThemeColor::ThemeColor_Divider_Color));
 					}
 
-					VOID WINAPI DrawSlider_Disabled(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawSlider_Disabled(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						Graphics::CRECT rc_temp[2];
 

@@ -12,7 +12,7 @@ namespace Core
 			{
 				namespace Render
 				{
-					VOID WINAPI DrawPushButtonR_Stylesheet(Graphics::CUICanvas& canvas, LPCRECT pRect,
+					VOID FIXAPI DrawPushButtonR_Stylesheet(Graphics::CUICanvas& canvas, LPCRECT pRect,
 						COLORREF clGradientColorStart, COLORREF clGradientColorEnd,
 						COLORREF clGradientHighlighterColorStart, COLORREF clGradientHighlighterColorEnd,
 						COLORREF clDividerColor, COLORREF clDividerHighlighterColor)
@@ -25,7 +25,7 @@ namespace Core
 						canvas.Ellipse(*pRect);
 					}
 
-					VOID WINAPI DrawPushButtonR_Normal(Graphics::CUICanvas & canvas, LPCRECT pRect)
+					VOID FIXAPI DrawPushButtonR_Normal(Graphics::CUICanvas & canvas, LPCRECT pRect)
 					{
 						DrawPushButtonR_Stylesheet(canvas, pRect, GetThemeSysColor(ThemeColor::ThemeColor_Default_Gradient_Start),
 							GetThemeSysColor(ThemeColor::ThemeColor_Default_Gradient_End), GetThemeSysColor(ThemeColor::ThemeColor_Divider_Highlighter_Gradient_Start),
@@ -33,7 +33,7 @@ namespace Core
 							GetThemeSysColor(ThemeColor::ThemeColor_Divider_Color));
 					}
 
-					VOID WINAPI DrawPushButtonR_Hot(Graphics::CUICanvas & canvas, LPCRECT pRect)
+					VOID FIXAPI DrawPushButtonR_Hot(Graphics::CUICanvas & canvas, LPCRECT pRect)
 					{
 						DrawPushButtonR_Stylesheet(canvas, pRect, GetThemeSysColor(ThemeColor::ThemeColor_Button_Hot_Gradient_Start),
 							GetThemeSysColor(ThemeColor::ThemeColor_Button_Hot_Gradient_End), GetThemeSysColor(ThemeColor::ThemeColor_Divider_Highlighter_Hot_Gradient_Start),
@@ -41,7 +41,7 @@ namespace Core
 							GetThemeSysColor(ThemeColor::ThemeColor_Divider_Color));
 					}
 
-					VOID WINAPI DrawPushButtonR_Pressed(Graphics::CUICanvas & canvas, LPCRECT pRect)
+					VOID FIXAPI DrawPushButtonR_Pressed(Graphics::CUICanvas & canvas, LPCRECT pRect)
 					{
 						DrawPushButtonR_Stylesheet(canvas, pRect, GetThemeSysColor(ThemeColor::ThemeColor_Button_Pressed_Gradient_Start),
 							GetThemeSysColor(ThemeColor::ThemeColor_Button_Pressed_Gradient_End), GetThemeSysColor(ThemeColor::ThemeColor_Divider_Highlighter_Pressed),
@@ -49,7 +49,7 @@ namespace Core
 							GetThemeSysColor(ThemeColor::ThemeColor_Divider_Color));
 					}
 
-					VOID WINAPI DrawPushButtonR_Disabled(Graphics::CUICanvas & canvas, LPCRECT pRect)
+					VOID FIXAPI DrawPushButtonR_Disabled(Graphics::CUICanvas & canvas, LPCRECT pRect)
 					{
 						DrawPushButtonR_Stylesheet(canvas, pRect, GetThemeSysColor(ThemeColor::ThemeColor_Button_Disabled_Gradient_Start),
 							GetThemeSysColor(ThemeColor::ThemeColor_Button_Disabled_Gradient_End), GetThemeSysColor(ThemeColor::ThemeColor_Divider_Highlighter_Disabled_Gradient_Start),
@@ -57,7 +57,7 @@ namespace Core
 							GetThemeSysColor(ThemeColor::ThemeColor_Divider_Color_Disabled));
 					}
 
-					VOID WINAPI DrawRadioButton_Stylesheet(Graphics::CUICanvas& canvas, LPCRECT pRect, COLORREF clColor)
+					VOID FIXAPI DrawRadioButton_Stylesheet(Graphics::CUICanvas& canvas, LPCRECT pRect, COLORREF clColor)
 					{
 						Core::Classes::UI::CRECT rc_temp[2];
 
@@ -76,22 +76,22 @@ namespace Core
 						canvas.EllipseFill(rc_temp[1], clColor);
 					}
 
-					VOID WINAPI DrawRadioButton_Normal(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawRadioButton_Normal(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						DrawRadioButton_Stylesheet(canvas, pRect, GetThemeSysColor(ThemeColor::ThemeColor_Shape));
 					}
 
-					VOID WINAPI DrawRadioButton_Hot(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawRadioButton_Hot(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						DrawRadioButton_Stylesheet(canvas, pRect, GetThemeSysColor(ThemeColor::ThemeColor_Shape_Hot));
 					}
 
-					VOID WINAPI DrawRadioButton_Pressed(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawRadioButton_Pressed(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						DrawRadioButton_Stylesheet(canvas, pRect, GetThemeSysColor(ThemeColor::ThemeColor_Shape_Pressed));
 					}
 
-					VOID WINAPI DrawRadioButton_Disabled(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawRadioButton_Disabled(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						DrawRadioButton_Stylesheet(canvas, pRect, GetThemeSysColor(ThemeColor::ThemeColor_Shape_Disabled));
 					}
@@ -99,7 +99,7 @@ namespace Core
 
 				namespace Event
 				{
-					VOID WINAPI OnBeforeDrawText(Graphics::CUICanvas& canvas, DWORD& flags, INT iStateId)
+					VOID FIXAPI OnBeforeDrawText(Graphics::CUICanvas& canvas, DWORD& flags, INT iStateId)
 					{
 						flags |= DT_END_ELLIPSIS;
 						canvas.ColorText = GetThemeSysColor(ThemeColor_Text_3);

@@ -13,7 +13,7 @@ namespace Core
 			{
 				namespace Render
 				{
-					VOID WINAPI DrawBackground(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawBackground(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						Graphics::CRECT rc_temp = *pRect;
 
@@ -28,7 +28,7 @@ namespace Core
 						canvas.LineTo(rc_temp.Right, rc_temp.Top + 1);
 					}
 
-					VOID WINAPI DrawButton_Normal(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawButton_Normal(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						Graphics::CRECT rc_temp = *pRect;
 						rc_temp.Inflate(0, -2);
@@ -36,7 +36,7 @@ namespace Core
 						canvas.Fill(rc_temp, GetThemeSysColor(ThemeColor::ThemeColor_Default));
 					}
 
-					VOID WINAPI DrawButton_Hot(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawButton_Hot(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						Graphics::CRECT rc_temp = *pRect;
 						rc_temp.Inflate(0, -2);
@@ -44,7 +44,7 @@ namespace Core
 						canvas.Fill(rc_temp, GetThemeSysColor(ThemeColor::ThemeColor_Button_Hot_Gradient_End));
 					}
 
-					VOID WINAPI DrawButton_Checked(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawButton_Checked(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						Graphics::CRECT rc_temp = *pRect;
 						rc_temp.Inflate(0, -2);
@@ -65,7 +65,7 @@ namespace Core
 						canvas.LineTo(rc_temp_v[1].Right, rc_temp_v[1].Top);
 					}
 
-					VOID WINAPI DrawButton_Pressed(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawButton_Pressed(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						Graphics::CRECT rc_temp = *pRect;
 						rc_temp.Inflate(0, -2);
@@ -86,7 +86,7 @@ namespace Core
 						canvas.LineTo(rc_temp_v[1].Right, rc_temp_v[1].Top);
 					}
 
-					VOID WINAPI DrawButton_Disabled(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawButton_Disabled(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						Graphics::CRECT rc_temp = *pRect;
 						rc_temp.Inflate(0, -2);
@@ -94,7 +94,7 @@ namespace Core
 						canvas.Fill(rc_temp, GetThemeSysColor(ThemeColor::ThemeColor_Default));
 					}
 
-					VOID WINAPI DrawButton_Icon(Graphics::CUICanvas& canvas, LPCRECT pRect, HIMAGELIST hImageList, INT nIndex)
+					VOID FIXAPI DrawButton_Icon(Graphics::CUICanvas& canvas, LPCRECT pRect, HIMAGELIST hImageList, INT nIndex)
 					{
 						Graphics::CRECT rc_temp = *pRect;
 
@@ -103,7 +103,7 @@ namespace Core
 					}
 				}
 
-				VOID WINAPI Initialize(HWND hWindow)
+				VOID FIXAPI Initialize(HWND hWindow)
 				{
 					SendMessageA(hWindow, CCM_SETVERSION, (WPARAM)6, 0);
 					SendMessageA(hWindow, TB_SETSTYLE, 0, TBSTYLE_FLAT | CCS_TOP | TBSTYLE_TOOLTIPS |
@@ -123,7 +123,7 @@ namespace Core
 					SendMessageA(hWindow, TB_AUTOSIZE, 0, 0);
 				}
 
-				LRESULT WINAPI OnCustomDraw(HWND hWindow, LPNMTBCUSTOMDRAW lpToolBar)
+				LRESULT FIXAPI OnCustomDraw(HWND hWindow, LPNMTBCUSTOMDRAW lpToolBar)
 				{
 					Graphics::CUICanvas Canvas(lpToolBar->nmcd.hdc);
 

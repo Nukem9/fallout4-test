@@ -12,7 +12,7 @@ namespace Core
 		{
 			namespace Memo
 			{
-				HTHEME WINAPI Initialize(HWND hWindow)
+				HTHEME FIXAPI Initialize(HWND hWindow)
 				{
 					SetWindowSubclass(hWindow, MemoSubclass, 0, 0);
 					return OpenThemeData(hWindow, VSCLASS_SCROLLBAR);
@@ -59,6 +59,21 @@ namespace Core
 
 						ReleaseDC(hWnd, hdc);
 						return result;
+					}
+					else if ((uMsg == WM_PAINT) && !IsWindowEnabled(hWnd))
+					{
+						PAINTSTRUCT ps;
+						HDC hDC = BeginPaint(hWnd, &ps);
+
+						Core::Classes::UI::CUICanvas Canvas(hDC);
+						Core::Classes::UI::CRECT rc;
+						GetWindowRect(hWnd, (LPRECT)&rc);
+						rc.Offset(rc.Left, rc.Top);
+						// skip border
+						rc.Inflate(-2, -2);
+						Canvas.Fill(rc, GetThemeSysColor(ThemeColor::ThemeColor_Edit_Color_Disabled));
+
+						EndPaint(hWnd, &ps);
 					}
 
 					return DefSubclassProc(hWnd, uMsg, wParam, lParam);

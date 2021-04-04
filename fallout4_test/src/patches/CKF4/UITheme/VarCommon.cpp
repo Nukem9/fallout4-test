@@ -282,12 +282,12 @@ namespace Core
 
 			static Theme generalCurentTheme = Theme_Dark;
 
-			Theme WINAPI GetTheme(VOID)
+			Theme FIXAPI GetTheme(VOID)
 			{
 				return generalCurentTheme;
 			}
 
-			VOID WINAPI SetTheme(Theme theme)
+			VOID FIXAPI SetTheme(Theme theme)
 			{
 				generalCurentTheme = theme;
 
@@ -322,7 +322,7 @@ namespace Core
 				hThemeBorderWindowBrush = CreateSolidBrush(GetThemeSysColor(ThemeColor_Border_Window));
 			}
 
-			COLORREF WINAPI GetThemeSysColor(const ThemeColor color)
+			COLORREF FIXAPI GetThemeSysColor(const ThemeColor color)
 			{
 				if (szCurrentScheme)
 					return szCurrentScheme[color - 1];
@@ -330,7 +330,7 @@ namespace Core
 					return 0;
 			}
 
-			DWORD WINAPI Comctl32GetSysColor(INT nIndex)
+			DWORD FIXAPI Comctl32GetSysColor(INT nIndex)
 			{
 				switch (nIndex)
 				{
@@ -346,7 +346,7 @@ namespace Core
 				}
 			}
 
-			HBRUSH WINAPI Comctl32GetSysColorBrushEx(INT nIndex, BOOL reCreate)
+			HBRUSH FIXAPI Comctl32GetSysColorBrushEx(INT nIndex, BOOL reCreate)
 			{
 				if (!reCreate)
 					return Comctl32GetSysColorBrush(nIndex);
@@ -354,7 +354,7 @@ namespace Core
 				return CreateSolidBrush(Comctl32GetSysColor(nIndex));
 			}
 
-			HBRUSH WINAPI Comctl32GetSysColorBrush(INT nIndex)
+			HBRUSH FIXAPI Comctl32GetSysColorBrush(INT nIndex)
 			{
 				switch (nIndex)
 				{

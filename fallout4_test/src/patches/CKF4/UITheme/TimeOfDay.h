@@ -1,5 +1,6 @@
 #pragma once
 
+#include "..\..\..\common.h"
 #include "..\UIGraphics.h"
 
 namespace Core
@@ -16,12 +17,12 @@ namespace Core
 					Core::Classes::UI::CUIBaseControl hWndLabel, hWndTrackBar, hWndEdit;
 				} UITimeOfDayComponents, *LPUITimeOfDayComponents, *PUITimeOfDayComponents;
 
-				HWND WINAPI Initialization(HWND hWnd);
+				HWND FIXAPI Initialization(HWND hWnd);
 
 				extern UITimeOfDayComponents OldUITimeOfDayComponents;
 				extern UITimeOfDayComponents NewUITimeOfDayComponents;
 
-				LRESULT WINAPI TimeOfDayClassWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+				LRESULT CALLBACK TimeOfDayClassWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 			}
 		}
 	}

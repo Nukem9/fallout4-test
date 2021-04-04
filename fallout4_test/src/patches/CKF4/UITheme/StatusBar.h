@@ -1,5 +1,6 @@
 #pragma once
 
+#include "..\..\..\common.h"
 #include "..\UIGraphics.h"
 
 namespace Core
@@ -14,13 +15,13 @@ namespace Core
 
 				namespace Render
 				{
-					VOID WINAPI DrawBorder(Graphics::CUICanvas& canvas, LPCRECT pRect);
-					VOID WINAPI DrawBackground(Graphics::CUICanvas& canvas, LPCRECT pRect);
+					VOID FIXAPI DrawBorder(Graphics::CUICanvas& canvas, LPCRECT pRect);
+					VOID FIXAPI DrawBackground(Graphics::CUICanvas& canvas, LPCRECT pRect);
 				}
 
 				namespace Event
 				{
-					VOID WINAPI OnBeforeDrawText(Graphics::CUICanvas& canvas, DWORD& flags);
+					VOID FIXAPI OnBeforeDrawText(Graphics::CUICanvas& canvas, DWORD& flags);
 				}
 			}
 		}

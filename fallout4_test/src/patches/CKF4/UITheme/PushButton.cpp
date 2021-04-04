@@ -14,7 +14,7 @@ namespace Core
 			{
 				namespace Render
 				{
-					VOID WINAPI DrawPushButton_Stylesheet(Graphics::CUICanvas& canvas, LPCRECT pRect,
+					VOID FIXAPI DrawPushButton_Stylesheet(Graphics::CUICanvas& canvas, LPCRECT pRect,
 						COLORREF clGradientColorStart, COLORREF clGradientColorEnd,
 						COLORREF clGradientHighlighterColorStart, COLORREF clGradientHighlighterColorEnd,
 						COLORREF clDividerColor, COLORREF clDividerHighlighterColor)
@@ -37,7 +37,7 @@ namespace Core
 						canvas.LineTo(rc_temp[1].Right, rc_temp[1].Top);
 					}
 
-					VOID WINAPI DrawPushButton_Normal(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawPushButton_Normal(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						DrawPushButton_Stylesheet(canvas, pRect, GetThemeSysColor(ThemeColor::ThemeColor_Default_Gradient_Start),
 							GetThemeSysColor(ThemeColor::ThemeColor_Default_Gradient_End), GetThemeSysColor(ThemeColor::ThemeColor_Divider_Highlighter_Gradient_Start),
@@ -45,7 +45,7 @@ namespace Core
 							GetThemeSysColor(ThemeColor::ThemeColor_Divider_Color));
 					}
 
-					VOID WINAPI DrawPushButton_Hot(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawPushButton_Hot(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						DrawPushButton_Stylesheet(canvas, pRect, GetThemeSysColor(ThemeColor::ThemeColor_Button_Hot_Gradient_Start),
 							GetThemeSysColor(ThemeColor::ThemeColor_Button_Hot_Gradient_End), GetThemeSysColor(ThemeColor::ThemeColor_Divider_Highlighter_Hot_Gradient_Start),
@@ -53,7 +53,7 @@ namespace Core
 							GetThemeSysColor(ThemeColor::ThemeColor_Divider_Color));
 					}
 
-					VOID WINAPI DrawPushButton_Pressed(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawPushButton_Pressed(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						DrawPushButton_Stylesheet(canvas, pRect, GetThemeSysColor(ThemeColor::ThemeColor_Button_Pressed_Gradient_Start),
 							GetThemeSysColor(ThemeColor::ThemeColor_Button_Pressed_Gradient_End), GetThemeSysColor(ThemeColor::ThemeColor_Divider_Highlighter_Pressed),
@@ -61,7 +61,7 @@ namespace Core
 							GetThemeSysColor(ThemeColor::ThemeColor_Divider_Color));
 					}
 
-					VOID WINAPI DrawPushButton_Disabled(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawPushButton_Disabled(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						DrawPushButton_Stylesheet(canvas, pRect, GetThemeSysColor(ThemeColor::ThemeColor_Button_Disabled_Gradient_Start),
 							GetThemeSysColor(ThemeColor::ThemeColor_Button_Disabled_Gradient_End), GetThemeSysColor(ThemeColor::ThemeColor_Divider_Highlighter_Disabled_Gradient_Start),
@@ -72,7 +72,7 @@ namespace Core
 
 				namespace Event
 				{
-					VOID WINAPI OnBeforeDrawText(Graphics::CUICanvas& canvas, DWORD& flags, INT iStateId)
+					VOID FIXAPI OnBeforeDrawText(Graphics::CUICanvas& canvas, DWORD& flags, INT iStateId)
 					{
 						flags |= DT_END_ELLIPSIS;
 						if (iStateId == PBS_DISABLED)

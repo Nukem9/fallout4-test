@@ -12,7 +12,7 @@ namespace Core
 			{
 				namespace Render
 				{
-					VOID WINAPI DrawEditText_Stylesheet(Graphics::CUICanvas& canvas, LPCRECT pRect, COLORREF clBorderColor, 
+					VOID FIXAPI DrawEditText_Stylesheet(Graphics::CUICanvas& canvas, LPCRECT pRect, COLORREF clBorderColor,
 						COLORREF clColor, COLORREF clColorDividerStart, COLORREF clColorDividerEnd)
 					{
 						Core::Classes::UI::CRECT rc_temp(*pRect);
@@ -26,7 +26,7 @@ namespace Core
 						canvas.Frame(rc_temp, clBorderColor);
 					}
 
-					VOID WINAPI DrawEditText_Normal(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawEditText_Normal(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						DrawEditText_Stylesheet(canvas, pRect, GetThemeSysColor(ThemeColor::ThemeColor_Divider_Color),
 							GetThemeSysColor(ThemeColor::ThemeColor_Edit_Color),
@@ -34,14 +34,14 @@ namespace Core
 							GetThemeSysColor(ThemeColor::ThemeColor_Divider_Highlighter_Gradient_End));
 					}
 
-					VOID WINAPI DrawEditText_Hot(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawEditText_Hot(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						DrawEditText_Stylesheet(canvas, pRect, GetThemeSysColor(ThemeColor::ThemeColor_Divider_Color),
 							GetThemeSysColor(ThemeColor::ThemeColor_Edit_Color),
 							GetThemeSysColor(ThemeColor::ThemeColor_Divider_Highlighter_Hot_Gradient_Start),
 							GetThemeSysColor(ThemeColor::ThemeColor_Divider_Highlighter_Hot_Gradient_End));
 					}
-					VOID WINAPI DrawEditText_Focused(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawEditText_Focused(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						DrawEditText_Stylesheet(canvas, pRect, GetThemeSysColor(ThemeColor::ThemeColor_Divider_Color),
 							GetThemeSysColor(ThemeColor::ThemeColor_Edit_Color),
@@ -49,7 +49,7 @@ namespace Core
 							GetThemeSysColor(ThemeColor::ThemeColor_Divider_Highlighter_Pressed));
 					}
 
-					VOID WINAPI DrawEditText_Disabled(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawEditText_Disabled(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						DrawEditText_Stylesheet(canvas, pRect, GetThemeSysColor(ThemeColor::ThemeColor_Divider_Color_Disabled),
 							GetThemeSysColor(ThemeColor::ThemeColor_Edit_Color_Disabled),
@@ -58,7 +58,7 @@ namespace Core
 					}
 				}
 
-				INT_PTR WINAPI OnCtlColorEdit(HDC hDC)
+				INT_PTR FIXAPI OnCtlColorEdit(HDC hDC)
 				{
 					SetTextColor(hDC, GetThemeSysColor(ThemeColor_Text_4));
 					SetBkColor(hDC, GetThemeSysColor(ThemeColor_Edit_Color));

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "..\..\..\common.h"
 #include "..\UIGraphics.h"
 
 namespace Core
@@ -14,20 +15,20 @@ namespace Core
 
 				namespace Render
 				{
-					VOID WINAPI DrawBorder(Graphics::CUICanvas& canvas, LPCRECT pRect);
-					VOID WINAPI DrawButton_Stylesheet(Graphics::CUICanvas& canvas, LPCRECT pRect, COLORREF cColor);
-					VOID WINAPI DrawButton_Normal(Graphics::CUICanvas& canvas, LPCRECT pRect);
-					VOID WINAPI DrawButton_SelectedAndFocused(Graphics::CUICanvas& canvas, LPCRECT pRect);
-					VOID WINAPI DrawButton_Hot(Graphics::CUICanvas& canvas, LPCRECT pRect);
-					VOID WINAPI DrawButton_Disabled(Graphics::CUICanvas& canvas, LPCRECT pRect);
+					VOID FIXAPI DrawBorder(Graphics::CUICanvas& canvas, LPCRECT pRect);
+					VOID FIXAPI DrawButton_Stylesheet(Graphics::CUICanvas& canvas, LPCRECT pRect, COLORREF cColor);
+					VOID FIXAPI DrawButton_Normal(Graphics::CUICanvas& canvas, LPCRECT pRect);
+					VOID FIXAPI DrawButton_SelectedAndFocused(Graphics::CUICanvas& canvas, LPCRECT pRect);
+					VOID FIXAPI DrawButton_Hot(Graphics::CUICanvas& canvas, LPCRECT pRect);
+					VOID FIXAPI DrawButton_Disabled(Graphics::CUICanvas& canvas, LPCRECT pRect);
 				}
 
 				namespace Event
 				{
-					VOID WINAPI OnBeforeDrawText(Graphics::CUICanvas& canvas, DWORD& flags);
+					VOID FIXAPI OnBeforeDrawText(Graphics::CUICanvas& canvas, DWORD& flags);
 				}
 
-				VOID WINAPI Initialize(HWND hWnd);
+				VOID FIXAPI Initialize(HWND hWnd);
 			}
 		}
 	}

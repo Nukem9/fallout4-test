@@ -14,7 +14,7 @@ namespace Core
 			{
 				namespace Render
 				{
-					VOID WINAPI DrawBack_Stylesheet(Graphics::CUICanvas& canvas, LPCRECT pRect,
+					VOID FIXAPI DrawBack_Stylesheet(Graphics::CUICanvas& canvas, LPCRECT pRect,
 						COLORREF clGradientColorStart, COLORREF clGradientColorEnd, COLORREF cLighter)
 					{
 						if (clGradientColorStart == clGradientColorEnd)
@@ -32,7 +32,7 @@ namespace Core
 						canvas.LineTo(pRect->right, pRect->top);
 					}
 
-					VOID WINAPI DrawBack_Normal(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawBack_Normal(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						DrawBack_Stylesheet(canvas, pRect, 
 							GetThemeSysColor(ThemeColor::ThemeColor_Header_Normal_Gradient_Start),
@@ -40,7 +40,7 @@ namespace Core
 							GetThemeSysColor(ThemeColor::ThemeColor_Default));
 					}
 
-					VOID WINAPI DrawBack_Hot(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawBack_Hot(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						DrawBack_Stylesheet(canvas, pRect,
 							GetThemeSysColor(ThemeColor::ThemeColor_Header_Hot_Gradient_Start),
@@ -48,7 +48,7 @@ namespace Core
 							GetThemeSysColor(ThemeColor::ThemeColor_Default));
 					}
 
-					VOID WINAPI DrawBack_Pressed(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawBack_Pressed(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						DrawBack_Stylesheet(canvas, pRect,
 							GetThemeSysColor(ThemeColor::ThemeColor_Divider_Color),
@@ -56,7 +56,7 @@ namespace Core
 							GetThemeSysColor(ThemeColor::ThemeColor_Divider_Color));
 					}
 
-					VOID WINAPI DrawBack_Selected(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawBack_Selected(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						DrawBack_Stylesheet(canvas, pRect,
 							GetThemeSysColor(ThemeColor::ThemeColor_Header_Normal_Gradient_End),
@@ -64,7 +64,7 @@ namespace Core
 							GetThemeSysColor(ThemeColor::ThemeColor_Header_Normal_Gradient_End));
 					}
 
-					VOID WINAPI DrawDiv(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawDiv(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						if (pRect->left == 0)
 							return;

@@ -19,7 +19,7 @@ namespace Core
 
 				static LPSTR lpTimeOfDayClass = "TimeOfDayClass";
 
-				HWND WINAPI Initialization(HWND hWnd)
+				HWND FIXAPI Initialization(HWND hWnd)
 				{
 					OldUITimeOfDayComponents.hWndToolBar = hWnd;
 					NewUITimeOfDayComponents.hWndToolBar = hWnd;
@@ -55,7 +55,7 @@ namespace Core
 					return hPanel;
 				}
 
-				LRESULT WINAPI TimeOfDayClassWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+				LRESULT CALLBACK TimeOfDayClassWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				{
 					PAINTSTRUCT ps;
 					HDC hdc;

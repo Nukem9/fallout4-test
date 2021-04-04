@@ -331,6 +331,8 @@ void Patch_Fallout4CreationKit()
 	XUtil::DetourClassJump(OFFSET(0x2001B1B, 0), &Core::Classes::UI::CUIMainWindow::ProcessMessages);
 	XUtil::DetourClassJump(OFFSET(0x8531BD, 0), &Core::Classes::UI::CUIMainWindow::ProcessMessages);
 	XUtil::DetourClassJump(OFFSET(0x262D1A7, 0), &Core::Classes::UI::CUIMainWindow::ProcessMessages);
+	XUtil::DetourClassJump(OFFSET(0xD8AE17, 0), &Core::Classes::UI::CUIMainWindow::ProcessMessages);	// Experimental: Loading cell ...
+	XUtil::DetourClassJump(OFFSET(0xD913BD, 0), &Core::Classes::UI::CUIMainWindow::ProcessMessages);	// Experimental: Loading cell ...
 	// Replacing Sleep(1) on (messages pool)
 	XUtil::DetourClassCall(OFFSET(0x247EF69, 0), &Core::Classes::UI::CUIMainWindow::ProcessMessages);
 	XUtil::DetourClassCall(OFFSET(0x5DD8C2, 0), &Core::Classes::UI::CUIMainWindow::ProcessMessages);

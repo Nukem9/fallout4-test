@@ -21,7 +21,7 @@ namespace Core
 					namespace Themes = Core::UI::Theme;
 					constexpr UINT generalCheckSize = 16;
 
-					VOID WINAPI DrawBackground_NonClientArray(Graphics::CUICanvas& canvas)
+					VOID FIXAPI DrawBackground_NonClientArray(Graphics::CUICanvas& canvas)
 					{
 						Graphics::CRECT rc[4];
 
@@ -49,17 +49,17 @@ namespace Core
 						canvas.Frame(Themes::GetThemeSysColor(Themes::ThemeColor_Divider_Color));
 					}
 
-					VOID WINAPI DrawItem_Normal(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawItem_Normal(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						canvas.Fill(*pRect, Themes::GetThemeSysColor(Themes::ThemeColor_Default));
 					}
 
-					VOID WINAPI DrawItem_Focused(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawItem_Focused(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						canvas.Fill(*pRect, Themes::GetThemeSysColor(Themes::ThemeColor_Divider_Highlighter_Pressed));
 					}
 
-					VOID WINAPI DrawItem_Divider(Graphics::CUICanvas& canvas, LPCRECT pRect)
+					VOID FIXAPI DrawItem_Divider(Graphics::CUICanvas& canvas, LPCRECT pRect)
 					{
 						Graphics::CRECT rc_temp = *pRect;
 						canvas.Fill(rc_temp, Themes::GetThemeSysColor(Themes::ThemeColor_Default));
@@ -73,7 +73,7 @@ namespace Core
 						canvas.LineTo(rc_temp.Right, rc_temp.Top);
 					}
 
-					VOID WINAPI DrawItem_Checkbox(Core::Classes::UI::CUICanvas& canvas, LPCRECT pRect, BOOL bSelected)
+					VOID FIXAPI DrawItem_Checkbox(Core::Classes::UI::CUICanvas& canvas, LPCRECT pRect, BOOL bSelected)
 					{
 						Graphics::CRECT rc_temp = *pRect;
 
@@ -110,7 +110,7 @@ namespace Core
 						canvas.Polygon(p, 6);
 					}
 
-					VOID WINAPI DrawItem_Arrow(Core::Classes::UI::CUICanvas& canvas, LPCRECT pRect, BOOL bSelected)
+					VOID FIXAPI DrawItem_Arrow(Core::Classes::UI::CUICanvas& canvas, LPCRECT pRect, BOOL bSelected)
 					{
 						Graphics::CRECT rc_temp(*pRect);
 
@@ -136,17 +136,17 @@ namespace Core
 					}
 				}
 
-				VOID WINAPI Initialize(HWND hWindow)
+				VOID FIXAPI Initialize(HWND hWindow)
 				{
 					SetWindowSubclass(hWindow, PopupMenuSubclass, 0, 0);
 				}
 
-				BOOL WINAPI IsSystemPopupMenu(HWND hWindow, HMENU hMenu)
+				BOOL FIXAPI IsSystemPopupMenu(HWND hWindow, HMENU hMenu)
 				{
 					return hMenu && (GetSystemMenu(hWindow, FALSE) == hMenu);
 				}
 
-				BOOL WINAPI IsSystemPopupMenuBlindly(HWND hWindow)
+				BOOL FIXAPI IsSystemPopupMenuBlindly(HWND hWindow)
 				{
 					HMENU hMenu = (HMENU)SendMessageA(hWindow, MN_GETHMENU, 0, 0);
 					if (HWND hParent = GetParent(hWindow); hParent)
@@ -215,13 +215,13 @@ namespace Core
 
 				namespace Event
 				{
-					VOID WINAPI OnDrawNoClientPopupMenu(HWND hWindow, HDC hDC)
+					VOID FIXAPI OnDrawNoClientPopupMenu(HWND hWindow, HDC hDC)
 					{
 						Graphics::CUICanvas Canvas(hDC);
 						Render::DrawBackground_NonClientArray(Canvas);
 					}
 
-					VOID WINAPI OnInitPopupMenu(HWND hWindow, HMENU hMenu)
+					VOID FIXAPI OnInitPopupMenu(HWND hWindow, HMENU hMenu)
 					{
 						// https://www.codeproject.com/Articles/8715/Owner-drawn-menus-in-two-lines-of-code
 
@@ -247,14 +247,10 @@ namespace Core
 								// set userdata
 								menuItem.Tag = (LONG_PTR)hMenu;
 							}
-
-						//	HDC hdc = GetWindowDC(hWnd);
-						//	Event::OnDrawNoClientPopupMenu(hWnd, hdc);
-						//	ReleaseDC(hWnd, hdc);
 						}
 					}
 
-					VOID WINAPI OnMeasureItem(HWND hWindow, LPMEASUREITEMSTRUCT lpMeasureItem)
+					VOID FIXAPI OnMeasureItem(HWND hWindow, LPMEASUREITEMSTRUCT lpMeasureItem)
 					{
 						Graphics::CUIMenu Menu = (HMENU)lpMeasureItem->itemData;
 						Graphics::CUIMenuItem menuItem = Menu.GetItem(lpMeasureItem->itemID);
@@ -281,7 +277,7 @@ namespace Core
 						}
 					}
 
-					VOID WINAPI OnDrawItem(HWND hWindow, LPDRAWITEMSTRUCT lpDrawItem)
+					VOID FIXAPI OnDrawItem(HWND hWindow, LPDRAWITEMSTRUCT lpDrawItem)
 					{
 						Graphics::CUIMenu Menu = (HMENU)lpDrawItem->itemData;
 						Graphics::CUIMenuItem menuItem = Menu.GetItem(lpDrawItem->itemID);

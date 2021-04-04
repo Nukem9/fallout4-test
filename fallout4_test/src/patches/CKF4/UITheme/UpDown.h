@@ -1,5 +1,6 @@
 #pragma once
 
+#include "..\..\..\common.h"
 #include "..\UIGraphics.h"
 
 namespace Core
@@ -14,36 +15,36 @@ namespace Core
 
 				namespace Render
 				{
-					VOID WINAPI DrawUp_Stylesheet(Graphics::CUICanvas& canvas, LPCRECT pRect, COLORREF cColorBorder, 
+					VOID FIXAPI DrawUp_Stylesheet(Graphics::CUICanvas& canvas, LPCRECT pRect, COLORREF cColorBorder,
 						COLORREF cColorStart, COLORREF cColorEnd, COLORREF cColor, COLORREF cShadowColor);
-					VOID WINAPI DrawUp_Normal(Graphics::CUICanvas& canvas, LPCRECT pRect);
-					VOID WINAPI DrawUp_Hot(Graphics::CUICanvas& canvas, LPCRECT pRect);
-					VOID WINAPI DrawUp_Pressed(Graphics::CUICanvas& canvas, LPCRECT pRect);
-					VOID WINAPI DrawUp_Disabled(Graphics::CUICanvas& canvas, LPCRECT pRect);
-					VOID WINAPI DrawDown_Stylesheet(Graphics::CUICanvas& canvas, LPCRECT pRect, COLORREF cColorBorder, 
+					VOID FIXAPI DrawUp_Normal(Graphics::CUICanvas& canvas, LPCRECT pRect);
+					VOID FIXAPI DrawUp_Hot(Graphics::CUICanvas& canvas, LPCRECT pRect);
+					VOID FIXAPI DrawUp_Pressed(Graphics::CUICanvas& canvas, LPCRECT pRect);
+					VOID FIXAPI DrawUp_Disabled(Graphics::CUICanvas& canvas, LPCRECT pRect);
+					VOID FIXAPI DrawDown_Stylesheet(Graphics::CUICanvas& canvas, LPCRECT pRect, COLORREF cColorBorder,
 						COLORREF cColorStart, COLORREF cColorEnd, COLORREF cColor, COLORREF cShadowColor);
-					VOID WINAPI DrawDown_Normal(Graphics::CUICanvas& canvas, LPCRECT pRect);
-					VOID WINAPI DrawDown_Hot(Graphics::CUICanvas& canvas, LPCRECT pRect);
-					VOID WINAPI DrawDown_Pressed(Graphics::CUICanvas& canvas, LPCRECT pRect);
-					VOID WINAPI DrawDown_Disabled(Graphics::CUICanvas& canvas, LPCRECT pRect);
+					VOID FIXAPI DrawDown_Normal(Graphics::CUICanvas& canvas, LPCRECT pRect);
+					VOID FIXAPI DrawDown_Hot(Graphics::CUICanvas& canvas, LPCRECT pRect);
+					VOID FIXAPI DrawDown_Pressed(Graphics::CUICanvas& canvas, LPCRECT pRect);
+					VOID FIXAPI DrawDown_Disabled(Graphics::CUICanvas& canvas, LPCRECT pRect);
 
-					VOID WINAPI DrawLeft_Stylesheet(Graphics::CUICanvas& canvas, LPCRECT pRect, COLORREF cColorBorder,
+					VOID FIXAPI DrawLeft_Stylesheet(Graphics::CUICanvas& canvas, LPCRECT pRect, COLORREF cColorBorder,
 						COLORREF cColorStart, COLORREF cColorEnd, COLORREF cColor, COLORREF cShadowColor, 
 						COLORREF cHihglighter, BOOL drawHihglighter);
-					VOID WINAPI DrawLeft_Normal(Graphics::CUICanvas& canvas, LPCRECT pRect);
-					VOID WINAPI DrawLeft_Hot(Graphics::CUICanvas& canvas, LPCRECT pRect);
-					VOID WINAPI DrawLeft_Pressed(Graphics::CUICanvas& canvas, LPCRECT pRect);
-					VOID WINAPI DrawLeft_Disabled(Graphics::CUICanvas& canvas, LPCRECT pRect);
-					VOID WINAPI DrawRight_Stylesheet(Graphics::CUICanvas& canvas, LPCRECT pRect, COLORREF cColorBorder,
+					VOID FIXAPI DrawLeft_Normal(Graphics::CUICanvas& canvas, LPCRECT pRect);
+					VOID FIXAPI DrawLeft_Hot(Graphics::CUICanvas& canvas, LPCRECT pRect);
+					VOID FIXAPI DrawLeft_Pressed(Graphics::CUICanvas& canvas, LPCRECT pRect);
+					VOID FIXAPI DrawLeft_Disabled(Graphics::CUICanvas& canvas, LPCRECT pRect);
+					VOID FIXAPI DrawRight_Stylesheet(Graphics::CUICanvas& canvas, LPCRECT pRect, COLORREF cColorBorder,
 						COLORREF cColorStart, COLORREF cColorEnd, COLORREF cColor, COLORREF cShadowColor, 
 						COLORREF cHihglighter, BOOL drawHihglighter);
-					VOID WINAPI DrawRight_Normal(Graphics::CUICanvas& canvas, LPCRECT pRect);
-					VOID WINAPI DrawRight_Hot(Graphics::CUICanvas& canvas, LPCRECT pRect);
-					VOID WINAPI DrawRight_Pressed(Graphics::CUICanvas& canvas, LPCRECT pRect);
-					VOID WINAPI DrawRight_Disabled(Graphics::CUICanvas& canvas, LPCRECT pRect);
+					VOID FIXAPI DrawRight_Normal(Graphics::CUICanvas& canvas, LPCRECT pRect);
+					VOID FIXAPI DrawRight_Hot(Graphics::CUICanvas& canvas, LPCRECT pRect);
+					VOID FIXAPI DrawRight_Pressed(Graphics::CUICanvas& canvas, LPCRECT pRect);
+					VOID FIXAPI DrawRight_Disabled(Graphics::CUICanvas& canvas, LPCRECT pRect);
 				}
 
-				VOID WINAPI Initialize(HWND hWindow);
+				VOID FIXAPI Initialize(HWND hWindow);
 				LRESULT CALLBACK UpDownSubclass(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData);
 			}
 		}
