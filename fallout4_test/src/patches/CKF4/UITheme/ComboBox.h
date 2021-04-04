@@ -18,6 +18,11 @@ namespace Core
 					VOID WINAPI DrawArrow_Normal(Graphics::CUICanvas& canvas, LPCRECT pRect);
 					VOID WINAPI DrawArrow_Disabled(Graphics::CUICanvas& canvas, LPCRECT pRect);
 				}
+
+				namespace Event
+				{
+					VOID WINAPI OnBeforeDrawText(Graphics::CUICanvas& canvas, DWORD& flags, INT iStateId);
+				}
 			}
 		}
 	}

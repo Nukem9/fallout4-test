@@ -193,6 +193,7 @@ namespace UITheme
 			{ WC_TABCONTROLA, ThemeType::TabControl },
 			{ TOOLBARCLASSNAMEA, ThemeType::ToolBar },
 			{ TRACKBAR_CLASSA, ThemeType::TrackBar },
+			{ TOOLTIPS_CLASSA, ThemeType::ToolTips },
 			{ "#32768", ThemeType::PopupMenu },
 		};
 
@@ -413,6 +414,10 @@ namespace UITheme
 					// CK deprecated control (material count)
 					Theme::CustomBox::Initialize(hWnd, Theme::CustomBox::abNormal);
 				}
+				else if ((ThemeType::Static == themeType) && (((uStylesEx & WS_EX_CLIENTEDGE) == WS_EX_CLIENTEDGE) || ((uStylesEx & WS_EX_STATICEDGE) == WS_EX_STATICEDGE)))
+				{
+					Theme::CustomBox::Initialize(hWnd, Theme::CustomBox::abNormal);
+				}
 				else if (((uStyles & WS_CAPTION) == WS_CAPTION) && ((uStyles & WS_CHILD) != WS_CHILD))
 				{
 					// Remember the system window of this window, it is necessary to forbid its rendering by styles
@@ -514,7 +519,7 @@ namespace UITheme
 		if ((Theme::GetTheme() == Theme::Theme_Dark) || (Theme::GetTheme() == Theme::Theme_DarkGray))
 		{
 			// detected standart OS theme (comdlg32)
-			COLORREF clTest = GetPixel(hdc, pRect->left, pRect->top);
+			COLORREF clTest = GetPixel(hdc, pRect->left + 2, pRect->top + 2);
 			if (((GetRValue(clTest) + GetGValue(clTest) + GetBValue(clTest)) / 3) > 128)
 				return DrawThemeText(hTheme, hdc, iPartId, iStateId, pszText, cchText, dwTextFlags, dwTextFlags2, pRect);
 		}
@@ -548,7 +553,12 @@ namespace UITheme
 			else if (iPartId == BP_GROUPBOX)
 				Theme::GroupBox::Event::OnBeforeDrawText(Canvas, dwTextFlags);
 			}
-			break;			
+			break;		
+		case ThemeType::ComboBox:
+			{
+				Theme::ComboBox::Event::OnBeforeDrawText(Canvas, dwTextFlags, iStateId);
+			}
+			break;
 		default:
 			Canvas.ColorText = Theme::GetThemeSysColor(Theme::ThemeColor_Text_4);
 			break;
@@ -1088,6 +1098,7 @@ namespace UITheme
 				}
 			}
 			return S_OK;
+
 			}
 		}
 		else if (themeType == ThemeType::TrackBar)
@@ -1186,6 +1197,8 @@ namespace UITheme
 				return S_OK;
 
 			case CP_DROPDOWNBUTTON:
+				Canvas.Fill(*pRect, RGB(255, 0, 0));
+				return S_OK;
 			case CP_BACKGROUND:
 			case CP_TRANSPARENTBACKGROUND:
 			case CP_CUEBANNER:

@@ -2,6 +2,8 @@
 #include "VarCommon.h"
 #include "ComboBox.h"
 
+#include <vsstyle.h>
+
 namespace Core
 {
 	namespace UI
@@ -48,6 +50,18 @@ namespace Core
 					{
 						DrawArrow_Stylesheet(canvas, pRect, GetThemeSysColor(ThemeColor::ThemeColor_Shape_Disabled),
 							GetThemeSysColor(ThemeColor::ThemeColor_Shape_Shadow_Disabled));
+					}
+				}
+
+				namespace Event
+				{
+					VOID WINAPI OnBeforeDrawText(Graphics::CUICanvas& canvas, DWORD& flags, INT iStateId)
+					{
+						flags |= DT_END_ELLIPSIS;
+						if (iStateId == CBB_DISABLED)
+							canvas.ColorText = GetThemeSysColor(ThemeColor_Text_1);
+						else
+							canvas.ColorText = GetThemeSysColor(ThemeColor_Text_4);
 					}
 				}
 			}
