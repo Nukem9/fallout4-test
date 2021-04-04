@@ -200,6 +200,7 @@
     <ClInclude Include="src\patches\CKF4\UITheme\ListBox.h" />
     <ClInclude Include="src\patches\CKF4\UITheme\ListView.h" />
     <ClInclude Include="src\patches\CKF4\UITheme\MDIClient.h" />
+    <ClInclude Include="src\patches\CKF4\UITheme\Memo.h" />
     <ClInclude Include="src\patches\CKF4\UITheme\PageControl.h" />
     <ClInclude Include="src\patches\CKF4\UITheme\ProgressBar.h" />
     <ClInclude Include="src\patches\CKF4\UITheme\PushButton.h" />
@@ -295,6 +296,7 @@
     <ClCompile Include="src\patches\CKF4\UITheme\ListBox.cpp" />
     <ClCompile Include="src\patches\CKF4\UITheme\ListView.cpp" />
     <ClCompile Include="src\patches\CKF4\UITheme\MDIClient.cpp" />
+    <ClCompile Include="src\patches\CKF4\UITheme\Memo.cpp" />
     <ClCompile Include="src\patches\CKF4\UITheme\PageControl.cpp" />
     <ClCompile Include="src\patches\CKF4\UITheme\ProgressBar.cpp" />
     <ClCompile Include="src\patches\CKF4\UITheme\PushButton.cpp" />

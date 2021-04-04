@@ -374,6 +374,9 @@
     <ClInclude Include="src\patches\CKF4\PreferencesWindow.h">
       <Filter>Header Files\UI\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="src\patches\CKF4\UITheme\Memo.h">
+      <Filter>Header Files\UI\Theme</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\dllmain.cpp">
@@ -591,6 +594,9 @@
     </ClCompile>
     <ClCompile Include="src\patches\CKF4\PreferencesWindow.cpp">
       <Filter>Source Files\UI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\UITheme\Memo.cpp">
+      <Filter>Source Files\UI\Theme</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

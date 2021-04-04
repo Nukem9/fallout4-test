@@ -39,6 +39,7 @@
 #include "UITheme/Header.h"
 #include "UITheme/PageControl.h"
 #include "UITheme/RichEdit20.h"
+#include "UITheme/Memo.h"
 
 namespace Theme = Core::UI::Theme;
 namespace Classes = Core::Classes::UI;
@@ -352,6 +353,11 @@ namespace UITheme
 					// IMAGE (DirectX window)
 					Theme::CustomBox::Initialize(hWnd, Theme::CustomBox::abColor);
 				}
+				break;
+			case ThemeType::Edit:
+				if (((uStyles & WS_VSCROLL) == WS_VSCROLL) && ((uStyles & WS_HSCROLL) == WS_HSCROLL))
+					// this memo control
+					scrollBarTheme = Theme::Memo::Initialize(hWnd);
 				break;
 			case ThemeType::ListBox:
 				scrollBarTheme = Theme::ListBox::Initialize(hWnd);
