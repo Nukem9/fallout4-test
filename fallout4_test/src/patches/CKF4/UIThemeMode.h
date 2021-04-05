@@ -30,8 +30,7 @@ namespace UITheme
 		TrackBar,
 		ProgressBar,
 		PopupMenu,
-		Spin,
-		ToolTips
+		Spin
 	};
 
 	VOID FIXAPI Initialize(Theme::Theme ThemeID);

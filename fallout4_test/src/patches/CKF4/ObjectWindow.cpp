@@ -1,98 +1,104 @@
 #include "ObjectWindow.h"
 #include "EditorUI.h"
 
+#include <unordered_map>
+
 #define UI_CMD_CHANGE_SPLITTER_OBJECTWINDOW		(UI_CUSTOM_MESSAGE + 4)
 
 namespace ObjectWindow
 {
-	Classes::CUICustomWindow ObjectWindow;
-
-	struct ObjectWindowControls_t
-	{
-		BOOL StartResize = FALSE;
-
-		Classes::CUIBaseControl TreeList;
-		Classes::CUIBaseControl ItemList;
-		Classes::CUIBaseControl ToggleDecompose;
-		Classes::CUIBaseControl BtnObjLayout;
-		Classes::CUIBaseControl ComboLayout;
-		Classes::CUIBaseControl EditFilter;
-		Classes::CUIBaseControl Spliter;
-		Classes::CUICheckbox ActiveOnly;
-	} ObjectWindowControls;
-
+	OBJWNDS ObjectWindows;
 	DLGPROC OldDlgProc;
 
-	HWND WINAPI GetWindow(VOID)
+	HWND FIXAPI GetWindow(UINT uId)
 	{
-		return ObjectWindow.Handle;
+		UINT i = 0;
+
+		for (auto it = ObjectWindows.begin(); ObjectWindows.end() != it; it++, i++) 
+		{
+			if (i == uId)
+				return (*it).first;
+		}
+
+		return NULL;
 	}
 
-	Classes::CUICustomWindow& WINAPI GetWindowObj(VOID)
+	OBJWNDS& FIXAPI GetAllWindowObj(VOID)
 	{
-		return ObjectWindow;
+		return ObjectWindows;
 	}
 
-	LRESULT WINAPI hk_0x5669D8(VOID)
+	LRESULT FIXAPI hk_0x5669D8(VOID)
 	{
-		ObjectWindow.Perform(WM_COMMAND, UI_CMD_CHANGE_SPLITTER_OBJECTWINDOW, 0);
+		LPOBJWND lpObjWnd = ObjectWindows.at(GetForegroundWindow());
+		if (lpObjWnd) lpObjWnd->ObjectWindow.Perform(WM_COMMAND, UI_CMD_CHANGE_SPLITTER_OBJECTWINDOW, 0);
 
-		return 0;
+		return S_OK;
 	}
 
-	VOID ResizeObjectWndChildControls(VOID)
+	VOID FIXAPI ResizeObjectWndChildControls(LPOBJWND lpObjWnd)
 	{
 		// The perfectionist in me is dying....
 
-		ObjectWindowControls.TreeList.LockUpdate();
-		ObjectWindowControls.ItemList.LockUpdate();
-		ObjectWindowControls.EditFilter.LockUpdate();
-		ObjectWindowControls.ToggleDecompose.LockUpdate();
-		ObjectWindowControls.BtnObjLayout.LockUpdate();
+		lpObjWnd->Controls.TreeList.LockUpdate();
+		lpObjWnd->Controls.ItemList.LockUpdate();
+		lpObjWnd->Controls.EditFilter.LockUpdate();
+		lpObjWnd->Controls.ToggleDecompose.LockUpdate();
+		lpObjWnd->Controls.BtnObjLayout.LockUpdate();
 
-		LONG w_tree = ObjectWindowControls.TreeList.Width;
-		LONG w_left = w_tree - ObjectWindowControls.BtnObjLayout.Width + 1;
-		ObjectWindowControls.BtnObjLayout.Left = w_left;
-		ObjectWindowControls.ToggleDecompose.Left = w_left;
-		ObjectWindowControls.ActiveOnly.Width = w_tree;
+		LONG w_tree = lpObjWnd->Controls.TreeList.Width;
+		LONG w_left = w_tree - lpObjWnd->Controls.BtnObjLayout.Width + 1;
+		lpObjWnd->Controls.BtnObjLayout.Left = w_left;
+		lpObjWnd->Controls.ToggleDecompose.Left = w_left;
+		lpObjWnd->Controls.ActiveOnly.Width = w_tree;
 
-		w_left = w_left - ObjectWindowControls.EditFilter.Left - 3;
-		ObjectWindowControls.EditFilter.Width = w_left;
-		ObjectWindowControls.ComboLayout.Width = w_left;
+		w_left = w_left - lpObjWnd->Controls.EditFilter.Left - 3;
+		lpObjWnd->Controls.EditFilter.Width = w_left;
+		lpObjWnd->Controls.ComboLayout.Width = w_left;
 
-		ObjectWindowControls.ItemList.Left = w_tree + 5;
-		ObjectWindowControls.ItemList.Width = ObjectWindow.ClientWidth() - (w_tree + 5);
+		lpObjWnd->Controls.ItemList.Left = w_tree + 5;
+		lpObjWnd->Controls.ItemList.Width = lpObjWnd->ObjectWindow.ClientWidth() - (w_tree + 5);
 
-		RedrawWindow(ObjectWindow.Handle, NULL, NULL, RDW_INVALIDATE | RDW_FRAME | RDW_UPDATENOW | RDW_NOCHILDREN);
-		ObjectWindowControls.BtnObjLayout.UnlockUpdate();
-		ObjectWindowControls.ToggleDecompose.UnlockUpdate();
-		ObjectWindowControls.EditFilter.UnlockUpdate();
-		ObjectWindowControls.ItemList.UnlockUpdate();
-		ObjectWindowControls.TreeList.UnlockUpdate();
-		ObjectWindowControls.BtnObjLayout.Repaint();
-		ObjectWindowControls.ToggleDecompose.Repaint();
-		ObjectWindowControls.EditFilter.Repaint();
-		ObjectWindowControls.ItemList.Repaint();
-		ObjectWindowControls.TreeList.Repaint();
+		RedrawWindow(lpObjWnd->ObjectWindow.Handle, NULL, NULL, RDW_INVALIDATE | RDW_FRAME | RDW_UPDATENOW | RDW_NOCHILDREN);
+		lpObjWnd->Controls.BtnObjLayout.UnlockUpdate();
+		lpObjWnd->Controls.ToggleDecompose.UnlockUpdate();
+		lpObjWnd->Controls.EditFilter.UnlockUpdate();
+		lpObjWnd->Controls.ItemList.UnlockUpdate();
+		lpObjWnd->Controls.TreeList.UnlockUpdate();
+		lpObjWnd->Controls.BtnObjLayout.Repaint();
+		lpObjWnd->Controls.ToggleDecompose.Repaint();
+		lpObjWnd->Controls.EditFilter.Repaint();
+		lpObjWnd->Controls.ItemList.Repaint();
+		lpObjWnd->Controls.TreeList.Repaint();
 	}
 
-	void SetObjectWindowFilter(const std::string & name, const BOOL SkipText, const BOOL actived)
+	VOID FIXAPI SetObjectWindowFilter(LPOBJWND lpObjWnd, const std::string & name, const BOOL SkipText, const BOOL actived)
 	{
 		if (!SkipText)
-			ObjectWindowControls.EditFilter.Caption = name;
+			lpObjWnd->Controls.EditFilter.Caption = name;
 
-		ObjectWindowControls.ActiveOnly.Checked = actived;
+		lpObjWnd->Controls.ActiveOnly.Checked = actived;
 		// Force the list items to update as if it was by timer
-		ObjectWindow.Perform(WM_TIMER, 0x1B58, 0);
+		//lpObjWnd->ObjectWindow.Perform(WM_TIMER, 0x1B58, 0);
+		// This is a bit slower but works in multi windows
+		lpObjWnd->Controls.EditFilter.Caption = lpObjWnd->Controls.EditFilter.Caption;
 	}
 
-	int32_t WINAPI hk_7FF72F57F8F0(const int64_t ObjectListInsertData, TESForm_CK * Form)
+	int32_t FIXAPI hk_7FF72F57F8F0(const int64_t ObjectListInsertData, TESForm_CK* Form)
 	{
-		bool allowInsert = true;
-		ObjectWindow.Perform(UI_OBJECT_WINDOW_ADD_ITEM, (WPARAM)Form, (LPARAM)& allowInsert);
+		if (ObjectListInsertData)
+		{
+			LPOBJWND lpObjWnd = ObjectWindows.at(GetParent((*(HWND*)(ObjectListInsertData + 0x18))));
+			if (lpObjWnd)
+			{
+				BOOL allowInsert = TRUE;
 
-		if (!allowInsert)
-			return 1;
+				lpObjWnd->ObjectWindow.Perform(UI_OBJECT_WINDOW_ADD_ITEM, (WPARAM)Form, (LPARAM)&allowInsert);
+
+				if (!allowInsert)
+					return 1;
+			}
+		}
 
 		return ((int32_t(__fastcall*)(int64_t, TESForm_CK*))OFFSET(0x40F8F0, 0))(ObjectListInsertData, Form);
 	}
@@ -101,30 +107,34 @@ namespace ObjectWindow
 	{
 		if (Message == WM_INITDIALOG)
 		{
-			ObjectWindow = DialogHwnd;
+			LPOBJWND lpObjWnd = new OBJWND;
 
-			ObjectWindowControls.TreeList = ObjectWindow.GetControl(2093);
-			ObjectWindowControls.ItemList = ObjectWindow.GetControl(1041);
-			ObjectWindowControls.ToggleDecompose = ObjectWindow.GetControl(6027);
-			ObjectWindowControls.BtnObjLayout = ObjectWindow.GetControl(6025);
-			ObjectWindowControls.ComboLayout = ObjectWindow.GetControl(6024);
-			ObjectWindowControls.EditFilter = ObjectWindow.GetControl(2581);
-			ObjectWindowControls.Spliter = ObjectWindow.GetControl(2157);
-			ObjectWindowControls.ActiveOnly.CreateWnd(ObjectWindow, ObjectWindow.GetControl(UI_OBJECT_WINDOW_ADD_ITEM), UI_OBJECT_WINDOW_ADD_ITEM);
+			lpObjWnd->ObjectWindow = DialogHwnd;
+				
+			lpObjWnd->Controls.TreeList = lpObjWnd->ObjectWindow.GetControl(2093);
+			lpObjWnd->Controls.ItemList = lpObjWnd->ObjectWindow.GetControl(1041);
+			lpObjWnd->Controls.ToggleDecompose = lpObjWnd->ObjectWindow.GetControl(6027);
+			lpObjWnd->Controls.BtnObjLayout = lpObjWnd->ObjectWindow.GetControl(6025);
+			lpObjWnd->Controls.ComboLayout = lpObjWnd->ObjectWindow.GetControl(6024);
+			lpObjWnd->Controls.EditFilter = lpObjWnd->ObjectWindow.GetControl(2581);
+			lpObjWnd->Controls.Spliter = lpObjWnd->ObjectWindow.GetControl(2157);
+			lpObjWnd->Controls.ActiveOnly.CreateWnd(lpObjWnd->ObjectWindow, lpObjWnd->ObjectWindow.GetControl(UI_OBJECT_WINDOW_ADD_ITEM), UI_OBJECT_WINDOW_ADD_ITEM);
 
 			// Eliminate the flicker when resizing
-			ObjectWindowControls.TreeList.Perform(TVM_SETEXTENDEDSTYLE, TVS_EX_DOUBLEBUFFER, TVS_EX_DOUBLEBUFFER);
-
+			lpObjWnd->Controls.TreeList.Perform(TVM_SETEXTENDEDSTYLE, TVS_EX_DOUBLEBUFFER, TVS_EX_DOUBLEBUFFER);
 			// Eliminate the flicker when changing categories
-			ListView_SetExtendedListViewStyleEx(ObjectWindowControls.ItemList.Handle, LVS_EX_DOUBLEBUFFER, LVS_EX_DOUBLEBUFFER);
+			ListView_SetExtendedListViewStyleEx(lpObjWnd->Controls.ItemList.Handle, LVS_EX_DOUBLEBUFFER, LVS_EX_DOUBLEBUFFER);
 
 			// Erase Icon and SysMenu
-			ObjectWindow.Style = WS_OVERLAPPED | WS_CAPTION | WS_THICKFRAME;
+			if (!ObjectWindows.size())
+				lpObjWnd->ObjectWindow.Style = WS_OVERLAPPED | WS_CAPTION | WS_THICKFRAME;
 
-			ObjectWindowControls.BtnObjLayout.Top = ObjectWindowControls.ComboLayout.Top - 1;
-			ObjectWindowControls.BtnObjLayout.Height = ObjectWindowControls.ComboLayout.Height + 2;
-			ObjectWindowControls.ToggleDecompose.Top = ObjectWindowControls.EditFilter.Top - 1;
-			ObjectWindowControls.ToggleDecompose.Height = ObjectWindowControls.EditFilter.Height + 2;
+			lpObjWnd->Controls.BtnObjLayout.Top = lpObjWnd->Controls.ComboLayout.Top - 1;
+			lpObjWnd->Controls.BtnObjLayout.Height = lpObjWnd->Controls.ComboLayout.Height + 2;
+			lpObjWnd->Controls.ToggleDecompose.Top = lpObjWnd->Controls.EditFilter.Top - 1;
+			lpObjWnd->Controls.ToggleDecompose.Height = lpObjWnd->Controls.EditFilter.Height + 2;
+
+			ObjectWindows.emplace(DialogHwnd, lpObjWnd);
 		}
 		// Don't let us reduce the window too much
 		else if (Message == WM_GETMINMAXINFO)
@@ -133,40 +143,61 @@ namespace ObjectWindow
 			lpMMI->ptMinTrackSize.x = 350;
 			lpMMI->ptMinTrackSize.y = 500;
 
-			return 0;
+			return S_OK;
 		}
 		else if (Message == WM_SIZE)
 		{
-			if (!ObjectWindowControls.StartResize)
+			LPOBJWND lpObjWnd = ObjectWindows.at(DialogHwnd);
+			if (lpObjWnd && !lpObjWnd->StartResize)
 			{
-				ObjectWindowControls.StartResize = TRUE;
-				ResizeObjectWndChildControls();
+				lpObjWnd->StartResize = TRUE;
+				ResizeObjectWndChildControls(lpObjWnd);
 			}
 		}
 		else if (Message == UI_OBJECT_WINDOW_ADD_ITEM)
 		{
 			auto form = reinterpret_cast<const TESForm_CK*>(wParam);
-			auto allowInsert = reinterpret_cast<bool*>(lParam);
-			*allowInsert = true;
+			auto allowInsert = reinterpret_cast<BOOL*>(lParam);
+			*allowInsert = TRUE;
 
-			if (ObjectWindowControls.ActiveOnly.Checked)
+			LPOBJWND lpObjWnd = ObjectWindows.at(DialogHwnd);
+			if (lpObjWnd && lpObjWnd->Controls.ActiveOnly.Checked)
 			{
 				if (form && !form->Active)
-					*allowInsert = false;
+					*allowInsert = FALSE;
 			}
 
-			return 0;
+			return S_OK;
 		}
 		else if (Message == WM_COMMAND)
 		{
 			switch (wParam)
 			{
 			case UI_OBJECT_WINDOW_ADD_ITEM:
-				SetObjectWindowFilter("", TRUE, !ObjectWindowControls.ActiveOnly.Checked);
-				return 0;
+			{
+				LPOBJWND lpObjWnd = ObjectWindows.at(DialogHwnd);
+				if (lpObjWnd) SetObjectWindowFilter(lpObjWnd, "", TRUE, !lpObjWnd->Controls.ActiveOnly.Checked);
+			}
+			return S_OK;
+				
 			case UI_CMD_CHANGE_SPLITTER_OBJECTWINDOW:
-				ResizeObjectWndChildControls();
-				return 0;
+			{
+				LPOBJWND lpObjWnd = ObjectWindows.at(DialogHwnd);
+				if (lpObjWnd) ResizeObjectWndChildControls(lpObjWnd);
+			}
+			return S_OK;
+
+			}
+		}
+		else if (Message == WM_DESTROY)
+		{
+			LPOBJWND lpObjWnd = ObjectWindows.at(DialogHwnd);
+			if (lpObjWnd)
+			{
+				ObjectWindows.erase(DialogHwnd);
+
+				delete lpObjWnd;
+				lpObjWnd = NULL;
 			}
 		}
 

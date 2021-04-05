@@ -188,9 +188,6 @@
     <ClInclude Include="src\patches\CKF4\EditorUI.h">
       <Filter>Header Files\UI</Filter>
     </ClInclude>
-    <ClInclude Include="src\patches\CKF4\Editor.h">
-      <Filter>Header Files\UI</Filter>
-    </ClInclude>
     <ClInclude Include="src\dump.h">
       <Filter>Header Files\Patches</Filter>
     </ClInclude>
@@ -377,6 +374,9 @@
     <ClInclude Include="src\patches\CKF4\UITheme\Memo.h">
       <Filter>Header Files\UI\Theme</Filter>
     </ClInclude>
+    <ClInclude Include="src\patches\CKF4\Editor.h">
+      <Filter>Header Files\Patches\CK</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\dllmain.cpp">
@@ -429,12 +429,6 @@
     </ClCompile>
     <ClCompile Include="src\typeinfo\ms_rtti.cpp">
       <Filter>Source Files\RTTI</Filter>
-    </ClCompile>
-    <ClCompile Include="src\patches\CKF4\EditorUI.cpp">
-      <Filter>Source Files\UI</Filter>
-    </ClCompile>
-    <ClCompile Include="src\patches\CKF4\Editor.cpp">
-      <Filter>Source Files\UI</Filter>
     </ClCompile>
     <ClCompile Include="src\patches\CKF4\TESForm_CK.cpp">
       <Filter>Source Files\Classes</Filter>
@@ -597,6 +591,12 @@
     </ClCompile>
     <ClCompile Include="src\patches\CKF4\UITheme\Memo.cpp">
       <Filter>Source Files\UI\Theme</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\Editor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\EditorUI.cpp">
+      <Filter>Source Files\Patches\CK</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

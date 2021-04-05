@@ -45,7 +45,14 @@ namespace EditorUI
 
 		RenderWindow::GetWindowObj().Foreground();
 		CellViewWindow::GetWindowObj().Foreground();
-		ObjectWindow::GetWindowObj().Foreground();
+
+		ObjectWindow::OBJWNDS Wnds = ObjectWindow::GetAllWindowObj();
+
+		for each (auto Wnd in Wnds)
+		{
+			if (Wnd.second->ObjectWindow.Visible)
+				Wnd.second->ObjectWindow.Foreground();
+		}
 	}
 
 	VOID FIXAPI hk_StepItProgress(LPCSTR* str)

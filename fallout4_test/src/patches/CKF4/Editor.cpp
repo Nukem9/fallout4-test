@@ -1,4 +1,3 @@
-#include "../../common.h"
 #include <libdeflate/libdeflate.h>
 #include <xbyak/xbyak.h>
 #include <CommCtrl.h>
@@ -14,21 +13,21 @@ BOOL bFogToggle = TRUE;
 struct DialogOverrideData
 {
 	DLGPROC DialogFunc;	// Original function pointer
-	bool IsDialog;		// True if it requires EndDialog()
+	BOOL IsDialog;		// True if it requires EndDialog()
 };
 
 std::recursive_mutex g_DialogMutex;
 std::unordered_map<HWND, DialogOverrideData> g_DialogOverrides;
 thread_local DialogOverrideData DlgData;
 
-bool OpenPluginSaveDialog(HWND ParentWindow, const char* BasePath, bool IsESM, char* Buffer, uint32_t BufferSize, const char* Directory)
+BOOL FIXAPI OpenPluginSaveDialog(HWND ParentWindow, LPCSTR BasePath, BOOL IsESM, LPSTR Buffer, uint32_t BufferSize, LPCSTR Directory)
 {
 	if (!BasePath)
 		BasePath = "\\Data";
 
-	const char* filter = "TES Plugin Files (*.esp)\0*.esp\0TES Master Files (*.esm)\0*.esm\0\0";
-	const char* title = "Select Target Plugin";
-	const char* extension = "esp";
+	LPCSTR filter = "TES Plugin Files (*.esp)\0*.esp\0TES Master Files (*.esm)\0*.esm\0\0";
+	LPCSTR title = "Select Target Plugin";
+	LPCSTR extension = "esp";
 
 	if (IsESM)
 	{
@@ -37,13 +36,13 @@ bool OpenPluginSaveDialog(HWND ParentWindow, const char* BasePath, bool IsESM, c
 		extension = "esm";
 	}
 
-	return ((bool(__fastcall*)(HWND, const char*, const char*, const char*, const char*, void*, bool, bool, char*, uint32_t, const char*, void*))
-		OFFSET(0x6461B0, 0))(ParentWindow, BasePath, filter, title, extension, nullptr, false, true, Buffer, BufferSize, Directory, nullptr);
+	return ((BOOL(__fastcall*)(HWND, LPCSTR, LPCSTR, LPCSTR, LPCSTR, LPVOID, BOOL, BOOL, LPSTR, uint32_t, LPCSTR, LPVOID))
+		OFFSET(0x6461B0, 0))(ParentWindow, BasePath, filter, title, extension, NULL, FALSE, TRUE, Buffer, BufferSize, Directory, NULL);
 }
 
 INT_PTR CALLBACK DialogFuncOverride(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	DLGPROC proc = nullptr;
+	DLGPROC proc = NULL;
 
 	g_DialogMutex.lock();
 	{
@@ -56,8 +55,8 @@ INT_PTR CALLBACK DialogFuncOverride(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPAR
 			g_DialogOverrides[hwndDlg] = DlgData;
 			proc = DlgData.DialogFunc;
 
-			DlgData.DialogFunc = nullptr;
-			DlgData.IsDialog = false;
+			DlgData.DialogFunc = NULL;
+			DlgData.IsDialog = FALSE;
 		}
 
 		// Purge old entries every now and then
@@ -84,7 +83,7 @@ HWND WINAPI hk_CreateDialogParamA(HINSTANCE hInstance, LPCSTR lpTemplateName, HW
 {
 	// EndDialog MUST NOT be used
 	DlgData.DialogFunc = lpDialogFunc;
-	DlgData.IsDialog = false;
+	DlgData.IsDialog = FALSE;
 
 	// Override certain default dialogs to use this DLL's resources
 	switch ((uintptr_t)lpTemplateName)
@@ -111,7 +110,7 @@ INT_PTR WINAPI hk_DialogBoxParamA(HINSTANCE hInstance, LPCSTR lpTemplateName, HW
 {
 	// EndDialog MUST be used
 	DlgData.DialogFunc = lpDialogFunc;
-	DlgData.IsDialog = true;
+	DlgData.IsDialog = TRUE;
 
 	// Override certain default dialogs to use this DLL's resources
 	switch ((uintptr_t)lpTemplateName)
@@ -167,15 +166,15 @@ LRESULT WINAPI hk_SendMessageA(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
 	return SendMessageA(hWnd, Msg, wParam, lParam);
 }
 
-int hk_inflateInit(z_stream_s *Stream, const char *Version, int Mode)
+INT32 FIXAPI hk_inflateInit(z_stream_s *Stream, LPCSTR Version, INT32 Mode)
 {
 	// Force inflateEnd to error out and skip frees
-	Stream->state = nullptr;
+	Stream->state = NULL;
 
 	return 0;
 }
 
-int hk_inflate(z_stream_s *Stream, int Flush)
+INT32 FIXAPI hk_inflate(z_stream_s *Stream, INT32 Flush)
 {
 	size_t outBytes = 0;
 	libdeflate_decompressor *decompressor = libdeflate_alloc_decompressor();
@@ -199,7 +198,7 @@ int hk_inflate(z_stream_s *Stream, int Flush)
 	return -2;
 }
 
-uint32_t sub_1405B31C0(BSTArray<void *>& Array, const void *&Target)
+uint32_t FIXAPI sub_1405B31C0(BSTArray<LPVOID>& Array, LPCVOID &Target)
 {
 	for (uint32_t i = 0; i < Array.QSize(); i++)
 	{
@@ -210,10 +209,10 @@ uint32_t sub_1405B31C0(BSTArray<void *>& Array, const void *&Target)
 	return 0xFFFFFFFF;
 }
 
-uint32_t sub_1405B31C0_SSE41(BSTArray<void *>& Array, const void *&Target)
+uint32_t FIXAPI sub_1405B31C0_SSE41(BSTArray<LPVOID>& Array, LPCVOID &Target)
 {
 	uint32_t index = 0;
-	__int64 *data = (__int64 *)Array.QBuffer();
+	PINT64 data = (PINT64)Array.QBuffer();
 
 	const uint32_t comparesPerIter = 4;
 	const uint32_t vectorizedIterations = (Array.QSize() - index) / comparesPerIter;
@@ -224,14 +223,14 @@ uint32_t sub_1405B31C0_SSE41(BSTArray<void *>& Array, const void *&Target)
 	//
 	// AVX: mask = _mm256_movemask_pd(_mm256_castsi256_pd(_mm256_cmpeq_epi64(targets, _mm256_loadu_si256((__m256i *)&data[i]))));
 	//
-	const __m128i targets = _mm_set1_epi64x((__int64)Target);
+	const __m128i targets = _mm_set1_epi64x((INT64)Target);
 
 	for (uint32_t iter = 0; iter < vectorizedIterations; iter++)
 	{
 		__m128i test1 = _mm_cmpeq_epi64(targets, _mm_loadu_si128((__m128i *)&data[index + 0]));
 		__m128i test2 = _mm_cmpeq_epi64(targets, _mm_loadu_si128((__m128i *)&data[index + 2]));
 
-		int mask = _mm_movemask_pd(_mm_castsi128_pd(_mm_or_si128(test1, test2)));
+		INT32 mask = _mm_movemask_pd(_mm_castsi128_pd(_mm_or_si128(test1, test2)));
 
 		// if (target pointer found) { break into the remainder loop to get the index }
 		if (mask != 0)
@@ -243,61 +242,61 @@ uint32_t sub_1405B31C0_SSE41(BSTArray<void *>& Array, const void *&Target)
 	// Scan the rest 1-by-1
 	for (; index < Array.QSize(); index++)
 	{
-		if (data[index] == (__int64)Target)
+		if (data[index] == (INT64)Target)
 			return index;
 	}
 
 	return 0xFFFFFFFF;
 }
 
-void UpdateObjectWindowTreeView(void *Thisptr, HWND ControlHandle, __int64 Unknown)
+VOID FIXAPI UpdateObjectWindowTreeView(LPVOID Thisptr, HWND ControlHandle, INT64 Unknown)
 {
-	SendMessage(ControlHandle, WM_SETREDRAW, FALSE, 0);
-	((void(__fastcall *)(void *, HWND, __int64))OFFSET(0x0413EB0, 0))(Thisptr, ControlHandle, Unknown);
-	SendMessage(ControlHandle, WM_SETREDRAW, TRUE, 0);
-	RedrawWindow(ControlHandle, nullptr, nullptr, RDW_ERASE | RDW_INVALIDATE | RDW_NOCHILDREN);
+	SendMessageA(ControlHandle, WM_SETREDRAW, FALSE, 0);
+	((VOID(__fastcall*)(LPVOID, HWND, INT64))OFFSET(0x0413EB0, 0))(Thisptr, ControlHandle, Unknown);
+	SendMessageA(ControlHandle, WM_SETREDRAW, TRUE, 0);
+	RedrawWindow(ControlHandle, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_NOCHILDREN);
 }
 
-void UpdateCellViewCellList(void *Thisptr, HWND ControlHandle, __int64 Unknown)
+VOID FIXAPI UpdateCellViewCellList(LPVOID Thisptr, HWND ControlHandle, INT64 Unknown)
 {
-	SendMessage(ControlHandle, WM_SETREDRAW, FALSE, 0);
-	((void(__fastcall *)(void *, HWND, __int64))OFFSET(0x06434C0, 0))(Thisptr, ControlHandle, Unknown);
-	SendMessage(ControlHandle, WM_SETREDRAW, TRUE, 0);
-	RedrawWindow(ControlHandle, nullptr, nullptr, RDW_ERASE | RDW_INVALIDATE | RDW_NOCHILDREN);
+	SendMessageA(ControlHandle, WM_SETREDRAW, FALSE, 0);
+	((VOID(__fastcall*)(LPVOID, HWND, INT64))OFFSET(0x06434C0, 0))(Thisptr, ControlHandle, Unknown);
+	SendMessageA(ControlHandle, WM_SETREDRAW, TRUE, 0);
+	RedrawWindow(ControlHandle, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_NOCHILDREN);
 }
 
-void UpdateCellViewObjectList(void *Thisptr, HWND *ControlHandle)
+VOID FIXAPI UpdateCellViewObjectList(LPVOID Thisptr, HWND *ControlHandle)
 {
-	SendMessage(*ControlHandle, WM_SETREDRAW, FALSE, 0);
-	((void(__fastcall *)(void *, HWND *))OFFSET(0x05A4320, 0))(Thisptr, ControlHandle);
-	SendMessage(*ControlHandle, WM_SETREDRAW, TRUE, 0);
-	RedrawWindow(*ControlHandle, nullptr, nullptr, RDW_ERASE | RDW_INVALIDATE | RDW_NOCHILDREN);
+	SendMessageA(*ControlHandle, WM_SETREDRAW, FALSE, 0);
+	((VOID(__fastcall*)(LPVOID, HWND*))OFFSET(0x05A4320, 0))(Thisptr, ControlHandle);
+	SendMessageA(*ControlHandle, WM_SETREDRAW, TRUE, 0);
+	RedrawWindow(*ControlHandle, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_NOCHILDREN);
 }
 
-bool g_UseDeferredDialogInsert;
+BOOL g_UseDeferredDialogInsert;
 HWND g_DeferredListView;
 HWND g_DeferredComboBox;
 uintptr_t g_DeferredStringLength;
-bool g_AllowResize;
-std::vector<std::pair<const char *, void *>> g_DeferredMenuItems;
+BOOL g_AllowResize;
+std::vector<std::pair<LPCSTR, LPVOID>> g_DeferredMenuItems;
 
-void ResetUIDefer()
+VOID FIXAPI ResetUIDefer(VOID)
 {
-	g_UseDeferredDialogInsert = false;
-	g_DeferredListView = nullptr;
-	g_DeferredComboBox = nullptr;
+	g_UseDeferredDialogInsert = FALSE;
+	g_DeferredListView = NULL;
+	g_DeferredComboBox = NULL;
 	g_DeferredStringLength = 0;
-	g_AllowResize = false;
+	g_AllowResize = FALSE;
 	g_DeferredMenuItems.clear();
 }
 
-void BeginUIDefer()
+VOID FIXAPI BeginUIDefer(VOID)
 {
 	ResetUIDefer();
-	g_UseDeferredDialogInsert = true;
+	g_UseDeferredDialogInsert = TRUE;
 }
 
-void SuspendComboBoxUpdates(HWND ComboHandle, bool Suspend)
+VOID FIXAPI SuspendComboBoxUpdates(HWND ComboHandle, BOOL Suspend)
 {
 	COMBOBOXINFO info = {};
 	info.cbSize = sizeof(COMBOBOXINFO);
@@ -307,19 +306,19 @@ void SuspendComboBoxUpdates(HWND ComboHandle, bool Suspend)
 
 	if (!Suspend)
 	{
-		SendMessage(info.hwndList, WM_SETREDRAW, TRUE, 0);
-		SendMessage(ComboHandle, CB_SETMINVISIBLE, 30, 0);
-		SendMessage(ComboHandle, WM_SETREDRAW, TRUE, 0);
+		SendMessageA(info.hwndList, WM_SETREDRAW, TRUE, 0);
+		SendMessageA(ComboHandle, CB_SETMINVISIBLE, 30, 0);
+		SendMessageA(ComboHandle, WM_SETREDRAW, TRUE, 0);
 	}
 	else
 	{
-		SendMessage(ComboHandle, WM_SETREDRAW, FALSE, 0);// Prevent repainting until finished
-		SendMessage(ComboHandle, CB_SETMINVISIBLE, 1, 0);// Possible optimization for older libraries (source: MSDN forums)
-		SendMessage(info.hwndList, WM_SETREDRAW, FALSE, 0);
+		SendMessageA(ComboHandle, WM_SETREDRAW, FALSE, 0);// Prevent repainting until finished
+		SendMessageA(ComboHandle, CB_SETMINVISIBLE, 1, 0);// Possible optimization for older libraries (source: MSDN forums)
+		SendMessageA(info.hwndList, WM_SETREDRAW, FALSE, 0);
 	}
 }
 
-void EndUIDefer()
+VOID FIXAPI EndUIDefer(VOID)
 {
 	if (!g_UseDeferredDialogInsert)
 		return;
@@ -327,7 +326,7 @@ void EndUIDefer()
 	if (g_DeferredListView)
 	{
 		SendMessage(g_DeferredListView, WM_SETREDRAW, TRUE, 0);
-		RedrawWindow(g_DeferredListView, nullptr, nullptr, RDW_ERASE | RDW_INVALIDATE | RDW_NOCHILDREN);
+		RedrawWindow(g_DeferredListView, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_NOCHILDREN);
 	}
 
 	if (!g_DeferredMenuItems.empty())
@@ -335,26 +334,26 @@ void EndUIDefer()
 		const HWND control = g_DeferredComboBox;
 
 		// Sort alphabetically if requested to try and speed up inserts
-		int finalWidth = 0;
+		INT32 finalWidth = 0;
 		LONG_PTR style = GetWindowLongPtr(control, GWL_STYLE);
 
 		if ((style & CBS_SORT) == CBS_SORT)
 		{
 			std::sort(g_DeferredMenuItems.begin(), g_DeferredMenuItems.end(),
-				[](const std::pair<const char *, void *>& a, const std::pair<const char *, void *>& b) -> bool
+				[](const std::pair<LPCSTR, LPVOID>& a, const std::pair<LPCSTR, LPVOID>& b) -> BOOL
 			{
 				return _stricmp(a.first, b.first) > 0;
 			});
 		}
 
-		SendMessage(control, CB_INITSTORAGE, g_DeferredMenuItems.size(), g_DeferredStringLength * sizeof(char));
+		SendMessage(control, CB_INITSTORAGE, g_DeferredMenuItems.size(), g_DeferredStringLength * sizeof(CHAR));
 
 		if (HDC hdc = GetDC(control); hdc)
 		{
-			SuspendComboBoxUpdates(control, true);
+			SuspendComboBoxUpdates(control, TRUE);
 
 			// Pre-calculate font widths for resizing, starting with TrueType
-			int fontWidths[UCHAR_MAX + 1];
+			INT32 fontWidths[UCHAR_MAX + 1];
 			ABC trueTypeFontWidths[UCHAR_MAX + 1];
 
 			if (!GetCharABCWidthsA(hdc, 0, ARRAYSIZE(trueTypeFontWidths) - 1, trueTypeFontWidths))
@@ -364,7 +363,7 @@ void EndUIDefer()
 			}
 			else
 			{
-				for (int i = 0; i < ARRAYSIZE(fontWidths); i++)
+				for (INT32 i = 0; i < ARRAYSIZE(fontWidths); i++)
 					fontWidths[i] = trueTypeFontWidths[i].abcB;
 			}
 
@@ -372,37 +371,37 @@ void EndUIDefer()
 			for (auto [display, value] : g_DeferredMenuItems)
 			{
 				LRESULT index = SendMessageA(control, CB_ADDSTRING, 0, (LPARAM)display);
-				int lineSize = 0;
+				INT32 lineSize = 0;
 
 				if (index != CB_ERR && index != CB_ERRSPACE)
 					SendMessageA(control, CB_SETITEMDATA, index, (LPARAM)value);
 
-				for (const char *c = display; *c != '\0'; c++)
+				for (LPCSTR c = display; *c != '\0'; c++)
 					lineSize += fontWidths[*c];
 
-				finalWidth = std::max<int>(finalWidth, lineSize);
+				finalWidth = std::max<INT32>(finalWidth, lineSize);
 
-				free((void *)display);
+				free((LPVOID)display);
 			}
 
-			SuspendComboBoxUpdates(control, false);
+			SuspendComboBoxUpdates(control, FALSE);
 			ReleaseDC(control, hdc);
 		}
 
 		// Resize to fit
 		if (g_AllowResize)
 		{
-			LRESULT currentWidth = SendMessage(control, CB_GETDROPPEDWIDTH, 0, 0);
+			LRESULT currentWidth = SendMessageA(control, CB_GETDROPPEDWIDTH, 0, 0);
 
 			if (finalWidth > currentWidth)
-				SendMessage(control, CB_SETDROPPEDWIDTH, finalWidth, 0);
+				SendMessageA(control, CB_SETDROPPEDWIDTH, finalWidth, 0);
 		}
 	}
 
 	ResetUIDefer();
 }
 
-void InsertComboBoxItem(HWND ComboBoxHandle, const char *DisplayText, void *Value, bool AllowResize)
+VOID FIXAPI InsertComboBoxItem(HWND ComboBoxHandle, LPCSTR DisplayText, LPVOID Value, BOOL AllowResize)
 {
 	if (!ComboBoxHandle)
 		return;
@@ -427,7 +426,7 @@ void InsertComboBoxItem(HWND ComboBoxHandle, const char *DisplayText, void *Valu
 		{
 			if (HDC hdc = GetDC(ComboBoxHandle); hdc)
 			{
-				if (SIZE size; GetTextExtentPoint32A(hdc, DisplayText, (int)strlen(DisplayText), &size))
+				if (SIZE size; GetTextExtentPoint32A(hdc, DisplayText, (INT32)strlen(DisplayText), &size))
 				{
 					LRESULT currentWidth = SendMessageA(ComboBoxHandle, CB_GETDROPPEDWIDTH, 0, 0);
 
@@ -446,7 +445,7 @@ void InsertComboBoxItem(HWND ComboBoxHandle, const char *DisplayText, void *Valu
 	}
 }
 
-void InsertListViewItem(HWND ListViewHandle, void *Parameter, bool UseImage, int ItemIndex)
+VOID FIXAPI InsertListViewItem(HWND ListViewHandle, LPVOID Parameter, BOOL UseImage, INT32 ItemIndex)
 {
 	if (ItemIndex == -1)
 		ItemIndex = INT_MAX;
@@ -472,36 +471,36 @@ void InsertListViewItem(HWND ListViewHandle, void *Parameter, bool UseImage, int
 		if (!g_DeferredListView)
 		{
 			g_DeferredListView = ListViewHandle;
-			SendMessage(ListViewHandle, WM_SETREDRAW, FALSE, 0);
+			SendMessageA(ListViewHandle, WM_SETREDRAW, FALSE, 0);
 		}
 	}
 
 	ListView_InsertItem(ListViewHandle, &item);
 }
 
-void QuitHandler()
+VOID FIXAPI QuitHandler(VOID)
 {
 	TerminateProcess(GetCurrentProcess(), 0);
 }
 
-void hk_call_140906407(__int64 a1, __int64 a2, __int64 a3)
+VOID FIXAPI hk_call_140906407(INT64 a1, INT64 a2, INT64 a3)
 {
 	if (a2)
-		((void(__fastcall *)(__int64, __int64, __int64))OFFSET(0x2A6B230, 0))(a1, a2, a3);
+		((VOID(__fastcall*)(INT64, INT64, INT64))OFFSET(0x2A6B230, 0))(a1, a2, a3);
 }
 
-BOOL WINAPI hk_call_12E852C(HWND RichEditControl, LPCSTR Text)
+BOOL FIXAPI hk_call_12E852C(HWND RichEditControl, LPCSTR Text)
 {
 	SendMessageA(RichEditControl, EM_LIMITTEXT, 500000, 0);
 	return SetWindowTextA(RichEditControl, Text);
 }
 
-bool __stdcall hk_IsFogEnabled(void)
+BOOL FIXAPI hk_IsFogEnabled(VOID)
 {
 	return bFogToggle;
 }
 
-void PatchFogToggle()
+VOID FIXAPI PatchFogToggle(VOID)
 {
 	class FogToggle : public Xbyak::CodeGenerator
 	{
@@ -511,8 +510,8 @@ void PatchFogToggle()
 			sub(rsp, 0x28);
 			mov(rdx, rcx);
 			mov(rcx, (uintptr_t)&bFogToggle);
-			test(byte[rcx], -1);
-			jne("L1");
+			cmp(byte[rcx], 0);
+			je("L1");
 			mov(rcx, ptr[rdx + 0x80]);
 			test(rcx, rcx);
 			je("L1");
@@ -524,7 +523,7 @@ void PatchFogToggle()
 			ret(); 
 		}
 
-		static void Generate(uintptr_t Target)
+		static VOID Generate(uintptr_t Target)
 		{
 			auto hook = new FogToggle();
 			XUtil::PatchMemory(Target, { 0x48, 0x89, 0xD9 });
@@ -535,10 +534,11 @@ void PatchFogToggle()
 
 	FogToggle::Generate(OFFSET(0xF8AF33, 0));
 
+	XUtil::DetourCall(OFFSET(0xF8CAF3, 0), &hk_IsFogEnabled);
 	XUtil::DetourJump(OFFSET(0xF90CE0, 0), &hk_IsFogEnabled);
 }
 
-void PatchTemplatedFormIterator()
+VOID FIXAPI PatchTemplatedFormIterator(VOID)
 {
 	class FormIteratorHook : public Xbyak::CodeGenerator
 	{
@@ -585,7 +585,7 @@ void PatchTemplatedFormIterator()
 			ret();
 		}
 
-		static void Generate(uintptr_t Target)
+		static VOID Generate(uintptr_t Target)
 		{
 			// Manually resolve the called function address. NOTE: This is leaking memory on purpose. It's a mess.
 			Assert(*(uint8_t *)Target == 0xE9);

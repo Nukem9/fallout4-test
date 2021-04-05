@@ -194,7 +194,6 @@ namespace UITheme
 			{ WC_TABCONTROLA, ThemeType::TabControl },
 			{ TOOLBARCLASSNAMEA, ThemeType::ToolBar },
 			{ TRACKBAR_CLASSA, ThemeType::TrackBar },
-			{ TOOLTIPS_CLASSA, ThemeType::ToolTips },
 			{ "#32768", ThemeType::PopupMenu },
 		};
 
@@ -391,7 +390,13 @@ namespace UITheme
 				Theme::UpDown::Initialize(hWnd);
 				break;
 			default:
-				if ((uStyles & SS_SUNKEN) == SS_SUNKEN)
+				// fix slowdown render window... exclude from subclassing
+				if ((ThemeType::Static == themeType) && ((uStyles & SS_BLACKRECT) == SS_BLACKRECT) && (GetWindowLongPtrA(hWnd, GWLP_ID) == 0xA3B))
+				{
+					RemoveWindowSubclass(hWnd, WindowSubclass, 0);
+					break;
+				}
+				else if ((uStyles & SS_SUNKEN) == SS_SUNKEN)
 				{
 					// 1. Label with frame
 					// 2. ColorBox (and DialogColor)

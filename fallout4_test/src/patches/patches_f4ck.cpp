@@ -211,9 +211,6 @@ void Patch_Fallout4CreationKit()
 		// Allow objects to be filtered in CellViewProc
 		XUtil::DetourCall(OFFSET(0x5A43B5, 0), &CellViewWindow::hk_call_5A43B5);
 
-		// Fix fog
-		PatchFogToggle();
-
 		//
 		// Since I'm used to seeing SSE fixes
 		//
@@ -285,6 +282,10 @@ void Patch_Fallout4CreationKit()
 	XUtil::PatchMemoryNop(OFFSET(0xB89897, 0), 5);
 	XUtil::PatchMemoryNop(OFFSET(0xB89BF3, 0), 5);
 	XUtil::PatchMemoryNop(OFFSET(0xB8A472, 0), 5);
+
+	// Fix fog
+	if (g_INI.GetBoolean("CreationKit", "EnableDrawFog", FALSE))
+		PatchFogToggle();
 
 	//
 	// AllowSaveESM   - Allow saving ESMs directly without version control

@@ -1,18 +1,19 @@
 #pragma once
 
+#include "../../common.h"
 #include "../TES/BSTArray.h"
 
 extern BOOL bFogToggle;
 
 struct z_stream_s
 {
-	const void *next_in;
+	LPCVOID next_in;
 	uint32_t avail_in;
 	uint32_t total_in;
-	void *next_out;
+	LPVOID next_out;
 	uint32_t avail_out;
 	uint32_t total_out;
-	const char *msg;
+	LPCSTR msg;
 	struct internal_state *state;
 };
 static_assert_offset(z_stream_s, state, 0x28);
@@ -23,30 +24,30 @@ INT_PTR WINAPI hk_DialogBoxParamA(HINSTANCE hInstance, LPCSTR lpTemplateName, HW
 BOOL WINAPI hk_EndDialog(HWND hDlg, INT_PTR nResult);
 LRESULT WINAPI hk_SendMessageA(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
 
-int hk_inflateInit(z_stream_s *Stream, const char *Version, int Mode);
-int hk_inflate(z_stream_s *Stream, int Flush);
+INT32 FIXAPI hk_inflateInit(z_stream_s *Stream, LPCSTR Version, INT32 Mode);
+INT32 FIXAPI hk_inflate(z_stream_s *Stream, INT32 Flush);
 
-uint32_t sub_1405B31C0(BSTArray<void *>& Array, const void *&Target);
-uint32_t sub_1405B31C0_SSE41(BSTArray<void *>& Array, const void *&Target);
+uint32_t FIXAPI sub_1405B31C0(BSTArray<LPVOID>& Array, LPCVOID &Target);
+uint32_t FIXAPI sub_1405B31C0_SSE41(BSTArray<LPVOID>& Array, LPCVOID &Target);
 
-bool OpenPluginSaveDialog(HWND ParentWindow, const char* BasePath, bool IsESM, char* Buffer, uint32_t BufferSize, const char* Directory);
-void UpdateObjectWindowTreeView(void *Thisptr, HWND ControlHandle, __int64 Unknown);
-void UpdateCellViewCellList(void *Thisptr, HWND ControlHandle, __int64 Unknown);
-void UpdateCellViewObjectList(void *Thisptr, HWND *ControlHandle);
-void BeginUIDefer();
-void EndUIDefer();
-void InsertComboBoxItem(HWND ComboBoxHandle, const char *DisplayText, void *Value, bool AllowResize);
-void InsertListViewItem(HWND ListViewHandle, void *Parameter, bool UseImage, int ItemIndex);
+BOOL FIXAPI OpenPluginSaveDialog(HWND ParentWindow, LPCSTR BasePath, BOOL IsESM, LPSTR Buffer, uint32_t BufferSize, LPCSTR Directory);
+VOID FIXAPI UpdateObjectWindowTreeView(LPVOID Thisptr, HWND ControlHandle, INT64 Unknown);
+VOID FIXAPI UpdateCellViewCellList(LPVOID Thisptr, HWND ControlHandle, INT64 Unknown);
+VOID FIXAPI UpdateCellViewObjectList(LPVOID Thisptr, HWND *ControlHandle);
+VOID FIXAPI BeginUIDefer(VOID);
+VOID FIXAPI EndUIDefer(VOID);
+VOID FIXAPI InsertComboBoxItem(HWND ComboBoxHandle, LPCSTR DisplayText, LPVOID Value, BOOL AllowResize);
+VOID FIXAPI InsertListViewItem(HWND ListViewHandle, LPVOID Parameter, BOOL UseImage, INT32 ItemIndex);
 
-void QuitHandler();
+VOID FIXAPI QuitHandler(VOID);
 
-void hk_call_140906407(__int64 a1, __int64 a2, __int64 a3);
-BOOL WINAPI hk_call_12E852C(HWND RichEditControl, LPCSTR Text);
-void PatchTemplatedFormIterator();
-void PatchFogToggle();
+VOID FIXAPI hk_call_140906407(INT64 a1, INT64 a2, INT64 a3);
+BOOL FIXAPI hk_call_12E852C(HWND RichEditControl, LPCSTR Text);
+VOID FIXAPI PatchTemplatedFormIterator(VOID);
+VOID FIXAPI PatchFogToggle(VOID);
 
-template<typename T, bool Stable = false>
-void ArrayQuickSortRecursive(BSTArray<T>& Array, int(*SortFunction)(const void *, const void *))
+template<typename T, BOOL Stable = FALSE>
+VOID FIXAPI ArrayQuickSortRecursive(BSTArray<T>& Array, INT32(*SortFunction)(LPCVOID, LPCVOID))
 {
 	auto compare = [SortFunction](const T& A, const T& B)
 	{

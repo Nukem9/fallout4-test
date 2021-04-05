@@ -316,11 +316,14 @@ namespace MainWindow
 
 			case UI_CMD_SHOWHIDE_OBJECTWINDOW:
 			{
-				Classes::CUICustomWindow Wnd = ObjectWindow::GetWindowObj();
+				ObjectWindow::OBJWNDS Wnds = ObjectWindow::GetAllWindowObj();
 
-				Wnd.Visible = !Wnd.Visible;
-				if (Wnd.Visible)
-					Wnd.Foreground();
+				for each (auto Wnd in Wnds)
+				{
+					Wnd.second->ObjectWindow.Visible = !Wnd.second->ObjectWindow.Visible;
+					if (Wnd.second->ObjectWindow.Visible)
+						Wnd.second->ObjectWindow.Foreground();
+				}
 
 				// Change the checkbox
 				MenuItem = MainWindow.MainMenu.GetItem(UI_CMD_SHOWHIDE_OBJECTWINDOW);
