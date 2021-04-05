@@ -284,7 +284,7 @@ void Patch_Fallout4CreationKit()
 	XUtil::PatchMemoryNop(OFFSET(0xB8A472, 0), 5);
 
 	// Fix fog
-	if (g_INI.GetBoolean("CreationKit", "EnableDrawFog", FALSE))
+	if (g_INI.GetBoolean("Experimental", "EnableDrawFog", FALSE))
 		PatchFogToggle();
 
 	//
