@@ -28,12 +28,18 @@ namespace ObjectWindow
 		return ObjectWindows;
 	}
 
-	LRESULT FIXAPI hk_0x5669D8(VOID)
+	BOOL WINAPI hk_MoveWindow(HWND hWindow, INT32 X, INT32 Y, INT32 nWidth, INT32 nHeight, BOOL bRepaint)
 	{
-		LPOBJWND lpObjWnd = ObjectWindows.at(GetForegroundWindow());
-		if (lpObjWnd) lpObjWnd->ObjectWindow.Perform(WM_COMMAND, UI_CMD_CHANGE_SPLITTER_OBJECTWINDOW, 0);
+		BOOL bResult = MoveWindow(hWindow, X, Y, nWidth, nHeight, bRepaint);
 
-		return S_OK;
+		auto iterator = ObjectWindows.find(GetParent(hWindow));
+		if (iterator != ObjectWindows.end())
+		{
+			LPOBJWND lpObjWnd = (*iterator).second;
+			if (lpObjWnd) lpObjWnd->ObjectWindow.Perform(WM_COMMAND, UI_CMD_CHANGE_SPLITTER_OBJECTWINDOW, 0);
+		}
+
+		return bResult;
 	}
 
 	VOID FIXAPI ResizeObjectWndChildControls(LPOBJWND lpObjWnd)
@@ -147,11 +153,15 @@ namespace ObjectWindow
 		}
 		else if (Message == WM_SIZE)
 		{
-			LPOBJWND lpObjWnd = ObjectWindows.at(DialogHwnd);
-			if (lpObjWnd && !lpObjWnd->StartResize)
+			auto iterator = ObjectWindows.find(DialogHwnd);
+			if (iterator != ObjectWindows.end())
 			{
-				lpObjWnd->StartResize = TRUE;
-				ResizeObjectWndChildControls(lpObjWnd);
+				LPOBJWND lpObjWnd = (*iterator).second;
+				if (lpObjWnd && !lpObjWnd->StartResize)
+				{
+					lpObjWnd->StartResize = TRUE;
+					ResizeObjectWndChildControls(lpObjWnd);
+				}
 			}
 		}
 		else if (Message == UI_OBJECT_WINDOW_ADD_ITEM)
@@ -160,11 +170,15 @@ namespace ObjectWindow
 			auto allowInsert = reinterpret_cast<BOOL*>(lParam);
 			*allowInsert = TRUE;
 
-			LPOBJWND lpObjWnd = ObjectWindows.at(DialogHwnd);
-			if (lpObjWnd && lpObjWnd->Controls.ActiveOnly.Checked)
+			auto iterator = ObjectWindows.find(DialogHwnd);
+			if (iterator != ObjectWindows.end())
 			{
-				if (form && !form->Active)
-					*allowInsert = FALSE;
+				LPOBJWND lpObjWnd = (*iterator).second;
+				if (lpObjWnd && lpObjWnd->Controls.ActiveOnly.Checked)
+				{
+					if (form && !form->Active)
+						* allowInsert = FALSE;
+				}
 			}
 
 			return S_OK;
@@ -175,15 +189,23 @@ namespace ObjectWindow
 			{
 			case UI_OBJECT_WINDOW_ADD_ITEM:
 			{
-				LPOBJWND lpObjWnd = ObjectWindows.at(DialogHwnd);
-				if (lpObjWnd) SetObjectWindowFilter(lpObjWnd, "", TRUE, !lpObjWnd->Controls.ActiveOnly.Checked);
+				auto iterator = ObjectWindows.find(DialogHwnd);
+				if (iterator != ObjectWindows.end())
+				{
+					LPOBJWND lpObjWnd = (*iterator).second;
+					if (lpObjWnd) SetObjectWindowFilter(lpObjWnd, "", TRUE, !lpObjWnd->Controls.ActiveOnly.Checked);
+				}
 			}
 			return S_OK;
 				
 			case UI_CMD_CHANGE_SPLITTER_OBJECTWINDOW:
 			{
-				LPOBJWND lpObjWnd = ObjectWindows.at(DialogHwnd);
-				if (lpObjWnd) ResizeObjectWndChildControls(lpObjWnd);
+				auto iterator = ObjectWindows.find(DialogHwnd);
+				if (iterator != ObjectWindows.end())
+				{
+					LPOBJWND lpObjWnd = (*iterator).second;
+					if (lpObjWnd) ResizeObjectWndChildControls(lpObjWnd);
+				}
 			}
 			return S_OK;
 

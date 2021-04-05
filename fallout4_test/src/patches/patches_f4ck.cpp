@@ -201,8 +201,8 @@ void Patch_Fallout4CreationKit()
 		XUtil::DetourCall(OFFSET(0x05A1B0A, 0), &UpdateCellViewObjectList);
 
 		// Fix resize ObjectWindowProc
-		XUtil::DetourCall(OFFSET(0x5669D8, 0), &ObjectWindow::hk_0x5669D8);
-		XUtil::PatchMemoryNop(OFFSET(0x5669DD, 0), 0x40);
+		XUtil::DetourCall(OFFSET(0x5669D2, 0), &ObjectWindow::hk_MoveWindow);
+		XUtil::PatchMemoryNop(OFFSET(0x5669D7, 0), 0x46);
 
 		// Allow forms to be filtered in ObjectWindowProc
 		XUtil::DetourCall(OFFSET(0x3FE4CA, 0), &ObjectWindow::hk_7FF72F57F8F0);
