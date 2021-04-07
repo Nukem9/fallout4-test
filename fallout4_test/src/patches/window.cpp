@@ -34,8 +34,8 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	if (uMsg == WM_ACTIVATEAPP || uMsg == WM_ACTIVATE || uMsg == WM_SETFOCUS)
 	{
 		// Gained focus
-		if ((uMsg == WM_ACTIVATEAPP && wParam == TRUE) ||
-			(uMsg == WM_ACTIVATE && wParam != WA_INACTIVE) ||
+		if (((uMsg == WM_ACTIVATEAPP) && (wParam == TRUE)) ||
+			((uMsg == WM_ACTIVATE) && (wParam != WA_INACTIVE)) ||
 			(uMsg == WM_SETFOCUS))
 		{
 			while (ShowCursor(FALSE) >= 0) {}
@@ -51,8 +51,6 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			while (ShowCursor(TRUE) < 0) {}
 
 			EnableInput = FALSE;
-
-			//ShowWindow(hwnd, SW_MINIMIZE);
 		}
 
 		return 0;

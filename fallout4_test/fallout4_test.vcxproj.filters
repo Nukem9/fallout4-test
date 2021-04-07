@@ -377,6 +377,9 @@
     <ClInclude Include="src\patches\CKF4\Editor.h">
       <Filter>Header Files\Patches\CK</Filter>
     </ClInclude>
+    <ClInclude Include="src\patches\CKF4\ActorWindow.h">
+      <Filter>Header Files\UI\Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\dllmain.cpp">
@@ -597,6 +600,9 @@
     </ClCompile>
     <ClCompile Include="src\patches\CKF4\EditorUI.cpp">
       <Filter>Source Files\Patches\CK</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\ActorWindow.cpp">
+      <Filter>Source Files\UI\Windows</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -167,6 +167,7 @@
     <ClInclude Include="src\config.h" />
     <ClInclude Include="src\erase_if.h" />
     <ClInclude Include="src\INIReader.h" />
+    <ClInclude Include="src\patches\CKF4\ActorWindow.h" />
     <ClInclude Include="src\patches\CKF4\CellViewWindow.h" />
     <ClInclude Include="src\patches\CKF4\DataWindow.h" />
     <ClInclude Include="src\patches\CKF4\Editor.h" />
@@ -264,6 +265,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\patches\bnet.cpp" />
+    <ClCompile Include="src\patches\CKF4\ActorWindow.cpp" />
     <ClCompile Include="src\patches\CKF4\CellViewWindow.cpp" />
     <ClCompile Include="src\patches\CKF4\DataWindow.cpp" />
     <ClCompile Include="src\patches\CKF4\Editor.cpp" />

@@ -32,8 +32,7 @@ namespace ObjectWindow
 	{
 		BOOL bResult = MoveWindow(hWindow, X, Y, nWidth, nHeight, bRepaint);
 
-		auto iterator = ObjectWindows.find(GetParent(hWindow));
-		if (iterator != ObjectWindows.end())
+		if (auto iterator = ObjectWindows.find(GetParent(hWindow)); iterator != ObjectWindows.end())
 		{
 			LPOBJWND lpObjWnd = (*iterator).second;
 			if (lpObjWnd) lpObjWnd->ObjectWindow.Perform(WM_COMMAND, UI_CMD_CHANGE_SPLITTER_OBJECTWINDOW, 0);
@@ -153,8 +152,7 @@ namespace ObjectWindow
 		}
 		else if (Message == WM_SIZE)
 		{
-			auto iterator = ObjectWindows.find(DialogHwnd);
-			if (iterator != ObjectWindows.end())
+			if (auto iterator = ObjectWindows.find(DialogHwnd);  iterator != ObjectWindows.end())
 			{
 				LPOBJWND lpObjWnd = (*iterator).second;
 				if (lpObjWnd && !lpObjWnd->StartResize)
@@ -170,14 +168,13 @@ namespace ObjectWindow
 			auto allowInsert = reinterpret_cast<BOOL*>(lParam);
 			*allowInsert = TRUE;
 
-			auto iterator = ObjectWindows.find(DialogHwnd);
-			if (iterator != ObjectWindows.end())
+			if (auto iterator = ObjectWindows.find(DialogHwnd); iterator != ObjectWindows.end())
 			{
 				LPOBJWND lpObjWnd = (*iterator).second;
 				if (lpObjWnd && lpObjWnd->Controls.ActiveOnly.Checked)
 				{
 					if (form && !form->Active)
-						* allowInsert = FALSE;
+						*allowInsert = FALSE;
 				}
 			}
 
@@ -189,8 +186,7 @@ namespace ObjectWindow
 			{
 			case UI_OBJECT_WINDOW_ADD_ITEM:
 			{
-				auto iterator = ObjectWindows.find(DialogHwnd);
-				if (iterator != ObjectWindows.end())
+				if (auto iterator = ObjectWindows.find(DialogHwnd); iterator != ObjectWindows.end())
 				{
 					LPOBJWND lpObjWnd = (*iterator).second;
 					if (lpObjWnd) SetObjectWindowFilter(lpObjWnd, "", TRUE, !lpObjWnd->Controls.ActiveOnly.Checked);
@@ -200,8 +196,7 @@ namespace ObjectWindow
 				
 			case UI_CMD_CHANGE_SPLITTER_OBJECTWINDOW:
 			{
-				auto iterator = ObjectWindows.find(DialogHwnd);
-				if (iterator != ObjectWindows.end())
+				if (auto iterator = ObjectWindows.find(DialogHwnd); iterator != ObjectWindows.end())
 				{
 					LPOBJWND lpObjWnd = (*iterator).second;
 					if (lpObjWnd) ResizeObjectWndChildControls(lpObjWnd);

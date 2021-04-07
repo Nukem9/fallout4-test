@@ -24,6 +24,7 @@
 #include "CKF4/ResponseWindow.h"
 #include "CKF4/DataWindow.h"
 #include "CKF4/PreferencesWindow.h"
+#include "CKF4/ActorWindow.h"
 
 #include <xbyak/xbyak.h>
 
@@ -168,6 +169,7 @@ void Patch_Fallout4CreationKit()
 		*(uintptr_t*)&ResponseWindow::OldDlgProc = Detours::X64::DetourFunctionClass(OFFSET(0x0B5EB50, 0), &ResponseWindow::DlgProc);
 		*(uintptr_t*)&RenderWindow::OldDlgProc = Detours::X64::DetourFunctionClass(OFFSET(0x460570, 0), &RenderWindow::DlgProc);
 		*(uintptr_t*)&DataWindow::OldDlgProc = Detours::X64::DetourFunctionClass(OFFSET(0x5A8250, 0), &DataWindow::DlgProc);
+		*(uintptr_t*)&ActorWindow::OldDlgProc = Detours::X64::DetourFunctionClass(OFFSET(0x64B590, 0), &ActorWindow::DlgProc);
 
 		if(UITheme::IsEnabledMode())
 			*(uintptr_t*)&PreferencesWindow::OldDlgProc = Detours::X64::DetourFunctionClass(OFFSET(0x1335AF0, 0), &PreferencesWindow::DlgProc);
