@@ -88,8 +88,6 @@ namespace LogWindow
 
 			// Poll every 100ms for new lines
 			SetTimer(LogWindowHandle, UI_LOG_CMD_ADDTEXT, 100, NULL);
-			ShowWindow(LogWindowHandle, SW_SHOW);
-			UpdateWindow(LogWindowHandle);
 
 			MSG msg;
 			while (GetMessageA(&msg, NULL, 0, 0) > 0)
@@ -240,12 +238,6 @@ namespace LogWindow
 			if (!richEditHwnd)
 				return -1;
 
-			// Set default position
-			INT32 winW = g_INI.GetInteger("CreationKit_Log", "Width", info->cx);
-			INT32 winH = g_INI.GetInteger("CreationKit_Log", "Height", info->cy);
-
-			MoveWindow(Hwnd, info->x, info->y, winW, winH, FALSE);
-
 			// Set a better font & convert Twips to points (1 point = 20 Twips)
 			CHARFORMAT2A format = {};
 			format.cbSize = sizeof(format);
@@ -254,10 +246,24 @@ namespace LogWindow
 			format.wWeight = (WORD)g_INI.GetInteger("CreationKit_Log", "FontWeight", FW_NORMAL);
 			strcpy_s(format.szFaceName, g_INI.Get("CreationKit_Log", "Font", "Consolas").c_str());
 
-			SendMessageA(richEditHwnd, EM_SETCHARFORMAT, SCF_ALL, (LPARAM)&format);
+			SendMessageA(richEditHwnd, EM_SETCHARFORMAT, SCF_ALL, (LPARAM)& format);
 
 			// Subscribe to EN_MSGFILTER and EN_SELCHANGE
 			SendMessageA(richEditHwnd, EM_SETEVENTMASK, 0, ENM_MOUSEEVENTS | ENM_SELCHANGE);
+
+			// Set default position
+			INT32 winX = g_INI.GetInteger("CreationKit_Log", "X", info->x);
+			INT32 winY = g_INI.GetInteger("CreationKit_Log", "Y", info->y);
+			INT32 winW = g_INI.GetInteger("CreationKit_Log", "Width", info->cx);
+			INT32 winH = g_INI.GetInteger("CreationKit_Log", "Height", info->cy);
+
+			MoveWindow(Hwnd, winX, winY, winW, winH, FALSE);
+
+			if (((winW != 0) && (winH != 0)) && (!g_INI.GetBoolean("CreationKit_Log", "TurnOffLogWindow", FALSE)))
+			{
+				ShowWindow(Hwnd, SW_SHOW);
+				UpdateWindow(Hwnd);
+			}
 		}
 		return S_OK;
 
