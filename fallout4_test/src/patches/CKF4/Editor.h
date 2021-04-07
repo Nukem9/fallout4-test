@@ -46,6 +46,9 @@ BOOL FIXAPI hk_call_12E852C(HWND RichEditControl, LPCSTR Text);
 VOID FIXAPI PatchTemplatedFormIterator(VOID);
 VOID FIXAPI PatchFogToggle(VOID);
 
+// pra bugs rax is zero (just a message)
+VOID FIXAPI sub_24F236D(VOID);
+
 template<typename T, BOOL Stable = FALSE>
 VOID FIXAPI ArrayQuickSortRecursive(BSTArray<T>& Array, INT32(*SortFunction)(LPCVOID, LPCVOID))
 {

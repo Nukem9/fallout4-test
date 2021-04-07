@@ -500,6 +500,11 @@ BOOL FIXAPI hk_IsFogEnabled(VOID)
 	return bFogToggle;
 }
 
+VOID FIXAPI sub_24F236D(VOID)
+{
+	LogWindow::Log("ASSERT: Array doesn't have a buffer.");
+}
+
 VOID FIXAPI PatchFogToggle(VOID)
 {
 	class FogToggle : public Xbyak::CodeGenerator

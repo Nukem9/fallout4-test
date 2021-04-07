@@ -444,6 +444,12 @@ void Patch_Fallout4CreationKit()
 	XUtil::PatchMemory(OFFSET(0xF84570, 0), { 0x48, 0x85, 0xC9, 0x74, 0xB5, 0x48, 0x8B, 0x01, 0xEB, 0xAA });
 
 	//
+	// Fix the error of missing a buffer in the data array when loading the preview (bugs aka pra)
+	//
+	XUtil::DetourCall(OFFSET(0x24F235A, 0), &sub_24F236D);
+	XUtil::PatchMemory(OFFSET(0x24F235F, 0), { 0xEB, 0x1D });
+
+	//
 	// Plugin loading optimizations
 	//
 	INT32 cpuinfo[4];
