@@ -31,6 +31,7 @@ std::map<std::wstring, membuf*> dllENBs =
 	{ L"d3d10.dll", NULL },
 	{ L"d3d9.dll",  NULL },
 	{ L"d3dcompiler_46e.dll",  NULL },
+	{ L"dxgi.dll",  NULL },
 };
 
 std::wstring app_path;
