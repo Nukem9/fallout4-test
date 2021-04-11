@@ -49,6 +49,9 @@ extern INIReader g_INI;
 extern uintptr_t g_ModuleBase;
 extern uintptr_t g_ModuleSize;
 
+extern uintptr_t g_ScrapSize;
+extern uintptr_t g_bhkMemSize;
+
 extern uintptr_t g_CodeBase;	// .text or .textbss
 extern uintptr_t g_CodeEnd;
 extern uintptr_t g_RdataBase;	// .rdata

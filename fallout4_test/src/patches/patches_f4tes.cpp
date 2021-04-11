@@ -91,12 +91,14 @@ void Patch_Fallout4Game()
 	{
 		PatchMemory();
 
-		XUtil::PatchMemory(OFFSET(0xD0C160, 0), { 0xC3 });							// [3GB  ] MemoryManager - Default/Static/File heaps
+		XUtil::PatchMemory(OFFSET(0xD0C160, 0), { 0xC3 });							// [XGB  ] MemoryManager - Default/Static/File heaps
 		XUtil::PatchMemory(OFFSET(0x1B0EDB0, 0), { 0xC3 });							// [1GB  ] BSSmallBlockAllocator
-		XUtil::DetourJump(OFFSET(0x1E21B10, 0), &bhkThreadMemorySource::__ctor__);	// [512MB] bhkThreadMemorySource
-		XUtil::PatchMemory(OFFSET(0x1B13DF0, 0), { 0xC3 });							// [64MB ] ScrapHeap init
-		XUtil::PatchMemory(OFFSET(0x1B14740, 0), { 0xC3 });							// [64MB ] ScrapHeap deinit
+		XUtil::DetourJump(OFFSET(0x1E21B10, 0), &bhkThreadMemorySource::__ctor__);	// [512MB][1GB  ][2GB  ] bhkThreadMemorySource
+		XUtil::PatchMemory(OFFSET(0x1B13DF0, 0), { 0xC3 });							// [32MB ][64MB ][128MB] ScrapHeap init
+		XUtil::PatchMemory(OFFSET(0x1B14740, 0), { 0xC3 });							// [32MB ][64MB ][128MB] ScrapHeap deinit
 																					// [128MB] BSScaleformSysMemMapper is untouched due to complexity
+
+		XUtil::PatchMemory(OFFSET(0x1DD67D4, 0), { (BYTE)(((UINT32)g_bhkMemSize & 0xFF000000) >> 24) });
 
 		XUtil::DetourJump(OFFSET(0x1B0EFD0, 0), &MemoryManager::Allocate);
 		XUtil::DetourJump(OFFSET(0x1B0F2E0, 0), &MemoryManager::Deallocate);

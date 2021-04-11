@@ -206,6 +206,14 @@ namespace ObjectWindow
 
 			}
 		}
+		else if (Message == WM_SHOWWINDOW)
+		{
+			if (auto iterator = ObjectWindows.find(DialogHwnd); iterator != ObjectWindows.end())
+			{
+				LPOBJWND lpObjWnd = (*iterator).second;
+				if (lpObjWnd) ResizeObjectWndChildControls(lpObjWnd);
+			}
+		}
 		else if (Message == WM_DESTROY)
 		{
 			LPOBJWND lpObjWnd = ObjectWindows.at(DialogHwnd);

@@ -3,13 +3,11 @@
 
 #include "..\resource.h"
 
-#pragma comment(lib, "dwmapi.lib")
 #pragma comment(lib, "msimg32.lib")
 #pragma comment(lib, "winmm.lib")
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "D3DCompiler.lib")
-#pragma comment(lib, "dinput8.lib")
 #pragma comment(lib, "dxguid.lib")
 #pragma comment(lib, "ws2_32.lib")
 #pragma comment(lib, "uxtheme.lib")
@@ -34,6 +32,9 @@ INIReader g_INI("fallout4_test.ini");
 
 uintptr_t g_ModuleBase;
 uintptr_t g_ModuleSize;
+
+uintptr_t g_ScrapSize;
+uintptr_t g_bhkMemSize;
 
 uintptr_t g_CodeBase;	// .text or .textbss
 uintptr_t g_CodeEnd;

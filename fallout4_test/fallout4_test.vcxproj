@@ -187,7 +187,6 @@
     <ClInclude Include="src\patches\CKF4\TESForm_CK.h" />
     <ClInclude Include="src\patches\CKF4\UIBaseWindow.h" />
     <ClInclude Include="src\patches\CKF4\UICheckboxControl.h" />
-    <ClInclude Include="src\patches\CKF4\UIDWMWindow.h" />
     <ClInclude Include="src\patches\CKF4\UIGraphics.h" />
     <ClInclude Include="src\patches\CKF4\UIImageList.h" />
     <ClInclude Include="src\patches\CKF4\UIMenus.h" />
@@ -284,7 +283,6 @@
     <ClCompile Include="src\patches\CKF4\TESForm_CK.cpp" />
     <ClCompile Include="src\patches\CKF4\UIBaseWindow.cpp" />
     <ClCompile Include="src\patches\CKF4\UICheckboxControl.cpp" />
-    <ClCompile Include="src\patches\CKF4\UIDWMWindow.cpp" />
     <ClCompile Include="src\patches\CKF4\UIGraphics.cpp" />
     <ClCompile Include="src\patches\CKF4\UIImageList.cpp" />
     <ClCompile Include="src\patches\CKF4\UIMenus.cpp" />

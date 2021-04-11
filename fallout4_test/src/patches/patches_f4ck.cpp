@@ -91,31 +91,27 @@ void Patch_Fallout4CreationKit()
 	//
 	// MemoryManager
 	//
-	if (g_INI.GetBoolean("CreationKit", "MemoryPatch", FALSE))
-	{
-		PatchMemory();
+	PatchMemory();
 
-		XUtil::PatchMemory(OFFSET(0x030ECC0, 0), { 0xC3 });							// [3GB  ] MemoryManager - Default/Static/File heaps
-		XUtil::PatchMemory(OFFSET(0x2004B70, 0), { 0xC3 });							// [1GB  ] BSSmallBlockAllocator
-		XUtil::DetourJump(OFFSET(0x21115D0, 0), &bhkThreadMemorySource::__ctor__);	// [512MB] bhkThreadMemorySource
-		XUtil::PatchMemory(OFFSET(0x200A920, 0), { 0xC3 });							// [64MB ] ScrapHeap init
-		XUtil::PatchMemory(OFFSET(0x200B440, 0), { 0xC3 });							// [64MB ] ScrapHeap deinit
-																					// [128MB] BSScaleformSysMemMapper is untouched due to complexity
+	XUtil::PatchMemory(OFFSET(0x030ECC0, 0), { 0xC3 });							// [XGB  ] MemoryManager - Default/Static/File heaps
+	XUtil::PatchMemory(OFFSET(0x2004B70, 0), { 0xC3 });							// [1GB  ] BSSmallBlockAllocator
+	XUtil::DetourJump(OFFSET(0x21115D0, 0), &bhkThreadMemorySource::__ctor__);	// [512MB][1GB  ][2GB  ] bhkThreadMemorySource
+	XUtil::PatchMemory(OFFSET(0x200A920, 0), { 0xC3 });							// [32MB ][64MB ][128MB] ScrapHeap init
+	XUtil::PatchMemory(OFFSET(0x200B440, 0), { 0xC3 });							// [32MB ][64MB ][128MB] ScrapHeap deinit
+																				// [128MB] BSScaleformSysMemMapper is untouched due to complexity
 
-		XUtil::DetourJump(OFFSET(0x2004E20, 0), &MemoryManager::Allocate);
-		XUtil::DetourJump(OFFSET(0x20052D0, 0), &MemoryManager::Deallocate);
-		XUtil::DetourJump(OFFSET(0x2004300, 0), &MemoryManager::Size);
-		XUtil::DetourJump(OFFSET(0x200AB30, 0), &ScrapHeap::Allocate);
-		XUtil::DetourJump(OFFSET(0x200B170, 0), &ScrapHeap::Deallocate);
-	}
+	XUtil::PatchMemory(OFFSET(0x21179B8, 0), { (BYTE)(((UINT32)g_bhkMemSize & 0xFF000000) >> 24) });
+
+	XUtil::DetourJump(OFFSET(0x2004E20, 0), &MemoryManager::Allocate);
+	XUtil::DetourJump(OFFSET(0x20052D0, 0), &MemoryManager::Deallocate);
+	XUtil::DetourJump(OFFSET(0x2004300, 0), &MemoryManager::Size);
+	XUtil::DetourJump(OFFSET(0x200AB30, 0), &ScrapHeap::Allocate);
+	XUtil::DetourJump(OFFSET(0x200B170, 0), &ScrapHeap::Deallocate);
 
 	//
 	// Threads
 	//
-	if (g_INI.GetBoolean("CreationKit", "ThreadingPatch", FALSE))
-	{
-		PatchThreading();
-	}
+	PatchThreading();
 
 	//
 	// Steam API
@@ -331,11 +327,10 @@ void Patch_Fallout4CreationKit()
 	XUtil::DetourClassJump(OFFSET(0x2485C46, 0), &Core::Classes::UI::CUIMainWindow::ProcessMessages);
 	XUtil::DetourClassJump(OFFSET(0x2485E46, 0), &Core::Classes::UI::CUIMainWindow::ProcessMessages);
 	XUtil::DetourClassJump(OFFSET(0xDF2FBA, 0), &Core::Classes::UI::CUIMainWindow::ProcessMessages);
-	XUtil::DetourClassJump(OFFSET(0x2001B1B, 0), &Core::Classes::UI::CUIMainWindow::ProcessMessages);
 	XUtil::DetourClassJump(OFFSET(0x8531BD, 0), &Core::Classes::UI::CUIMainWindow::ProcessMessages);
 	XUtil::DetourClassJump(OFFSET(0x262D1A7, 0), &Core::Classes::UI::CUIMainWindow::ProcessMessages);
-	XUtil::DetourClassJump(OFFSET(0xD8AE17, 0), &Core::Classes::UI::CUIMainWindow::ProcessMessages);	// Experimental: Loading cell ...
-	XUtil::DetourClassJump(OFFSET(0xD913BD, 0), &Core::Classes::UI::CUIMainWindow::ProcessMessages);	// Experimental: Loading cell ...
+	//XUtil::DetourClassJump(OFFSET(0xD8AE17, 0), &Core::Classes::UI::CUIMainWindow::ProcessMessages);	// Experimental: Loading cell ...
+	//XUtil::DetourClassJump(OFFSET(0xD913BD, 0), &Core::Classes::UI::CUIMainWindow::ProcessMessages);	// Experimental: Loading cell ...
 	// Replacing Sleep(1) on (messages pool)
 	XUtil::DetourClassCall(OFFSET(0x247EF69, 0), &Core::Classes::UI::CUIMainWindow::ProcessMessages);
 	XUtil::DetourClassCall(OFFSET(0x5DD8C2, 0), &Core::Classes::UI::CUIMainWindow::ProcessMessages);
@@ -441,13 +436,7 @@ void Patch_Fallout4CreationKit()
 	// Fix for crash (nullptr no test) when close CK with Sky enable 
 	//
 	XUtil::PatchMemory(OFFSET(0xF84521, 0), { 0xEB, 0x4D, 0x90 });
-	XUtil::PatchMemory(OFFSET(0xF84570, 0), { 0x48, 0x85, 0xC9, 0x74, 0xB5, 0x48, 0x8B, 0x01, 0xEB, 0xAA });
-
-	//
-	// Fix the error of missing a buffer in the data array when loading the preview (bugs aka pra)
-	//
-	XUtil::DetourCall(OFFSET(0x24F235A, 0), &sub_24F236D);
-	XUtil::PatchMemory(OFFSET(0x24F235F, 0), { 0xEB, 0x1D });
+	XUtil::PatchMemory(OFFSET(0xF84570, 0), { 0x48, 0x85, 0xC9, 0x74, 0xB5, 0x48, 0x8B, 0x01, 0xEB, 0xAA });	
 
 	//
 	// Plugin loading optimizations

@@ -48,12 +48,12 @@ VOID ReadFileToMemory(VOID)
 	{
 		if (FileExists((*dll).first))
 		{
-			std::wcout << "File """<< (*dll).first.c_str() << """ found and will be remove.\n";
+			std::wcout << L"File """ << (*dll).first.c_str() << L""" found and will be remove.\n";
 
 			HANDLE fileDll = CreateFileW((app_path + (*dll).first).c_str(), GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
 			if (!fileDll)
 			{
-				std::wcout << "File """ << (*dll).first.c_str() << """ failed open.\n";
+				std::wcout << L"File """ << (*dll).first.c_str() << L""" failed open.\n";
 				break;
 			}
 
@@ -64,11 +64,11 @@ VOID ReadFileToMemory(VOID)
 			DWORD m;
 			if (!ReadFile(fileDll, (*dll).second->get(), len, &m, NULL))
 			{
-				std::wcout << "File """ << (*dll).first.c_str() << """ failed read file.\n";
+				std::wcout << L"File """ << (*dll).first.c_str() << L""" failed read file.\n";
 			}
 			CloseHandle(fileDll);
 
-			std::wcout << "File """ << (*dll).first.c_str() << """ read " << m <<".\n";
+			std::wcout << L"File """ << (*dll).first.c_str() << L""" read " << m << L".\n";
 
 			DeleteFileW((app_path + (*dll).first).c_str());
 		}
@@ -81,23 +81,23 @@ VOID WriteFileToFolder(VOID)
 	{
 		if ((*dll).second)
 		{
-			std::wcout << "File """ << (*dll).first.c_str() << """ was removed and will be restored.\n";
+			std::wcout << L"File """ << (*dll).first.c_str() << L""" was removed and will be restored.\n";
 
 			HANDLE fileDll = CreateFileW((app_path + (*dll).first).c_str(), GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, 0, NULL);
 			if (!fileDll)
 			{
-				std::wcout << "File """ << (*dll).first.c_str() << """ failed create.\n";
+				std::wcout << L"File """ << (*dll).first.c_str() << L""" failed create.\n";
 				break;
 			}
 
 			DWORD m;
 			if (!WriteFile(fileDll, (*dll).second->get(), (*dll).second->size(), &m, NULL))
 			{
-				std::wcout << "File """ << (*dll).first.c_str() << """ failed write file.\n";
+				std::wcout << L"File """ << (*dll).first.c_str() << L""" failed write file.\n";
 			}
 			CloseHandle(fileDll);
 
-			std::wcout << "File """ << (*dll).first.c_str() << """ write " << m << ".\n";
+			std::wcout << L"File """ << (*dll).first.c_str() << L""" write " << m << L".\n";
 
 			delete (*dll).second;
 			(*dll).second = NULL;
@@ -114,13 +114,13 @@ INT32 WINAPI main(INT32 argc, LPWSTR argv[])
 	app_path = p.parent_path();
 	app_path += L"\\";
 
-	std::wcout << "Root dir: " << app_path << "\n";
-	std::wcout << "Delete files.\n";
+	std::wcout << L"Root dir: " << app_path << L"\n";
+	std::wcout << L"Delete files.\n";
 	ReadFileToMemory();
-	std::wcout << "Open Creation Kit.\n";
+	std::wcout << L"Open Creation Kit.\n";
 	ShellExecuteW(NULL, L"open", L"CreationKit.exe", NULL, app_path.c_str(), SW_SHOW);
-	std::wcout << "Wait 15 sec.\n";
+	std::wcout << L"Wait 15 sec.\n";
 	Sleep(15000);
-	std::wcout << "Return files.\n";
+	std::wcout << L"Return files.\n";
 	WriteFileToFolder();
 }

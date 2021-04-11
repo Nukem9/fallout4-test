@@ -2,10 +2,10 @@
 #include "version_info.h"
 #include "profiler_internal.h"
 
-void Patch_Fallout4CreationKit();
-void Patch_Fallout4Game();
+VOID Patch_Fallout4CreationKit();
+VOID Patch_Fallout4Game();
 
-void ApplyPatches()
+VOID ApplyPatches()
 {
 	// The EXE has been unpacked at this point
 	strcpy_s(g_GitVersion, VER_CURRENT_COMMIT_ID);
@@ -49,12 +49,12 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD fdwReason, LPVOID lpReserved)
 		// Then determine which exe is being loaded
 		g_LoadType = GAME_EXECUTABLE_TYPE::UNKNOWN;
 
-		char modulePath[MAX_PATH];
-		GetModuleFileNameA(GetModuleHandle(nullptr), modulePath, MAX_PATH);
+		CHAR modulePath[MAX_PATH];
+		GetModuleFileNameA(GetModuleHandle(NULL), modulePath, MAX_PATH);
 
-		char executableName[MAX_PATH];
+		CHAR executableName[MAX_PATH];
 		_strlwr_s(modulePath);
-		_splitpath_s(modulePath, nullptr, 0, nullptr, 0, executableName, ARRAYSIZE(executableName), nullptr, 0);
+		_splitpath_s(modulePath, NULL, 0, NULL, 0, executableName, ARRAYSIZE(executableName), NULL, 0);
 
 		switch (CRC32(executableName))
 		{
@@ -68,7 +68,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD fdwReason, LPVOID lpReserved)
 			break;
 
 		case CRC32("creationkit"):
-				g_LoadType = GAME_EXECUTABLE_TYPE::CREATIONKIT_FALLOUT4;
+			g_LoadType = GAME_EXECUTABLE_TYPE::CREATIONKIT_FALLOUT4;
 			break;
 		}
 
@@ -86,6 +86,20 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD fdwReason, LPVOID lpReserved)
 				return TRUE;
 			}
 #endif
+
+			MEMORYSTATUSEX statex;
+			statex.dwLength = sizeof(statex);
+			if (GlobalMemoryStatusEx(&statex))
+			{
+				auto GB = statex.ullTotalPhys / (1024 * 1024 * 1024);
+				g_ScrapSize = (GB > 4) ? 0x8000000 : 0x4000000;
+				g_bhkMemSize = (GB > 8) ? 0x80000000 : 0x40000000;
+			}
+			else
+			{
+				g_ScrapSize = 0x2000000;
+				g_bhkMemSize = 0x20000000;
+			}
 
 			DumpEnableBreakpoint();
 			break;

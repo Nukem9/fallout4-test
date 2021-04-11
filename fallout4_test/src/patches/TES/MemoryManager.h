@@ -1,26 +1,24 @@
 #pragma once
 
+#include "../../common.h"
+
 class MemoryManager
 {
 private:
-	MemoryManager() = default;
-	~MemoryManager() = default;
-
+	MemoryManager(VOID) = default;
+	~MemoryManager(VOID) = default;
 public:
-	static void *Allocate(MemoryManager *Manager, size_t Size, uint32_t Alignment, bool Aligned);
-	static void Deallocate(MemoryManager *Manager, void *Memory, bool Aligned);
-	static size_t Size(MemoryManager *Manager, void *Memory);
+	static LPVOID Allocate(MemoryManager *Manager, UINT64 Size, UINT32 Alignment, BOOL Aligned);
+	static VOID   Deallocate(MemoryManager *Manager, LPVOID Memory, BOOL Aligned);
+	static UINT64 Size(MemoryManager *Manager, LPVOID Memory);
 };
 
 class ScrapHeap
 {
 private:
-	ScrapHeap() = default;
-	~ScrapHeap() = default;
-
+	ScrapHeap(VOID) = default;
+	~ScrapHeap(VOID) = default;
 public:
-	const static uint32_t MAX_ALLOC_SIZE = 0x4000000;
-
-	void *Allocate(size_t Size, uint32_t Alignment);
-	void Deallocate(void *Memory);
+	LPVOID Allocate(UINT64 Size, UINT32 Alignment);
+	VOID   Deallocate(LPVOID Memory);
 };
