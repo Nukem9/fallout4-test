@@ -46,6 +46,9 @@ BOOL FIXAPI hk_call_12E852C(HWND RichEditControl, LPCSTR Text);
 VOID FIXAPI PatchTemplatedFormIterator(VOID);
 VOID FIXAPI PatchFogToggle(VOID);
 
+FLOAT FIXAPI Fixed_IncorrectSmoothnessValueToMaterialNif(FLOAT a1, FLOAT a2);
+VOID FIXAPI Fixed_DeleteTintingRace(INT64 count, INT64 item_id, HWND listview);
+
 template<typename T, BOOL Stable = FALSE>
 VOID FIXAPI ArrayQuickSortRecursive(BSTArray<T>& Array, INT32(*SortFunction)(LPCVOID, LPCVOID))
 {

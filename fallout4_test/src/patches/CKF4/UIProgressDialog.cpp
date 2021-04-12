@@ -1,4 +1,3 @@
-#include "..\..\Common.h"
 #include "EditorUI.h"
 #include "UIProgressDialog.h"
 #include "LogWindow.h"
@@ -15,7 +14,7 @@ namespace Core
 	{
 		namespace UI
 		{
-			CUIProgressDialog* ProgressDialog = nullptr;
+			CUIProgressDialog* ProgressDialog = NULL;
 
 			LRESULT WINAPI DlgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			{	
@@ -29,13 +28,13 @@ namespace Core
 				CUICustomDialog(parent, res_id, DlgProc)
 			{}
 
-			CUIProgressDialog::~CUIProgressDialog(void)
+			CUIProgressDialog::~CUIProgressDialog(VOID)
 			{
 				SetMarquee(FALSE);
 				FreeRelease();
 			}
 
-			void CUIProgressDialog::SetMinAndMax(const UINT16 min, const UINT16 max)
+			VOID CUIProgressDialog::SetMinAndMax(const UINT16 min, const UINT16 max)
 			{
 				m_Min = std::max(min, (UINT16)0);
 				m_Max = std::max(max, (UINT16)1);
@@ -46,19 +45,19 @@ namespace Core
 				m_Progress.Perform(PBM_SETPOS, min, 0);
 			}
 
-			UINT16 CUIProgressDialog::GetPosition(void)
+			UINT16 CUIProgressDialog::GetPosition(VOID)
 			{
 				return (UINT16)m_Progress.Perform(PBM_GETPOS, 0, 0);
 			}
 
-			void CUIProgressDialog::SetPosition(const UINT16 value)
+			VOID CUIProgressDialog::SetPosition(const UINT16 value)
 			{
 				if (m_Marquee) return;
 				m_Progress.Perform(PBM_SETPOS, value, 0);
 				Core::Classes::UI::CUIMainWindow::ProcessMessages();
 			}
 
-			void CUIProgressDialog::SetMarquee(const BOOL value)
+			VOID CUIProgressDialog::SetMarquee(const BOOL value)
 			{
 				if (m_Marquee == value) return;
 
@@ -80,27 +79,27 @@ namespace Core
 				m_Progress.Perform(PBM_SETMARQUEE, (WPARAM)m_Marquee, NULL);
 			}
 
-			BOOL CUIProgressDialog::GetMarquee(void)
+			BOOL CUIProgressDialog::GetMarquee(VOID)
 			{
 				return m_Marquee;
 			}
 
-			std::string CUIProgressDialog::GetMessageText(void)
+			std::string CUIProgressDialog::GetMessageText(VOID)
 			{
 				return m_Label.Caption;
 			}
 
-			void CUIProgressDialog::SetMessageText(const std::string &str)
+			VOID CUIProgressDialog::SetMessageText(const std::string &str)
 			{
 				m_Label.Caption = str;
 			}
 
-			UINT16 CUIProgressDialog::GetMin(void)
+			UINT16 CUIProgressDialog::GetMin(VOID)
 			{
 				return m_Min;
 			}
 
-			void CUIProgressDialog::SetMin(const UINT16 value)
+			VOID CUIProgressDialog::SetMin(const UINT16 value)
 			{
 				UINT16 m_newMin = std::max(value, (UINT16)0);
 				if (m_newMin == value) 
@@ -112,12 +111,12 @@ namespace Core
 				m_Progress.Perform(PBM_SETRANGE, 0, MAKELPARAM(m_Min, m_Max));
 			}
 
-			UINT16 CUIProgressDialog::GetMax(void)
+			UINT16 CUIProgressDialog::GetMax(VOID)
 			{
 				return m_Max;
 			}
 
-			void CUIProgressDialog::SetMax(const UINT16 value)
+			VOID CUIProgressDialog::SetMax(const UINT16 value)
 			{
 				UINT16 m_newMax = std::max(value, (UINT16)1);
 				if (m_newMax == value)
@@ -129,27 +128,33 @@ namespace Core
 				m_Progress.Perform(PBM_SETRANGE, 0, MAKELPARAM(m_Min, m_Max));
 			}
 
-			UINT16 CUIProgressDialog::GetIncrement(void)
+			UINT16 CUIProgressDialog::GetIncrement(VOID)
 			{
 				return m_Progress.Perform(PBM_GETSTEP, 0, 0);
 			}
 
-			void CUIProgressDialog::SetIncrement(const UINT16 value)
+			VOID CUIProgressDialog::SetIncrement(const UINT16 value)
 			{
 				m_Progress.Perform(PBM_SETSTEP, value, 0);
 			}
 
-			void CUIProgressDialog::Step(void)
+			VOID CUIProgressDialog::Step(VOID)
 			{
 				m_Progress.Perform(PBM_STEPIT, 0, 0);
 			}
 
-			void CUIProgressDialog::ProcessMessages(void)
+			VOID FIXAPI CUIProgressDialog::ProcessMessages(VOID)
 			{
 				if (ProgressDialog)
 					Core::Classes::UI::CUIMainWindow::ProcessMessages();
 				else
 					Sleep(1);
+			}
+
+			VOID FIXAPI CUIProgressDialog::ProcessMessagesOnlyLoadCellWorld(VOID)
+			{
+				if (ProgressDialog)
+					Core::Classes::UI::CUIMainWindow::ProcessMessages();
 			}
 
 			LRESULT CUIProgressDialog::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)

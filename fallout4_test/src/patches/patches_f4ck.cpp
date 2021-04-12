@@ -249,6 +249,9 @@ void Patch_Fallout4CreationKit()
 			XUtil::DetourClassCall(OFFSET(0x2629D96, 0), &Core::Classes::UI::CUIProgressDialog::ProcessMessages);
 			XUtil::DetourClassCall(OFFSET(0x262A6B2, 0), &Core::Classes::UI::CUIProgressDialog::ProcessMessages);
 			XUtil::DetourClassCall(OFFSET(0x262A6BF, 0), &Core::Classes::UI::CUIProgressDialog::ProcessMessages);
+
+			// Experimental: Loading cell ... (need for progressbar drawing)
+			XUtil::DetourClassJump(OFFSET(0xE1D2C7, 0), &Core::Classes::UI::CUIProgressDialog::ProcessMessagesOnlyLoadCellWorld);
 		}
 
 		// Close the progress dialog 
@@ -329,8 +332,6 @@ void Patch_Fallout4CreationKit()
 	XUtil::DetourClassJump(OFFSET(0xDF2FBA, 0), &Core::Classes::UI::CUIMainWindow::ProcessMessages);
 	XUtil::DetourClassJump(OFFSET(0x8531BD, 0), &Core::Classes::UI::CUIMainWindow::ProcessMessages);
 	XUtil::DetourClassJump(OFFSET(0x262D1A7, 0), &Core::Classes::UI::CUIMainWindow::ProcessMessages);
-	//XUtil::DetourClassJump(OFFSET(0xD8AE17, 0), &Core::Classes::UI::CUIMainWindow::ProcessMessages);	// Experimental: Loading cell ...
-	//XUtil::DetourClassJump(OFFSET(0xD913BD, 0), &Core::Classes::UI::CUIMainWindow::ProcessMessages);	// Experimental: Loading cell ...
 	// Replacing Sleep(1) on (messages pool)
 	XUtil::DetourClassCall(OFFSET(0x247EF69, 0), &Core::Classes::UI::CUIMainWindow::ProcessMessages);
 	XUtil::DetourClassCall(OFFSET(0x5DD8C2, 0), &Core::Classes::UI::CUIMainWindow::ProcessMessages);
@@ -362,7 +363,10 @@ void Patch_Fallout4CreationKit()
 		// Initialization CreationKitUnicodePlugin.dll
 		BOOL bRes = XUtil::Conversion::LazUnicodePluginInit();
 		if (!bRes)
+		{
 			LogWindow::Log("Library 'CreationKitUnicodePlugin.dll' no found. Unicode support don't patched.");
+			goto label_skip_msg_closeall_dialog;
+		}
 		else
 		{
 			// Also delete it message "You must close all Dialoge Boxes",
@@ -391,6 +395,12 @@ void Patch_Fallout4CreationKit()
 		LogWindow::Log("Unfortunately, your compiled version does not support the 'Experimental::Unicode' option.");
 #endif // !FALLOUT4_LAZ_UNICODE_PLUGIN
 	}
+	else
+	{
+label_skip_msg_closeall_dialog:
+		XUtil::PatchMemoryNop(OFFSET(0x5C4470, 0), 7);
+		XUtil::PatchMemory(OFFSET(0x5C4477, 0), { 0xEB });
+	}
 
 	//
 	// Kill broken destructors causing crashes on exit
@@ -405,6 +415,21 @@ void Patch_Fallout4CreationKit()
 	//
 	Tools::IniHookInputInit();
 #endif // !FALLOUT4_STUDY_CK64_INIFILE
+
+	//
+	// Fix when the value is different from 0.0 to 1.0. Smoothness value to material (nif)
+	//
+	XUtil::DetourCall(OFFSET(0x2B7F5B7, 0), &Fixed_IncorrectSmoothnessValueToMaterialNif);
+	XUtil::PatchMemory(OFFSET(0x2B7F5BC, 0), { 0x66, 0x0F, 0x7E, 0x85, 0x88, 0x00, 0x00, 0x00 });
+	XUtil::PatchMemory(OFFSET(0x2B7F5C4, 0), { 0xEB, 0x18 });
+
+	//
+	// Fix when you delete a group tinting to race Actor window
+	//
+	XUtil::PatchMemory(OFFSET(0x963E2E, 0), { 0x4D, 0x8B, 0x47, 0x8 });
+	XUtil::PatchMemory(OFFSET(0x963E32, 0), { 0x4C, 0x89, 0xE2 });
+	XUtil::DetourCall(OFFSET(0x963E35, 0), &Fixed_DeleteTintingRace);
+	XUtil::PatchMemory(OFFSET(0x963E3A, 0), { 0xEB, 0x18 });
 
 	//
 	// Enable the render window "Go to selection in game" hotkey even if version control is off

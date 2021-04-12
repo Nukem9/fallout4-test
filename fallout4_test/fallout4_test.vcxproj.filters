@@ -589,14 +589,14 @@
     <ClCompile Include="src\patches\CKF4\UITheme\Memo.cpp">
       <Filter>Source Files\UI\Theme</Filter>
     </ClCompile>
-    <ClCompile Include="src\patches\CKF4\Editor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\patches\CKF4\EditorUI.cpp">
-      <Filter>Source Files\Patches\CK</Filter>
-    </ClCompile>
     <ClCompile Include="src\patches\CKF4\ActorWindow.cpp">
       <Filter>Source Files\UI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\EditorUI.cpp">
+      <Filter>Source Files\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\Editor.cpp">
+      <Filter>Source Files\Patches\CK</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

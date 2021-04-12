@@ -457,7 +457,7 @@ VOID FIXAPI InsertListViewItem(HWND ListViewHandle, LPVOID Parameter, BOOL UseIm
 	item.iItem = ItemIndex;
 	item.lParam = (LPARAM)Parameter;
 	item.pszText = LPSTR_TEXTCALLBACK;
-
+	
 	if (UseImage)
 	{
 		item.mask |= LVIF_IMAGE;
@@ -536,6 +536,23 @@ VOID FIXAPI PatchFogToggle(VOID)
 
 	XUtil::DetourCall(OFFSET(0xF8CAF3, 0), &hk_IsFogEnabled);
 	XUtil::DetourJump(OFFSET(0xF90CE0, 0), &hk_IsFogEnabled);
+}
+
+FLOAT FIXAPI Fixed_IncorrectSmoothnessValueToMaterialNif(FLOAT a1, FLOAT a2)
+{
+	if (a2 > 1.0)
+		return 1.0;
+	else
+		return 0.0;
+}
+
+VOID FIXAPI Fixed_DeleteTintingRace(INT64 count, INT64 item_id, HWND listview)
+{
+	if (!count)
+		return;
+
+	for (auto i = 0; i < count; i++)
+		ListView_DeleteItem(listview, item_id);
 }
 
 VOID FIXAPI PatchTemplatedFormIterator(VOID)
