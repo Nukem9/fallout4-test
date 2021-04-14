@@ -202,6 +202,10 @@ namespace CellViewWindow
 
 			return lResult;
 		}
+		else if (Message == WM_DESTROY)
+		{
+			KillTimer(DialogHwnd, UI_TIMER_FILTER_CELL);
+		}
 
 		return OldDlgProc(DialogHwnd, Message, wParam, lParam);
 	}
