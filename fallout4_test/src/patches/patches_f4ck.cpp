@@ -206,8 +206,12 @@ void Patch_Fallout4CreationKit()
 		XUtil::DetourCall(OFFSET(0x3FE4CA, 0), &ObjectWindow::hk_7FF72F57F8F0);
 		// Allow forms to be filtered in CellViewProc
 		XUtil::DetourCall(OFFSET(0x6435BF, 0), &CellViewWindow::hk_7FF70C322BC0);
+		XUtil::DetourCall(OFFSET(0xF3C311, 0), &CellViewWindow::hk_7FF70C322BC0);
 		// Allow objects to be filtered in CellViewProc
 		XUtil::DetourCall(OFFSET(0x5A43B5, 0), &CellViewWindow::hk_call_5A43B5);
+
+		// Cancel resize World Space combo
+		XUtil::PatchMemoryNop(OFFSET(0x59DA1D, 0), 5);
 
 		//
 		// Since I'm used to seeing SSE fixes
@@ -420,17 +424,15 @@ label_skip_msg_closeall_dialog:
 	// Fix when the value is different from 0.0 to 1.0. Smoothness value to material (nif)
 	//
 	XUtil::DetourCall(OFFSET(0x2B7F5B7, 0), &Fixed_IncorrectSmoothnessValueToMaterialNif);
-	XUtil::PatchMemory(OFFSET(0x2B7F5BC, 0), { 0x66, 0x0F, 0x7E, 0x85, 0x88, 0x00, 0x00, 0x00 });
-	XUtil::PatchMemory(OFFSET(0x2B7F5C4, 0), { 0xEB, 0x18 });
+	XUtil::PatchMemory(OFFSET(0x2B7F5BC, 0), { 0x66, 0x0F, 0x7E, 0x85, 0x88, 0x00, 0x00, 0x00, 0xEB, 0x18 });
 
 	//
-	// Fix when you delete a group tinting to race Actor window
+	// Fix when you delete a group tinting to race window
 	//
-	XUtil::PatchMemory(OFFSET(0x963E2E, 0), { 0x4D, 0x8B, 0x47, 0x8 });
-	XUtil::PatchMemory(OFFSET(0x963E32, 0), { 0x4C, 0x89, 0xE2 });
+	XUtil::PatchMemory(OFFSET(0x963E2E, 0), { 0x4D, 0x8B, 0x47, 0x8, 0x4C, 0x89, 0xE2 });
 	XUtil::DetourCall(OFFSET(0x963E35, 0), &Fixed_DeleteTintingRace);
 	XUtil::PatchMemory(OFFSET(0x963E3A, 0), { 0xEB, 0x18 });
-
+	
 	//
 	// Enable the render window "Go to selection in game" hotkey even if version control is off
 	//

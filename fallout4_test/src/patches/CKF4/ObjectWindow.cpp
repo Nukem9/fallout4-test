@@ -1,5 +1,6 @@
 #include "ObjectWindow.h"
 #include "EditorUI.h"
+#include "MainWindow.h"
 
 #include <unordered_map>
 
@@ -133,6 +134,8 @@ namespace ObjectWindow
 			// Erase Icon and SysMenu
 			if (!ObjectWindows.size())
 				lpObjWnd->ObjectWindow.Style = WS_OVERLAPPED | WS_CAPTION | WS_THICKFRAME;
+			else
+				lpObjWnd->ObjectWindow.Style = WS_OVERLAPPED | WS_CAPTION | WS_THICKFRAME | WS_MINIMIZEBOX | WS_SYSMENU;
 
 			lpObjWnd->Controls.BtnObjLayout.Top = lpObjWnd->Controls.ComboLayout.Top - 1;
 			lpObjWnd->Controls.BtnObjLayout.Height = lpObjWnd->Controls.ComboLayout.Height + 2;

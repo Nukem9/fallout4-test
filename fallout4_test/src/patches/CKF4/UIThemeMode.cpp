@@ -431,8 +431,11 @@ namespace UITheme
 				}
 				else if (((uStyles & WS_CAPTION) == WS_CAPTION) && ((uStyles & WS_CHILD) != WS_CHILD))
 				{
-					// Remember the system window of this window, it is necessary to forbid its rendering by styles
-					//Theme::PopupMenu::RegisterSystemPopupMenu(hWnd);
+					if ((uStyles & WS_SYSMENU) == WS_SYSMENU)
+					{
+						SetClassLongPtrA(hWnd, GCLP_HICON, (LONG)LoadIconA((HINSTANCE)g_ModuleBase, MAKEINTRESOURCEA(318)));
+						SetClassLongPtrA(hWnd, GCLP_HICONSM, (LONG)LoadIconA((HINSTANCE)g_ModuleBase, MAKEINTRESOURCEA(318)));
+					}
 				}
 				break;
 			}

@@ -550,7 +550,7 @@ VOID FIXAPI Fixed_DeleteTintingRace(INT64 count, INT64 item_id, HWND listview)
 {
 	if (!count)
 		return;
-
+	
 	for (auto i = 0; i < count; i++)
 		ListView_DeleteItem(listview, item_id);
 }

@@ -76,3 +76,5 @@ extern char g_GitVersion[64];
 #define UI_CUSTOM_MESSAGE	52000
 
 #define FIXAPI __stdcall
+#define PROPERTY(read_func, write_func) __declspec(property(get = read_func, put = write_func))
+#define READ_PROPERTY(read_func) __declspec(property(get = read_func))
