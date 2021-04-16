@@ -95,9 +95,6 @@
     <ClInclude Include="src\patches\TES\Setting.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\patches\TES\NiMain\common.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\config.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -188,9 +185,6 @@
     <ClInclude Include="src\patches\CKF4\EditorUI.h">
       <Filter>Header Files\UI</Filter>
     </ClInclude>
-    <ClInclude Include="src\dump.h">
-      <Filter>Header Files\Patches</Filter>
-    </ClInclude>
     <ClInclude Include="src\patches\TES\MemoryManager.h">
       <Filter>Header Files\Patches</Filter>
     </ClInclude>
@@ -198,24 +192,6 @@
       <Filter>Header Files\Classes</Filter>
     </ClInclude>
     <ClInclude Include="src\patches\TES\BSTArray.h">
-      <Filter>Header Files\Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="src\patches\TES\NiMain\BSTriShape.h">
-      <Filter>Header Files\Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="src\patches\TES\NiMain\BSNiNode.h">
-      <Filter>Header Files\Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="src\patches\TES\NiMain\BSGeometry.h">
-      <Filter>Header Files\Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="src\patches\TES\NiMain\BSDynamicTriShape.h">
-      <Filter>Header Files\Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="src\patches\TES\NiMain\BSMultiIndexTriShape.h">
-      <Filter>Header Files\Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="src\patches\TES\NiMain\BSMultiBoundNode.h">
       <Filter>Header Files\Classes</Filter>
     </ClInclude>
     <ClInclude Include="src\patches\CKF4\TESForm_CK.h">
@@ -377,13 +353,13 @@
     <ClInclude Include="src\patches\CKF4\ActorWindow.h">
       <Filter>Header Files\UI\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="src\dump.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\dllmain.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\dump.cpp">
-      <Filter>Source Files\Patches</Filter>
     </ClCompile>
     <ClCompile Include="src\profiler.cpp">
       <Filter>Source Files</Filter>
@@ -597,6 +573,9 @@
     </ClCompile>
     <ClCompile Include="src\patches\CKF4\Editor.cpp">
       <Filter>Source Files\Patches\CK</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dump.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

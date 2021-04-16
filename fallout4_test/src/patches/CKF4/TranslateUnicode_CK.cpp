@@ -1,6 +1,5 @@
 #define _CRT_SECURE_NO_WARNINGS
 
-#include "..\..\Common.h"
 #include "TranslateUnicode_CK.h"
 
 #include <CommCtrl.h>
@@ -16,40 +15,40 @@ namespace Core
 		{
 			CTranslateUnicodeMediator Translator;
 
-			CTranslateUnicodeMediator::CTranslateUnicodeMediator(void)
+			CTranslateUnicodeMediator::CTranslateUnicodeMediator(VOID)
 			{
-				m_Mode = false;
-				m_preaddres = nullptr;
+				m_Mode = FALSE;
+				m_preaddres = NULL;
 			}
 
-			CTranslateUnicodeMediator::~CTranslateUnicodeMediator(void)
+			CTranslateUnicodeMediator::~CTranslateUnicodeMediator(VOID)
 			{
 				heap.clear();
 			}
 
-			void CTranslateUnicodeMediator::SetMode(const bool mode)
+			VOID CTranslateUnicodeMediator::SetMode(const BOOL mode)
 			{
 				m_Mode = mode;
 
 				if (!m_Mode)
 				{
 					heap.clear();
-					m_preaddres = nullptr;
+					m_preaddres = NULL;
 				}
 			}
 
-			bool CTranslateUnicodeMediator::IsValid(const char* addr, const bool no_ansi)
+			BOOL CTranslateUnicodeMediator::IsValid(LPCSTR addr, const BOOL no_ansi)
 			{
 				if (no_ansi)
 				{
-					bool bRes = (addr != nullptr) && (addr != LPSTR_TEXTCALLBACKA);
+					BOOL bRes = (addr != NULL) && (addr != LPSTR_TEXTCALLBACKA);
 					if (bRes)
 					{
 						// Don't check the entire line, it's very long and unnecessary.
 						// Yes, I admit, there will be omissions, but extremely short lines like F0 to F12 and some small things
 
 						size_t l = strlen(addr), limit = 5, lim = 0;
-						if (l == 0) return false;
+						if (l == 0) return FALSE;
 
 						if (limit > l) limit = l;
 
@@ -58,24 +57,24 @@ namespace Core
 							if ((addr[i] >= 0x41) && (addr[i] <= 0x7E))
 								lim++;
 
-							if (limit == lim) return false;
+							if (limit == lim) return FALSE;
 						}
 
-						return true;
+						return TRUE;
 					}
 				}
 
-				return ((addr != nullptr) && (addr != LPSTR_TEXTCALLBACKA) && (strlen(addr) > 0));
+				return ((addr != NULL) && (addr != LPSTR_TEXTCALLBACKA) && (strlen(addr) > 0));
 			}
 
-			char* CTranslateUnicodeMediator::Utf8ToWinCP(const char* src)
+			LPSTR CTranslateUnicodeMediator::Utf8ToWinCP(LPCSTR src)
 			{
 				// Ansi verification is necessary because there are a lot of strings, especially short and system strings. 
 				// The debug file without this option was more than 70 mb, compared to 2604 kb.
 				// Translation of fallout4.esm has become significantly faster.
 
-				if ((src == m_preaddres) || !IsValid(src, false) || !XUtil::Conversion::IsUtf8Valid(src))
-					return const_cast<char*>(src);
+				if ((src == m_preaddres) || !IsValid(src, FALSE) || !XUtil::Conversion::IsUtf8Valid(src))
+					return const_cast<LPSTR>(src);
 
 				std::string wincp_str = XUtil::Conversion::Utf8ToAnsi(src);
 
@@ -86,19 +85,19 @@ namespace Core
 #endif // __DBG_TRAN_UNICODE_READ
 
 				// utf-8 takes up more memory than ansi, so I can use active memory
-				m_preaddres = const_cast<char*>(src);
+				m_preaddres = const_cast<LPSTR>(src);
 				strcpy(m_preaddres, wincp_str.c_str());
 
 				return m_preaddres;
 			}
 
-			char* CTranslateUnicodeMediator::WinCPToUtf8(const char* src)
+			LPSTR CTranslateUnicodeMediator::WinCPToUtf8(LPCSTR src)
 			{
 				// Not all strings are translated during loading and remain in Utf-8. 
 				// They are loaded after opening the dialog. As an example "Description".
 
 				if (!IsValid(src) || XUtil::Conversion::IsUtf8Valid(src))
-					return const_cast<char*>(src);
+					return const_cast<LPSTR>(src);
 
 				// in the Creation Kit code, the request to return a string occurs twice in a row.
 				if ((m_preaddres == src) && (heap.size() > 0))
@@ -119,11 +118,11 @@ namespace Core
 				heap.push_back(utf8_str);
 
 				// pointer to the memory of the contents of the last line, it is of course unique
-				m_preaddres = const_cast<char*>(src);
+				m_preaddres = const_cast<LPSTR>(src);
 				return &heap.back()[0];
 			}
 
-			char* CTranslateUnicodeMediator::Translate(const char* src)
+			LPSTR CTranslateUnicodeMediator::Translate(LPCSTR src)
 			{
 				// Back to utf-8 (temporarily)
 				if (m_Mode)
@@ -138,29 +137,29 @@ namespace Core
 
 namespace Experimental
 {
-	int __stdcall BeginPluginSave(void)
+	INT32 FIXAPI BeginPluginSave(VOID)
 	{
-		Core::Patch::CreationKit::Translator.SetMode(true);
+		Core::Patch::CreationKit::Translator.SetMode(TRUE);
 
 		// need return 1 in rax
 		return 1;
 	}
 
-	void* __stdcall EndPluginSave(void* __arg1)
+	LPVOID FIXAPI EndPluginSave(LPVOID __arg1)
 	{
-		void* ret = ((void* (__cdecl*)(void*))OFFSET(0x2A81F, 0))(__arg1);
-		Core::Patch::CreationKit::Translator.SetMode(false);
+		LPVOID ret = ((LPVOID(__cdecl*)(LPVOID))OFFSET(0x2A81F, 0))(__arg1);
+		Core::Patch::CreationKit::Translator.SetMode(FALSE);
 
 		// return HCURSOR
 		return ret;
 	}
 
-	char* __stdcall Translate(char* str)
+	LPSTR FIXAPI Translate(LPSTR str)
 	{
 		return Core::Patch::CreationKit::Translator.Translate(str);
 	}
 
-	BOOL WINAPI hk_SetDlgItemTextA(HWND hDlg, int nIDDlgItem, LPCSTR lpString)
+	BOOL WINAPI hk_SetDlgItemTextA(HWND hDlg, INT32 nIDDlgItem, LPCSTR lpString)
 	{
 		switch (nIDDlgItem)
 		{
@@ -179,7 +178,7 @@ namespace Experimental
 		}
 	}
 
-	LRESULT WINAPI hk_SendDlgItemMessageA(HWND hDlg, int nIDDlgItem, UINT Msg, WPARAM wParam, LPARAM lParam)
+	LRESULT WINAPI hk_SendDlgItemMessageA(HWND hDlg, INT32 nIDDlgItem, UINT Msg, WPARAM wParam, LPARAM lParam)
 	{
 		if (Msg != WM_GETTEXT && Msg != WM_GETTEXTLENGTH)
 			MsgTextDef:
@@ -193,7 +192,7 @@ namespace Experimental
 		case UI_RESID_DESCRIPTION_PLUGIN:
 		{
 			hCtrlWnd = GetDlgItem(hDlg, nIDDlgItem);
-			int maxlen = GetWindowTextLengthA(hCtrlWnd) << 2;
+			INT32 maxlen = GetWindowTextLengthA(hCtrlWnd) << 2;
 
 			if (maxlen <= 0)
 				goto MsgTextDef;

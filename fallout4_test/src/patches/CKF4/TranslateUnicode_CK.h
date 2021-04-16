@@ -6,7 +6,7 @@
 #define VC_EXTRALEAN
 #define WIN32_LEAN_AND_MEAN
 
-#include <Windows.h>
+#include "..\..\Common.h"
 
 #include <list>
 #include <string>
@@ -20,9 +20,8 @@ namespace Core
 			class CTranslateUnicodeMediator
 			{
 			private:
-			//	int m_CodePage;
-				bool m_Mode;
-				char* m_preaddres;
+				BOOL m_Mode;
+				LPSTR m_preaddres;
 				std::list<std::string> heap;
 #ifdef __DBG_TRAN_UNICODE_WRITE
 				std::ofstream out;
@@ -30,20 +29,15 @@ namespace Core
 				std::ofstream out;
 #endif // __DBG_TRAN_UNICODE
 			private:
-				bool IsValid(const char* addr, const bool no_ansi = false);
-				char* Utf8ToWinCP(const char* src);
-				char* WinCPToUtf8(const char* src);
-			/*public:
-				int GetCodePage(void);
-				void SetCodePage(const int codepage);*/
+				BOOL IsValid(LPCSTR addr, const BOOL no_ansi = FALSE);
+				LPSTR Utf8ToWinCP(LPCSTR src);
+				LPSTR WinCPToUtf8(LPCSTR src);
 			public:
-				void SetMode(const bool mode);
-				char* Translate(const char* src);
-			/*public:
-				__declspec(property(get = GetCodePage, put = SetCodePage)) int CodePage;*/
+				VOID SetMode(const BOOL mode);
+				LPSTR Translate(LPCSTR src);
 			public:
-				CTranslateUnicodeMediator(/*const int codepage = -1*/void);
-				~CTranslateUnicodeMediator(void);
+				CTranslateUnicodeMediator(VOID);
+				~CTranslateUnicodeMediator(VOID);
 			};
 
 			extern CTranslateUnicodeMediator Translator;
@@ -53,10 +47,10 @@ namespace Core
 
 namespace Experimental
 {
-	int __stdcall BeginPluginSave(void);
-	void* __stdcall EndPluginSave(void* __arg1);
-	char* __stdcall Translate(char* str);
+	INT FIXAPI BeginPluginSave(VOID);
+	LPVOID FIXAPI EndPluginSave(LPVOID __arg1);
+	LPSTR FIXAPI Translate(LPSTR str);
 
-	BOOL WINAPI hk_SetDlgItemTextA(HWND hDlg, INT nIDDlgItem, LPCSTR lpString);
-	LRESULT WINAPI hk_SendDlgItemMessageA(HWND hDlg, INT nIDDlgItem, UINT Msg, WPARAM wParam, LPARAM lParam);
+	BOOL WINAPI hk_SetDlgItemTextA(HWND hDlg, INT32 nIDDlgItem, LPCSTR lpString);
+	LRESULT WINAPI hk_SendDlgItemMessageA(HWND hDlg, INT32 nIDDlgItem, UINT Msg, WPARAM wParam, LPARAM lParam);
 }

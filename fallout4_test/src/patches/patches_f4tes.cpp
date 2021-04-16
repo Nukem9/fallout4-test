@@ -2,19 +2,16 @@
 #include "TES/MemoryManager.h"
 #include "TES/bhkThreadMemorySource.h"
 
-#pragma comment(lib, "Version.lib")
-
 #include <string>	
 
-VOID PatchSettings();
-VOID PatchMemory();
-VOID PatchThreading();
-VOID PatchWindow();
-VOID LoadSettingFromIni();
-BOOL PatchAchievements();
+VOID FIXAPI PatchSettings(VOID);
+VOID FIXAPI PatchMemory(VOID);
+VOID FIXAPI PatchThreading(VOID);
+VOID FIXAPI PatchWindow(VOID);
+VOID FIXAPI LoadSettingFromIni(VOID);
+BOOL FIXAPI PatchAchievements(VOID);
 
-
-std::string GetGameVersion()
+std::string FIXAPI GetGameVersion(VOID)
 {
 	CHAR szExeName[1024];
 	GetModuleFileNameA(GetModuleHandleA(NULL), szExeName, ARRAYSIZE(szExeName));
@@ -42,7 +39,7 @@ std::string GetGameVersion()
 	return str;
 }
 
-void Patch_Fallout4Game()
+VOID FIXAPI Patch_Fallout4Game(VOID)
 {
 	std::string version = GetGameVersion();
 

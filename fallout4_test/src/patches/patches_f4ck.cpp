@@ -28,10 +28,10 @@
 
 #include <xbyak/xbyak.h>
 
-void PatchMemory();
-void PatchThreading();
+VOID FIXAPI PatchMemory(VOID);
+VOID FIXAPI PatchThreading(VOID);
 
-void Patch_Fallout4CreationKit()
+VOID FIXAPI Patch_Fallout4CreationKit(VOID)
 {
 	if (!_stricmp((LPCSTR)(g_ModuleBase + 0x3896168), "1.10.162.0"))
 	{
@@ -291,6 +291,20 @@ void Patch_Fallout4CreationKit()
 	// Fix fog
 	if (g_INI.GetBoolean("Experimental", "EnableDrawFog", FALSE))
 		PatchFogToggle();
+
+	// Cut check spelling window
+	if (g_INI.GetBoolean("Experimental", "CutCheckSpellingWindow", FALSE))
+	{
+		XUtil::PatchMemoryNop(OFFSET(0x84D7EE, 0), 5);
+		XUtil::PatchMemoryNop(OFFSET(0xA55B7E, 0), 5);
+		XUtil::PatchMemoryNop(OFFSET(0xB08405, 0), 5);
+		XUtil::PatchMemoryNop(OFFSET(0xB5F59F, 0), 5);
+		XUtil::PatchMemoryNop(OFFSET(0xB5FECF, 0), 5);
+		XUtil::PatchMemoryNop(OFFSET(0xB600B9, 0), 5);
+		XUtil::PatchMemoryNop(OFFSET(0xB6D13E, 0), 5);
+		XUtil::PatchMemoryNop(OFFSET(0xBA0505, 0), 5);
+		XUtil::PatchMemoryNop(OFFSET(0xBED343, 0), 5);
+	}
 
 	//
 	// AllowSaveESM   - Allow saving ESMs directly without version control

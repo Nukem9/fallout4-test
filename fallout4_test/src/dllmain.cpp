@@ -2,10 +2,12 @@
 #include "version_info.h"
 #include "profiler_internal.h"
 
-VOID Patch_Fallout4CreationKit();
-VOID Patch_Fallout4Game();
+VOID FIXAPI DumpDisableBreakpoint(VOID);
+VOID FIXAPI DumpEnableBreakpoint(VOID);
+VOID FIXAPI Patch_Fallout4CreationKit(VOID);
+VOID FIXAPI Patch_Fallout4Game(VOID);
 
-VOID ApplyPatches()
+VOID FIXAPI ApplyPatches(VOID)
 {
 	// The EXE has been unpacked at this point
 	strcpy_s(g_GitVersion, VER_CURRENT_COMMIT_ID);

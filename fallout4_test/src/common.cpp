@@ -11,6 +11,7 @@
 #pragma comment(lib, "dxguid.lib")
 #pragma comment(lib, "ws2_32.lib")
 #pragma comment(lib, "uxtheme.lib")
+#pragma comment(lib, "Version.lib")
 
 #pragma comment(lib, "tbb.lib")					// Thread Building Blocks
 #pragma comment(lib, "libzydis.lib")			// Zydis

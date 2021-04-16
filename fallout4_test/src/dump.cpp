@@ -1,13 +1,15 @@
-#include "common.h"
+#include "dump.h"
 #include <DbgHelp.h>
 #include <atomic>
 
-char TempNTSIT[16];
+CHAR TempNTSIT[16];
 ULONG_PTR TempNTSITAddress;
 std::atomic_uint32_t g_DumpTargetThreadId;
 LONG(NTAPI * NtSetInformationThread)(HANDLE ThreadHandle, LONG ThreadInformationClass, PVOID ThreadInformation, ULONG ThreadInformationLength);
 
-void ApplyPatches();
+VOID FIXAPI DumpDisableBreakpoint(VOID);
+VOID FIXAPI DumpEnableBreakpoint(VOID);
+VOID FIXAPI ApplyPatches(VOID);
 BOOL WINAPI hk_QueryPerformanceCounter(LARGE_INTEGER *lpPerformanceCount)
 {
 	// Restore the original pointer
@@ -34,9 +36,9 @@ LONG NTAPI hk_NtSetInformationThread(HANDLE ThreadHandle, LONG ThreadInformation
 	return NtSetInformationThread(ThreadHandle, ThreadInformationClass, ThreadInformation, ThreadInformationLength);
 }
 
-void DumpEnableBreakpoint()
+VOID FIXAPI DumpEnableBreakpoint(VOID)
 {
-	uintptr_t moduleBase = (uintptr_t)GetModuleHandle(nullptr);
+	uintptr_t moduleBase = (uintptr_t)GetModuleHandleA(NULL);
 	PIMAGE_NT_HEADERS64 ntHeaders = (PIMAGE_NT_HEADERS64)(moduleBase + ((PIMAGE_DOS_HEADER)moduleBase)->e_lfanew);
 
 	// Get the load configuration section which holds the security cookie address
@@ -70,16 +72,16 @@ void DumpEnableBreakpoint()
 	PatchIAT(hk_QueryPerformanceCounter, "kernel32.dll", "QueryPerformanceCounter");
 
 	// Kill steam's unpacker call to NtSetInformationThread(ThreadHideFromDebugger)
-	TempNTSITAddress = (uintptr_t)GetProcAddress(GetModuleHandle("ntdll.dll"), "NtSetInformationThread");
+	TempNTSITAddress = (uintptr_t)GetProcAddress(GetModuleHandleA("ntdll.dll"), "NtSetInformationThread");
 
 	if (TempNTSITAddress)
 	{
-		memcpy(&TempNTSIT, (void *)TempNTSITAddress, sizeof(TempNTSIT));
+		memcpy(&TempNTSIT, (LPVOID)TempNTSITAddress, sizeof(TempNTSIT));
 		*(uintptr_t *)&NtSetInformationThread = Detours::X64::DetourFunctionClass(TempNTSITAddress, &hk_NtSetInformationThread);
 	}
 }
 
-void DumpDisableBreakpoint()
+VOID FIXAPI DumpDisableBreakpoint(VOID)
 {
 	// Restore the original QPC pointer
 	PatchIAT(QueryPerformanceCounter, "kernel32.dll", "QueryPerformanceCounter");
@@ -95,8 +97,8 @@ DWORD WINAPI DumpWriterThread(LPVOID Arg)
 {
 	Assert(Arg);
 
-	char fileName[MAX_PATH];
-	bool dumpWritten = false;
+	CHAR fileName[MAX_PATH];
+	BOOL dumpWritten = FALSE;
 
 	PEXCEPTION_POINTERS exceptionInfo = (PEXCEPTION_POINTERS)Arg;
 	auto miniDumpWriteDump = (decltype(&MiniDumpWriteDump))GetProcAddress(LoadLibraryA("dbghelp.dll"), "MiniDumpWriteDump");
@@ -104,14 +106,14 @@ DWORD WINAPI DumpWriterThread(LPVOID Arg)
 	if (miniDumpWriteDump)
 	{
 		// Create a dump in the same folder of the exe itself
-		char exePath[MAX_PATH];
-		GetModuleFileNameA(GetModuleHandle(nullptr), exePath, ARRAYSIZE(exePath));
+		CHAR exePath[MAX_PATH];
+		GetModuleFileNameA(GetModuleHandleA(NULL), exePath, ARRAYSIZE(exePath));
 
 		SYSTEMTIME sysTime;
 		GetSystemTime(&sysTime);
 		sprintf_s(fileName, "%s_%4d%02d%02d_%02d%02d%02d.dmp", exePath, sysTime.wYear, sysTime.wMonth, sysTime.wDay, sysTime.wHour, sysTime.wMinute, sysTime.wSecond);
 
-		HANDLE file = CreateFileA(fileName, GENERIC_READ | GENERIC_WRITE, 0, nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
+		HANDLE file = CreateFileA(fileName, GENERIC_READ | GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 
 		if (file != INVALID_HANDLE_VALUE)
 		{
@@ -121,18 +123,16 @@ DWORD WINAPI DumpWriterThread(LPVOID Arg)
 			dumpInfo.ClientPointers = FALSE;
 
 			uint32_t dumpFlags = MiniDumpNormal | MiniDumpWithIndirectlyReferencedMemory | MiniDumpWithThreadInfo;
-			dumpWritten = miniDumpWriteDump(GetCurrentProcess(), GetCurrentProcessId(), file, (MINIDUMP_TYPE)dumpFlags, &dumpInfo, nullptr, nullptr) != FALSE;
+			dumpWritten = miniDumpWriteDump(GetCurrentProcess(), GetCurrentProcessId(), file, (MINIDUMP_TYPE)dumpFlags, &dumpInfo, NULL, NULL) != FALSE;
 
 			CloseHandle(file);
 		}
 	}
 	else
-	{
 		strcpy_s(fileName, "UNABLE TO LOAD DBGHELP.DLL");
-	}
 
-	const char *message = nullptr;
-	const char *reason = nullptr;
+	LPCSTR message = NULL;
+	LPCSTR reason = NULL;
 
 	if (dumpWritten)
 		message = "FATAL ERROR\n\nThe Creation Kit encountered a fatal error and has crashed.\n\nReason: %s (0x%08X).\n\nA minidump has been written to '%s'.\n\nPlease note it may contain private information such as usernames.";
@@ -165,7 +165,7 @@ DWORD WINAPI DumpWriterThread(LPVOID Arg)
 LONG WINAPI DumpExceptionHandler(PEXCEPTION_POINTERS ExceptionInfo)
 {
 	g_DumpTargetThreadId.store(GetCurrentThreadId());
-	HANDLE threadHandle = CreateThread(nullptr, 0, DumpWriterThread, ExceptionInfo, 0, nullptr);
+	HANDLE threadHandle = CreateThread(NULL, 0, DumpWriterThread, ExceptionInfo, 0, NULL);
 
 	if (threadHandle)
 	{

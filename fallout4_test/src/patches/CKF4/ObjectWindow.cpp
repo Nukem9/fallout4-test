@@ -149,7 +149,7 @@ namespace ObjectWindow
 		{
 			LPMINMAXINFO lpMMI = (LPMINMAXINFO)lParam;
 			lpMMI->ptMinTrackSize.x = 350;
-			lpMMI->ptMinTrackSize.y = 500;
+			lpMMI->ptMinTrackSize.y = 200;
 
 			return S_OK;
 		}

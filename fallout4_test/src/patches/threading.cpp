@@ -14,7 +14,7 @@ DWORD_PTR WINAPI hk_SetThreadAffinityMask(HANDLE hThread, DWORD_PTR dwThreadAffi
 	return 0xFFFFFFFF;
 }
 
-void WINAPI hk_Sleep(DWORD dwMilliseconds)
+VOID WINAPI hk_Sleep(DWORD dwMilliseconds)
 {
 	// Bethesda's spinlock calls Sleep(0) every iteration until 10,000. Then it
 	// uses Sleep(1). Even with 0ms waits, there's a tiny performance penalty.
@@ -24,7 +24,7 @@ void WINAPI hk_Sleep(DWORD dwMilliseconds)
 	SleepEx(dwMilliseconds, FALSE);
 }
 
-void PatchThreading()
+VOID FIXAPI PatchThreading(VOID)
 {
 	PatchIAT(hk_SetThreadPriority, "kernel32.dll", "SetThreadPriority");
 	PatchIAT(hk_SetThreadAffinityMask, "kernel32.dll", "SetThreadAffinityMask");

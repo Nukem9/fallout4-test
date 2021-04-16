@@ -192,7 +192,7 @@ VOID ScrapHeap::Deallocate(LPVOID Memory)
 	MemFree(Memory);
 }
 
-VOID PatchMemory(VOID)
+VOID FIXAPI PatchMemory(VOID)
 {
 	scalable_allocation_mode(TBBMALLOC_USE_HUGE_PAGES, 1);
 
