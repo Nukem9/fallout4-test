@@ -202,8 +202,8 @@ namespace Core
 				Recreate(hDC);
 			}
 
-			CUIFont::CUIFont(const std::string& name, const LONG size, const CUIFontStyles& styles, const CUIFontQuality quality,
-				const CUIFontPitch pitch) : CUIObjectGUI(4), m_lock(FALSE),
+			CUIFont::CUIFont(const std::string& name, const LONG size, const CUIFontStyles& styles, const ULONG ulCharSet, const CUIFontQuality quality,
+				const CUIFontPitch pitch) : CUIObjectGUI(4), m_lock(FALSE), m_ulCharSet(ulCharSet),
 				m_Name(name), m_Quality(quality), m_FontStyles(styles), m_Pitch(pitch)
 			{
 				Size = size;
@@ -341,7 +341,7 @@ namespace Core
 					m_FontStyles.count(fsItalic),
 					m_FontStyles.count(fsUnderline),
 					m_FontStyles.count(fsStrikeOut),
-					DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
+					m_ulCharSet, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
 					_Quality,
 					_Pitch,
 					m_Name.c_str());

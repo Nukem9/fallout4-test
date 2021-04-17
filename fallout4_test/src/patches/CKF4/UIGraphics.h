@@ -230,6 +230,7 @@ namespace Core
 				CUIFontQuality m_Quality;
 				CUIFontPitch m_Pitch;
 				LONG m_Height;
+				ULONG m_ulCharSet;
 			private:
 				VOID Change(VOID);
 			public:
@@ -260,10 +261,10 @@ namespace Core
 				PROPERTY(GetQuality, SetQuality) const CUIFontQuality Quality;
 				PROPERTY(GetPitch, SetPitch) const CUIFontPitch Pitch;
 			public:
-				CUIFont(const std::string& name, const LONG size, const CUIFontStyles& styles = {}, const CUIFontQuality quality = fqClearTypeNatural,
+				CUIFont(const std::string& name, const LONG size, const CUIFontStyles& styles = {}, const ULONG ulCharSet = DEFAULT_CHARSET, const CUIFontQuality quality = fqClearTypeNatural,
 					const CUIFontPitch pitch = fpVariable);
 				CUIFont(const HDC hDC);
-				CUIFont(const CUIFont& parent) : CUIObjectGUI(parent), m_FontStyles(parent.m_FontStyles), m_Quality(parent.m_Quality), m_Pitch(parent.m_Pitch),
+				CUIFont(const CUIFont& parent) : CUIObjectGUI(parent), m_FontStyles(parent.m_FontStyles), m_Quality(parent.m_Quality), m_ulCharSet(parent.m_ulCharSet), m_Pitch(parent.m_Pitch),
 					m_Name(parent.m_Name), m_Height(parent.m_Height), m_lock(FALSE) {
 					Recreate();
 				}

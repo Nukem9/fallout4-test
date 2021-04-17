@@ -88,11 +88,16 @@ namespace UITheme
 #endif
 
 	static WNDPROC OldPopupMenuWndClass = NULL;
+	static Classes::CUIFont* listFont = NULL;
 
 	VOID FIXAPI Initialize(Theme::Theme ThemeID)
 	{
 		Theme::SetTheme(ThemeID);
 		EnableThemeHooking = TRUE;
+
+		// I will new it once and forget about its existence
+		// I have no general idea where to destroy it. Yes, and it is not necessary, it will die along with the process.
+		listFont = new Classes::CUIFont("Microsoft Sans Serif", 8, {}, g_INI.GetInteger("Font", "Charset", DEFAULT_CHARSET));
 
 #if THEME_DEBUG
 		ofs.open("__theme_debug.log");
@@ -102,7 +107,7 @@ namespace UITheme
 	VOID FIXAPI InitializeThread(VOID)
 	{
 		if (EnableThemeHooking)
-			SetWindowsHookExA(WH_CALLWNDPROC, CallWndProcCallback, nullptr, GetCurrentThreadId());
+			SetWindowsHookExA(WH_CALLWNDPROC, CallWndProcCallback, NULL, GetCurrentThreadId());
 	}
 
 	BOOL FIXAPI IsEnabledMode(VOID)
@@ -360,12 +365,15 @@ namespace UITheme
 				break;
 			case ThemeType::ListBox:
 				scrollBarTheme = Theme::ListBox::Initialize(hWnd);
+				PostMessageA(hWnd, WM_SETFONT, (WPARAM)listFont->Handle, TRUE);
 				break;
 			case ThemeType::ListView:
 				scrollBarTheme = Theme::ListView::Initialize(hWnd);
+				PostMessageA(hWnd, WM_SETFONT, (WPARAM)listFont->Handle, TRUE);
 				break;
 			case ThemeType::TreeView:
 				scrollBarTheme = Theme::TreeView::Initialize(hWnd);
+				PostMessageA(hWnd, WM_SETFONT, (WPARAM)listFont->Handle, TRUE);
 				break;
 			case ThemeType::TabControl:
 				Theme::PageControl::Initialize(hWnd); 

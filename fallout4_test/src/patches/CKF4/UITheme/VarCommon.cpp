@@ -6,7 +6,7 @@ namespace Core
 	{
 		namespace Theme
 		{
-			const Core::Classes::UI::CUIFont ThemeFont("Microsoft Sans Serif", 8, {}, Core::Classes::UI::fqClearTypeNatural, Core::Classes::UI::fpVariable);
+			const Core::Classes::UI::CUIFont ThemeFont("Microsoft Sans Serif", 8, {}, DEFAULT_CHARSET, Core::Classes::UI::fqClearTypeNatural, Core::Classes::UI::fpVariable);
 
 			constexpr COLORREF szConstDark[62]
 			{
