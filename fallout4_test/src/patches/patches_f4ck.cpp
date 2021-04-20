@@ -167,8 +167,11 @@ VOID FIXAPI Patch_Fallout4CreationKit(VOID)
 		*(uintptr_t*)&DataWindow::OldDlgProc = Detours::X64::DetourFunctionClass(OFFSET(0x5A8250, 0), &DataWindow::DlgProc);
 		*(uintptr_t*)&ActorWindow::OldDlgProc = Detours::X64::DetourFunctionClass(OFFSET(0x64B590, 0), &ActorWindow::DlgProc);
 
-		if(UITheme::IsEnabledMode())
-			*(uintptr_t*)&PreferencesWindow::OldDlgProc = Detours::X64::DetourFunctionClass(OFFSET(0x1335AF0, 0), &PreferencesWindow::DlgProc);
+		if (UITheme::IsEnabledMode())
+		{
+			*(uintptr_t*)&PreferencesWindow::OldDlgProc = OFFSET(0x1335AF0, 0);
+			XUtil::DetourCall(OFFSET(0x1336521, 0), &PreferencesWindow::CreateDialogParamA);
+		}
 
 		// CheckMenuItem is called, however, it always gets zero, but eight is written on top, which is equal to MFS_CHECKED.
 		XUtil::PatchMemoryNop(OFFSET(0x5B820D, 0), 6);

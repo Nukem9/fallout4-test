@@ -1,5 +1,6 @@
 #include "PreferencesWindow.h"
 #include "UITheme/TimeOfDay.h"
+#include "Editor.h"
 
 #include <CommCtrl.h>
 
@@ -36,6 +37,13 @@ namespace PreferencesWindow
 
 		ToD::NewUITimeOfDayComponents.hWndTrackBar.Perform(TBM_SETPOS, TRUE, (LPARAM)iPos);
 		ToD::NewUITimeOfDayComponents.hWndEdit.Caption = szBuf;
+	}
+
+	HWND WINAPI CreateDialogParamA(HINSTANCE hInstance, LPCSTR lpTemplateName, HWND hWndParent, DLGPROC lpDialogFunc, LPARAM dwInitParam)
+	{
+		if (lpTemplateName == (LPCSTR)0xA9)
+			return hk_CreateDialogParamA(hInstance, lpTemplateName, hWndParent, DlgProc, dwInitParam);
+		return hk_CreateDialogParamA(hInstance, lpTemplateName, hWndParent, lpDialogFunc, dwInitParam);
 	}
 
 	INT_PTR CALLBACK DlgProc(HWND DialogHwnd, UINT Message, WPARAM wParam, LPARAM lParam)
