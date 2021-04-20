@@ -13,6 +13,7 @@
 #include <algorithm>
 #include <d3d11.h>
 #include <d3d11_2.h>
+#include <stdexcept>
 
 // Intel VTune
 #if SKYRIM64_USE_VTUNE

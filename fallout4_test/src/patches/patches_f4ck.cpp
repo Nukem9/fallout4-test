@@ -435,18 +435,27 @@ label_skip_msg_closeall_dialog:
 #endif // !FALLOUT4_STUDY_CK64_INIFILE
 
 	//
-	// Fix when the value is different from 0.0 to 1.0. Smoothness value to material (nif)
+	// Fixed when the value is different from 0.0 to 1.0. Smoothness value to material (nif)
 	//
 	XUtil::DetourCall(OFFSET(0x2B7F5B7, 0), &Fixed_IncorrectSmoothnessValueToMaterialNif);
 	XUtil::PatchMemory(OFFSET(0x2B7F5BC, 0), { 0x66, 0x0F, 0x7E, 0x85, 0x88, 0x00, 0x00, 0x00, 0xEB, 0x18 });
 
 	//
-	// Fix when you delete a group tinting to race window
+	// Fixed when you delete a group tinting to race window
 	//
 	XUtil::PatchMemory(OFFSET(0x963E2E, 0), { 0x4D, 0x8B, 0x47, 0x8, 0x4C, 0x89, 0xE2 });
 	XUtil::DetourCall(OFFSET(0x963E35, 0), &Fixed_DeleteTintingRace);
 	XUtil::PatchMemory(OFFSET(0x963E3A, 0), { 0xEB, 0x18 });
 	
+	//
+	// Fixed crash when by load plugin in which there is no root parent to materials
+	//
+	XUtil::PatchMemory(OFFSET(0x2500E7C, 0), { 0x0F, 0xC6, 0x1D, 0x1C, 0xC0, 0x30, 0x01, 0xEE, 0x0F, 0xC6, 0x05, 0x14,
+		0xC0, 0x30, 0x01, 0x44, 0x31, 0xC0, 0xEB, 0x4B });
+	XUtil::PatchMemory(OFFSET(0x8ED2AF, 0), { 0xEB, 0x6F });
+	XUtil::PatchMemory(OFFSET(0x2AC1D07, 0), { 0xEB });
+	XUtil::DetourCall(OFFSET(0x24FA1E6, 0), &Fixed_DrawItemPreview);
+
 	//
 	// Enable the render window "Go to selection in game" hotkey even if version control is off
 	//

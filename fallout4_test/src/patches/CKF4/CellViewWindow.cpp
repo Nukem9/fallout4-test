@@ -9,7 +9,8 @@ namespace CellViewWindow
 	struct CellViewWindowControls_t
 	{
 		BOOL Initialize = FALSE;
-		BOOL NowFiltering = TRUE;
+		BOOL NowFiltering = FALSE;
+		BOOL LockFiltering = FALSE;
 		std::string FilterCell;
 
 		Classes::CUIBaseControl LabelWorldSpace;
@@ -102,6 +103,8 @@ namespace CellViewWindow
 			{
 				// Let's use this feature
 
+				CellViewWindowControls.LockFiltering = TRUE;
+				CellViewWindowControls.NowFiltering = FALSE;
 				CellViewWindowControls.FilterCell = "";
 				CellViewWindowControls.EditFilterCell.Caption = "";
 			}
@@ -119,7 +122,7 @@ namespace CellViewWindow
 			if (CellViewWindowControls.ActiveOnly.Checked)
 				*allowInsert = (BOOL)form->Active;
 
-			if (*allowInsert && (GetWindowTextLengthA(CellViewWindowControls.EditFilterCell.Handle) > 1))
+			if (*allowInsert && (CellViewWindowControls.FilterCell.length() > 2))
 				*allowInsert = (BOOL)(XUtil::Str::findCaseInsensitive(form->EditID.c_str(), CellViewWindowControls.FilterCell.c_str()) != std::string::npos);	
 
 			return S_OK;
@@ -176,9 +179,12 @@ namespace CellViewWindow
 				if (HIWORD(wParam) == EN_CHANGE)
 				{
 					UINT32 len = GetWindowTextLengthA(CellViewWindowControls.EditFilterCell.Handle);
-					if(len > 2)
+					if (len > 2)
+					{
+						CellViewWindowControls.LockFiltering = FALSE;
 						CellViewWindowControls.NowFiltering = TRUE;
-					else if (!len)
+					}
+					else if (!len && !CellViewWindowControls.LockFiltering)
 						SetCellWindowFilter(CellViewWindowControls.ActiveOnly.Checked);
 				}
 				return S_OK;
