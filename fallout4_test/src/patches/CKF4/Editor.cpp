@@ -556,12 +556,6 @@ VOID FIXAPI Fixed_DeleteTintingRace(INT64 count, INT64 item_id, HWND listview)
 		ListView_DeleteItem(listview, item_id);
 }
 
-VOID FIXAPI Fixed_DrawItemPreview(PINT64 Unknown1, PINT64 Unknown2)
-{
-	//if (*(Unknown1 + 48))
-		((VOID(__fastcall*)(PINT64, PINT64))OFFSET(0x2500650, 0))(Unknown1, Unknown2);
-}
-
 VOID FIXAPI PatchTemplatedFormIterator(VOID)
 {
 	class FormIteratorHook : public Xbyak::CodeGenerator

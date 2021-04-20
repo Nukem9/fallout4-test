@@ -48,7 +48,6 @@ VOID FIXAPI PatchFogToggle(VOID);
 
 FLOAT FIXAPI Fixed_IncorrectSmoothnessValueToMaterialNif(FLOAT a1, FLOAT a2);
 VOID FIXAPI Fixed_DeleteTintingRace(INT64 count, INT64 item_id, HWND listview);
-VOID FIXAPI Fixed_DrawItemPreview(PINT64 Unknown1, PINT64 Unknown2);
 
 template<typename T, BOOL Stable = FALSE>
 VOID FIXAPI ArrayQuickSortRecursive(BSTArray<T>& Array, INT32(*SortFunction)(LPCVOID, LPCVOID))

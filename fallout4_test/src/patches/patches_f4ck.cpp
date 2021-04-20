@@ -454,7 +454,6 @@ label_skip_msg_closeall_dialog:
 		0xC0, 0x30, 0x01, 0x44, 0x31, 0xC0, 0xEB, 0x4B });
 	XUtil::PatchMemory(OFFSET(0x8ED2AF, 0), { 0xEB, 0x6F });
 	XUtil::PatchMemory(OFFSET(0x2AC1D07, 0), { 0xEB });
-	XUtil::DetourCall(OFFSET(0x24FA1E6, 0), &Fixed_DrawItemPreview);
 
 	//
 	// Enable the render window "Go to selection in game" hotkey even if version control is off
