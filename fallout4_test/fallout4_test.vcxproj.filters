@@ -556,9 +556,6 @@
     <ClCompile Include="src\patches\CKF4\UITheme\RichEdit20.cpp">
       <Filter>Source Files\UI\Theme</Filter>
     </ClCompile>
-    <ClCompile Include="src\patches\CKF4\UIThemeMode.cpp">
-      <Filter>Source Files\UI</Filter>
-    </ClCompile>
     <ClCompile Include="src\patches\CKF4\PreferencesWindow.cpp">
       <Filter>Source Files\UI\Windows</Filter>
     </ClCompile>
@@ -576,6 +573,9 @@
     </ClCompile>
     <ClCompile Include="src\dump.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\UIThemeMode.cpp">
+      <Filter>Source Files\UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

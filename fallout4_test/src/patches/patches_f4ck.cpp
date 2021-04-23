@@ -444,6 +444,11 @@ label_skip_msg_closeall_dialog:
 	XUtil::PatchMemory(OFFSET(0x2B7F5BC, 0), { 0x66, 0x0F, 0x7E, 0x85, 0x88, 0x00, 0x00, 0x00, 0xEB, 0x18 });
 
 	//
+	// Fixed infinite loop by Compile Papyrus Scripts...
+	//
+	XUtil::PatchMemory(OFFSET(0x12E5EA2, 0), { 0x74 });
+
+	//
 	// Fixed when you delete a group tinting to race window
 	//
 	XUtil::PatchMemory(OFFSET(0x963E2E, 0), { 0x4D, 0x8B, 0x47, 0x8, 0x4C, 0x89, 0xE2 });

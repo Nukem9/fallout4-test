@@ -263,7 +263,6 @@
     <ClCompile Include="src\patches\CKF4\DataWindow.cpp" />
     <ClCompile Include="src\patches\CKF4\Editor.cpp" />
     <ClCompile Include="src\patches\CKF4\PreferencesWindow.cpp" />
-    <ClCompile Include="src\patches\CKF4\UIThemeMode.cpp" />
     <ClCompile Include="src\patches\CKF4\EditorUIProgressDialog.cpp" />
     <ClCompile Include="src\patches\CKF4\ExperimentalNuukem.cpp" />
     <ClCompile Include="src\patches\CKF4\MainWindow.cpp" />
@@ -281,6 +280,7 @@
     <ClCompile Include="src\patches\CKF4\UIImageList.cpp" />
     <ClCompile Include="src\patches\CKF4\UIMenus.cpp" />
     <ClCompile Include="src\patches\CKF4\UIProgressDialog.cpp" />
+    <ClCompile Include="src\patches\CKF4\UIThemeMode.cpp" />
     <ClCompile Include="src\patches\CKF4\UITheme\CheckBox.cpp" />
     <ClCompile Include="src\patches\CKF4\UITheme\CustomBox.cpp" />
     <ClCompile Include="src\patches\CKF4\UITheme\ComboBox.cpp" />
