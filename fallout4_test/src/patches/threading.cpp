@@ -18,10 +18,10 @@ VOID WINAPI hk_Sleep(DWORD dwMilliseconds)
 {
 	// Bethesda's spinlock calls Sleep(0) every iteration until 10,000. Then it
 	// uses Sleep(1). Even with 0ms waits, there's a tiny performance penalty.
-	if (dwMilliseconds == 0)
-		return;
+	if (dwMilliseconds <= 1)
+		Sleep(0);
 
-	SleepEx(dwMilliseconds, FALSE);
+	Sleep(dwMilliseconds);
 }
 
 VOID FIXAPI PatchThreading(VOID)
