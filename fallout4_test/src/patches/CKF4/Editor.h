@@ -45,6 +45,8 @@ VOID FIXAPI hk_call_140906407(INT64 a1, INT64 a2, INT64 a3);
 BOOL FIXAPI hk_call_12E852C(HWND RichEditControl, LPCSTR Text);
 VOID FIXAPI PatchTemplatedFormIterator(VOID);
 VOID FIXAPI PatchFogToggle(VOID);
+VOID FIXAPI HiddenMovableStatic(BOOL Value);
+
 
 FLOAT FIXAPI Fixed_IncorrectSmoothnessValueToMaterialNif(FLOAT a1, FLOAT a2);
 VOID FIXAPI Fixed_DeleteTintingRace(INT64 count, INT64 item_id, HWND listview);

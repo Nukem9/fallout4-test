@@ -556,6 +556,13 @@ VOID FIXAPI Fixed_DeleteTintingRace(INT64 count, INT64 item_id, HWND listview)
 		ListView_DeleteItem(listview, item_id);
 }
 
+VOID FIXAPI HiddenMovableStatic(BOOL Value)
+{
+	LPVOID ptrArr = *((LPVOID*)OFFSET(0x6D54CF8, 0));
+	((VOID(__fastcall*)(LPVOID, INT32, BOOL))OFFSET(0x7B4520, 0))(ptrArr, 0, Value);
+	((VOID(__fastcall*)(VOID))OFFSET(0x59C820, 0))();
+}
+
 VOID FIXAPI PatchTemplatedFormIterator(VOID)
 {
 	class FormIteratorHook : public Xbyak::CodeGenerator

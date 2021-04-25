@@ -175,6 +175,7 @@
     <ClInclude Include="src\patches\CKF4\Editor.h" />
     <ClInclude Include="src\patches\CKF4\EditorUI.h" />
     <ClInclude Include="src\patches\CKF4\PreferencesWindow.h" />
+    <ClInclude Include="src\patches\CKF4\ShowHideWindow.h" />
     <ClInclude Include="src\patches\CKF4\UIThemeMode.h" />
     <ClInclude Include="src\patches\CKF4\EditorUIProgressDialog.h" />
     <ClInclude Include="src\patches\CKF4\ExperimentalNuukem.h" />
@@ -269,6 +270,7 @@
     <ClCompile Include="src\patches\CKF4\ObjectWindow.cpp" />
     <ClCompile Include="src\patches\CKF4\RenderWindow.cpp" />
     <ClCompile Include="src\patches\CKF4\ResponseWindow.cpp" />
+    <ClCompile Include="src\patches\CKF4\ShowHideWindow.cpp" />
     <ClCompile Include="src\patches\CKF4\TESDataFileHandler_CK.cpp" />
     <ClCompile Include="src\patches\CKF4\TESFile_CK.cpp" />
     <ClCompile Include="src\patches\CKF4\TranslateUnicode_CK.cpp" />

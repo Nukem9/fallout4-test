@@ -2,6 +2,9 @@
 #include "version_info.h"
 #include "profiler_internal.h"
 
+#include <filesystem>
+#include <shellapi.h>
+
 VOID FIXAPI DumpDisableBreakpoint(VOID);
 VOID FIXAPI DumpEnableBreakpoint(VOID);
 VOID FIXAPI Patch_Fallout4CreationKit(VOID);
@@ -31,7 +34,13 @@ VOID FIXAPI ApplyPatches(VOID)
 	switch (g_LoadType)
 	{
 	case GAME_EXECUTABLE_TYPE::CREATIONKIT_FALLOUT4:
-		Patch_Fallout4CreationKit();
+		if (g_INI.GetBoolean("Voice", "bRunCK32ForLips", FALSE))
+		{
+			ShellExecuteW(NULL, L"open", L"CreationKit32.exe", NULL, std::experimental::filesystem::absolute(L"").c_str(), SW_SHOW);
+			exit(0);
+		}
+		else
+			Patch_Fallout4CreationKit();
 		break;
 	case GAME_EXECUTABLE_TYPE::GAME_FALLOUT4:
 		Patch_Fallout4Game();

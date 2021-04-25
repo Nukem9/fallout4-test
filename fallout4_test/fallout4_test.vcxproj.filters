@@ -356,6 +356,9 @@
     <ClInclude Include="src\dump.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\patches\CKF4\ShowHideWindow.h">
+      <Filter>Header Files\UI\Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\dllmain.cpp">
@@ -576,6 +579,9 @@
     </ClCompile>
     <ClCompile Include="src\patches\CKF4\UIThemeMode.cpp">
       <Filter>Source Files\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\ShowHideWindow.cpp">
+      <Filter>Source Files\UI\Windows</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
