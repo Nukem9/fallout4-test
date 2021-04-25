@@ -20,8 +20,8 @@ VOID WINAPI hk_Sleep(DWORD dwMilliseconds)
 	// uses Sleep(1). Even with 0ms waits, there's a tiny performance penalty.
 	if (dwMilliseconds <= 1)
 		Sleep(0);
-
-	Sleep(dwMilliseconds);
+	else
+		Sleep(dwMilliseconds);
 }
 
 VOID FIXAPI PatchThreading(VOID)
