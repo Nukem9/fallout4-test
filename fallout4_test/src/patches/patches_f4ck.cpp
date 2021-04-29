@@ -28,14 +28,30 @@
 
 #include <xbyak/xbyak.h>
 
-VOID FIXAPI PatchMemory(VOID);
-VOID FIXAPI PatchThreading(VOID);
+/*
 
-VOID FIXAPI Patch_Fallout4CreationKit(VOID)
+This file is part of Fallout 4 Fixes source code.
+
+*/
+
+VOID FIXAPI Fix_PatchMemory(VOID);
+VOID FIXAPI Fix_PatchThreading(VOID);
+VOID FIXAPI Fix_GenerateCrashdumps(VOID);
+
+namespace Classes = Core::Classes::UI;
+
+/*
+==================
+MainFix_PatchFallout4CreationKit
+
+Implements the code in the process CK64
+==================
+*/
+VOID FIXAPI MainFix_PatchFallout4CreationKit(VOID)
 {
 	if (!_stricmp((LPCSTR)(g_ModuleBase + 0x3896168), "1.10.162.0"))
 	{
-		// ???
+		// Left for the future...
 	}
 	else
 	{
@@ -58,40 +74,18 @@ VOID FIXAPI Patch_Fallout4CreationKit(VOID)
 	//
 	if (g_INI.GetBoolean("CreationKit", "GenerateCrashdumps", TRUE))
 	{
-		SetUnhandledExceptionFilter(DumpExceptionHandler);
+		Fix_GenerateCrashdumps();
 
-		XUtil::PatchMemory(OFFSET(0x2D49F12, 0), { 0xC3 });// crtSetUnhandledExceptionFilter
-		XUtil::PatchMemory(OFFSET(0x204AE80, 0), { 0xC3 });// StackTrace::MemoryTraceWrite
-		XUtil::PatchMemory(OFFSET(0x204D1A0, 0), { 0xC3 });// SetUnhandledExceptionFilter, BSWin32ExceptionHandler
-		XUtil::PatchMemory(OFFSET(0x204D1E0, 0), { 0xC3 });// SetUnhandledExceptionFilter, BSWin32ExceptionHandler
-
-		_set_invalid_parameter_handler([](LPCWSTR, LPCWSTR, LPCWSTR, uint32_t, uintptr_t)
-		{
-			RaiseException('PARM', EXCEPTION_NONCONTINUABLE, 0, NULL);
-		});
-
-		auto purecallHandler = []()
-		{
-			RaiseException('PURE', EXCEPTION_NONCONTINUABLE, 0, NULL);
-		};
-
-		auto terminateHandler = []()
-		{
-			RaiseException('TERM', EXCEPTION_NONCONTINUABLE, 0, NULL);
-		};
-
-		PatchIAT((VOID(*)())terminateHandler, "MSVCR110.dll", "_cexit");
-		PatchIAT((VOID(*)())terminateHandler, "MSVCR110.dll", "_exit");
-		PatchIAT((VOID(*)())terminateHandler, "MSVCR110.dll", "exit");
-		PatchIAT((VOID(*)())terminateHandler, "MSVCR110.dll", "abort");
-		PatchIAT((VOID(*)())terminateHandler, "MSVCR110.dll", "terminate");
-		PatchIAT((VOID(*)())purecallHandler, "MSVCR110.dll", "_purecall");
+		XUtil::PatchMemory(OFFSET(0x2D49F12, 0), { 0xC3 });			// crtSetUnhandledExceptionFilter
+		XUtil::PatchMemory(OFFSET(0x204AE80, 0), { 0xC3 });			// StackTrace::MemoryTraceWrite
+		XUtil::PatchMemory(OFFSET(0x204D1A0, 0), { 0xC3 });			// SetUnhandledExceptionFilter, BSWin32ExceptionHandler
+		XUtil::PatchMemory(OFFSET(0x204D1E0, 0), { 0xC3 });			// SetUnhandledExceptionFilter, BSWin32ExceptionHandler
 	}
 
 	//
 	// MemoryManager
 	//
-	PatchMemory();
+	Fix_PatchMemory();
 
 	XUtil::PatchMemory(OFFSET(0x030ECC0, 0), { 0xC3 });							// [XGB  ] MemoryManager - Default/Static/File heaps
 	XUtil::PatchMemory(OFFSET(0x2004B70, 0), { 0xC3 });							// [1GB  ] BSSmallBlockAllocator
@@ -111,18 +105,18 @@ VOID FIXAPI Patch_Fallout4CreationKit(VOID)
 	//
 	// Threads
 	//
-	PatchThreading();
+	Fix_PatchThreading();
 
 	//
 	// Steam API
 	//
-	if (g_INI.GetBoolean("CreationKit", "SteamPatch", FALSE))
-	{
-		XUtil::PatchMemory(OFFSET(0x2881F84, 0), { 0x74, 0x1B, 0x90, 0x90, 0x90, 0x90 });
-		XUtil::PatchMemory(OFFSET(0x2881FB4, 0), { 0x74, 0x26, 0x90, 0x90, 0x90, 0x90 });
-		XUtil::PatchMemory(OFFSET(0x2881FF4, 0), { 0x74, 0x1D, 0x90, 0x90, 0x90, 0x90 });
-	}
+	XUtil::PatchMemory(OFFSET(0x2881F84, 0), { 0x74, 0x1B, 0x90, 0x90, 0x90, 0x90 });
+	XUtil::PatchMemory(OFFSET(0x2881FB4, 0), { 0x74, 0x26, 0x90, 0x90, 0x90, 0x90 });
+	XUtil::PatchMemory(OFFSET(0x2881FF4, 0), { 0x74, 0x1D, 0x90, 0x90, 0x90, 0x90 });
 
+	//
+	// Customize theme (Need UI option)
+	//
 	if (auto ThemeID = g_INI.GetInteger("CreationKit", "UITheme", 0); ((ThemeID > 0) && (ThemeID < 5)))
 	{
 		// need MainWindow
@@ -131,7 +125,9 @@ VOID FIXAPI Patch_Fallout4CreationKit(VOID)
 			auto comDll = (uintptr_t)GetModuleHandleA("comctl32.dll");
 			Assert(comDll);
 
+			// Setting the colors
 			UITheme::Initialize((UITheme::Theme::Theme)ThemeID);
+
 			Detours::IATHook(comDll, "USER32.dll", "GetSysColor", (uintptr_t)&UITheme::Comctl32GetSysColor);
 			Detours::IATHook(comDll, "USER32.dll", "GetSysColorBrush", (uintptr_t)&UITheme::Comctl32GetSysColorBrush);
 			Detours::IATDelayedHook(comDll, "UxTheme.dll", "DrawThemeBackground", (uintptr_t)&UITheme::Comctl32DrawThemeBackground);
@@ -253,12 +249,12 @@ VOID FIXAPI Patch_Fallout4CreationKit(VOID)
 			XUtil::DetourCall(OFFSET(0x59F6B9, 0), &EditorUI::hk_SendFromCellViewToRender);
 
 			// The terrain patch freezes, so a queue is created taking into account the activity of the dialog
-			XUtil::DetourClassCall(OFFSET(0x2629D96, 0), &Core::Classes::UI::CUIProgressDialog::ProcessMessages);
-			XUtil::DetourClassCall(OFFSET(0x262A6B2, 0), &Core::Classes::UI::CUIProgressDialog::ProcessMessages);
-			XUtil::DetourClassCall(OFFSET(0x262A6BF, 0), &Core::Classes::UI::CUIProgressDialog::ProcessMessages);
+			XUtil::DetourClassCall(OFFSET(0x2629D96, 0), &Classes::CUIProgressDialog::ProcessMessages);
+			XUtil::DetourClassCall(OFFSET(0x262A6B2, 0), &Classes::CUIProgressDialog::ProcessMessages);
+			XUtil::DetourClassCall(OFFSET(0x262A6BF, 0), &Classes::CUIProgressDialog::ProcessMessages);
 
 			// Experimental: Loading cell ... (need for progressbar drawing)
-			XUtil::DetourClassJump(OFFSET(0xE1D2C7, 0), &Core::Classes::UI::CUIProgressDialog::ProcessMessagesOnlyLoadCellWorld);
+			XUtil::DetourClassJump(OFFSET(0xE1D2C7, 0), &Classes::CUIProgressDialog::ProcessMessagesOnlyLoadCellWorld);
 		}
 
 		// Close the progress dialog 
@@ -348,18 +344,18 @@ VOID FIXAPI Patch_Fallout4CreationKit(VOID)
 	//
 
 	// jump to function for useful work (messages pool)
-	XUtil::DetourClassJump(OFFSET(0x2485C46, 0), &Core::Classes::UI::CUIMainWindow::ProcessMessages);
-	XUtil::DetourClassJump(OFFSET(0x2485E46, 0), &Core::Classes::UI::CUIMainWindow::ProcessMessages);
-	XUtil::DetourClassJump(OFFSET(0xDF2FBA, 0), &Core::Classes::UI::CUIMainWindow::ProcessMessages);
-	XUtil::DetourClassJump(OFFSET(0x8531BD, 0), &Core::Classes::UI::CUIMainWindow::ProcessMessages);
-	XUtil::DetourClassJump(OFFSET(0x262D1A7, 0), &Core::Classes::UI::CUIMainWindow::ProcessMessages);
+	XUtil::DetourClassJump(OFFSET(0x2485C46, 0), &Classes::CUIMainWindow::ProcessMessages);
+	XUtil::DetourClassJump(OFFSET(0x2485E46, 0), &Classes::CUIMainWindow::ProcessMessages);
+	XUtil::DetourClassJump(OFFSET(0xDF2FBA, 0), &Classes::CUIMainWindow::ProcessMessages);
+	XUtil::DetourClassJump(OFFSET(0x8531BD, 0), &Classes::CUIMainWindow::ProcessMessages);
+	XUtil::DetourClassJump(OFFSET(0x262D1A7, 0), &Classes::CUIMainWindow::ProcessMessages);
 	// Replacing Sleep(1) on (messages pool)
-	XUtil::DetourClassCall(OFFSET(0x247EF69, 0), &Core::Classes::UI::CUIMainWindow::ProcessMessages);
-	XUtil::DetourClassCall(OFFSET(0x5DD8C2, 0), &Core::Classes::UI::CUIMainWindow::ProcessMessages);
-	XUtil::DetourClassCall(OFFSET(0x5DD7F2, 0), &Core::Classes::UI::CUIMainWindow::ProcessMessages);
+	XUtil::DetourClassCall(OFFSET(0x247EF69, 0), &Classes::CUIMainWindow::ProcessMessages);
+	XUtil::DetourClassCall(OFFSET(0x5DD8C2, 0), &Classes::CUIMainWindow::ProcessMessages);
+	XUtil::DetourClassCall(OFFSET(0x5DD7F2, 0), &Classes::CUIMainWindow::ProcessMessages);
 	// Replacing a completely empty function with something useful (messages pool)
-	XUtil::DetourClassCall(OFFSET(0x7E34D2, 0), &Core::Classes::UI::CUIMainWindow::ProcessMessages);
-	XUtil::DetourClassCall(OFFSET(0x773DEE, 0), &Core::Classes::UI::CUIMainWindow::ProcessMessages);
+	XUtil::DetourClassCall(OFFSET(0x7E34D2, 0), &Classes::CUIMainWindow::ProcessMessages);
+	XUtil::DetourClassCall(OFFSET(0x773DEE, 0), &Classes::CUIMainWindow::ProcessMessages);
 	
 	//
 	// Force the render window to draw at 60fps while idle (SetTimer(1ms)). 

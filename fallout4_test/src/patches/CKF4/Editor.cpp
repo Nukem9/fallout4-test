@@ -541,10 +541,7 @@ VOID FIXAPI PatchFogToggle(VOID)
 
 FLOAT FIXAPI Fixed_IncorrectSmoothnessValueToMaterialNif(FLOAT a1, FLOAT a2)
 {
-	if (a2 > 1.0)
-		return 1.0;
-	else
-		return 0.0;
+	return (a2 > 1.0) ? 1.0 : ((a2 < 0.0) ? 0.0 : a2);
 }
 
 VOID FIXAPI Fixed_DeleteTintingRace(INT64 count, INT64 item_id, HWND listview)

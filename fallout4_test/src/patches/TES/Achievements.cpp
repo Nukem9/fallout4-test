@@ -1,5 +1,12 @@
 #include "..\..\common.h"
 
+/*
+
+Author: Perchik71 29/04/2021
+This file is part of Fallout 4 Fixes source code.
+
+*/
+
 // clang-format off
 struct
 {
@@ -27,7 +34,15 @@ struct
 };
 // clang-format on
 
-BOOL PatchAchievements()
+
+/*
+==================
+Fix_PatchAchievements
+
+Gives you the opportunity to play with mods and get achievements
+==================
+*/
+BOOL FIXAPI Fix_PatchAchievements(VOID)
 {
 	// Loop through each fix and exit on the first found
 	for (auto& patch : Patches)

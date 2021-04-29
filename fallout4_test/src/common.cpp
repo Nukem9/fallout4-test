@@ -34,8 +34,8 @@ INIReader g_INI("fallout4_test.ini");
 uintptr_t g_ModuleBase;
 uintptr_t g_ModuleSize;
 
-uintptr_t g_ScrapSize;
-uintptr_t g_bhkMemSize;
+uintptr_t g_ScrapSize = 0x2000000;
+uintptr_t g_bhkMemSize = 0x2000000;
 
 uintptr_t g_CodeBase;	// .text or .textbss
 uintptr_t g_CodeEnd;

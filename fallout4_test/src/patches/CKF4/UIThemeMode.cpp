@@ -41,6 +41,12 @@
 #include "UITheme/RichEdit20.h"
 #include "UITheme/Memo.h"
 
+/*
+
+This file is part of Fallout 4 Fixes source code.
+
+*/
+
 namespace Theme = Core::UI::Theme;
 namespace Classes = Core::Classes::UI;
 

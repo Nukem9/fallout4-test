@@ -1,4 +1,11 @@
-// https://github.com/Perchik71/SkyrimSETest/blob/master/skyrim64_test/src/patches/settings.cpp
+/*
+Author: Perchik71 29/04/2021
+This file is part of Fallout 4 Fixes source code.
+
+Adapted for Fallout 4 and Fallout 4 CK
+The original
+URL: https://github.com/Perchik71/SkyrimSETest/blob/master/skyrim64_test/src/patches/settings.cpp
+*/
 
 #include "../common.h"
 
@@ -141,7 +148,13 @@ struct
 };
 // clang-format on
 
-VOID LoadSettingFromIni()
+
+/*
+==================
+Sys_LoadSettingFromIni
+==================
+*/
+VOID FIXAPI Sys_LoadSettingFromIni(VOID)
 {
 	Settings[0].Value = g_INI.Get("Tweaks", "General_fDefaultFov", "90.000");
 	Settings[1].Value = g_INI.Get("Tweaks", "General_fDefaultWorldFOV", "90.000");
@@ -266,6 +279,13 @@ VOID LoadSettingFromIni()
 	Settings[101].Value = g_INI.Get("Tweaks", "Particles_iMaxDesired", "3000");
 }
 
+/*
+==================
+hk_GetPrivateProfileStringA
+
+Replacement WINAPI GetPrivateProfileStringA
+==================
+*/
 DWORD WINAPI hk_GetPrivateProfileStringA(LPCTSTR lpAppName, LPCTSTR lpKeyName, LPCTSTR lpDefault, LPTSTR lpReturnedString, DWORD nSize, LPCTSTR lpFileName)
 {
 	// Check for overrides first
@@ -281,6 +301,13 @@ DWORD WINAPI hk_GetPrivateProfileStringA(LPCTSTR lpAppName, LPCTSTR lpKeyName, L
 	return GetPrivateProfileStringA(lpAppName, lpKeyName, lpDefault, lpReturnedString, nSize, lpFileName);
 }
 
+/*
+==================
+hk_GetPrivateProfileIntA
+
+Replacement WINAPI GetPrivateProfileIntA
+==================
+*/
 UINT WINAPI hk_GetPrivateProfileIntA(LPCTSTR lpAppName, LPCTSTR lpKeyName, INT nDefault, LPCTSTR lpFileName)
 {
 	// Check for overrides first
@@ -293,8 +320,17 @@ UINT WINAPI hk_GetPrivateProfileIntA(LPCTSTR lpAppName, LPCTSTR lpKeyName, INT n
 	return GetPrivateProfileIntA(lpAppName, lpKeyName, nDefault, lpFileName);
 }
 
-VOID PatchSettings()
+/*
+==================
+Fix_PatchSettings
+
+Reconfigures the game
+==================
+*/
+VOID FIXAPI Fix_PatchSettings(VOID)
 {
+	Sys_LoadSettingFromIni();
+
 	PatchIAT(hk_GetPrivateProfileStringA, "kernel32.dll", "GetPrivateProfileStringA");
 	PatchIAT(hk_GetPrivateProfileIntA, "kernel32.dll", "GetPrivateProfileIntA");
 }

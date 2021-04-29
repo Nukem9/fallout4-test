@@ -353,9 +353,6 @@
     <ClInclude Include="src\patches\CKF4\ActorWindow.h">
       <Filter>Header Files\UI\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="src\dump.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\patches\CKF4\ShowHideWindow.h">
       <Filter>Header Files\UI\Windows</Filter>
     </ClInclude>

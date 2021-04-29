@@ -1,19 +1,28 @@
-#include "dump.h"
+#include "common.h"
 #include <DbgHelp.h>
 #include <atomic>
+
+/*
+Author: Perchik71 29/04/2021
+Adapted for Fallout 4 and Fallout 4 CK
+
+The original
+URL: https://github.com/Nukem9/SkyrimSETest/blob/master/skyrim64_test/src/dump.cpp
+*/
 
 CHAR TempNTSIT[16];
 ULONG_PTR TempNTSITAddress;
 std::atomic_uint32_t g_DumpTargetThreadId;
 LONG(NTAPI * NtSetInformationThread)(HANDLE ThreadHandle, LONG ThreadInformationClass, PVOID ThreadInformation, ULONG ThreadInformationLength);
 
-VOID FIXAPI DumpDisableBreakpoint(VOID);
-VOID FIXAPI DumpEnableBreakpoint(VOID);
-VOID FIXAPI ApplyPatches(VOID);
+VOID FIXAPI Sys_DumpDisableBreakpoint(VOID);
+VOID FIXAPI Sys_DumpEnableBreakpoint(VOID);
+VOID FIXAPI Sys_ApplyPatches(VOID);
+
 BOOL WINAPI hk_QueryPerformanceCounter(LARGE_INTEGER *lpPerformanceCount)
 {
 	// Restore the original pointer
-	DumpDisableBreakpoint();
+	Sys_DumpDisableBreakpoint();
 
 	// Notify debugger
 	__try
@@ -24,7 +33,7 @@ BOOL WINAPI hk_QueryPerformanceCounter(LARGE_INTEGER *lpPerformanceCount)
 	{
 	}
 	
-	ApplyPatches();
+	Sys_ApplyPatches();
 	return QueryPerformanceCounter(lpPerformanceCount);
 }
 
@@ -36,7 +45,7 @@ LONG NTAPI hk_NtSetInformationThread(HANDLE ThreadHandle, LONG ThreadInformation
 	return NtSetInformationThread(ThreadHandle, ThreadInformationClass, ThreadInformation, ThreadInformationLength);
 }
 
-VOID FIXAPI DumpEnableBreakpoint(VOID)
+VOID FIXAPI Sys_DumpEnableBreakpoint(VOID)
 {
 	uintptr_t moduleBase = (uintptr_t)GetModuleHandleA(NULL);
 	PIMAGE_NT_HEADERS64 ntHeaders = (PIMAGE_NT_HEADERS64)(moduleBase + ((PIMAGE_DOS_HEADER)moduleBase)->e_lfanew);
@@ -81,7 +90,7 @@ VOID FIXAPI DumpEnableBreakpoint(VOID)
 	}
 }
 
-VOID FIXAPI DumpDisableBreakpoint(VOID)
+VOID FIXAPI Sys_DumpDisableBreakpoint(VOID)
 {
 	// Restore the original QPC pointer
 	PatchIAT(QueryPerformanceCounter, "kernel32.dll", "QueryPerformanceCounter");
@@ -93,7 +102,7 @@ VOID FIXAPI DumpDisableBreakpoint(VOID)
 	}
 }
 
-DWORD WINAPI DumpWriterThread(LPVOID Arg)
+DWORD WINAPI Sys_DumpWriterThread(LPVOID Arg)
 {
 	Assert(Arg);
 
@@ -162,10 +171,10 @@ DWORD WINAPI DumpWriterThread(LPVOID Arg)
 	return 0;
 }
 
-LONG WINAPI DumpExceptionHandler(PEXCEPTION_POINTERS ExceptionInfo)
+LONG WINAPI Sys_DumpExceptionHandler(PEXCEPTION_POINTERS ExceptionInfo)
 {
 	g_DumpTargetThreadId.store(GetCurrentThreadId());
-	HANDLE threadHandle = CreateThread(NULL, 0, DumpWriterThread, ExceptionInfo, 0, NULL);
+	HANDLE threadHandle = CreateThread(NULL, 0, Sys_DumpWriterThread, ExceptionInfo, 0, NULL);
 
 	if (threadHandle)
 	{
@@ -174,4 +183,39 @@ LONG WINAPI DumpExceptionHandler(PEXCEPTION_POINTERS ExceptionInfo)
 	}
 
 	return EXCEPTION_CONTINUE_SEARCH;
+}
+
+/*
+==================
+Fix_GenerateCrashdumps
+
+Implements the code in the process
+Intercepts errors and creates a dump
+==================
+*/
+VOID FIXAPI Fix_GenerateCrashdumps(VOID)
+{
+	SetUnhandledExceptionFilter(Sys_DumpExceptionHandler);
+
+	_set_invalid_parameter_handler([](LPCWSTR, LPCWSTR, LPCWSTR, uint32_t, uintptr_t)
+		{
+			RaiseException('PARM', EXCEPTION_NONCONTINUABLE, 0, NULL);
+		});
+
+	auto purecallHandler = []()
+	{
+		RaiseException('PURE', EXCEPTION_NONCONTINUABLE, 0, NULL);
+	};
+
+	auto terminateHandler = []()
+	{
+		RaiseException('TERM', EXCEPTION_NONCONTINUABLE, 0, NULL);
+	};
+
+	PatchIAT((VOID(*)())terminateHandler, "MSVCR110.dll", "_cexit");
+	PatchIAT((VOID(*)())terminateHandler, "MSVCR110.dll", "_exit");
+	PatchIAT((VOID(*)())terminateHandler, "MSVCR110.dll", "exit");
+	PatchIAT((VOID(*)())terminateHandler, "MSVCR110.dll", "abort");
+	PatchIAT((VOID(*)())terminateHandler, "MSVCR110.dll", "terminate");
+	PatchIAT((VOID(*)())purecallHandler, "MSVCR110.dll", "_purecall");
 }

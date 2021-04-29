@@ -38,7 +38,6 @@ extern __itt_heap_function ITT_FreeCallback;
 
 #include "UtfStr.h"
 #include "xutil.h"
-#include "dump.h"
 #include "profiler.h"
 #include "patches/offsets.h"
 

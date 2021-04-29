@@ -4,14 +4,25 @@
 
 #include <string>	
 
-VOID FIXAPI PatchSettings(VOID);
-VOID FIXAPI PatchMemory(VOID);
-VOID FIXAPI PatchThreading(VOID);
-VOID FIXAPI PatchWindow(VOID);
-VOID FIXAPI LoadSettingFromIni(VOID);
-BOOL FIXAPI PatchAchievements(VOID);
+/*
 
-std::string FIXAPI GetGameVersion(VOID)
+This file is part of Fallout 4 Fixes source code.
+
+*/
+
+VOID FIXAPI Fix_PatchSettings(VOID);
+VOID FIXAPI Fix_PatchMemory(VOID);
+VOID FIXAPI Fix_PatchThreading(VOID);
+VOID FIXAPI Fix_PatchWindow(VOID);
+BOOL FIXAPI Fix_PatchAchievements(VOID);
+
+
+/*
+==================
+Sys_GetGameVersion
+==================
+*/
+std::string FIXAPI Sys_GetGameVersion(VOID)
 {
 	CHAR szExeName[1024];
 	GetModuleFileNameA(GetModuleHandleA(NULL), szExeName, ARRAYSIZE(szExeName));
@@ -39,13 +50,19 @@ std::string FIXAPI GetGameVersion(VOID)
 	return str;
 }
 
-VOID FIXAPI Patch_Fallout4Game(VOID)
-{
-	std::string version = GetGameVersion();
 
-	if (version == "1.10.163.0")
+/*
+==================
+MainFix_PatchFallout4Game
+
+Implements the code in the process game
+==================
+*/
+VOID FIXAPI MainFix_PatchFallout4Game(VOID)
+{
+	if (Sys_GetGameVersion() == "1.10.163.0")
 	{
-		// ???
+		// Left for the future...
 	}
 	else
 	{
@@ -68,14 +85,13 @@ VOID FIXAPI Patch_Fallout4Game(VOID)
 	//
 	if (g_INI.GetBoolean("Fallout4", "SettingsPatch", FALSE))
 	{
-		LoadSettingFromIni();
-		PatchSettings();
+		Fix_PatchSettings();
 	}
 
 	if (g_INI.GetBoolean("Fallout4", "AchievementsPatch", FALSE))
 	{
 		// opens access to steam achievements with mods
-		if (!PatchAchievements())
+		if (!Fix_PatchAchievements())
 		{
 			MessageBoxA(NULL, "Failed to find at least one achievement patch address", "???", 0);
 		}
@@ -86,7 +102,7 @@ VOID FIXAPI Patch_Fallout4Game(VOID)
 	//
 	if (g_INI.GetBoolean("Fallout4", "MemoryPatch", FALSE))
 	{
-		PatchMemory();
+		Fix_PatchMemory();
 
 		XUtil::PatchMemory(OFFSET(0xD0C160, 0), { 0xC3 });							// [XGB  ] MemoryManager - Default/Static/File heaps
 		XUtil::PatchMemory(OFFSET(0x1B0EDB0, 0), { 0xC3 });							// [1GB  ] BSSmallBlockAllocator
@@ -108,11 +124,11 @@ VOID FIXAPI Patch_Fallout4Game(VOID)
 	//
 	if (g_INI.GetBoolean("Fallout4", "ThreadingPatch", FALSE))
 	{
-		PatchThreading();
+		Fix_PatchThreading();
 	}
 
 	//
 	// Window
 	//
-	PatchWindow();
+	Fix_PatchWindow();
 }

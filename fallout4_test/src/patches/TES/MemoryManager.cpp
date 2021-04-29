@@ -1,5 +1,28 @@
 #include "MemoryManager.h"
 
+/*
+Author: Perchik71 29/04/2021
+This file is part of Fallout 4 Fixes source code.
+
+Adapted for Fallout 4 and Fallout 4 CK
+The original
+URL: https://github.com/Nukem9/SkyrimSETest/blob/master/skyrim64_test/src/patches/TES/MemoryManager.cpp
+*/
+
+/*
+Uses oneTBB (oneAPI Threading Building Blocks (oneTBB))
+URL: https://github.com/oneapi-src/oneTBB/tree/a803f276186fa2c286a357207832112265b448e4
+
+To increase the performance of the application, the functions are replaced with tbb
+*/
+
+#define MEM_THRESHOLD 2147483648
+
+/*
+==================
+MemAlloc
+==================
+*/
 LPVOID MemAlloc(UINT64 Size, UINT32 Alignment = 0, BOOL Aligned = FALSE, BOOL Zeroed = FALSE)
 {
 	ProfileCounterInc("Alloc Count");
@@ -54,6 +77,11 @@ LPVOID MemAlloc(UINT64 Size, UINT32 Alignment = 0, BOOL Aligned = FALSE, BOOL Ze
 	return ptr;
 }
 
+/*
+==================
+MemFree
+==================
+*/
 VOID MemFree(LPVOID Memory, BOOL Aligned = FALSE)
 {
 	ProfileCounterInc("Free Count");
@@ -77,6 +105,11 @@ VOID MemFree(LPVOID Memory, BOOL Aligned = FALSE)
 #endif
 }
 
+/*
+==================
+MemSize
+==================
+*/
 UINT64 MemSize(LPVOID Memory)
 {
 #if FALLOUT4_USE_VTUNE
@@ -99,25 +132,50 @@ UINT64 MemSize(LPVOID Memory)
 	return result;
 }
 
-//
-// VS2015 CRT hijacked functions
-//
+/*
+==================
+hk_calloc
+
+Replacement calloc
+==================
+*/
 LPVOID hk_calloc(size_t Count, size_t Size)
 {
 	// The allocated memory is always zeroed
 	return MemAlloc(Count * Size, 0, FALSE, TRUE);
 }
 
+/*
+==================
+hk_malloc
+
+Replacement malloc
+==================
+*/
 LPVOID hk_malloc(size_t Size)
 {
 	return MemAlloc(Size);
 }
 
+/*
+==================
+hk_aligned_malloc
+
+Replacement _aligned_malloc
+==================
+*/
 LPVOID hk_aligned_malloc(size_t Size, size_t Alignment)
 {
 	return MemAlloc(Size, Alignment, TRUE);
 }
 
+/*
+==================
+hk_realloc
+
+Replacement realloc
+==================
+*/
 LPVOID hk_realloc(LPVOID Memory, size_t Size)
 {
 	LPVOID newMemory = NULL;
@@ -135,26 +193,61 @@ LPVOID hk_realloc(LPVOID Memory, size_t Size)
 	return newMemory;
 }
 
+/*
+==================
+hk_realloc
+
+Replacement recalloc
+==================
+*/
 LPVOID hk_recalloc(LPVOID Memory, size_t Count, size_t Size)
 {
 	return hk_realloc(Memory, Count * Size);
 }
 
+/*
+==================
+hk_free
+
+Replacement free
+==================
+*/
 VOID hk_free(LPVOID Block)
 {
 	MemFree(Block);
 }
 
+/*
+==================
+hk_aligned_free
+
+Replacement _aligned_free
+==================
+*/
 VOID hk_aligned_free(LPVOID Block)
 {
 	MemFree(Block, TRUE);
 }
 
+/*
+==================
+hk_msize
+
+Replacement _msize
+==================
+*/
 UINT64 hk_msize(LPVOID Block)
 {
 	return MemSize(Block);
 }
 
+/*
+==================
+hk_Sleep
+
+Replacement WINAPI Sleep
+==================
+*/
 LPSTR hk_strdup(LPCSTR str1)
 {
 	size_t len = (strlen(str1) + 1);
@@ -192,8 +285,46 @@ VOID ScrapHeap::Deallocate(LPVOID Memory)
 	MemFree(Memory);
 }
 
-VOID FIXAPI PatchMemory(VOID)
+/*
+==================
+Sys_LowPhysicalMemory
+==================
+*/
+DWORD64 FIXAPI Sys_GetPhysicalMemory(VOID)
 {
+	MEMORYSTATUSEX statex;
+	if (!GlobalMemoryStatusEx(&statex))
+		return 0;
+	return statex.ullTotalPhys;
+}
+
+/*
+==================
+Sys_LowPhysicalMemory
+==================
+*/
+BOOL FIXAPI Sys_LowPhysicalMemory(VOID) 
+{
+	return (Sys_GetPhysicalMemory() <= MEM_THRESHOLD) ? TRUE : FALSE;
+}
+
+/*
+==================
+Fix_PatchMemory
+
+Implements the code in the process
+Changes memory allocation functions, but not all of them
+==================
+*/
+VOID FIXAPI Fix_PatchMemory(VOID)
+{
+	AssertMsg(Sys_LowPhysicalMemory(), "Not enough memory to run the program")
+
+	auto GB = Sys_GetPhysicalMemory() / (1024 * 1024 * 1024);
+	g_ScrapSize = (GB > 4) ? 0x8000000 : 0x4000000;
+	g_bhkMemSize = (GB > 8) ? 0x80000000 : 0x40000000;
+
+	// Turning on large pages (deprecated)
 	scalable_allocation_mode(TBBMALLOC_USE_HUGE_PAGES, 1);
 
 	PatchIAT(hk_calloc, "API-MS-WIN-CRT-HEAP-L1-1-0.DLL", "calloc");

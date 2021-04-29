@@ -5,12 +5,26 @@
 #include <filesystem>
 #include <shellapi.h>
 
-VOID FIXAPI DumpDisableBreakpoint(VOID);
-VOID FIXAPI DumpEnableBreakpoint(VOID);
-VOID FIXAPI Patch_Fallout4CreationKit(VOID);
-VOID FIXAPI Patch_Fallout4Game(VOID);
+/*
 
-VOID FIXAPI ApplyPatches(VOID)
+This file is part of Fallout 4 Fixes source code.
+
+*/
+
+
+VOID FIXAPI Sys_DumpDisableBreakpoint(VOID);
+VOID FIXAPI Sys_DumpEnableBreakpoint(VOID);
+VOID FIXAPI MainFix_PatchFallout4CreationKit(VOID);
+VOID FIXAPI MainFix_PatchFallout4Game(VOID);
+
+/*
+==================
+Sys_ApplyPatches
+
+The main function for code injection, called from dump.cpp
+==================
+*/
+VOID FIXAPI Sys_ApplyPatches(VOID)
 {
 	// The EXE has been unpacked at this point
 	strcpy_s(g_GitVersion, VER_CURRENT_COMMIT_ID);
@@ -36,18 +50,29 @@ VOID FIXAPI ApplyPatches(VOID)
 	case GAME_EXECUTABLE_TYPE::CREATIONKIT_FALLOUT4:
 		if (g_INI.GetBoolean("Voice", "bRunCK32ForLips", FALSE))
 		{
+			// To generate .lip files, need creationkit32.exe
+
+			AssertMsg(std::filesystem::exists(std::experimental::filesystem::absolute(L"CreationKit32.exe").c_str()),
+					  "To generate .lip files, need creationkit32.exe")
+
 			ShellExecuteW(NULL, L"open", L"CreationKit32.exe", NULL, std::experimental::filesystem::absolute(L"").c_str(), SW_SHOW);
 			exit(0);
 		}
 		else
-			Patch_Fallout4CreationKit();
+			MainFix_PatchFallout4CreationKit();
 		break;
 	case GAME_EXECUTABLE_TYPE::GAME_FALLOUT4:
-		Patch_Fallout4Game();
+		MainFix_PatchFallout4Game();
 		break;
 	}
 }
 
+/*
+==================
+DllMain
+
+==================
+*/
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD fdwReason, LPVOID lpReserved)
 {
     if (fdwReason == DLL_PROCESS_ATTACH)
@@ -98,21 +123,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD fdwReason, LPVOID lpReserved)
 			}
 #endif
 
-			MEMORYSTATUSEX statex;
-			statex.dwLength = sizeof(statex);
-			if (GlobalMemoryStatusEx(&statex))
-			{
-				auto GB = statex.ullTotalPhys / (1024 * 1024 * 1024);
-				g_ScrapSize = (GB > 4) ? 0x8000000 : 0x4000000;
-				g_bhkMemSize = (GB > 8) ? 0x80000000 : 0x40000000;
-			}
-			else
-			{
-				g_ScrapSize = 0x2000000;
-				g_bhkMemSize = 0x20000000;
-			}
-
-			DumpEnableBreakpoint();
+			Sys_DumpEnableBreakpoint();
 			break;
 		}
     }

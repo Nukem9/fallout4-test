@@ -166,7 +166,6 @@
   <ItemGroup>
     <ClInclude Include="resource.h" />
     <ClInclude Include="src\config.h" />
-    <ClInclude Include="src\dump.h" />
     <ClInclude Include="src\erase_if.h" />
     <ClInclude Include="src\INIReader.h" />
     <ClInclude Include="src\patches\CKF4\ActorWindow.h" />
