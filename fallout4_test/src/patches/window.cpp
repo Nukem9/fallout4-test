@@ -12,7 +12,6 @@ URL: https://github.com/Nukem9/SkyrimSETest/blob/master/skyrim64_test/src/patche
 
 #define WM_APP_THREAD_TASK		(WM_APP + 1)
 #define WM_APP_UPDATE_CURSOR	(WM_APP + 2)
-#define WM_KEYSTROKE_TIMER		32001
 
 static HWND g_Fallout4Window = NULL;
 static DWORD MessageThreadId;
@@ -277,7 +276,7 @@ VOID FIXAPI Fix_PatchWindow(VOID)
 
 	XUtil::PatchMemory(OFFSET(0x1D17EE1, 0), { 0xEB }); // No Caption
 	XUtil::PatchMemory(OFFSET(0x1D17FE7, 0), { 0xEB }); // No HWND Top
-	XUtil::PatchMemoryNop(OFFSET(0x1D17EBB, 0), 2);		// Get screen width and height
+	// XUtil::PatchMemoryNop(OFFSET(0x1D17EBB, 0), 2);		// Get screen width and height
 
 	CreateThread(NULL, 0, MessageThread, NULL, 0, &MessageThreadId);
 

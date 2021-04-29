@@ -305,7 +305,7 @@ Sys_LowPhysicalMemory
 */
 BOOL FIXAPI Sys_LowPhysicalMemory(VOID) 
 {
-	return (Sys_GetPhysicalMemory() <= MEM_THRESHOLD) ? TRUE : FALSE;
+	return (Sys_GetPhysicalMemory() < MEM_THRESHOLD) ? TRUE : FALSE;
 }
 
 /*
