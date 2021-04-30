@@ -10,8 +10,7 @@ URL: https://github.com/Nukem9/SkyrimSETest/blob/master/skyrim64_test/src/patche
 #include "../common.h"
 #include <future>
 
-#define WM_APP_THREAD_TASK		(WM_APP + 1)
-#define WM_APP_UPDATE_CURSOR	(WM_APP + 2)
+#define WM_APP_UPDATE_CURSOR	(WM_APP + 0x9A36)
 
 static HWND g_Fallout4Window = NULL;
 static DWORD MessageThreadId;
@@ -20,11 +19,6 @@ static BOOL MouseEnableInput = TRUE;
 static BOOL KeyboardEnableInput = TRUE;
 static BOOL OtherEnableInput = TRUE;
 static CHAR* KeyBuffer = NULL;
-
-#if FALLOUT4_TRANSLATE_KEY_LOG
-#include <fstream>
-std::ofstream ofs_key;
-#endif
 
 
 /*
@@ -143,7 +137,6 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				Sys_KeyboardToggle(TRUE);
 				Sys_OtherDeviceToggle(TRUE);
 
-				// FIXME: Can throw a grenade :)
 				if (Sys_GetKeyboardBuffer(KeyBuffer))
 					*(KeyBuffer + 0xA4) = 0;
 			}
@@ -157,15 +150,17 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			Sys_KeyboardToggle(FALSE);
 			Sys_OtherDeviceToggle(FALSE);
 
-			// FIXME: Can throw a grenade :)
 			if (Sys_GetKeyboardBuffer(KeyBuffer))
 				*(KeyBuffer + 0xA4) = 0;
 		}
 	}
-	return 0;
+	return CallWindowProcA(g_OriginalWndProc, hwnd, uMsg, wParam, lParam);
 
 	// Handle mouse events input
 	case WM_MOUSEMOVE:
+		if (g_Fallout4Window == hwnd)
+			PostMessageA(hwnd, WM_APP_UPDATE_CURSOR, 0, 0);
+
 	case WM_MOUSEWHEEL:
 	case WM_MOUSEHWHEEL:
 	case WM_LBUTTONDOWN:
@@ -190,45 +185,12 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	// Handle other devices events input  5AA43F0 rbp+170+symbol
 	case WM_INPUT:
 		return (OtherEnableInput) ? CallWindowProcA(g_OriginalWndProc, hwnd, uMsg, wParam, lParam) : 0;
-
+		
 	default:
 		return CallWindowProcA(g_OriginalWndProc, hwnd, uMsg, wParam, lParam);
 	}
 }
 
-/*
-==================
-MessageThread
-
-Processing messages in a separate thread
-==================
-*/
-DWORD WINAPI MessageThread(LPVOID)
-{
-	XUtil::SetThreadName(GetCurrentThreadId(), "Game Message Loop");
-
-	MSG msg;
-	while (GetMessageA(&msg, NULL, 0, 0) > 0)
-	{
-		if (msg.message == WM_APP_THREAD_TASK)
-		{
-			// Check for hk_CreateWindowExA wanting to execute here
-			(*reinterpret_cast<std::packaged_task<HWND()>*>(msg.wParam))();
-		}
-		else
-		{
-			TranslateMessage(&msg);
-			DispatchMessageA(&msg);
-		}
-
-		// GetForegroundWindow hack since alt+tab or windows key don't always play nice
-		if (msg.message == WM_MOUSEMOVE && msg.hwnd == g_Fallout4Window && msg.hwnd == GetForegroundWindow())
-			WindowProc(msg.hwnd, WM_APP_UPDATE_CURSOR, 0, 0);
-	}
-
-	// Message loop exited (WM_QUIT) or there was an error
-	return 0;
-}
 
 /*
 ==================
@@ -240,45 +202,30 @@ Replacement WINAPI CreateWindowExA
 HWND WINAPI hk_CreateWindowExA(DWORD dwExStyle, LPCSTR lpClassName, LPCSTR lpWindowName, DWORD dwStyle, INT x, INT y, INT nWidth, INT nHeight, 
 							   HWND hWndParent, HMENU hMenu, HINSTANCE hInstance, LPVOID lpParam)
 {
-	// Create this window on a separate thread
-	auto threadTask = std::packaged_task<HWND()>([&]()
-		{
-			HWND wnd = CreateWindowExA(dwExStyle, lpClassName, lpWindowName, dwStyle, x, y, nWidth, nHeight, hWndParent, hMenu, hInstance, lpParam);
+	HWND wnd = CreateWindowExA(dwExStyle, lpClassName, lpWindowName, dwStyle, x, y, nWidth, nHeight, hWndParent, hMenu, hInstance, lpParam);
+	if (wnd && !g_Fallout4Window && !strcmp(lpClassName, "Fallout4"))
+		// The original pointer must be saved BEFORE swapping it out
+		g_Fallout4Window = wnd;
 
-			if (wnd && !g_Fallout4Window && !strcmp(lpClassName, "Fallout4"))
-			{
-				// The original pointer must be saved BEFORE swapping it out
-				g_Fallout4Window = wnd;
-				// D40190 offset
-				g_OriginalWndProc = (WNDPROC)GetWindowLongPtrA(wnd, GWLP_WNDPROC);
-				SetWindowLongPtrA(wnd, GWLP_WNDPROC, (LONG_PTR)&WindowProc);
-			}
-
-			return wnd;
-		});
-
-	// Wait for completion...
-	auto taskVar = threadTask.get_future();
-	PostThreadMessageA(MessageThreadId, WM_APP_THREAD_TASK, (WPARAM)&threadTask, 0);
-
-	return taskVar.get();
+	return wnd;
 }
 
+
+/*
+==================
+Fix_PatchWindow
+
+Game window patch
+==================
+*/
 VOID FIXAPI Fix_PatchWindow(VOID)
-{
-#if FALLOUT4_TRANSLATE_KEY_LOG
-	ofs_key.open("f4key.log", std::ios::out);
-#endif
-	
-	XUtil::PatchMemoryNop(OFFSET(0xD36D7E, 0), 11);		// GetActiveWindow nop
+{	
+	*(uintptr_t*)&g_OriginalWndProc = Detours::X64::DetourFunctionClass(OFFSET(0xD40190, 0), &WindowProc);
+
 	XUtil::PatchMemoryNop(OFFSET(0xD38ED6, 0), 5);		// bimbo function clear
 	XUtil::PatchMemoryNop(OFFSET(0xD38EE7, 0), 41);		// skip Alt+Tab detect
-
 	XUtil::PatchMemory(OFFSET(0x1D17EE1, 0), { 0xEB }); // No Caption
 	XUtil::PatchMemory(OFFSET(0x1D17FE7, 0), { 0xEB }); // No HWND Top
-	// XUtil::PatchMemoryNop(OFFSET(0x1D17EBB, 0), 2);		// Get screen width and height
-
-	CreateThread(NULL, 0, MessageThread, NULL, 0, &MessageThreadId);
 
 	PatchIAT(hk_CreateWindowExA, "USER32.DLL", "CreateWindowExA");
 }
