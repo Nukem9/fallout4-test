@@ -496,6 +496,38 @@ BOOL FIXAPI hk_call_12E852C(HWND RichEditControl, LPCSTR Text)
 	return SetWindowTextA(RichEditControl, Text);
 }
 
+
+/*
+==================
+hk_call_2511176
+
+For some reason, an object whose address to the function is garbage gets here.
+
+CONTEXT:  (.ecxr)
+rax=000002db7f90f850 rbx=000000f780cfea40 rcx=000002db7f90ed10
+rdx=000000f780cfea40 rsi=000002db299aa800 rdi=000002db7f90ed10
+rip=00007ff77f381176 rsp=000000f780cfe9f0 rbp=000000f780cfeb80
+ r8=0000000000000000  r9=0000000000000016 r10=000000000000000b
+r11=000000f780cfea18 r12=0000000000000001 r13=00000000001506ec
+r14=0000000000000000 r15=0000000000000000
+iopl=0         nv up ei pl zr na po nc
+cs=0033  ss=002b  ds=002b  es=002b  fs=0053  gs=002b             efl=00010246
+CreationKit+0x2511176:
+00007ff7`7f381176 ff9090010000    call    qword ptr [rax+190h] ds:000002db`7f90f9e0=bd8a591342b6b52e
+
+This happens when you close the application
+==================
+*/
+VOID FIXAPI hk_call_2511176(LPVOID a1, LPVOID a2, LPVOID a3)
+{
+	if (a1)
+	{
+		uintptr_t f = (uintptr_t)(*(PINT64)a1);
+		if ((g_ModuleBase & 0xffffffff00000000) == (f & 0xffffffff00000000))
+			(*(VOID(__fastcall**)(LPVOID a1, LPVOID a2, LPVOID a3))(f + 0x190))(a1, a2, 0);
+	}
+}
+
 BOOL FIXAPI hk_IsFogEnabled(VOID)
 {
 	return bFogToggle;
@@ -539,11 +571,28 @@ VOID FIXAPI PatchFogToggle(VOID)
 	XUtil::DetourJump(OFFSET(0xF90CE0, 0), &hk_IsFogEnabled);
 }
 
+
+/*
+==================
+Fixed_IncorrectSmoothnessValueToMaterialNif
+
+The program simply writes about an erroneous value and passes it into the calculation,
+the function will now correct the value from 0.0 to 1.0
+==================
+*/
 FLOAT FIXAPI Fixed_IncorrectSmoothnessValueToMaterialNif(FLOAT a1, FLOAT a2)
 {
 	return (a2 > 1.0) ? 1.0 : ((a2 < 0.0) ? 0.0 : a2);
 }
 
+
+/*
+==================
+Fixed_DeleteTintingRace
+
+The function removes from lists without looping
+==================
+*/
 VOID FIXAPI Fixed_DeleteTintingRace(INT64 count, INT64 item_id, HWND listview)
 {
 	if (!count)

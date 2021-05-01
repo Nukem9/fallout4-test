@@ -9,6 +9,9 @@
 #include "CKF4/TranslateUnicode_CK.h"
 #include "CKF4/UIProgressDialog.h"
 
+// include plugins
+#include "CKF4/Plugins/LazLipsForm.h"
+
 // include patches for editor
 #include "CKF4/Editor.h"
 #include "CKF4/EditorUI.h"
@@ -222,6 +225,14 @@ VOID FIXAPI MainFix_PatchFallout4CreationKit(VOID)
 		XUtil::DetourCall(OFFSET(0x45E287, 0), &EditorUI::hk_SpamFPSToStatusBar);
 		// Send text to 4 part StatusBar (Game cam: .....)
 		XUtil::PatchMemory(OFFSET(0x45EB2A, 0), { 0x03 });
+
+		//
+		// Initializing the plugin .lip dll
+		//
+		if (XUtil::Lips::Util_LipsInitializePlugin())
+			LogWindow::Log("PLUGINS: CreationKitLipsPlugin.dll [ENABLED]");
+		else
+			LogWindow::Log("PLUGINS: CreationKitLipsPlugin.dll [FAILED]");
 
 		//
 		// Replacing the Tips window "Do you know...". Which appears when the plugin is loaded.
@@ -438,6 +449,11 @@ label_skip_msg_closeall_dialog:
 	//
 	XUtil::DetourCall(OFFSET(0x2B7F5B7, 0), &Fixed_IncorrectSmoothnessValueToMaterialNif);
 	XUtil::PatchMemory(OFFSET(0x2B7F5BC, 0), { 0x66, 0x0F, 0x7E, 0x85, 0x88, 0x00, 0x00, 0x00, 0xEB, 0x18 });
+
+	//
+	// Fixed a very harmful error that pops up very rarely
+	// 
+	XUtil::DetourCall(OFFSET(0x2511176, 0), &hk_call_2511176);
 
 	//
 	// Fixed infinite loop by Compile Papyrus Scripts...
