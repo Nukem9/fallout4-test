@@ -7,6 +7,9 @@
 #include "ObjectWindow.h"
 #include "RenderWindow.h"
 #include "MainWindow.h"
+#include "LogWindow.h"
+
+#include "TESCellViewScene_CK.h"
 
 namespace EditorUI
 {
@@ -90,7 +93,7 @@ namespace EditorUI
 		Core::Classes::UI::CUIMainWindow::ProcessMessages();
 	}
 
-	VOID FIXAPI hk_SendFromCellViewToRender(LPVOID Unknown1, LPVOID Unknown2, INT32 Unknown3)
+	VOID FIXAPI hk_SendFromCellViewToRender(LPVOID Unknown1, TESForm_CK* View, INT32 Unknown3)
 	{
 		Assert(!sys::ProgressDialog);
 		// show Progress
@@ -102,7 +105,7 @@ namespace EditorUI
 		sys::ProgressDialog->MessageText = "Please wait while requested cell loads ...";
 
 		// send
-		((VOID(__fastcall*)(LPVOID, LPVOID, INT32))OFFSET(0x45FE60, 0))(Unknown1, Unknown2, Unknown3);
+		((VOID(__fastcall*)(LPVOID, TESForm_CK*, INT32))OFFSET(0x45FE60, 0))(Unknown1, View, Unknown3);
 	}
 
 	VOID FIXAPI hk_EndSendFromCellViewToRender(VOID)

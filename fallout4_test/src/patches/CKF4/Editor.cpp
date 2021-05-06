@@ -2,6 +2,8 @@
 #include <xbyak/xbyak.h>
 #include <CommCtrl.h>
 #include <smmintrin.h>
+
+#include "TESCellViewScene_CK.h"
 #include "Editor.h"
 #include "EditorUI.h"
 #include "LogWindow.h"
@@ -523,52 +525,113 @@ VOID FIXAPI hk_call_2511176(LPVOID a1, LPVOID a2, LPVOID a3)
 	if (a1)
 	{
 		uintptr_t f = (uintptr_t)(*(PINT64)a1);
-		if ((g_ModuleBase & 0xffffffff00000000) == (f & 0xffffffff00000000))
+		if ((g_ModuleBase & 0xffffffff00000000) == (*((uintptr_t*)(f + 0x190)) & 0xffffffff00000000))
 			(*(VOID(__fastcall**)(LPVOID a1, LPVOID a2, LPVOID a3))(f + 0x190))(a1, a2, 0);
 	}
 }
 
-BOOL FIXAPI hk_IsFogEnabled(VOID)
+
+
+/*
+==================
+hk_call_F8CAF3
+==================
+*/
+BOOL FIXAPI hk_call_F8CAF3(VOID)
 {
-	return bFogToggle;
+	TESCellViewScene_CK* ViewScene = TESCellViewScene_CK::GetCellViewScene();
+
+	/*
+	Don't draw fog without a scene...
+	*/
+
+	if (!ViewScene || !ViewScene->RenderInfo)
+		return FALSE;
+
+	/*
+	The interior has its own fog.
+	It has its own parameters, etc., in contrast to the location.
+	The world draws the fog itself, depending on TimeOfDay.
+	*/
+
+	if (ViewScene->IsInteriorsCell())
+		return bFogToggle;
+
+	/*
+	You only need to draw fog when you turn on the sky.
+	It does not have its own fog and its parameters, and the pointer to the parameters itself is NULL.
+	*/
+	
+	return ViewScene->RenderInfo->IsSky();
 }
 
-VOID FIXAPI PatchFogToggle(VOID)
+
+/*
+==================
+hk_call_F8AF16
+==================
+*/
+VOID FIXAPI hk_call_F8AF16(const TESCellViewSceneRenderInfo_CK* RenderInfo)
 {
-	class FogToggle : public Xbyak::CodeGenerator
+	if (TESCellViewScene_CK* ViewScene = TESCellViewScene_CK::GetCellViewScene(); ViewScene->IsInteriorsCell())
 	{
-	public:
-		FogToggle() : Xbyak::CodeGenerator(4096)
-		{
-			sub(rsp, 0x28);
-			mov(rdx, rcx);
-			mov(rcx, (uintptr_t)&bFogToggle);
-			cmp(byte[rcx], 0);
-			je("L1");
-			mov(rcx, ptr[rdx + 0x80]);
-			test(rcx, rcx);
-			je("L1");
-			mov(rax, ptr[rcx]);
-			movaps(xmm2, xmm6);
-			call(ptr[rax + 0x10]);
-			L("L1");
-			add(rsp, 0x28);
-			ret(); 
-		}
+		if (bFogToggle)
+			return;
+	}
 
-		static VOID Generate(uintptr_t Target)
-		{
-			auto hook = new FogToggle();
-			XUtil::PatchMemory(Target, { 0x48, 0x89, 0xD9 });
-			XUtil::DetourCall(Target + 3, (uintptr_t)hook->getCode());
-			XUtil::PatchMemory(Target + 8, { 0xEB, 0x0E });
-		}
-	};
+	//This function resets the fog parameters and resets them again...
+	((VOID(__fastcall*)(const TESCellViewSceneRenderInfo_CK*))OFFSET(0xF8B6A0, 0))(RenderInfo);
+}
 
-	FogToggle::Generate(OFFSET(0xF8AF33, 0));
 
-	XUtil::DetourCall(OFFSET(0xF8CAF3, 0), &hk_IsFogEnabled);
-	XUtil::DetourJump(OFFSET(0xF90CE0, 0), &hk_IsFogEnabled);
+/*
+==================
+hk_jmp_F8A7DC
+==================
+*/
+/*VOID FIXAPI hk_jmp_F8A7DC(VOID)
+{
+	TESCellViewScene_CK* view = TESCellViewScene_CK::GetCellViewScene();
+	TESCellViewSceneRenderInfo_CK* r_info = view->RenderInfo;
+	
+	if (view->IsInteriorsCell())
+	{
+		MainWindow::GetMainMenuObj().GetItem(UI_FOG_CMD).Enabled = TRUE;
+		MainWindow::GetMainMenuObj().GetItem(UI_SKY_TOGGLE_CMD).Enabled = FALSE;
+	}
+	else 
+	{
+		MainWindow::GetMainMenuObj().GetItem(UI_FOG_CMD).Enabled = FALSE;
+		MainWindow::GetMainMenuObj().GetItem(UI_SKY_TOGGLE_CMD).Enabled = TRUE;
+	}
+
+	((VOID(__fastcall*)(const TESCellViewSceneRenderInfo_CK*))OFFSET(0xF8E1D0, 0))(r_info);
+}*/
+
+
+/*
+==================
+PatchSky
+
+Fixes the display of fog in the render.
+The bFogEnabled option must be TRUE otherwise there will be a crash.
+This option is set to TRUE by default, but you can override.
+The patch sets its variable to bypass.
+==================
+*/
+VOID FIXAPI PatchSky(VOID)
+{
+	// Call our function and check the rax
+	XUtil::DetourCall(OFFSET(0xF8CAF3, 0), &hk_call_F8CAF3);
+	XUtil::PatchMemory(OFFSET(0xF8CAF8, 0), { 0x85, 0xC0 });
+	XUtil::PatchMemoryNop(OFFSET(0xF8CAFA, 0), 4);
+	XUtil::PatchMemory(OFFSET(0xF8CAFE, 0), { 0x75 });
+	// Replace IsFogEnabled
+	XUtil::DetourJump(OFFSET(0xF90CE0, 0), &hk_call_F8CAF3);
+	// Update fog params
+	XUtil::DetourCall(OFFSET(0xF8AF16, 0), &hk_call_F8AF16);
+	// Enable/Disable sky (update UI)
+//	XUtil::DetourJump(OFFSET(0xF8A7DC, 0), &hk_jmp_F8A7DC);
 }
 
 

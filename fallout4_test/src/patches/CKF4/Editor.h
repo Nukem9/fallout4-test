@@ -44,8 +44,21 @@ VOID FIXAPI QuitHandler(VOID);
 VOID FIXAPI hk_call_140906407(INT64 a1, INT64 a2, INT64 a3);
 BOOL FIXAPI hk_call_12E852C(HWND RichEditControl, LPCSTR Text);
 VOID FIXAPI PatchTemplatedFormIterator(VOID);
-VOID FIXAPI PatchFogToggle(VOID);
 VOID FIXAPI HiddenMovableStatic(BOOL Value);
+
+
+
+/*
+==================
+PatchSky
+
+Fixes the display of fog in the render. 
+The bFogEnabled option must be TRUE otherwise there will be a crash.
+This option is set to TRUE by default, but you can override.
+The patch sets its variable to bypass.
+==================
+*/
+VOID FIXAPI PatchSky(VOID);
 
 /*
 ==================

@@ -287,9 +287,8 @@ VOID FIXAPI MainFix_PatchFallout4CreationKit(VOID)
 	XUtil::PatchMemoryNop(OFFSET(0xB89BF3, 0), 5);
 	XUtil::PatchMemoryNop(OFFSET(0xB8A472, 0), 5);
 
-	// Fix fog
-	if (g_INI.GetBoolean("Experimental", "EnableDrawFog", FALSE))
-		PatchFogToggle();
+	// Fixes sky and fog
+	PatchSky();
 
 	// Cut check spelling window
 	if (g_INI.GetBoolean("Experimental", "CutCheckSpellingWindow", FALSE))

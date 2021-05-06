@@ -19,7 +19,7 @@ namespace Core
 					VOID FIXAPI DrawItem_Normal(Graphics::CUICanvas& canvas, LPCRECT pRect);
 					VOID FIXAPI DrawItem_Focused(Graphics::CUICanvas& canvas, LPCRECT pRect);
 					VOID FIXAPI DrawItem_Divider(Graphics::CUICanvas& canvas, LPCRECT pRect);
-					VOID FIXAPI DrawItem_Checkbox(Graphics::CUICanvas& canvas, LPCRECT pRect, BOOL bSelected);
+					VOID FIXAPI DrawItem_Checkbox(Graphics::CUICanvas& canvas, LPCRECT pRect, BOOL bSelected, BOOL bDisabled);
 					VOID FIXAPI DrawItem_Arrow(Graphics::CUICanvas& canvas, LPCRECT pRect, BOOL bSelected);
 				}
 

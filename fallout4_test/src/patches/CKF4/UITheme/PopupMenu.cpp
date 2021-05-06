@@ -73,7 +73,7 @@ namespace Core
 						canvas.LineTo(rc_temp.Right, rc_temp.Top);
 					}
 
-					VOID FIXAPI DrawItem_Checkbox(Core::Classes::UI::CUICanvas& canvas, LPCRECT pRect, BOOL bSelected)
+					VOID FIXAPI DrawItem_Checkbox(Core::Classes::UI::CUICanvas& canvas, LPCRECT pRect, BOOL bSelected, BOOL bDisabled)
 					{
 						Graphics::CRECT rc_temp = *pRect;
 
@@ -82,7 +82,7 @@ namespace Core
 						rc_temp.Top = (((pRect->bottom - pRect->top) - generalCheckSize) >> 1) + pRect->top;
 
 						COLORREF c_s, c_c;
-						if (!bSelected)
+						if (!bSelected && !bDisabled)
 						{
 							c_s = Themes::GetThemeSysColor(Themes::ThemeColor_Divider_Highlighter_Pressed);
 							c_c = Themes::GetThemeSysColor(Themes::ThemeColor_Default);
@@ -290,9 +290,10 @@ namespace Core
 							canvas.Font.Assign(Core::UI::Theme::ThemeFont);
 							COLORREF clrPrevText;
 
+							BOOL bDisabled = (lpDrawItem->itemState & ODS_DISABLED) == ODS_DISABLED;
 							BOOL bSelected = (lpDrawItem->itemState & ODS_SELECTED) == ODS_SELECTED;
 
-							if (bSelected)
+							if (bSelected && !bDisabled)
 							{
 								Render::DrawItem_Focused(canvas, (LPRECT)& rc);
 								clrPrevText = SetTextColor(lpDrawItem->hDC, Core::UI::Theme::GetThemeSysColor(ThemeColor::ThemeColor_Text_4));
@@ -304,7 +305,7 @@ namespace Core
 							}
 
 							if ((lpDrawItem->itemState & ODS_CHECKED) == ODS_CHECKED)
-								Render::DrawItem_Checkbox(canvas, (LPRECT)& rc, bSelected);
+								Render::DrawItem_Checkbox(canvas, (LPRECT)& rc, bSelected, bDisabled);
 
 							std::string text = menuItem.Text;
 							canvas.TextRect(rc, text.c_str(), DT_CALCRECT | DT_HIDEPREFIX);

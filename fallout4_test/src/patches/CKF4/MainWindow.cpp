@@ -6,6 +6,8 @@
 #include "Editor.h"
 #include "EditorUI.h"
 
+#include "TESCellViewScene_CK.h"
+
 #include <commdlg.h>
 #include <shellapi.h>
 #include <filesystem>
@@ -361,15 +363,12 @@ namespace MainWindow
 				MenuItem.Checked = !MenuItem.Checked;
 				bFogToggle = MenuItem.Checked;
 
-				uintptr_t ptr1 = *((uintptr_t*)OFFSET(0x6D54CF8, 0));
-
-				if (ptr1)
+				if (TESCellViewScene_CK* view = TESCellViewScene_CK::GetCellViewScene(); view)
 				{
-					uintptr_t ptr2 = *((uintptr_t*)(ptr1 + 0x58));
-					if (ptr2)
+					if (TESForm_CK* form = view->CellInteriosInfo; form)
 					{
 						// Fake update scene
-						((VOID(__stdcall*)(uintptr_t, uintptr_t))OFFSET(0x7B1E80, 0))(ptr1, ptr2);
+						((VOID(__stdcall*)(TESCellViewScene_CK*, TESForm_CK*))OFFSET(0x7B1E80, 0))(view, form);
 					}
 				}
 			}

@@ -138,8 +138,9 @@ namespace Core
 
 			VOID CUIMenuItem::SetEnabled(const BOOL value)
 			{
-				if (GetEnabled() == value)
-					return;
+				// fix bug MFS_ENABLED == 0 :(
+				//if (GetEnabled() == value)
+				//	return;
 
 				MENUITEMINFOA m_mif = { 0 };
 				m_mif.cbSize = sizeof(MENUITEMINFOA);

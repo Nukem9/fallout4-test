@@ -356,6 +356,9 @@
     <ClInclude Include="src\patches\CKF4\ShowHideWindow.h">
       <Filter>Header Files\UI\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="src\patches\CKF4\TESCellViewScene_CK.h">
+      <Filter>Header Files\Classes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\dllmain.cpp">
@@ -579,6 +582,9 @@
     </ClCompile>
     <ClCompile Include="src\patches\CKF4\ShowHideWindow.cpp">
       <Filter>Source Files\UI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\TESCellViewScene_CK.cpp">
+      <Filter>Source Files\Classes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
