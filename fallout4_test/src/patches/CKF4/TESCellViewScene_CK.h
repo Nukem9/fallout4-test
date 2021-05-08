@@ -50,7 +50,7 @@ public:
 	How to find form the location that is displayed in the list, I haven't found it yet
 	==================
 	*/
-	inline BOOL IsLocationCell(VOID) const { return cell_int_info == NULL;; }
+	inline BOOL IsLocationCell(VOID) const { return cell_int_info == NULL; }
 	/*
 	==================
 	TESCellViewScene_CK::IsInteriorsCell

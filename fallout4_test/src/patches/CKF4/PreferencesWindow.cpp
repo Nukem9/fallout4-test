@@ -51,7 +51,6 @@ namespace PreferencesWindow
 		if ((Message == WM_INITDIALOG) && (!GetWindow()))
 		{
 			PreferencesWindow = DialogHwnd;
-			PreferencesWindow.Caption = "Preferences: Movement";
 		}
 		else if (Message == WM_NCACTIVATE && (!wParam))
 		{
@@ -65,26 +64,6 @@ namespace PreferencesWindow
 		{
 			if (LOWORD(wParam) == 0x5C5)
 				SetNewValueTimeOfDay();
-		}
-		else if (Message == WM_NOTIFY)
-		{
-			LPNMHDR lpnmhdr = (LPNMHDR)lParam;
-			if ((lpnmhdr->idFrom == 0x6F1) && (lpnmhdr->code == TCN_SELCHANGE))
-			{
-				INT idPage = TabCtrl_GetCurSel(lpnmhdr->hwndFrom);
-				if (idPage == -1)
-					PreferencesWindow.Caption = "Preferences";
-				else
-				{
-					TCITEMA item = {0};
-					item.mask = TCIF_TEXT;
-					item.pszText = szTabName;
-					item.cchTextMax = MAX_PATH;
-
-					if (TabCtrl_GetItem(lpnmhdr->hwndFrom, idPage, &item))
-						PreferencesWindow.Caption = std::string("Preferences: ") + item.pszText;
-				}
-			}
 		}
 
 		return OldDlgProc(DialogHwnd, Message, wParam, lParam);

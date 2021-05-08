@@ -437,12 +437,32 @@ namespace LogWindow
 			PendingMessages.emplace_back(message.c_str());
 	}
 
+	VOID FIXAPI LogWcVa(LPCWSTR Format, va_list Va)
+	{
+		std::wstring message;
+		message.resize(2048);
+		message.resize(_vsnwprintf(&message[0], _TRUNCATE, Format, Va));
+
+		std::string conv_message = XUtil::Conversion::WideToAnsi(message);
+
+		Log("%s", conv_message.c_str());
+	}
+
 	VOID FIXAPI Log(LPCSTR Format, ...)
 	{
 		va_list va;
 
 		va_start(va, Format);
 		LogVa(Format, va);
+		va_end(va);
+	}
+
+	VOID FIXAPI LogWc(LPCWSTR Format, ...)
+	{
+		va_list va;
+
+		va_start(va, Format);
+		LogWcVa(Format, va);
 		va_end(va);
 	}
 

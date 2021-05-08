@@ -46,6 +46,6 @@ When initialized 0x48 0x4C 0x50 0x54 are equal to 7FFFFFFF
 */
 BOOL TESCellViewScene_CK::IsEmpty(VOID) const
 {
-	return ((DWORD)(_pad1 + 0x48) == 0x7FFFFFFF) && ((DWORD)(_pad1 + 0x4C) == 0x7FFFFFFF) &&
-		((DWORD)(_pad1 + 0x50) == 0x7FFFFFFF) && ((DWORD)(_pad1 + 0x54) == 0x7FFFFFFF);
+	return (*(PDWORD)(_pad1 + 0x48) == 0x7FFFFFFF) && (*(PDWORD)(_pad1 + 0x4C) == 0x7FFFFFFF) &&
+		(*(PDWORD)(_pad1 + 0x50) == 0x7FFFFFFF) && (*(PDWORD)(_pad1 + 0x54) == 0x7FFFFFFF);
 }

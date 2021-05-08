@@ -14,12 +14,17 @@ A collection of modifications, enhancements, and reverse engineered resources fo
 * Many other fixes are also from the author of "@Nukem9"
 
 # Additional
-In version 0.7, I redefined the HTML redactor material, because I don't know how to use it, to the redactor material from the author **ousnius**.  
+In version 0.7, I redefined the HTML redactor material, because I don't know how to use it, to the redactor material from the author **ousnius**.
 Url: https://www.nexusmods.com/fallout4/mods/3635  
 Unzip the contents of the archive to the <root game>/Tools/MaterialEditor/ folder.
 
+Generate .lip files supported. Record file .wav using CK or Audacity.
+As soon as.the wav file will be loaded, you need to select it from the list and click the generate button. 
+If successful, the file will be where .wav is, but it will load only after opening the dialog again.
+It still uses CK32 and it should be installed.
+
 # Installation
-After compiling the code, dynamic libraries are created: *tbb.dll*, *tbbmaloc.dll*, *winhttp.dll*.  
+After compiling the code, dynamic libraries are created: *tbb.dll*, *tbbmalloc.dll*, *winhttp.dll*.  
 (Optional *CreationKitUnicodePlugin.dll* to compile, use **Lazarus 1.8.2 and higher**)  
 All this should be in the root directory of the game.
 
@@ -40,6 +45,7 @@ WinCP is the current encoding in your operating system.
 # Compilation
 At the moment, the project is built on **MS Visual Studio 2019 version 16.0.2**.  
 On **MS Visual Studio 2019 version 16.8.4**, the project has errors and even if they fix the behavior the .dll will not be working.
+(Optional *CreationKitUnicodePlugin.dll* to compile, use **Lazarus 1.8.2 and higher**)  
 
 # License
 I deliver the code as-is with no restrictions for the global community and fans **Fallout 4**.

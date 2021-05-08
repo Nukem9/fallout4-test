@@ -2,6 +2,7 @@
 #include <xbyak/xbyak.h>
 #include <CommCtrl.h>
 #include <smmintrin.h>
+#include <filesystem>
 
 #include "TESCellViewScene_CK.h"
 #include "Editor.h"
@@ -664,6 +665,61 @@ VOID FIXAPI Fixed_DeleteTintingRace(INT64 count, INT64 item_id, HWND listview)
 	for (auto i = 0; i < count; i++)
 		ListView_DeleteItem(listview, item_id);
 }
+
+
+/*
+==================
+hk_jmp_B62A9B
+
+Enable/disable the button for generating .lip files. 
+All .wav files must exist with set flag loaded Y(L).
+==================
+*/
+VOID FIXAPI hk_jmp_B62A9B(HWND hWndButtonGenerate)
+{
+	HWND hDlg = GetParent(hWndButtonGenerate);
+	HWND hList = GetDlgItem(hDlg, 0x878);
+	HWND hLTFCheck = GetDlgItem(hDlg, 0x94C);
+
+	// no support .ltf
+	EnableWindow(hLTFCheck, FALSE);
+	// wav check default
+	CheckDlgButton(hDlg, 0x94B, BST_CHECKED);
+
+	BOOL bEnableGenerate = FALSE;
+	
+	if (INT iCount = ListView_GetItemCount(hList); iCount > 0)
+	{
+		if (auto item = (INT64)EditorUI::ListViewGetSelectedItem(hList); item)
+		{
+			bEnableGenerate =
+				IsDlgButtonChecked(hDlg, 2379) && *(PUINT32)(item + 0x110) ||
+				IsDlgButtonChecked(hDlg, 2380) && *(PUINT32)(item + 0x118);
+		}
+	}
+
+	EnableWindow(hWndButtonGenerate, bEnableGenerate);
+}
+
+
+/*
+==================
+PatchLip
+
+The developers have cut out all the creation functionality .lip files. 
+But this patch will make the button available.
+==================
+*/
+VOID FIXAPI PatchLip(VOID)
+{
+	// Hooking the jump. I don't allow the deny button.
+	XUtil::DetourJump(OFFSET(0xB62A9B, 0), &hk_jmp_B62A9B);
+	// Then continue in the same spirit, remove the button.... skip it
+	XUtil::PatchMemoryNop(OFFSET(0xB5EEFB, 0), 25);
+	// In case of cancellation .wav triggers and closes the button, we will remove everything
+	XUtil::DetourCall(OFFSET(0xB5F182, 0), &hk_jmp_B62A9B);
+}
+
 
 VOID FIXAPI HiddenMovableStatic(BOOL Value)
 {

@@ -60,6 +60,18 @@ The patch sets its variable to bypass.
 */
 VOID FIXAPI PatchSky(VOID);
 
+
+/*
+==================
+PatchLip
+
+The developers have cut out all the creation functionality .lip files.
+But this patch will make the button available.
+==================
+*/
+VOID FIXAPI PatchLip(VOID);
+
+
 /*
 ==================
 hk_call_2511176
