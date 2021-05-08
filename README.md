@@ -19,7 +19,7 @@ Url: https://www.nexusmods.com/fallout4/mods/3635
 Unzip the contents of the archive to the <root game>/Tools/MaterialEditor/ folder.
 
 Generate .lip files supported. Record file .wav using CK or Audacity.
-As soon as.the wav file will be loaded, you need to select it from the list and click the generate button. 
+As soon as the wav file will be loaded, you need to select it from the list and click the generate button. 
 If successful, the file will be where .wav is, but it will load only after opening the dialog again.
 It still uses CK32 and it should be installed.
 
