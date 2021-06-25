@@ -1,0 +1,30 @@
+{
+  "Style": [ "WS_THICKFRAME", "DS_CENTER" ],
+  "Title": "Object Window",
+  "Width": 281,
+  "Height": 36,
+  "FontName": "Microsoft Sans Serif",
+  "FontSize": 10,
+  "FontWeight": 400,
+  "FontItalic": 0,
+  "Controls": [
+    {
+      "Type": "CTEXT",
+      "Title": "",
+      "Id": 2217,
+      "x": 4,
+      "y": 4,
+      "Width": 267,
+      "Height": 8
+    },
+    {
+      "Type": "PROGRESSBAR",
+      "Style": [ "WS_BORDER" ],
+      "Id": 31007,
+      "x": 4,
+      "y": 16,
+      "Width": 273,
+      "Height": 16
+    }
+  ]
+}
