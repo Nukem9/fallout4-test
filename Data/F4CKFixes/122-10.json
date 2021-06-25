@@ -3,7 +3,7 @@
   "Style": [ "WS_SYSMENU", "WS_THICKFRAME" ],
   "Title": "Object Window",
   "Width": 364,
-  "Height": 233,
+  "Height": 466,
   "FontName": "Microsoft Sans Serif",
   "FontSize": 10,
   "FontWeight": 400,
@@ -15,9 +15,9 @@
       "Id": 2581,
       "Title": "",
       "x": 33,
-      "y": 16,
+      "y": 32,
       "Width": 57,
-      "Height": 12
+      "Height": 24
     },
     {
       "ExStyle": [ "WS_EX_CLIENTEDGE", "TVS_EX_DOUBLEBUFFER" ],
@@ -25,19 +25,19 @@
       "Style": [ "TVS_HASBUTTONS", "TVS_HASLINES", "TVS_LINESATROOT", "TVS_DISABLEDRAGDROP", "TVS_SHOWSELALWAYS", "WS_BORDER", "WS_HSCROLL" ],
       "Id": 2093,
       "x": 1,
-      "y": 41,
+      "y": 82,
       "Width": 104,
-      "Height": 192
+      "Height": 384
     },
     {
       "ExStyle": [ "WS_EX_CLIENTEDGE", "LVS_EX_DOUBLEBUFFER" ],
       "Type": "LISTVIEW",
       "Id": 1041,
-      "Style": [ "LVS_REPORT", "LVS_SHOWSELALWAYS", "TVS_LINESATROOT", "LVS_EDITLABELS", "WS_BORDER" ],
+      "Style": [ "LVS_REPORT", "LVS_SHOWSELALWAYS", "LVS_EDITLABELS", "WS_BORDER" ],
       "x": 115,
-      "y": 1,
+      "y": 2,
       "Width": 249,
-      "Height": 233
+      "Height": 466
     },
     {
       "Type": "LTEXT",
@@ -46,22 +46,22 @@
       "x": 105,
       "y": 0,
       "Width": 10,
-      "Height": 233
+      "Height": 466
     },
     {
       "Type": "LTEXT",
       "Title": "Filter",
       "x": 4,
-      "y": 18,
+      "y": 36,
       "Width": 25,
-      "Height": 12
+      "Height": 24
     },
     {
       "Type": "COMBOBOX",
       "Style": [ "CBS_AUTOHSCROLL", "CBS_SORT", "WS_VSCROLL" ],
       "Id": 6024,
       "x": 33,
-      "y": 2,
+      "y": 4,
       "Width": 57,
       "Height": 120
     },
@@ -69,36 +69,36 @@
       "Type": "LTEXT",
       "Title": "Layout",
       "x": 4,
-      "y": 4,
+      "y": 8,
       "Width": 25,
-      "Height": 12
+      "Height": 24
     },
     {
       "Type": "PUSHBUTTON",
       "Title": "...",
       "Id": 6025,
       "x": 93,
-      "y": 2,
+      "y": 4,
       "Width": 11,
-      "Height": 12
+      "Height": 24
     },
     {
       "Type": "PUSHBUTTON",
       "Id": 6027,
       "Title": "-",
       "x": 93,
-      "y": 14,
+      "y": 28,
       "Width": 11,
-      "Height": 12
+      "Height": 24
     },
     {
       "Type": "AUTOCHECKBUTTON",
       "Id": 2579,
       "Title": "Show only active (*) forms",
       "x": 4,
-      "y": 29,
+      "y": 58,
       "Width": 104,
-      "Height": 11
+      "Height": 22
     }
   ]
 }

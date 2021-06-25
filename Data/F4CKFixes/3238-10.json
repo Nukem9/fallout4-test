@@ -1,8 +1,8 @@
 {
   "Style": [ "WS_THICKFRAME", "DS_CENTER" ],
-  "Title": "Object Window",
+  "Title": "Progress",
   "Width": 281,
-  "Height": 36,
+  "Height": 72,
   "FontName": "Microsoft Sans Serif",
   "FontSize": 10,
   "FontWeight": 400,
@@ -13,18 +13,18 @@
       "Title": "",
       "Id": 2217,
       "x": 4,
-      "y": 4,
+      "y": 8,
       "Width": 267,
-      "Height": 8
+      "Height": 16
     },
     {
       "Type": "PROGRESSBAR",
       "Style": [ "WS_BORDER" ],
       "Id": 31007,
       "x": 4,
-      "y": 16,
+      "y": 32,
       "Width": 273,
-      "Height": 16
+      "Height": 32
     }
   ]
 }

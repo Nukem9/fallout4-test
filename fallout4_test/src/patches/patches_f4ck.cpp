@@ -395,6 +395,11 @@ VOID FIXAPI F_UIPatches(VOID)
 		delete g_DialogManager;
 		g_DialogManager = NULL;
 	}
+	else
+	{
+		// Let's increase the "Filename" column in the Data dialog.
+		XUtil::PatchMemory(OFFSET(0x5A520A, 0), {0x2C, 0x01});
+	}
 }
 
 

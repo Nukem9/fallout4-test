@@ -104,7 +104,7 @@
       <PrecompiledHeader>
       </PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
-      <PreprocessorDefinitions>NOMINMAX;NDEBUG;_WINDOWS;_USRDLL;FALLOUT4=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>JDIALOG_4x4_DIALOG_UINT;NOMINMAX;NDEBUG;_WINDOWS;_USRDLL;FALLOUT4=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <UseMSVC>false</UseMSVC>
