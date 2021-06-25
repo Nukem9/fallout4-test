@@ -26,7 +26,7 @@
 #include "CKF4/PreferencesWindow.h"
 
 // include json generator dialogs
-#include "CKF4/JsonDialogGenerator.h"
+#include "CKF4/UIDialogManager.h"
 
 
 #include <xbyak/xbyak.h>
@@ -73,7 +73,7 @@ VOID FIXAPI F_RequiredPatches(VOID)
 	XUtil::DetourJump(OFFSET(0x2004300, 0), &MemoryManager::Size);
 	XUtil::DetourJump(OFFSET(0x200AB30, 0), &ScrapHeap::Allocate);
 	XUtil::DetourJump(OFFSET(0x200B170, 0), &ScrapHeap::Deallocate);
-
+	
 	PatchIAT(hk_CreateDialogParamA, "USER32.DLL", "CreateDialogParamA");
 	PatchIAT(hk_DialogBoxParamA, "USER32.DLL", "DialogBoxParamA");
 	PatchIAT(hk_EndDialog, "USER32.DLL", "EndDialog");
@@ -248,8 +248,7 @@ Patches for the UI
 */
 VOID FIXAPI F_UIPatches(VOID)
 {
-	BOOL enable = (BOOL)g_INI.GetBoolean("CreationKit", "UI", FALSE);
-	if (!enable)
+	if (!g_UIEnabled)
 		return;
 
 	auto comDll = (uintptr_t)GetModuleHandleA("comctl32.dll");
@@ -354,7 +353,7 @@ VOID FIXAPI F_UIPatches(VOID)
 	// Replacing the Tips window "Do you know...". Which appears when the plugin is loaded. (no support cmd line)
 	//
 
-	if (enable = (BOOL)g_INI.GetBoolean("CreationKit", "ReplacingTipsWithProgressBar", FALSE); enable)
+	if (BOOL enable = (BOOL)g_INI.GetBoolean("CreationKit", "ReplacingTipsWithProgressBar", FALSE); enable)
 	{
 		if (nCountArgCmdLine == 1)
 		{
@@ -389,7 +388,13 @@ VOID FIXAPI F_UIPatches(VOID)
 
 	// Initializing the dialog manager. 
 	// Loading all supported dialogs.
-	//Classes::g_JsonDialogManager = new Classes::CJsonDialogManager();
+	g_DialogManager = new Classes::CDialogManager();
+	if (g_DialogManager && g_DialogManager->Empty())
+	{
+		LogWindow::Log("DIALOG: Failed initialization DialogManager or no dialogs detected");
+		delete g_DialogManager;
+		g_DialogManager = NULL;
+	}
 }
 
 
@@ -503,6 +508,9 @@ VOID FIXAPI MainFix_PatchFallout4CreationKit(VOID)
 		MessageBoxA(NULL, message, "Version Check", MB_ICONERROR);
 		return;
 	}
+
+	g_UIEnabled = (bool)g_INI.GetBoolean("CreationKit", "UI", false);
+	g_i8DialogMode = (int8_t)g_INI.GetInteger("CreationKit", "DialogMode", 0);
 
 	//
 	// Replace broken crash dump functionality
