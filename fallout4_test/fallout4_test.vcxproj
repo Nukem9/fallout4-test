@@ -353,6 +353,7 @@
   <ItemGroup>
     <Image Include="..\Resources\check.bmp" />
     <Image Include="..\Resources\check_darktheme.bmp" />
+    <Image Include="..\Resources\logo.bmp" />
     <Image Include="..\Resources\toolbar.bmp" />
     <Image Include="..\Resources\toolbar_light.bmp" />
     <Image Include="..\Resources\types.bmp" />

@@ -648,7 +648,12 @@
     <Image Include="..\Resources\types.bmp">
       <Filter>Resources</Filter>
     </Image>
-    <Image Include="..\Resources\toolbar_light.bmp" />
+    <Image Include="..\Resources\toolbar_light.bmp">
+      <Filter>Resources</Filter>
+    </Image>
+    <Image Include="..\Resources\logo.bmp">
+      <Filter>Resources</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc">

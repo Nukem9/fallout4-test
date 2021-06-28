@@ -271,6 +271,21 @@ VOID FIXAPI F_UIPatches(VOID)
 		XUtil::DetourCall(OFFSET(0x5B63E7, 0), UITheme::Comctl32ImageList_LoadImageA_1);
 		// Sync TimeOfDay set value (from Preferences dialogs)
 		XUtil::DetourCall(OFFSET(0x5ED96A, 0), PreferencesWindow::hk_SetInPreferencesToTimeOfDay);
+
+		// Initializing the dialog manager. 
+		// Loading all supported dialogs.
+		g_DialogManager = new Classes::CDialogManager();
+		if (g_DialogManager && g_DialogManager->Empty())
+		{
+			LogWindow::Log("DIALOG: Failed initialization DialogManager or no dialogs detected");
+			delete g_DialogManager;
+			g_DialogManager = NULL;
+		}
+		else
+		{
+			// Let's increase the "Filename" column in the Data dialog.
+			XUtil::PatchMemory(OFFSET(0x5A520A, 0), { 0x2C, 0x01 });
+		}
 	}
 
 	EditorUI::Initialize();
@@ -384,21 +399,6 @@ VOID FIXAPI F_UIPatches(VOID)
 			// Experimental: Loading cell ... (need for progressbar drawing)
 			XUtil::DetourClassJump(OFFSET(0xE1D2C7, 0), &Classes::CUIProgressDialog::ProcessMessagesOnlyLoadCellWorld);
 		}
-	}
-
-	// Initializing the dialog manager. 
-	// Loading all supported dialogs.
-	g_DialogManager = new Classes::CDialogManager();
-	if (g_DialogManager && g_DialogManager->Empty())
-	{
-		LogWindow::Log("DIALOG: Failed initialization DialogManager or no dialogs detected");
-		delete g_DialogManager;
-		g_DialogManager = NULL;
-	}
-	else
-	{
-		// Let's increase the "Filename" column in the Data dialog.
-		XUtil::PatchMemory(OFFSET(0x5A520A, 0), {0x2C, 0x01});
 	}
 }
 
