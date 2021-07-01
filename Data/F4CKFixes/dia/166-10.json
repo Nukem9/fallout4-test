@@ -213,6 +213,7 @@
     {
       "Type": "RTEXT",
       "Title": "Base Enchantment",
+      "Style": [ "NOT SS_ENDELLIPSIS" ],
       "x": 4,
       "y": 180,
       "Width": 51,
@@ -230,6 +231,7 @@
     {
       "Type": "RTEXT",
       "Title": "Worn Restrictions",
+      "Style": [ "NOT SS_ENDELLIPSIS" ],
       "x": 4,
       "y": 216,
       "Width": 51,
