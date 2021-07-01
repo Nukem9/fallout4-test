@@ -582,11 +582,13 @@ namespace UITheme
 		if (auto itr = ThemeHandles.find(hTheme); itr != ThemeHandles.end())
 			themeType = itr->second;
 
-		if (ThemeType::StatusBar != themeType)
+	/*	if (ThemeType::StatusBar != themeType)
 		{
 			// no shadow
 			Canvas.Font.Name = "MS Sans Serif";
-		}
+		}*/
+
+		RECT rc = *pRect;
 
 		switch (themeType)
 		{
@@ -598,14 +600,24 @@ namespace UITheme
 			break;
 		case ThemeType::Button:
 			{
-			if (iPartId == BP_PUSHBUTTON)
-				Theme::PushButton::Event::OnBeforeDrawText(Canvas, dwTextFlags, iStateId);
-			else if (iPartId == BP_CHECKBOX)
-				Theme::CheckBox::Event::OnBeforeDrawText(Canvas, dwTextFlags, iStateId);
-			else if (iPartId == BP_RADIOBUTTON)
-				Theme::RadioButton::Event::OnBeforeDrawText(Canvas, dwTextFlags, iStateId);
-			else if (iPartId == BP_GROUPBOX)
-				Theme::GroupBox::Event::OnBeforeDrawText(Canvas, dwTextFlags);
+				if (iPartId == BP_PUSHBUTTON)
+					Theme::PushButton::Event::OnBeforeDrawText(Canvas, dwTextFlags, iStateId);
+				else if (iPartId == BP_CHECKBOX)
+				{
+					rc.right += 10; // eliminate end "..." when this is not necessary
+					Theme::CheckBox::Event::OnBeforeDrawText(Canvas, dwTextFlags, iStateId);
+				}
+				else if (iPartId == BP_RADIOBUTTON)
+				{
+					rc.right += 10; // eliminate end "..." when this is not necessary
+					Theme::RadioButton::Event::OnBeforeDrawText(Canvas, dwTextFlags, iStateId);
+				}
+				else if (iPartId == BP_GROUPBOX)
+				{
+					rc.right += 10; // eliminate end "..." when this is not necessary
+					Theme::GroupBox::Event::OnBeforeDrawText(Canvas, dwTextFlags);
+				}
+					
 			}
 			break;		
 		case ThemeType::ComboBox:
@@ -618,7 +630,6 @@ namespace UITheme
 			break;
 		}			
 
-		RECT rc = *pRect;
 		Canvas.TextRect(rc, pszText, dwTextFlags);
 		Canvas.TransparentMode = FALSE;
 

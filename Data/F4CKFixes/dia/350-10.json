@@ -34,7 +34,7 @@
       "Style": [ "NOT WS_GROUP" ],
       "x": 12,
       "y": 28,
-      "Width": 90,
+      "Width": 100,
       "Height": 20
     },
     {
@@ -44,7 +44,7 @@
       "Style": [ "NOT WS_GROUP" ],
       "x": 12,
       "y": 52,
-      "Width": 90,
+      "Width": 100,
       "Height": 20
     },
     {
@@ -54,7 +54,7 @@
       "Style": [ "NOT WS_GROUP" ],
       "x": 12,
       "y": 76,
-      "Width": 90,
+      "Width": 100,
       "Height": 20
     },
     {
@@ -64,7 +64,7 @@
       "Style": [ "NOT WS_GROUP" ],
       "x": 12,
       "y": 100,
-      "Width": 90,
+      "Width": 100,
       "Height": 20
     },
     {
@@ -74,7 +74,7 @@
       "Style": [ "NOT WS_GROUP" ],
       "x": 12,
       "y": 124,
-      "Width": 90,
+      "Width": 100,
       "Height": 20
     },
     {
@@ -84,7 +84,7 @@
       "Style": [ "NOT WS_GROUP" ],
       "x": 12,
       "y": 148,
-      "Width": 90,
+      "Width": 100,
       "Height": 20
     },
     {
@@ -94,7 +94,7 @@
       "Style": [ "NOT WS_GROUP" ],
       "x": 12,
       "y": 172,
-      "Width": 90,
+      "Width": 100,
       "Height": 20
     },
     {
@@ -104,7 +104,7 @@
       "Style": [ "NOT WS_GROUP" ],
       "x": 12,
       "y": 196,
-      "Width": 90,
+      "Width": 100,
       "Height": 20
     },
     {
@@ -114,7 +114,7 @@
       "Style": [ "NOT WS_GROUP" ],
       "x": 12,
       "y": 220,
-      "Width": 90,
+      "Width": 100,
       "Height": 20
     },
     {
@@ -124,7 +124,7 @@
       "Style": [ "NOT WS_GROUP" ],
       "x": 12,
       "y": 244,
-      "Width": 90,
+      "Width": 100,
       "Height": 20
     },
     {
@@ -152,7 +152,7 @@
       "Style": [ "NOT WS_GROUP" ],
       "x": 12,
       "y": 296,
-      "Width": 90,
+      "Width": 100,
       "Height": 20
     },
     {
@@ -162,7 +162,7 @@
       "Style": [ "NOT WS_GROUP" ],
       "x": 12,
       "y": 320,
-      "Width": 90,
+      "Width": 100,
       "Height": 20
     },
     {
@@ -172,7 +172,7 @@
       "Style": [ "NOT WS_GROUP" ],
       "x": 12,
       "y": 344,
-      "Width": 90,
+      "Width": 100,
       "Height": 20
     },
     {
@@ -182,7 +182,7 @@
       "Style": [ "NOT WS_GROUP" ],
       "x": 12,
       "y": 368,
-      "Width": 90,
+      "Width": 100,
       "Height": 20
     },
     {
@@ -192,7 +192,7 @@
       "Style": [ "NOT WS_GROUP" ],
       "x": 12,
       "y": 392,
-      "Width": 90,
+      "Width": 100,
       "Height": 20
     },
     {
@@ -202,7 +202,7 @@
       "Style": [ "WS_DISABLED", "NOT WS_GROUP" ],
       "x": 8,
       "y": 424,
-      "Width": 94,
+      "Width": 100,
       "Height": 20
     },
     {
@@ -212,7 +212,7 @@
       "Style": [ "WS_DISABLED", "NOT WS_GROUP" ],
       "x": 8,
       "y": 448,
-      "Width": 94,
+      "Width": 100,
       "Height": 20
     },
     {
@@ -222,7 +222,7 @@
       "Style": [ "WS_DISABLED", "NOT WS_GROUP" ],
       "x": 8,
       "y": 472,
-      "Width": 94,
+      "Width": 100,
       "Height": 20
     },
     {
@@ -232,7 +232,7 @@
       "Style": [ "NOT WS_GROUP" ],
       "x": 8,
       "y": 496,
-      "Width": 90,
+      "Width": 100,
       "Height": 20
     },
     {
@@ -242,7 +242,7 @@
       "Style": [ "NOT WS_GROUP" ],
       "x": 8,
       "y": 520,
-      "Width": 90,
+      "Width": 100,
       "Height": 20
     },
     {
@@ -252,7 +252,7 @@
       "Style": [ "NOT WS_GROUP" ],
       "x": 8,
       "y": 544,
-      "Width": 90,
+      "Width": 100,
       "Height": 20
     },
     {
@@ -262,7 +262,7 @@
       "Style": [ "NOT WS_GROUP" ],
       "x": 8,
       "y": 568,
-      "Width": 90,
+      "Width": 100,
       "Height": 20
     },
     {
@@ -272,7 +272,7 @@
       "Style": [ "NOT WS_GROUP" ],
       "x": 8,
       "y": 592,
-      "Width": 90,
+      "Width": 100,
       "Height": 20
     },
     {
@@ -282,7 +282,7 @@
       "Style": [ "BS_MULTILINE", "NOT WS_GROUP" ],
       "x": 8,
       "y": 616,
-      "Width": 90,
+      "Width": 100,
       "Height": 40
     },
     {
@@ -292,7 +292,7 @@
       "Style": [ "NOT WS_GROUP" ],
       "x": 8,
       "y": 660,
-      "Width": 90,
+      "Width": 100,
       "Height": 20
     },
     {
@@ -302,7 +302,7 @@
       "Style": [ "NOT WS_GROUP" ],
       "x": 8,
       "y": 684,
-      "Width": 90,
+      "Width": 100,
       "Height": 20
     },
     {
@@ -312,7 +312,7 @@
       "Style": [ "NOT WS_GROUP" ],
       "x": 8,
       "y": 708,
-      "Width": 90,
+      "Width": 100,
       "Height": 20
     }
   ]
