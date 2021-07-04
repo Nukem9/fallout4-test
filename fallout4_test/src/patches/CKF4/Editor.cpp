@@ -322,6 +322,48 @@ uint32_t FIXAPI sub_1405B31C0_SSE41(BSTArray<LPVOID>& Array, LPCVOID &Target)
 	return 0xFFFFFFFF;
 }
 
+uint32_t FIXAPI sub_1405B31C0_SSE41_Ex(BSTArray<LPVOID>& Array, LPCVOID& Target)
+{
+	uint32_t index = 0;
+	PINT64 data = (PINT64)Array.QBuffer();
+
+	const uint32_t comparesPerIter = 8;
+	const uint32_t vectorizedIterations = (Array.QSize() - index) / comparesPerIter;
+
+	//
+	// Compare 8 pointers per iteration - use SIMD instructions to generate a bit mask. Set
+	// bit 0 if 'array[i + 0]'=='target', set bit 1 if 'array[i + 1]'=='target', set bit X...
+	const __m128i targets = _mm_set1_epi64x((INT64)Target);
+
+	for (uint32_t iter = 0; iter < vectorizedIterations; iter++)
+	{
+		__m128i test1 = _mm_cmpeq_epi64(targets, _mm_loadu_si128((__m128i*)&data[index]));
+		__m128i test2 = _mm_cmpeq_epi64(targets, _mm_loadu_si128((__m128i*)&data[index + 2]));
+		__m128i test3 = _mm_cmpeq_epi64(targets, _mm_loadu_si128((__m128i*)&data[index + 4]));
+		__m128i test4 = _mm_cmpeq_epi64(targets, _mm_loadu_si128((__m128i*)&data[index + 6]));
+
+		INT32 mask1 = _mm_movemask_pd(_mm_castsi128_pd(_mm_or_si128(test1, test2)));
+		INT32 mask2 = _mm_movemask_pd(_mm_castsi128_pd(_mm_or_si128(test3, test4)));
+
+		// if target pointer found when return index + mask
+		if (mask1)
+			return index + (mask1 - 1);
+		else if (mask2)
+			return index + (mask2 - 1) + 4;
+			
+		index += comparesPerIter;
+	}
+
+	// Scan the rest 1-by-1
+	for (; index < Array.QSize(); index++)
+	{
+		if (data[index] == (INT64)Target)
+			return index;
+	}
+
+	return 0xFFFFFFFF;
+}
+
 VOID FIXAPI UpdateObjectWindowTreeView(LPVOID Thisptr, HWND ControlHandle, INT64 Unknown)
 {
 	SendMessageA(ControlHandle, WM_SETREDRAW, FALSE, 0);

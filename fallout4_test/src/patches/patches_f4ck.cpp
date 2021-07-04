@@ -163,8 +163,8 @@ VOID FIXAPI F_RequiredPatches(VOID)
 	//
 	// Fixed infinite loop by Compile Papyrus Scripts...
 	//
-	XUtil::PatchMemory(OFFSET(0x12E5EA2, 0), { 0x74 });
-
+	XUtil::PatchMemory(OFFSET(0x12E5E50, 0), { 0xC3 });
+	
 	//
 	// Fixed when you delete a group tinting to race window
 	//
@@ -225,7 +225,10 @@ VOID FIXAPI F_RequiredPatches(VOID)
 
 	// Utilize SSE4.1 instructions if available
 	if ((cpuinfo[2] & (1 << 19)) != 0)
-		XUtil::DetourJump(OFFSET(0x05B31C0, 0), &sub_1405B31C0_SSE41);
+	{
+		LogWindow::Log("Utilize SSE4.1 instructions if available and loading optimizations enabled");
+		XUtil::DetourJump(OFFSET(0x05B31C0, 0), &sub_1405B31C0_SSE41_Ex);
+	}
 	else
 		XUtil::DetourJump(OFFSET(0x05B31C0, 0), &sub_1405B31C0);
 

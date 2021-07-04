@@ -30,6 +30,7 @@ INT32 FIXAPI hk_inflate(z_stream_s *Stream, INT32 Flush);
 
 uint32_t FIXAPI sub_1405B31C0(BSTArray<LPVOID>& Array, LPCVOID &Target);
 uint32_t FIXAPI sub_1405B31C0_SSE41(BSTArray<LPVOID>& Array, LPCVOID &Target);
+uint32_t FIXAPI sub_1405B31C0_SSE41_Ex(BSTArray<LPVOID>& Array, LPCVOID& Target);
 
 BOOL FIXAPI OpenPluginSaveDialog(HWND ParentWindow, LPCSTR BasePath, BOOL IsESM, LPSTR Buffer, uint32_t BufferSize, LPCSTR Directory);
 VOID FIXAPI UpdateObjectWindowTreeView(LPVOID Thisptr, HWND ControlHandle, INT64 Unknown);
@@ -46,7 +47,6 @@ VOID FIXAPI hk_call_140906407(INT64 a1, INT64 a2, INT64 a3);
 BOOL FIXAPI hk_call_12E852C(HWND RichEditControl, LPCSTR Text);
 VOID FIXAPI PatchTemplatedFormIterator(VOID);
 VOID FIXAPI HiddenMovableStatic(BOOL Value);
-
 
 
 /*
