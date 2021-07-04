@@ -499,6 +499,7 @@ VOID FIXAPI MainFix_PatchFallout4CreationKit(VOID)
 			AssertMsg(lpStartArgs, "Incorrect command line");
 
 ParserCommandLine:
+			nCountArgCmdLine++;
 			lpStartArgs = strchr(lpCmdLineStr, ':');
 			AssertMsg(lpStartArgs, "Incorrect command line (no found \":\" symbol)");
 			lpStartArgs++;
