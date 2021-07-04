@@ -495,7 +495,7 @@ VOID FIXAPI MainFix_PatchFallout4CreationKit(VOID)
 		// if the path has spaces, then you should meet quotes at the beginning
 		if (*lpCmdLineStr == '\"')
 		{
-			lpStartArgs = strchr(lpCmdLineStr, '\"');
+			lpStartArgs = strchr(lpCmdLineStr + 1, '\"');
 			AssertMsg(lpStartArgs, "Incorrect command line");
 
 ParserCommandLine:
