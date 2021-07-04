@@ -495,23 +495,28 @@ VOID FIXAPI MainFix_PatchFallout4CreationKit(VOID)
 		// if the path has spaces, then you should meet quotes at the beginning
 		if (*lpCmdLineStr == '\"')
 		{
-			lpStartArgs = strchr(lpCmdLineStr + 1, '\"');
+			lpStartArgs = strchr(lpCmdLineStr + 1, '\"') + 1;
 			AssertMsg(lpStartArgs, "Incorrect command line");
-
-ParserCommandLine:
-			nCountArgCmdLine++;
-			lpStartArgs = strchr(lpCmdLineStr, ':');
-			AssertMsg(lpStartArgs, "Incorrect command line (no found \":\" symbol)");
-			lpStartArgs++;
-
-			LPSTR lpArg = strtok(lpStartArgs, " ");
-			while (lpArg != NULL)
+	
+		ParserCommandLine:
+			lpStartArgs = strchr(lpStartArgs, ':');
+			if (!lpStartArgs)
+				// need for normally run fixes
+				nCountArgCmdLine = 1;
+			else
 			{
-				// bimbo args? what...
-				if (strcmp(lpArg, " ") && (lpArg != ""))
-					nCountArgCmdLine++;
+				nCountArgCmdLine++;
+				lpStartArgs++;
 
-				lpArg = strtok(NULL, " ");
+				LPSTR lpArg = strtok(lpStartArgs, " ");
+				while (lpArg != NULL)
+				{
+					// bimbo args? what...
+					if (strcmp(lpArg, " ") && (lpArg != ""))
+						nCountArgCmdLine++;
+
+					lpArg = strtok(NULL, " ");
+				}
 			}
 		}
 		else
