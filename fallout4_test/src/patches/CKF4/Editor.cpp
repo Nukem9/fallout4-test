@@ -569,6 +569,19 @@ BOOL FIXAPI hk_call_12E852C(HWND RichEditControl, LPCSTR Text)
 }
 
 
+
+/*
+==================
+hk_first_call_strtok_for_quote
+==================
+*/
+LPSTR FIXAPI hk_first_call_strtok_for_quote(LPSTR lpSrc, LPCSTR lpDelim)
+{
+	return strtok(lpSrc, "\"");
+}
+
+
+
 /*
 ==================
 hk_call_2511176

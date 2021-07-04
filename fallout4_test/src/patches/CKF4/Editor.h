@@ -75,6 +75,14 @@ VOID FIXAPI PatchLip(VOID);
 
 /*
 ==================
+hk_first_call_strtok_for_quote
+==================
+*/
+LPSTR FIXAPI hk_first_call_strtok_for_quote(LPSTR lpSrc, LPCSTR lpDelim);
+
+
+/*
+==================
 PatchMessage
 
 Most often, CK freezes when loading something large. 

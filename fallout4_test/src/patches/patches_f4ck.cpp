@@ -488,15 +488,42 @@ VOID FIXAPI MainFix_PatchFallout4CreationKit(VOID)
 	if (!_stricmp((LPCSTR)(g_ModuleBase + 0x3896168), "1.10.162.0"))
 	{
 		std::string sCmdLineStr = GetCommandLineA();
-		LPSTR lpCmdLineStr = const_cast<LPSTR>(sCmdLineStr.c_str());
-		LPSTR lpArg = strtok(lpCmdLineStr, "\"");
-		while (lpArg != NULL) {
-			// bimbo args? what...
-			if (strcmp(lpArg, " ") && (lpArg != ""))
-				nCountArgCmdLine++;
 
-			lpArg = strtok(NULL, "\"");
+		LPSTR lpCmdLineStr = const_cast<LPSTR>(sCmdLineStr.c_str());
+		LPSTR lpStartArgs = NULL;
+		
+		// if the path has spaces, then you should meet quotes at the beginning
+		if (*lpCmdLineStr == '\"')
+		{
+			lpStartArgs = strchr(lpCmdLineStr, '\"');
+			AssertMsg(lpStartArgs, "Incorrect command line");
+
+ParserCommandLine:
+			lpStartArgs = strchr(lpCmdLineStr, ':');
+			AssertMsg(lpStartArgs, "Incorrect command line (no found \":\" symbol)");
+			lpStartArgs++;
+
+			LPSTR lpArg = strtok(lpStartArgs, " ");
+			while (lpArg != NULL)
+			{
+				// bimbo args? what...
+				if (strcmp(lpArg, " ") && (lpArg != ""))
+					nCountArgCmdLine++;
+
+				lpArg = strtok(NULL, " ");
+			}
 		}
+		else
+		{
+			lpStartArgs = strchr(lpCmdLineStr, ' ');
+			if (!lpStartArgs)
+				// need for normally run fixes
+				nCountArgCmdLine = 1;
+			else
+				goto ParserCommandLine;
+		}
+
+		LogWindow::Log("CommandLine: %d (Args) %s", nCountArgCmdLine, GetCommandLineA());
 	}
 	else
 	{
