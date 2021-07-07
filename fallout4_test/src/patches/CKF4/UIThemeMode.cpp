@@ -362,8 +362,9 @@ namespace UITheme
 				{
 					CHARFORMATA format = { 0 };
 					format.cbSize = sizeof(CHARFORMATA);
-					format.dwMask = CFM_COLOR;
+					format.dwMask = CFM_COLOR | CFM_CHARSET;
 					format.crTextColor = Theme::GetThemeSysColor(Theme::ThemeColor_Text_4);
+					format.bCharSet = (BYTE)listFont->CharSet;
 					SendMessageA(hWnd, EM_SETCHARFORMAT, SCF_ALL, (LPARAM)&format);
 					SendMessageA(hWnd, EM_SETCHARFORMAT, SCF_SELECTION, (LPARAM)&format);
 					SendMessageA(hWnd, EM_SETBKGNDCOLOR, FALSE, Theme::GetThemeSysColor(Theme::ThemeColor_Edit_Color));
@@ -384,6 +385,7 @@ namespace UITheme
 					(((uStyles & WS_VSCROLL) == WS_VSCROLL) || ((uStyles & WS_HSCROLL) == WS_HSCROLL)))
 					// this memo control
 					scrollBarTheme = Theme::Memo::Initialize(hWnd);
+				PostMessageA(hWnd, WM_SETFONT, (WPARAM)listFont->Handle, TRUE);
 				break;
 			case ThemeType::ListBox:
 				{

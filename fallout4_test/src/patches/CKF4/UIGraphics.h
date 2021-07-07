@@ -246,6 +246,8 @@ namespace Core
 				VOID SetQuality(const CUIFontQuality quality);
 				inline CUIFontPitch GetPitch(VOID) const { return m_Pitch; }
 				VOID SetPitch(const CUIFontPitch pitch);
+				inline ULONG GetCharSet(VOID) const { return m_ulCharSet; }
+				VOID SetCharSet(const ULONG CharSet);
 			private:
 				VOID Recreate(VOID);
 				VOID Recreate(const HDC hDC);
@@ -260,6 +262,7 @@ namespace Core
 				PROPERTY(GetStyles, SetStyles) const CUIFontStyles Styles;
 				PROPERTY(GetQuality, SetQuality) const CUIFontQuality Quality;
 				PROPERTY(GetPitch, SetPitch) const CUIFontPitch Pitch;
+				PROPERTY(GetCharSet, SetCharSet) const ULONG CharSet;
 			public:
 				CUIFont(const std::string& name, const LONG size, const CUIFontStyles& styles = {}, const ULONG ulCharSet = DEFAULT_CHARSET, const CUIFontQuality quality = fqClearTypeNatural,
 					const CUIFontPitch pitch = fpVariable);

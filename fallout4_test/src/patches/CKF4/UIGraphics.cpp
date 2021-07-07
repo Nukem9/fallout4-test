@@ -259,6 +259,12 @@ namespace Core
 				Change();
 			}
 
+			VOID CUIFont::SetCharSet(const ULONG CharSet)
+			{
+				m_ulCharSet = CharSet;
+				Change();
+			}
+
 			VOID CUIFont::SetHeight(const LONG value)
 			{
 				m_Height = value;
