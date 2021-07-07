@@ -333,7 +333,7 @@ uint32_t FIXAPI sub_1405B31C0_SSE41_Ex(BSTArray<LPVOID>& Array, LPCVOID& Target)
 	// Compare 16 pointers per iteration - use SIMD instructions to generate a bit mask. Set
 	// bit 0 if 'array[i + 0]'=='target', set bit 1 if 'array[i + 1]'=='target', set bit X...
 	const uint32_t comparesPerIter = 16;
-	const uint32_t vectorizedIterations = (Array.QSize() - index) / comparesPerIter;
+	const uint32_t vectorizedIterations = Array.QSize() / comparesPerIter;
 	const __m128i target = _mm_set1_epi64x((INT64)Target);
 
 	for (uint32_t iter = 0; iter < vectorizedIterations; iter++)

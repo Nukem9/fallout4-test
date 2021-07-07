@@ -1,14 +1,23 @@
 #include "RenderWindow.h"
 #include "MainWindow.h"
+#include "LogWindow.h"
+
+#include <windowsx.h>
 
 namespace RenderWindow
 {
 	Core::Classes::UI::CUICustomWindow RenderViewWindow;
 
-	struct RenderWindowControls_t
+	struct RenderWindowParams_t
 	{
 		BOOL IsCollisionView;
-	} RenderWindowControls;
+
+		// Some important variables for determining the size of the drawing area
+		DWORD dw_A5B7AF8;
+		DWORD dw_A5B7AFC;
+		DWORD dw_A5B7B00;
+		DWORD dw_A5B7B04;
+	} RenderWindowParams;
 
 	DLGPROC OldDlgProc;
 
@@ -24,12 +33,12 @@ namespace RenderWindow
 
 	BOOL IsCollisionView(void)
 	{
-		return RenderWindowControls.IsCollisionView;
+		return RenderWindowParams.IsCollisionView;
 	}
 
 	void SetCollisionView(const BOOL Value)
 	{
-		RenderWindowControls.IsCollisionView = Value;
+		RenderWindowParams.IsCollisionView = Value;
 	}
 
 	INT_PTR CALLBACK DlgProc(HWND DialogHwnd, UINT Message, WPARAM wParam, LPARAM lParam)
@@ -37,7 +46,7 @@ namespace RenderWindow
 		if (Message == WM_INITDIALOG)
 		{
 			RenderViewWindow = DialogHwnd;
-			RenderWindowControls.IsCollisionView = FALSE;
+			RenderWindowParams.IsCollisionView = FALSE;
 		}
 		else if (Message == WM_KEYUP)
 		{
@@ -67,6 +76,24 @@ namespace RenderWindow
 
 					MainWindow::GetMainMenuObj().GetSubMenuItem(2).GetItemByPos(17).Click();
 				}
+			}
+		}
+		else if (Message == WM_ACTIVATE)
+		{
+			WORD fActive = (WORD)LOWORD(wParam);
+			if (fActive == WA_INACTIVE)
+			{
+				RenderWindowParams.dw_A5B7AF8 = *(PDWORD)(OFFSET(0xA5B7AF8, 0));
+				RenderWindowParams.dw_A5B7AFC = *(PDWORD)(OFFSET(0xA5B7AFC, 0));
+				RenderWindowParams.dw_A5B7B00 = *(PDWORD)(OFFSET(0xA5B7B00, 0));
+				RenderWindowParams.dw_A5B7B04 = *(PDWORD)(OFFSET(0xA5B7B04, 0));
+			}
+			else
+			{
+				*(PDWORD)(OFFSET(0xA5B7AF8, 0)) = RenderWindowParams.dw_A5B7AF8;
+				*(PDWORD)(OFFSET(0xA5B7AFC, 0)) = RenderWindowParams.dw_A5B7AFC;
+				*(PDWORD)(OFFSET(0xA5B7B00, 0)) = RenderWindowParams.dw_A5B7B00;
+				*(PDWORD)(OFFSET(0xA5B7B04, 0)) = RenderWindowParams.dw_A5B7B04;
 			}
 		}
 
