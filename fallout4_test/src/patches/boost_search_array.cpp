@@ -2,10 +2,6 @@
 
 #include <smmintrin.h>
 
-#include <fstream>
-
-std::ofstream ofs("f4.log");
-
 /*
 
 This file is part of Fallout 4 Fixes source code.
