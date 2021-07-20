@@ -23,6 +23,7 @@ BOOL WINAPI hk_SetThreadPriority(HANDLE hThread, int nPriority)
 	return SetThreadPriority(hThread, std::max(THREAD_PRIORITY_NORMAL, nPriority));
 }
 
+
 /*
 ==================
 hk_SetThreadAffinityMask
@@ -36,22 +37,6 @@ DWORD_PTR WINAPI hk_SetThreadAffinityMask(HANDLE hThread, DWORD_PTR dwThreadAffi
 	return 0xFFFFFFFF;
 }
 
-/*
-==================
-hk_Sleep
-
-Replacement WINAPI Sleep
-==================
-*/
-VOID WINAPI hk_Sleep(DWORD dwMilliseconds)
-{
-	// Bethesda's spinlock calls Sleep(0) every iteration until 10,000. Then it
-	// uses Sleep(1). Even with 0ms waits, there's a tiny performance penalty.
-	if (dwMilliseconds <= 1)
-		Sleep(0);
-	else
-		Sleep(dwMilliseconds);
-}
 
 /*
 ==================
@@ -65,7 +50,7 @@ VOID FIXAPI Fix_PatchThreading(VOID)
 {
 	PatchIAT(hk_SetThreadPriority, "kernel32.dll", "SetThreadPriority");
 	PatchIAT(hk_SetThreadAffinityMask, "kernel32.dll", "SetThreadAffinityMask");
-	PatchIAT(hk_Sleep, "kernel32.dll", "Sleep");
+	// I removed the interception of the Sleep function it caused overloads
 
 	// no abort/retry/fail errors
 	SetErrorMode(SEM_FAILCRITICALERRORS);

@@ -1,5 +1,11 @@
 #include "../../common.h"
 
+/*
+
+This file is part of Fallout 4 Fixes source code.
+
+*/
+
 #define THEME_DEBUG 0
 
 #include <tbb/concurrent_unordered_map.h>
@@ -86,6 +92,10 @@ namespace UITheme
 		// "NiTreeCtrl",
 	};
 
+	// List of created windows
+	tbb::concurrent_unordered_map<HWND, BOOL> WindowHandles;
+
+	// List of registered visual styles themes
 	tbb::concurrent_unordered_map<HTHEME, ThemeType> ThemeHandles;
 	BOOL EnableThemeHooking;
 
@@ -267,7 +277,9 @@ namespace UITheme
 	{
 		if (nCode == HC_ACTION)
 		{
-			if (auto messageData = reinterpret_cast<CWPSTRUCT*>(lParam); messageData->message == WM_CREATE)
+			auto messageData = reinterpret_cast<CWPSTRUCT*>(lParam);
+
+			if (messageData->message == WM_CREATE)
 			{
 				LPCREATESTRUCTA lpCreateStruct = (LPCREATESTRUCTA)messageData->lParam;
 				if (lpCreateStruct)
@@ -297,12 +309,75 @@ namespace UITheme
 						<< "y: " << lpCreateStruct->y << std::endl;
 #endif
 					if ((lpCreateStruct->hInstance) && (lpCreateStruct->hInstance != GetModuleHandleA("comdlg32.dll")))
-						SetWindowSubclass(messageData->hwnd, WindowSubclass, 0, reinterpret_cast<DWORD_PTR>(WindowSubclass));
+					{
+						if (WindowHandles.find(messageData->hwnd) == WindowHandles.end())
+						{
+							SetWindowSubclass(messageData->hwnd, WindowSubclass, 0, reinterpret_cast<DWORD_PTR>(WindowSubclass));
+							WindowHandles.emplace(messageData->hwnd, FALSE);
+						}
+					}
+						
+				}
+			}
+			else if (messageData->message == WM_INITDIALOG)
+			{
+				auto wnd = WindowHandles.find(messageData->hwnd);
+				if (wnd == WindowHandles.end())
+				{
+					SetWindowSubclass(messageData->hwnd, DialogSubclass, 0, reinterpret_cast<DWORD_PTR>(DialogSubclass));
+					WindowHandles.emplace(messageData->hwnd, TRUE);
+				}
+				else
+				{
+					RemoveWindowSubclass(messageData->hwnd, WindowSubclass, 0);
+					SetWindowSubclass(messageData->hwnd, DialogSubclass, 0, reinterpret_cast<DWORD_PTR>(DialogSubclass));
+					wnd->second = TRUE;
 				}
 			}
 		}
 
 		return CallNextHookEx(NULL, nCode, wParam, lParam);
+	}
+
+	LRESULT CALLBACK DialogSubclass(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
+	{
+		LRESULT result = WindowSubclass(hWnd, uMsg, wParam, lParam, uIdSubclass, dwRefData);
+
+		switch (uMsg)
+		{
+		case WM_PAINT:
+		{
+			// Special override for DialogBoxIndirectParam (MessageBox) since the bottom half doesn't get themed correctly. ReactOS
+			// says this is MSGBOX_IDTEXT. Standard message boxes will have 3 buttons or less.
+			if (GetDlgItem(hWnd, 0xFFFF))
+			{
+				int buttonCount = 0;
+
+				EnumChildWindows(hWnd, [](HWND ChildWindow, LPARAM Param)
+					{
+						CHAR classname[256] = {};
+						GetClassName(ChildWindow, classname, std::size(classname));
+
+						if (!_stricmp(classname, "Button"))
+							(*reinterpret_cast<PINT>(Param))++;
+
+						return TRUE;
+					}, reinterpret_cast<LPARAM>(&buttonCount));
+
+				if (buttonCount <= 3)
+				{
+					Classes::CUICustomWindow Window = hWnd;
+					Classes::CUICanvas Canvas(GetDC(hWnd));
+					Classes::CRECT windowArea(Window.ClientRect());
+
+					Canvas.Fill(windowArea, Theme::GetThemeSysColor(Theme::ThemeColor_Default));
+				}
+			}
+		}
+		break;
+		}
+
+		return result;
 	}
 	
 	LRESULT CALLBACK WindowSubclass(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
@@ -528,6 +603,14 @@ namespace UITheme
 
 				return TRUE;
 			}		
+		}
+		break;
+
+		case WM_DESTROY:
+		{
+			auto it = WindowHandles.find(hWnd);
+			if (it != WindowHandles.end())
+				WindowHandles.unsafe_erase(it);
 		}
 		break;
 

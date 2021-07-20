@@ -13,6 +13,7 @@
 #pragma comment(lib, "uxtheme.lib")
 #pragma comment(lib, "Version.lib")
 
+#pragma comment(lib, "libdeflate.lib")			// Boost deflate
 #pragma comment(lib, "tbb.lib")					// Thread Building Blocks
 #pragma comment(lib, "libzydis.lib")			// Zydis
 #pragma comment(lib, "libmeshoptimizer.lib")	// Meshoptimizer
@@ -33,8 +34,12 @@ HINSTANCE g_hModule;
 #if FALLOUT4_MINI_PROJECT
 mINIReader g_INI("fallout4_test.ini");
 mINIReader g_INI_CK("CreationKitPrefs.ini");
+mINIReader g_INI_CK_Cfg("CreationKit.ini");
+mINIReader g_INI_CK_CfgCustom("CreationKitCustom.ini");
 #else
 INIReader g_INI("fallout4_test.ini");
+INIReader g_INI_CK_Cfg("CreationKit.ini");
+INIReader g_INI_CK_CfgCustom("CreationKitCustom.ini");
 #endif // FALLOUT4_MINI_PROJECT
 
 uintptr_t g_ModuleBase;

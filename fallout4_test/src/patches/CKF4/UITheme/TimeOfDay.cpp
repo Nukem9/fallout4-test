@@ -41,7 +41,9 @@ namespace Core
 					// I don't know what the developers were thinking, but not for nothing was the behavior of this thing ambiguous, 
 					// not to mention the rendering of the component itself
 
-					HWND hPanel = CreateWindowExA(0, wc.lpszClassName, "", WS_CHILD | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | WS_VISIBLE, 1130, 2, 250, 24, hWnd, (HMENU)NULL, wc.hInstance, NULL);
+					auto left = g_INI_CK_CfgCustom.GetBoolean("General", "bUseVersionControl", FALSE) ? 1154 : 1130;
+
+					HWND hPanel = CreateWindowExA(0, wc.lpszClassName, "", WS_CHILD | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | WS_VISIBLE, left, 2, 250, 24, hWnd, (HMENU)NULL, wc.hInstance, NULL);
 
 					NewUITimeOfDayComponents.hWndLabel = CreateWindowExA(0, WC_STATICA, "Time of day", WS_CHILD | WS_VISIBLE | SS_CENTER, 0, 5, 90, 20, hPanel, (HMENU)0x16D2, wc.hInstance, NULL);
 					NewUITimeOfDayComponents.hWndTrackBar = CreateWindowExA(0, TRACKBAR_CLASSA, "", WS_CHILD | WS_VISIBLE | TBS_HORZ | TBS_NOTICKS, 90, 3, 110, 18, hPanel, (HMENU)0x16D3, wc.hInstance, NULL);

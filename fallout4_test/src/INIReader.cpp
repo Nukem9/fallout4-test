@@ -1,5 +1,11 @@
 #include "INIReader.h"
 
+/*
+
+This file is part of Fallout 4 Fixes source code.
+
+*/
+
 #if FALLOUT4_MINI_PROJECT
 
 #include "common.h"

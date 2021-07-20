@@ -2,6 +2,12 @@
 #include "UtfStr.h"
 #include "xutil.h"
 
+/*
+
+This file is part of Fallout 4 Fixes source code.
+
+*/
+
 #define __deprecated_utf8
 
 #ifndef __deprecated_utf8

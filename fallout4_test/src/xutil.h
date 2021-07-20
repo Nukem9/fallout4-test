@@ -204,7 +204,7 @@ namespace XUtil
 		static inline std::string trim(const std::string& s) {
 			return trim(const_cast<std::string&>(s));
 		}
-
+		
 		// convert string to upper case
 		static inline std::string& UpperCase(std::string& s) {
 			std::for_each(s.begin(), s.end(), [](char& c) {
@@ -227,6 +227,13 @@ namespace XUtil
 
 		// formating string
 		std::string format(const char* fmt, ...);
+
+		static inline std::string ChangeFileExt(const std::string sfile, const std::string snewext) {
+			if (auto it = sfile.find_last_of('.'); it != std::string::npos)
+				return sfile.substr(0, it) + snewext;
+			else
+				return sfile + snewext;
+		}
 	}
 
 	void SetThreadName(uint32_t ThreadID, const char *ThreadName);

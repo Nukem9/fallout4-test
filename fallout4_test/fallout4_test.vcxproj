@@ -171,6 +171,7 @@
     <ClInclude Include="src\config.h" />
     <ClInclude Include="src\erase_if.h" />
     <ClInclude Include="src\INIReader.h" />
+    <ClInclude Include="src\patches\boost_search_array.h" />
     <ClInclude Include="src\patches\CKF4\ActorWindow.h" />
     <ClInclude Include="src\patches\CKF4\CellViewWindow.h" />
     <ClInclude Include="src\patches\CKF4\DataWindow.h" />
@@ -223,6 +224,7 @@
     <ClInclude Include="src\patches\CKF4\UITheme\VarCommon.h" />
     <ClInclude Include="src\patches\CKF4\UITheme\PopupMenu.h" />
     <ClInclude Include="src\patches\ComClasses.h" />
+    <ClInclude Include="src\patches\deflate.h" />
     <ClInclude Include="src\patches\offsets.h" />
     <ClInclude Include="src\patches\TES\bhkThreadMemorySource.h" />
     <ClInclude Include="src\patches\TES\BSTList.h" />
@@ -266,6 +268,7 @@
     <ClCompile Include="..\Dependencies\zipper\src\zip.c" />
     <ClCompile Include="src\INIReader.cpp" />
     <ClCompile Include="src\patches\bnet.cpp" />
+    <ClCompile Include="src\patches\boost_search_array.cpp" />
     <ClCompile Include="src\patches\CKF4\ActorWindow.cpp" />
     <ClCompile Include="src\patches\CKF4\CellViewWindow.cpp" />
     <ClCompile Include="src\patches\CKF4\DataWindow.cpp" />
@@ -316,6 +319,7 @@
     <ClCompile Include="src\patches\CKF4\UITheme\UpDown.cpp" />
     <ClCompile Include="src\patches\CKF4\UITheme\VarCommon.cpp" />
     <ClCompile Include="src\patches\CKF4\UITheme\PopupMenu.cpp" />
+    <ClCompile Include="src\patches\deflate.cpp" />
     <ClCompile Include="src\patches\offsets.cpp" />
     <ClCompile Include="src\patches\patches_f4ck.cpp" />
     <ClCompile Include="src\patches\patches_f4tes.cpp" />

@@ -28,7 +28,6 @@
 // include json generator dialogs
 #include "CKF4/UIDialogManager.h"
 
-
 #include <xbyak/xbyak.h>
 
 /*
@@ -223,14 +222,34 @@ VOID FIXAPI F_RequiredPatches(VOID)
 	INT32 cpuinfo[4];
 	__cpuid(cpuinfo, 1);
 
+	// Search for a set of functions for accessing an array and getting an index.
+	// Imho, there are a lot of functions and one and the same,
+	// I don't even know what to say about this, there is another function with the third parameter, I assume this offset from.
+
+	std::vector<uintptr_t> matches = XUtil::FindPatterns(g_CodeBase, g_CodeEnd - g_CodeBase,
+		"48 89 5C 24 10 48 89 74 24 18 57 41 56 41 57 48 83 EC 30 44 8B 71 10 83 CB FF 33 FF 4C 8B FA 48 8B F1 45 85 F6");
+
+	std::vector<uintptr_t> matches2 = XUtil::FindPatterns(g_CodeBase, g_CodeEnd - g_CodeBase,
+		"48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 41 56 41 57 48 83 EC 30 44 8B 71 10 83 CB FF 41 8B F8");
+
+	auto search_array_func_default = [](auto it) { XUtil::DetourJump(it, &Fix_BoostArraySearchItem); };
+	auto search_array_func_sse = [](auto it) { XUtil::DetourJump(it, &Fix_SSE41_BoostArraySearchItem_16Pointer); };
+	auto search_array_func_default_2 = [](auto it) { XUtil::DetourJump(it, &Fix_BoostArraySearchItemWithOffset); };
+	auto search_array_func_sse_2 = [](auto it) { XUtil::DetourJump(it, &Fix_SSE41_BoostArraySearchItemWithOffset_16Pointer); };
+	std::vector<uintptr_t>::iterator match;
+
 	// Utilize SSE4.1 instructions if available
 	if ((cpuinfo[2] & (1 << 19)) != 0)
 	{
 		LogWindow::Log("Utilize SSE4.1 instructions if available and loading optimizations enabled");
-		XUtil::DetourJump(OFFSET(0x05B31C0, 0), &sub_1405B31C0_SSE41_Ex);
+		XUtil::Parallel::for_each(match = matches.begin(), matches.end(), search_array_func_sse);
+		XUtil::Parallel::for_each(match = matches2.begin(), matches2.end(), search_array_func_sse_2);
 	}
 	else
-		XUtil::DetourJump(OFFSET(0x05B31C0, 0), &sub_1405B31C0);
+	{
+		XUtil::Parallel::for_each(match = matches.begin(), matches.end(), search_array_func_default);
+		XUtil::Parallel::for_each(match = matches2.begin(), matches2.end(), search_array_func_default_2);
+	}
 
 	XUtil::DetourCall(OFFSET(0x08056B7, 0), &hk_inflateInit);
 	XUtil::DetourCall(OFFSET(0x08056F7, 0), &hk_inflate);

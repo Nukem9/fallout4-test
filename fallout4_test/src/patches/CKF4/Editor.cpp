@@ -1,7 +1,6 @@
 #include <libdeflate/libdeflate.h>
 #include <xbyak/xbyak.h>
 #include <CommCtrl.h>
-#include <smmintrin.h>
 #include <filesystem>
 
 #include "TESCellViewScene_CK.h"
@@ -12,7 +11,11 @@
 #include "ActorWindow.h"
 #include "UIDialogManager.h"
 
-#pragma comment(lib, "libdeflate.lib")
+/*
+
+This file is part of Fallout 4 Fixes source code.
+
+*/
 
 BOOL bFogToggle = TRUE;
 BOOL bAllowPoolMessage = FALSE;
@@ -86,6 +89,32 @@ INT_PTR CALLBACK DialogFuncOverride(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPAR
 	return proc(hwndDlg, uMsg, wParam, lParam);
 }
 
+INT_PTR CALLBACK DialogFuncAbout(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	switch (uMsg)
+	{
+	case WM_INITDIALOG:
+	{
+		Core::Classes::UI::CUIMonitor monitor = Core::Classes::UI::Screen.MonitorFromWindow(hwndDlg);
+		Core::Classes::UI::CRECT wa = monitor.WorkAreaRect;
+
+		MoveWindow(hwndDlg, wa.Left + ((wa.Width - 476) >> 1), wa.Top + ((wa.Height - 476) >> 1), 476, 476, TRUE);
+		ShowWindow(hwndDlg, SW_SHOW);
+		return (INT_PTR)TRUE;
+	}
+	case WM_ACTIVATE:
+	{
+		if (LOWORD(wParam) == WA_INACTIVE)
+		{
+			hk_EndDialog(hwndDlg, 1);
+			return (INT_PTR)TRUE;
+		}
+	}
+	}
+
+	return (INT_PTR)FALSE;
+}
+
 HWND WINAPI hk_CreateDialogParamA(HINSTANCE hInstance, LPCSTR lpTemplateName, HWND hWndParent, DLGPROC lpDialogFunc, LPARAM dwInitParam)
 {
 	// EndDialog MUST NOT be used
@@ -94,30 +123,33 @@ HWND WINAPI hk_CreateDialogParamA(HINSTANCE hInstance, LPCSTR lpTemplateName, HW
 
 	if (!g_UIEnabled)
 		goto skip_hk_CreateDialogParamA;
-	
-	// Actor Dlg
-	if ((uintptr_t)lpTemplateName == 3202)
-	{
-		ActorWindow::OldDlgProc = DlgData.DialogFunc;
-		DlgData.DialogFunc = ActorWindow::DlgProc;
-	}
 
-	// Override certain default dialogs to use this DLL's resources
-	switch ((uintptr_t)lpTemplateName)
+	LPSTR m_lpTemplateName = const_cast<LPSTR>(lpTemplateName);
+	
+	switch ((uintptr_t)m_lpTemplateName)
 	{
+	// Override certain default dialogs to use this DLL's resources
+	case 100:
+		m_lpTemplateName = (LPSTR)235;
+		DlgData.DialogFunc = DialogFuncAbout;
+	case 235:
 	case 122:
 	case 162:
 	case 165:
 	case 166:
 	case 175:
 	case 220:
-	case 235:
 	case 243:
 	case 252:
 	case 279:
 	case 316:
 	case 350:
 		hInstance = (HINSTANCE)&__ImageBase;
+		break;
+	// Actor Dlg
+	case 3202:
+		ActorWindow::OldDlgProc = DlgData.DialogFunc;
+		DlgData.DialogFunc = ActorWindow::DlgProc;
 		break;
 	}
 
@@ -128,13 +160,13 @@ HWND WINAPI hk_CreateDialogParamA(HINSTANCE hInstance, LPCSTR lpTemplateName, HW
 		switch (g_i8DialogMode)
 		{
 		case 1:
-			dialog = g_DialogManager->GetDialog((ULONG)lpTemplateName, Core::Classes::UI::jdt8pt);
+			dialog = g_DialogManager->GetDialog((ULONG)m_lpTemplateName, Core::Classes::UI::jdt8pt);
 			break;
 		/*case 2:
-			dialog = g_DialogManager->GetDialog((ULONG)lpTemplateName, Core::Classes::UI::jdt9pt);
+			dialog = g_DialogManager->GetDialog((ULONG)m_lpTemplateName, Core::Classes::UI::jdt9pt);
 			break;*/
 		case 3:
-			dialog = g_DialogManager->GetDialog((ULONG)lpTemplateName, Core::Classes::UI::jdt10pt);
+			dialog = g_DialogManager->GetDialog((ULONG)m_lpTemplateName, Core::Classes::UI::jdt10pt);
 			break;
 		}
 
@@ -143,7 +175,7 @@ HWND WINAPI hk_CreateDialogParamA(HINSTANCE hInstance, LPCSTR lpTemplateName, HW
 	}
 
 skip_hk_CreateDialogParamA:
-	return CreateDialogParamA(hInstance, lpTemplateName, hWndParent, DialogFuncOverride, dwInitParam);
+	return CreateDialogParamA(hInstance, m_lpTemplateName, hWndParent, DialogFuncOverride, dwInitParam);
 }
 
 INT_PTR WINAPI hk_DialogBoxParamA(HINSTANCE hInstance, LPCSTR lpTemplateName, HWND hWndParent, DLGPROC lpDialogFunc, LPARAM dwInitParam)
@@ -155,29 +187,32 @@ INT_PTR WINAPI hk_DialogBoxParamA(HINSTANCE hInstance, LPCSTR lpTemplateName, HW
 	if (!g_UIEnabled)
 		goto skip_hk_DialogBoxParamA;
 
-	// Actor Dlg
-	if ((uintptr_t)lpTemplateName == 3202)
-	{
-		ActorWindow::OldDlgProc = DlgData.DialogFunc;
-		DlgData.DialogFunc = ActorWindow::DlgProc;
-	}
+	LPSTR m_lpTemplateName = const_cast<LPSTR>(lpTemplateName);
 
-	// Override certain default dialogs to use this DLL's resources
-	switch ((uintptr_t)lpTemplateName)
+	switch ((uintptr_t)m_lpTemplateName)
 	{
+	// Override certain default dialogs to use this DLL's resources
+	case 100:
+		m_lpTemplateName = (LPSTR)235;
+		DlgData.DialogFunc = DialogFuncAbout;
+	case 235:
 	case 122:
 	case 162:
 	case 165:
 	case 166:
 	case 175:
 	case 220:
-	case 235:
 	case 243:
 	case 252:
 	case 279:
 	case 316:
 	case 350:
 		hInstance = (HINSTANCE)&__ImageBase;
+		break;
+	// Actor Dlg
+	case 3202:
+		ActorWindow::OldDlgProc = DlgData.DialogFunc;
+		DlgData.DialogFunc = ActorWindow::DlgProc;
 		break;
 	}
 
@@ -188,13 +223,13 @@ INT_PTR WINAPI hk_DialogBoxParamA(HINSTANCE hInstance, LPCSTR lpTemplateName, HW
 		switch (g_i8DialogMode)
 		{
 		case 1:
-			dialog = g_DialogManager->GetDialog((ULONG)lpTemplateName, Core::Classes::UI::jdt8pt);
+			dialog = g_DialogManager->GetDialog((ULONG)m_lpTemplateName, Core::Classes::UI::jdt8pt);
 			break;
 		/*case 2:
-			dialog = g_DialogManager->GetDialog((ULONG)lpTemplateName, Core::Classes::UI::jdt9pt);
+			dialog = g_DialogManager->GetDialog((ULONG)m_lpTemplateName, Core::Classes::UI::jdt9pt);
 			break;*/
 		case 3:
-			dialog = g_DialogManager->GetDialog((ULONG)lpTemplateName, Core::Classes::UI::jdt10pt);
+			dialog = g_DialogManager->GetDialog((ULONG)m_lpTemplateName, Core::Classes::UI::jdt10pt);
 			break;
 		}
 
@@ -203,7 +238,7 @@ INT_PTR WINAPI hk_DialogBoxParamA(HINSTANCE hInstance, LPCSTR lpTemplateName, HW
 	}
 
 skip_hk_DialogBoxParamA:
-	return DialogBoxParamA(hInstance, lpTemplateName, hWndParent, DialogFuncOverride, dwInitParam);
+	return DialogBoxParamA(hInstance, m_lpTemplateName, hWndParent, DialogFuncOverride, dwInitParam);
 }
 
 BOOL WINAPI hk_EndDialog(HWND hDlg, INT_PTR nResult)
@@ -237,122 +272,6 @@ LRESULT WINAPI hk_SendMessageA(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
 	}
 
 	return SendMessageA(hWnd, Msg, wParam, lParam);
-}
-
-INT32 FIXAPI hk_inflateInit(z_stream_s *Stream, LPCSTR Version, INT32 Mode)
-{
-	// Force inflateEnd to error out and skip frees
-	Stream->state = NULL;
-
-	return 0;
-}
-
-INT32 FIXAPI hk_inflate(z_stream_s *Stream, INT32 Flush)
-{
-	size_t outBytes = 0;
-	libdeflate_decompressor *decompressor = libdeflate_alloc_decompressor();
-
-	libdeflate_result result = libdeflate_zlib_decompress(decompressor, Stream->next_in, Stream->avail_in, Stream->next_out, Stream->avail_out, &outBytes);
-	libdeflate_free_decompressor(decompressor);
-
-	if (result == LIBDEFLATE_SUCCESS)
-	{
-		Assert(outBytes < std::numeric_limits<uint32_t>::max());
-
-		Stream->total_in = Stream->avail_in;
-		Stream->total_out = (uint32_t)outBytes;
-
-		return 1;
-	}
-
-	if (result == LIBDEFLATE_INSUFFICIENT_SPACE)
-		return -5;
-
-	return -2;
-}
-
-uint32_t FIXAPI sub_1405B31C0(BSTArray<LPVOID>& Array, LPCVOID &Target)
-{
-	for (uint32_t i = 0; i < Array.QSize(); i++)
-	{
-		if (Array[i] == Target)
-			return i;
-	}
-
-	return 0xFFFFFFFF;
-}
-
-uint32_t FIXAPI sub_1405B31C0_SSE41(BSTArray<LPVOID>& Array, LPCVOID &Target)
-{
-	uint32_t index = 0;
-	PINT64 data = (PINT64)Array.QBuffer();
-
-	const uint32_t comparesPerIter = 4;
-	const uint32_t vectorizedIterations = (Array.QSize() - index) / comparesPerIter;
-
-	//
-	// Compare 4 pointers per iteration - use SIMD instructions to generate a bit mask. Set
-	// bit 0 if 'array[i + 0]'=='target', set bit 1 if 'array[i + 1]'=='target', set bit X...
-	//
-	// AVX: mask = _mm256_movemask_pd(_mm256_castsi256_pd(_mm256_cmpeq_epi64(targets, _mm256_loadu_si256((__m256i *)&data[i]))));
-	//
-	const __m128i targets = _mm_set1_epi64x((INT64)Target);
-
-	for (uint32_t iter = 0; iter < vectorizedIterations; iter++)
-	{
-		__m128i test1 = _mm_cmpeq_epi64(targets, _mm_loadu_si128((__m128i*)&data[index + 0]));
-		__m128i test2 = _mm_cmpeq_epi64(targets, _mm_loadu_si128((__m128i*)&data[index + 2]));
-
-		INT32 mask = _mm_movemask_pd(_mm_castsi128_pd(_mm_or_si128(test1, test2)));
-
-		// if (target pointer found) { break into the remainder loop to get the index }
-		if (mask != 0)
-			break;
-
-		index += comparesPerIter;
-	}
-
-	// Scan the rest 1-by-1
-	for (; index < Array.QSize(); index++)
-	{
-		if (data[index] == (INT64)Target)
-			return index;
-	}
-
-	return 0xFFFFFFFF;
-}
-
-#define _mm_cmp1_epi128(targets, iptr) (_mm_movemask_pd(_mm_castsi128_pd(_mm_or_si128(_mm_cmpeq_epi64(targets, _mm_loadu_si128((__m128i*)iptr)), _mm_cmpeq_epi64(targets, _mm_loadu_si128((__m128i*)(iptr + 2)))))))
-
-uint32_t FIXAPI sub_1405B31C0_SSE41_Ex(BSTArray<LPVOID>& Array, LPCVOID& Target)
-{
-	uint32_t index = 0;
-	PINT64 data = (PINT64)Array.QBuffer();
-
-	//
-	// Compare 16 pointers per iteration - use SIMD instructions to generate a bit mask. Set
-	// bit 0 if 'array[i + 0]'=='target', set bit 1 if 'array[i + 1]'=='target', set bit X...
-	const uint32_t comparesPerIter = 16;
-	const uint32_t vectorizedIterations = Array.QSize() / comparesPerIter;
-	const __m128i target = _mm_set1_epi64x((INT64)Target);
-
-	for (uint32_t iter = 0; iter < vectorizedIterations; iter++)
-	{
-		if (_mm_cmp1_epi128(target, &data[index]) || _mm_cmp1_epi128(target, &data[index + 4]) ||
-			_mm_cmp1_epi128(target, &data[index + 8]) || _mm_cmp1_epi128(target, &data[index + 12]))
-			break;
-			
-		index += comparesPerIter;
-	}
-
-	// Scan the rest 1-by-1
-	for (; index < Array.QSize(); index++)
-	{
-		if (data[index] == (INT64)Target)
-			return index;
-	}
-
-	return 0xFFFFFFFF;
 }
 
 VOID FIXAPI UpdateObjectWindowTreeView(LPVOID Thisptr, HWND ControlHandle, INT64 Unknown)

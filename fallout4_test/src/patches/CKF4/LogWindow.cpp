@@ -16,6 +16,7 @@ namespace fs = std::filesystem;
 namespace LogWindow
 {
 	HWND LogWindowHandle;
+	HWND richEditHwnd;
 	HANDLE ExternalPipeReaderHandle;
 	HANDLE ExternalPipeWriterHandle;
 	FILE *OutputFileHandle;
@@ -34,6 +35,39 @@ namespace LogWindow
 	{
 		return ExternalPipeWriterHandle;
 	}
+
+	//////////////////////////////////////////////////////////
+	// https://stackoverflow.com/questions/15655953/how-to-get-text-with-rtf-format-from-rich-edit-win-api
+
+	DWORD CALLBACK EditStreamOutCallback(DWORD_PTR dwCookie, LPBYTE pbBuff, LONG cb, LONG* pcb)
+	{
+		HANDLE hFile = (HANDLE)dwCookie;
+		DWORD NumberOfBytesWritten;
+		if (!WriteFile(hFile, pbBuff, cb, &NumberOfBytesWritten, NULL))
+			return S_FALSE;
+		*pcb = NumberOfBytesWritten;
+		return S_OK;
+	}
+
+	BOOL FIXAPI SaveRichTextToFile(LPCSTR _filename)
+	{
+		HANDLE hFile = CreateFileA(_filename, GENERIC_WRITE, 0, NULL,
+			CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+		if (hFile == INVALID_HANDLE_VALUE)
+			return FALSE;
+
+		EDITSTREAM es = { 0 };
+		es.dwCookie = (DWORD_PTR)hFile;
+		es.pfnCallback = EditStreamOutCallback;
+		SendMessageA(richEditHwnd, EM_STREAMOUT, SF_RTF, (LPARAM)&es);
+		CloseHandle(hFile);
+		if (es.dwError != 0)
+			return FALSE;
+
+		return TRUE;
+	}
+
+	//////////////////////////////////////////////////////////
 
 	BOOL FIXAPI Initialize(VOID)
 	{
@@ -227,7 +261,6 @@ namespace LogWindow
 
 	LRESULT CALLBACK WndProc(HWND Hwnd, UINT Message, WPARAM wParam, LPARAM lParam)
 	{
-		static HWND richEditHwnd;
 		static BOOL autoScroll;
 
 		switch (Message)

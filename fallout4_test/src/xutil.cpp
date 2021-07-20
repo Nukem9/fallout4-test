@@ -1,5 +1,11 @@
 #include "common.h"
 
+/*
+
+This file is part of Fallout 4 Fixes source code.
+
+*/
+
 #include <strsafe.h>
 
 std::string __stdcall XUtil::Str::GetLastErrorToStr(DWORD err, const std::string& namefunc)

@@ -1,36 +1,24 @@
 #pragma once
 
+/*
+
+This file is part of Fallout 4 Fixes source code.
+
+*/
+
 #include "../../common.h"
+#include "../deflate.h"
 #include "../TES/BSTArray.h"
+#include "../boost_search_array.h"
 
 extern BOOL bFogToggle;
 extern BOOL bAllowPoolMessage;
-
-struct z_stream_s
-{
-	LPCVOID next_in;
-	uint32_t avail_in;
-	uint32_t total_in;
-	LPVOID next_out;
-	uint32_t avail_out;
-	uint32_t total_out;
-	LPCSTR msg;
-	struct internal_state *state;
-};
-static_assert_offset(z_stream_s, state, 0x28);
 
 INT_PTR CALLBACK DialogFuncOverride(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 HWND WINAPI hk_CreateDialogParamA(HINSTANCE hInstance, LPCSTR lpTemplateName, HWND hWndParent, DLGPROC lpDialogFunc, LPARAM dwInitParam);
 INT_PTR WINAPI hk_DialogBoxParamA(HINSTANCE hInstance, LPCSTR lpTemplateName, HWND hWndParent, DLGPROC lpDialogFunc, LPARAM dwInitParam);
 BOOL WINAPI hk_EndDialog(HWND hDlg, INT_PTR nResult);
 LRESULT WINAPI hk_SendMessageA(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
-
-INT32 FIXAPI hk_inflateInit(z_stream_s *Stream, LPCSTR Version, INT32 Mode);
-INT32 FIXAPI hk_inflate(z_stream_s *Stream, INT32 Flush);
-
-uint32_t FIXAPI sub_1405B31C0(BSTArray<LPVOID>& Array, LPCVOID &Target);
-uint32_t FIXAPI sub_1405B31C0_SSE41(BSTArray<LPVOID>& Array, LPCVOID &Target);
-uint32_t FIXAPI sub_1405B31C0_SSE41_Ex(BSTArray<LPVOID>& Array, LPCVOID& Target);
 
 BOOL FIXAPI OpenPluginSaveDialog(HWND ParentWindow, LPCSTR BasePath, BOOL IsESM, LPSTR Buffer, uint32_t BufferSize, LPCSTR Directory);
 VOID FIXAPI UpdateObjectWindowTreeView(LPVOID Thisptr, HWND ControlHandle, INT64 Unknown);

@@ -10,6 +10,7 @@ namespace LogWindow
 	BOOL FIXAPI Initialize(VOID);
 	BOOL FIXAPI CreateStdoutListener(VOID);
 	VOID FIXAPI LoadWarningBlacklist(VOID);
+	BOOL FIXAPI SaveRichTextToFile(LPCSTR _filename);
 
 	LRESULT CALLBACK WndProc(HWND Hwnd, UINT Message, WPARAM wParam, LPARAM lParam);
 

@@ -380,6 +380,12 @@
     <ClInclude Include="src\patches\CKF4\UIDialogManager.h">
       <Filter>Header Files\UI\Classes</Filter>
     </ClInclude>
+    <ClInclude Include="src\patches\deflate.h">
+      <Filter>Header Files\Patches</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\boost_search_array.h">
+      <Filter>Header Files\Patches</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\dllmain.cpp">
@@ -618,6 +624,12 @@
     </ClCompile>
     <ClCompile Include="..\..\jDialogs\jDialogs\include\jdialogs.cpp">
       <Filter>__dependencies\jDialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\deflate.cpp">
+      <Filter>Source Files\Patches</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\boost_search_array.cpp">
+      <Filter>Source Files\Patches</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -55,6 +55,7 @@ namespace UITheme
 
 	LRESULT CALLBACK CallWndProcCallback(INT nCode, WPARAM wParam, LPARAM lParam);
 	LRESULT CALLBACK WindowSubclass(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData);
+	LRESULT CALLBACK DialogSubclass(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData);
 
 	DWORD FIXAPI Comctl32GetSysColor(INT nIndex);
 	HBRUSH FIXAPI Comctl32GetSysColorBrush(INT nIndex);

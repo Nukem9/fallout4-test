@@ -2,6 +2,8 @@
 #include <DbgHelp.h>
 #include <atomic>
 
+#include "patches/CKF4/LogWindow.h"
+
 /*
 Author: Perchik71 29/04/2021
 Adapted for Fallout 4 and Fallout 4 CK
@@ -131,11 +133,13 @@ DWORD WINAPI Sys_DumpWriterThread(LPVOID Arg)
 			dumpInfo.ExceptionPointers = exceptionInfo;
 			dumpInfo.ClientPointers = FALSE;
 
-			uint32_t dumpFlags = MiniDumpNormal | MiniDumpWithIndirectlyReferencedMemory | MiniDumpWithThreadInfo;
+			uint32_t dumpFlags = MiniDumpNormal | MiniDumpWithIndirectlyReferencedMemory | MiniDumpWithThreadInfo | MiniDumpWithoutOptionalData;
 			dumpWritten = miniDumpWriteDump(GetCurrentProcess(), GetCurrentProcessId(), file, (MINIDUMP_TYPE)dumpFlags, &dumpInfo, NULL, NULL) != FALSE;
 
 			CloseHandle(file);
 		}
+
+		LogWindow::SaveRichTextToFile(XUtil::Str::ChangeFileExt(fileName, ".log").c_str());
 	}
 	else
 		strcpy_s(fileName, "UNABLE TO LOAD DBGHELP.DLL");
