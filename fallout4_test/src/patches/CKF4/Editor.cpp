@@ -521,19 +521,6 @@ BOOL FIXAPI hk_call_12E852C(HWND RichEditControl, LPCSTR Text)
 }
 
 
-
-/*
-==================
-hk_first_call_strtok_for_quote
-==================
-*/
-LPSTR FIXAPI hk_first_call_strtok_for_quote(LPSTR lpSrc, LPCSTR lpDelim)
-{
-	return strtok(lpSrc, "\"");
-}
-
-
-
 /*
 ==================
 hk_call_2511176
@@ -747,14 +734,6 @@ VOID FIXAPI PatchMessage(VOID)
 		Core::Classes::UI::CUIMainWindow::ProcessMessages();
 }
 
-
-VOID FIXAPI HiddenMovableStatic(BOOL Value)
-{
-	LPVOID ptrArr = *((LPVOID*)OFFSET(0x6D54CF8, 0));
-	((VOID(__fastcall*)(LPVOID, INT32, BOOL))OFFSET(0x7B4520, 0))(ptrArr, 0, Value);
-	((VOID(__fastcall*)(VOID))OFFSET(0x59C820, 0))();
-}
-
 VOID FIXAPI PatchTemplatedFormIterator(VOID)
 {
 	class FormIteratorHook : public Xbyak::CodeGenerator
@@ -828,4 +807,196 @@ VOID FIXAPI PatchTemplatedFormIterator(VOID)
 	FormIteratorHook::Generate(OFFSET(0x191D2, 0));
 	FormIteratorHook::Generate(OFFSET(0x28CBD, 0));
 	FormIteratorHook::Generate(OFFSET(0x118FB, 0));
+}
+
+
+/*
+==================
+PatchGeneratePreCombined_CmdLineWithQuote
+
+Adds support for quotation marks of some commands on the command line
+==================
+*/
+
+LPSTR FIXAPI Fixed_StrTok(LPSTR str, LPSTR delim, LPSTR* next_token)
+{
+	if (str)
+	{
+		while (*str == ' ')
+		{
+			if (*str == '\0')
+				return NULL;
+
+			str++;
+		}
+
+		if (*str == '\"')
+			return strtok_s(++str, "\"", next_token);
+		else
+			return strtok_s(str, " ", next_token);
+	}
+	else if (next_token && *next_token)
+	{
+		if (strchr(*next_token, '\"'))
+		{
+			LPSTR lpRes = strtok_s(NULL, "\"", next_token);
+			
+			if (lpRes && !XUtil::Str::trim(lpRes).length())
+				lpRes = strtok_s(NULL, "\"", next_token);
+
+			return lpRes;
+		} 
+		else
+			return strtok_s(NULL, " ", next_token);
+	}
+	else 
+		return strtok_s(str, delim, next_token);
+};
+
+VOID FIXAPI RestoreGenerateSingleLip(LPSTR lpCmdLine, LPSTR arg2)
+{
+	namespace fs = std::filesystem;
+
+	LPSTR next_token = NULL;
+
+	LPSTR token = Fixed_StrTok(lpCmdLine, " ", &next_token);
+	if (token)
+	{
+		LPSTR filename = token;
+		token = Fixed_StrTok(NULL, " ", &next_token);
+		if (token)
+		{
+			auto pathAudioFile = fs::path(filename);
+			// Replacement by .wav
+			pathAudioFile.replace_extension(L".wav");
+
+			if (fs::exists(pathAudioFile))
+			{
+				auto AudioFilePath = XUtil::Conversion::WideToAnsi(pathAudioFile);
+				((BOOL(__fastcall*)(HWND, LPCSTR, LPCSTR))OFFSET(0x0B66BF0, 0))(MainWindow::GetWindow(), AudioFilePath.c_str(), token);
+
+				return;
+			}
+		}
+	}
+
+	((VOID(__fastcall*)(LPCSTR))OFFSET(0x2001A90, 0))(((LPSTR)OFFSET(0x3837940, 0)));
+}
+
+VOID FIXAPI PatchCmdLineWithQuote(VOID)
+{
+	//	Add support quote to command line with -GeneratePreCombined
+	//	Should be: -GeneratePreCombined:"<ESMFilename>" [clean, filtered] [all, other, main, ints]
+
+	XUtil::DetourCall(OFFSET(0x33B9D3, 0), &Fixed_StrTok);
+	XUtil::DetourCall(OFFSET(0x33B9F3, 0), &Fixed_StrTok);
+	XUtil::DetourCall(OFFSET(0x33BA0C, 0), &Fixed_StrTok);
+
+	//	-GeneratePreVisData
+	//	This command into the code section -GeneratePreCombined.
+	//	Should be: -GeneratePreVisData:"<ESMFilename>" [clean, filtered] [all, other, main, ints]
+
+	XUtil::DetourCall(OFFSET(0x33BB0E, 0), &Fixed_StrTok);
+	XUtil::DetourCall(OFFSET(0x33BB2C, 0), &Fixed_StrTok);
+
+	//	Add support quote to command line with -CheckInPlugin
+	//	Should be: -CheckInPlugin:"<PluginFilename>" "<ESMFilename>"
+
+	XUtil::DetourCall(OFFSET(0x33B30B, 0), &Fixed_StrTok);
+	XUtil::DetourCall(OFFSET(0x33B32D, 0), &Fixed_StrTok);
+
+	//	Add support quote to command line with -ConvertToESL
+	//	Should be: -ConvertToESL:"<PluginFilename>"
+
+	XUtil::DetourCall(OFFSET(0x33C4F4, 0), &Fixed_StrTok);
+
+	//	Add support quote to command line with -DumpNeededFiles
+	//	Should be: -DumpNeededFiles:"<ESMFilename>" "<OutputFilepath>"
+
+	XUtil::DetourCall(OFFSET(0x33B43E, 0), &Fixed_StrTok);
+	XUtil::DetourCall(OFFSET(0x33B45C, 0), &Fixed_StrTok);
+
+	//	Add support quote to command line with -SaveDefaultPlugin
+	//	Should be: -SaveDefaultPlugin:"<PluginFilename>" "<ESMFilename>"
+	
+	XUtil::DetourCall(OFFSET(0x33B278, 0), &Fixed_StrTok);
+	XUtil::DetourCall(OFFSET(0x33B296, 0), &Fixed_StrTok);
+	
+	//	Add support quote to command line with -SaveDefaultPlugin
+	//	Should be: -ExportDismemberData:"<ESMFilename>" <XB1|X64|PS4|W32>
+
+	XUtil::DetourCall(OFFSET(0x33B1A4, 0), &Fixed_StrTok);
+	XUtil::DetourCall(OFFSET(0x33B1C2, 0), &Fixed_StrTok);
+	
+	//	Add support quote to command line with -UpdateModelData
+	//	Should be: -UpdateModelData:"<ESMFilename>"
+
+	XUtil::DetourCall(OFFSET(0x33B139, 0), &Fixed_StrTok);
+
+	//	Add support quote to command line with -OutputAreaArt
+	//	Should be: -OutputAreaArt:"<ESMFilename>" "<AreasFilename>" "<OutputFilename>"
+
+	XUtil::DetourCall(OFFSET(0x33B07F, 0), &Fixed_StrTok);
+	XUtil::DetourCall(OFFSET(0x33B09D, 0), &Fixed_StrTok);
+	XUtil::DetourCall(OFFSET(0x33B0BB, 0), &Fixed_StrTok);
+
+	//	Add support quote to command line with -CompileTextExport
+	//	Should be: -CompileTextExport:"<ESMFilename>" "<language>" "<PathToTextExport>" ["<PathBackupToTextExport>"]
+
+	XUtil::DetourCall(OFFSET(0x33AF37, 0), &Fixed_StrTok);
+	XUtil::DetourCall(OFFSET(0x33AF55, 0), &Fixed_StrTok);
+
+	//	Add support quote to command line with -ExportFaceGenData
+	//	Should be: -ExportFaceGenData:"<ESMFilename>" <XB1|X64|PS4|W32>
+
+	XUtil::DetourCall(OFFSET(0x33ADD1, 0), &Fixed_StrTok);
+	XUtil::DetourCall(OFFSET(0x33ADEF, 0), &Fixed_StrTok);
+
+	//	Add support quote to command line with -GenerateAnimInfo
+	//	Should be: -GenerateAnimInfo:"<ESMFilename>" "<DataFilepath>" "<OutputFilepath>" [%s] [%s] [%s]
+	
+	XUtil::DetourCall(OFFSET(0x33B4DA, 0), &Fixed_StrTok);
+	XUtil::DetourCall(OFFSET(0x33B4F8, 0), &Fixed_StrTok);
+	XUtil::DetourCall(OFFSET(0x33B516, 0), &Fixed_StrTok);
+	XUtil::DetourCall(OFFSET(0x33B534, 0), &Fixed_StrTok);
+	XUtil::DetourCall(OFFSET(0x33B694, 0), &Fixed_StrTok);
+	
+	//	Add support quote to command line with -GenerateSingleLip
+	//	Should be: -GenerateSingleLip:"<WavFilename>" "<Text>"
+	//	Warning: /Data/Sound/ this is the directory relative to which it will be stored .lip file.
+
+	XUtil::DetourCall(OFFSET(0x33B843, 0), &RestoreGenerateSingleLip);
+
+	//	Add support quote to command line with -GenerateStaticCollections
+	//	Should be: -GenerateStaticCollections:"<ESMFilename>" <XB1|X64|PS4|W32>
+
+	XUtil::DetourCall(OFFSET(0x33B90E, 0), &Fixed_StrTok);
+	XUtil::DetourCall(OFFSET(0x33B92C, 0), &Fixed_StrTok);
+
+	//	Add support quote to command line with -DepersistRefs
+	//	Should be: -DepersistRefs:"<ESMFilename>"
+
+	XUtil::DetourCall(OFFSET(0x33BE82, 0), &Fixed_StrTok);
+
+	//	Add support quote to command line with -MapMarker
+	//	Should be: -MapMarker:"<ESMFilename>" "<Worldspace|Interior>"
+
+	XUtil::DetourCall(OFFSET(0x33BEFE, 0), &Fixed_StrTok);
+	XUtil::DetourCall(OFFSET(0x33BF1C, 0), &Fixed_StrTok);
+
+	//	Add support quote to command line with -MapInfo
+	//	Should be: -MapInfo:"<ESMFilename>" "<Worldspace|Interior>" ["<%s>"]
+
+	XUtil::DetourCall(OFFSET(0x33BF87, 0), &Fixed_StrTok);
+	XUtil::DetourCall(OFFSET(0x33BFA5, 0), &Fixed_StrTok);
+	XUtil::DetourCall(OFFSET(0x33BFC3, 0), &Fixed_StrTok);
+	
+	//	Add support quote to command line with -ImportScalingData
+	//	Should be: -ImportScalingData:"<ESMFilename>"
+
+	XUtil::DetourCall(OFFSET(0x33C10D, 0), &Fixed_StrTok);
+
+
+
+	
 }

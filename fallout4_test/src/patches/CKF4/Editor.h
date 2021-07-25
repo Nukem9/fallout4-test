@@ -34,7 +34,6 @@ VOID FIXAPI QuitHandler(VOID);
 VOID FIXAPI hk_call_140906407(INT64 a1, INT64 a2, INT64 a3);
 BOOL FIXAPI hk_call_12E852C(HWND RichEditControl, LPCSTR Text);
 VOID FIXAPI PatchTemplatedFormIterator(VOID);
-VOID FIXAPI HiddenMovableStatic(BOOL Value);
 
 
 /*
@@ -59,14 +58,6 @@ But this patch will make the button available.
 ==================
 */
 VOID FIXAPI PatchLip(VOID);
-
-
-/*
-==================
-hk_first_call_strtok_for_quote
-==================
-*/
-LPSTR FIXAPI hk_first_call_strtok_for_quote(LPSTR lpSrc, LPCSTR lpDelim);
 
 
 /*
@@ -139,3 +130,13 @@ VOID FIXAPI ArrayQuickSortRecursive(BSTArray<T>& Array, INT32(*SortFunction)(LPC
 	else
 		std::sort(&Array[0], &Array[Array.QSize()], compare);
 }
+
+
+/*
+==================
+PatchCmdLineWithQuote
+
+Adds support for quotation marks of some commands on the command line
+==================
+*/
+VOID FIXAPI PatchCmdLineWithQuote(VOID);

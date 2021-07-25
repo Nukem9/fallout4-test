@@ -8,11 +8,6 @@ namespace ShowHideWindow
 	Classes::CUICustomWindow ShowHideWindow;
 	static BOOL Initialize = FALSE;
 
-	struct ShowHideWindowControls_t
-	{
-		Classes::CUICheckbox CheckBtnMovableStatics;
-	} ShowHideWindowControls;
-
 	DLGPROC OldDlgProc;
 
 	HWND FIXAPI GetWindow(VOID)
@@ -33,24 +28,7 @@ namespace ShowHideWindow
 			{
 				Initialize = TRUE;
 				ShowHideWindow = DialogHwnd;
-				ShowHideWindowControls.CheckBtnMovableStatics.CreateWnd(ShowHideWindow, ShowHideWindow.GetControl(UI_VISIBLE_CHECKBUTTON_MOVABLESTATICS), UI_VISIBLE_CHECKBUTTON_MOVABLESTATICS);
-				// Default value
-				ShowHideWindowControls.CheckBtnMovableStatics.Checked = TRUE;
 			}			
-		}
-		else if (Message == WM_DESTROY)
-		{
-			ShowHideWindowControls.CheckBtnMovableStatics.Release();
-		}
-		else if (Message == WM_COMMAND)
-		{
-			switch (LOWORD(wParam))
-			{
-			case UI_VISIBLE_CHECKBUTTON_MOVABLESTATICS:
-				HiddenMovableStatic(ShowHideWindowControls.CheckBtnMovableStatics.Checked);
-				ShowHideWindowControls.CheckBtnMovableStatics.Checked = !ShowHideWindowControls.CheckBtnMovableStatics.Checked;
-				return 0;
-			}
 		}
 
 		return OldDlgProc(DialogHwnd, Message, wParam, lParam);

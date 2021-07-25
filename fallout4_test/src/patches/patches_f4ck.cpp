@@ -217,6 +217,23 @@ VOID FIXAPI F_RequiredPatches(VOID)
 	XUtil::PatchMemory(OFFSET(0xF84570, 0), { 0x48, 0x85, 0xC9, 0x74, 0xB5, 0x48, 0x8B, 0x01, 0xEB, 0xAA });
 
 	//
+	// Adds support for quotation marks of some commands on the command line
+	//
+	PatchCmdLineWithQuote();
+
+	//
+	// Skipping the program update check
+	//
+	XUtil::PatchMemory(OFFSET(0x5C180B, 0), { 0xEB, 0x10 });
+	
+	//
+	// Change the default " 64-bit"
+	//
+	const char* newTitlePart = " Fallout 4 64-bit";
+	XUtil::PatchMemory(OFFSET(0x5C16CB, 0), { 0x8B });
+	XUtil::PatchMemory(OFFSET(0x3857828, 0), (uint8_t*)&newTitlePart, sizeof(newTitlePart));
+
+	//
 	// Plugin loading optimizations
 	//
 	INT32 cpuinfo[4];

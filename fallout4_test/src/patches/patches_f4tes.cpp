@@ -138,7 +138,7 @@ VOID FIXAPI MainFix_PatchFallout4Game(VOID)
 	//
 	// Loading optimizations
 	//
-
+	/*
 	INT32 cpuinfo[4];
 	__cpuid(cpuinfo, 1);
 
@@ -155,7 +155,7 @@ VOID FIXAPI MainFix_PatchFallout4Game(VOID)
 			XUtil::DetourCall(it + 4, &Fix_BoostArraySearchItem);
 			XUtil::PatchMemory(it + 9, { 0x48, 0x83, 0xC4, 0x30, 0x89, 0xC3, 0x49, 0x89, 0xD3, 0x48, 0x89, 0xCA });
 			});
-	}
+	}*/
 
 	XUtil::DetourCall(OFFSET(0x13267D, 0), &hk_inflateInit);
 	XUtil::DetourCall(OFFSET(0x1326AF, 0), &hk_inflate);
