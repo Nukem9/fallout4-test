@@ -995,8 +995,4 @@ VOID FIXAPI PatchCmdLineWithQuote(VOID)
 	//	Should be: -ImportScalingData:"<ESMFilename>"
 
 	XUtil::DetourCall(OFFSET(0x33C10D, 0), &Fixed_StrTok);
-
-
-
-	
 }
