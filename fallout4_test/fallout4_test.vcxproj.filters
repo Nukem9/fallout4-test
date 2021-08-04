@@ -227,9 +227,6 @@
     <ClInclude Include="src\patches\CKF4\ExperimentalNuukem.h">
       <Filter>Header Files\Patches\CK</Filter>
     </ClInclude>
-    <ClInclude Include="src\patches\CKF4\TranslateUnicode_CK.h">
-      <Filter>Header Files\Patches\CK</Filter>
-    </ClInclude>
     <ClInclude Include="src\patches\CKF4\UIProgressDialog.h">
       <Filter>Header Files\UI\Classes</Filter>
     </ClInclude>
@@ -386,6 +383,9 @@
     <ClInclude Include="src\patches\boost_search_array.h">
       <Filter>Header Files\Patches</Filter>
     </ClInclude>
+    <ClInclude Include="src\patches\CKF4\TranslateUnicode_CK.h">
+      <Filter>Header Files\Patches\CK</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\dllmain.cpp">
@@ -455,9 +455,6 @@
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
     <ClCompile Include="src\patches\CKF4\ExperimentalNuukem.cpp">
-      <Filter>Source Files\Patches\CK</Filter>
-    </ClCompile>
-    <ClCompile Include="src\patches\CKF4\TranslateUnicode_CK.cpp">
       <Filter>Source Files\Patches\CK</Filter>
     </ClCompile>
     <ClCompile Include="src\patches\CKF4\UIProgressDialog.cpp">
@@ -630,6 +627,9 @@
     </ClCompile>
     <ClCompile Include="src\patches\boost_search_array.cpp">
       <Filter>Source Files\Patches</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\TranslateUnicode_CK.cpp">
+      <Filter>Source Files\Patches\CK</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

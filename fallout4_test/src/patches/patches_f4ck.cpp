@@ -6,7 +6,7 @@
 #include "TES/bhkThreadMemorySource.h"
 
 #include "CKF4/ExperimentalNuukem.h"
-#include "CKF4/Unicode/TranslateUnicode_CK.h"
+#include "CKF4/TranslateUnicode_CK.h"
 #include "CKF4/UIProgressDialog.h"
 
 // include patches for editor
