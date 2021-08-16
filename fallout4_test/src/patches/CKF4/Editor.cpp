@@ -121,16 +121,19 @@ HWND WINAPI hk_CreateDialogParamA(HINSTANCE hInstance, LPCSTR lpTemplateName, HW
 	DlgData.DialogFunc = lpDialogFunc;
 	DlgData.IsDialog = FALSE;
 
+	// FIX: 
+	// Bug report "pra": Cannot use CK to preview NIFs
+	// The compiler messed up the type, now I'm strictly without checking the type, I bring it to another type.
+	DWORD m_lpTemplateName = reinterpret_cast<DWORD>(lpTemplateName);
+
 	if (!g_UIEnabled)
 		goto skip_hk_CreateDialogParamA;
 
-	LPSTR m_lpTemplateName = const_cast<LPSTR>(lpTemplateName);
-	
-	switch ((uintptr_t)m_lpTemplateName)
+	switch (m_lpTemplateName)
 	{
 	// Override certain default dialogs to use this DLL's resources
 	case 100:
-		m_lpTemplateName = (LPSTR)235;
+		m_lpTemplateName = 235;
 		DlgData.DialogFunc = DialogFuncAbout;
 	case 235:
 	case 122:
@@ -152,7 +155,7 @@ HWND WINAPI hk_CreateDialogParamA(HINSTANCE hInstance, LPCSTR lpTemplateName, HW
 		DlgData.DialogFunc = ActorWindow::DlgProc;
 		break;
 	}
-
+	
 	if ((g_i8DialogMode > 0) && g_DialogManager)
 	{
 		Core::Classes::UI::jDialog* dialog = NULL;
@@ -175,7 +178,7 @@ HWND WINAPI hk_CreateDialogParamA(HINSTANCE hInstance, LPCSTR lpTemplateName, HW
 	}
 
 skip_hk_CreateDialogParamA:
-	return CreateDialogParamA(hInstance, m_lpTemplateName, hWndParent, DialogFuncOverride, dwInitParam);
+	return CreateDialogParamA(hInstance, (LPCSTR)m_lpTemplateName, hWndParent, DialogFuncOverride, dwInitParam);
 }
 
 INT_PTR WINAPI hk_DialogBoxParamA(HINSTANCE hInstance, LPCSTR lpTemplateName, HWND hWndParent, DLGPROC lpDialogFunc, LPARAM dwInitParam)
@@ -184,16 +187,19 @@ INT_PTR WINAPI hk_DialogBoxParamA(HINSTANCE hInstance, LPCSTR lpTemplateName, HW
 	DlgData.DialogFunc = lpDialogFunc;
 	DlgData.IsDialog = TRUE;
 
+	// FIX: 
+	// Bug report "pra": Cannot use CK to preview NIFs
+	// The compiler messed up the type, now I'm strictly without checking the type, I bring it to another type.
+	DWORD m_lpTemplateName = reinterpret_cast<DWORD>(lpTemplateName);
+
 	if (!g_UIEnabled)
 		goto skip_hk_DialogBoxParamA;
 
-	LPSTR m_lpTemplateName = const_cast<LPSTR>(lpTemplateName);
-
-	switch ((uintptr_t)m_lpTemplateName)
+	switch (m_lpTemplateName)
 	{
-	// Override certain default dialogs to use this DLL's resources
+		// Override certain default dialogs to use this DLL's resources
 	case 100:
-		m_lpTemplateName = (LPSTR)235;
+		m_lpTemplateName = 235;
 		DlgData.DialogFunc = DialogFuncAbout;
 	case 235:
 	case 122:
@@ -207,9 +213,9 @@ INT_PTR WINAPI hk_DialogBoxParamA(HINSTANCE hInstance, LPCSTR lpTemplateName, HW
 	case 279:
 	case 316:
 	case 350:
-		hInstance = (HINSTANCE)&__ImageBase;
+		hInstance = (HINSTANCE)& __ImageBase;
 		break;
-	// Actor Dlg
+		// Actor Dlg
 	case 3202:
 		ActorWindow::OldDlgProc = DlgData.DialogFunc;
 		DlgData.DialogFunc = ActorWindow::DlgProc;
@@ -238,7 +244,7 @@ INT_PTR WINAPI hk_DialogBoxParamA(HINSTANCE hInstance, LPCSTR lpTemplateName, HW
 	}
 
 skip_hk_DialogBoxParamA:
-	return DialogBoxParamA(hInstance, m_lpTemplateName, hWndParent, DialogFuncOverride, dwInitParam);
+	return DialogBoxParamA(hInstance, (LPCSTR)m_lpTemplateName, hWndParent, DialogFuncOverride, dwInitParam);
 }
 
 BOOL WINAPI hk_EndDialog(HWND hDlg, INT_PTR nResult)

@@ -41,7 +41,7 @@ namespace Core
 					// I don't know what the developers were thinking, but not for nothing was the behavior of this thing ambiguous, 
 					// not to mention the rendering of the component itself
 
-					auto left = g_INI_CK_CfgCustom.GetBoolean("General", "bUseVersionControl", FALSE) ? 1154 : 1130;
+					auto left = g_INI_CK_CfgCustom->GetBoolean("General", "bUseVersionControl", FALSE) ? 1154 : 1130;
 
 					HWND hPanel = CreateWindowExA(0, wc.lpszClassName, "", WS_CHILD | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | WS_VISIBLE, left, 2, 250, 24, hWnd, (HMENU)NULL, wc.hInstance, NULL);
 

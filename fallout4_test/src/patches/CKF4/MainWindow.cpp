@@ -123,7 +123,7 @@ namespace MainWindow
 				MenuItem.ID = UI_CMD_SHOWHIDE_CELLVIEWWINDOW;
 				MenuItem.Checked = TRUE;
 
-				if (!g_INI_CK.GetBoolean("General", "bViewFog", TRUE))
+				if (!g_INI_CK->GetBoolean("General", "bViewFog", TRUE))
 					ViewMenu.GetItem(UI_FOG_CMD).Click();
 
 				return status;
@@ -406,8 +406,8 @@ namespace MainWindow
 		}
 		else if (Message == WM_CLOSE)
 		{
-			g_INI_CK.SetBoolean("General", "bViewFog", MainWindow.MainMenu.GetItem(UI_FOG_CMD).Checked);
-			g_INI_CK.Save();
+			g_INI_CK->SetBoolean("General", "bViewFog", MainWindow.MainMenu.GetItem(UI_FOG_CMD).Checked);
+			g_INI_CK->Save();
 		}
 
 		return CallWindowProcA(OldWndProc, Hwnd, Message, wParam, lParam);

@@ -27,19 +27,19 @@
 #if FALLOUT4_MINI_PROJECT
 #include "INIReader.h"
 
-extern mINIReader g_INI;
-extern mINIReader g_INI_CK;
-extern mINIReader g_INI_CK_Cfg;
-extern mINIReader g_INI_CK_CfgCustom;
+extern mINIReader* g_INI;
+extern mINIReader* g_INI_CK;
+extern mINIReader* g_INI_CK_Cfg;
+extern mINIReader* g_INI_CK_CfgCustom;
 #else
 #define INI_ALLOW_MULTILINE 0
 #define INI_USE_STACK 0
 #define INI_MAX_LINE 4096
 #include "INIReader.h"
 
-extern INIReader g_INI;
-extern INIReader g_INI_CK_Cfg;
-extern INIReader g_INI_CK_CfgCustom;
+extern INIReader* g_INI;
+extern INIReader* g_INI_CK_Cfg;
+extern INIReader* g_INI_CK_CfgCustom;
 #endif // FALLOUT4_MINI_PROJECT
 
 #include "UtfStr.h"

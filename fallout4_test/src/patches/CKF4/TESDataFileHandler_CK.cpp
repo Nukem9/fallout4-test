@@ -25,7 +25,7 @@ bool TESDataFileHandler_CK::Load(int Unknown)
 bool TESDataFileHandler_CK::InitUnknownDataSetTextStatusBar(void)
 {
 	// Replacing Tips with a progress Bar
-	if (g_INI.GetBoolean("CreationKit", "UI", false) && g_INI.GetBoolean("CreationKit", "ReplacingTipsWithProgressBar", false))
+	if (g_INI->GetBoolean("CreationKit", "UI", false) && g_INI->GetBoolean("CreationKit", "ReplacingTipsWithProgressBar", false))
 	{
 		// set to progressbar
 		Core::Classes::UI::ProgressDialog->MessageText = "Loading Files... Initializing...";

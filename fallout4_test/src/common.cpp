@@ -32,14 +32,14 @@ __itt_heap_function ITT_FreeCallback;
 HINSTANCE g_hModule;
 
 #if FALLOUT4_MINI_PROJECT
-mINIReader g_INI("fallout4_test.ini");
-mINIReader g_INI_CK("CreationKitPrefs.ini");
-mINIReader g_INI_CK_Cfg("CreationKit.ini");
-mINIReader g_INI_CK_CfgCustom("CreationKitCustom.ini");
+mINIReader* g_INI;
+mINIReader* g_INI_CK;
+mINIReader* g_INI_CK_Cfg;
+mINIReader* g_INI_CK_CfgCustom;
 #else
-INIReader g_INI("fallout4_test.ini");
-INIReader g_INI_CK_Cfg("CreationKit.ini");
-INIReader g_INI_CK_CfgCustom("CreationKitCustom.ini");
+INIReader* g_INI;
+INIReader* g_INI_CK_Cfg;
+INIReader* g_INI_CK_CfgCustom;
 #endif // FALLOUT4_MINI_PROJECT
 
 uintptr_t g_ModuleBase;

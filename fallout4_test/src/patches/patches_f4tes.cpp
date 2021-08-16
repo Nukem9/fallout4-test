@@ -86,12 +86,12 @@ VOID FIXAPI MainFix_PatchFallout4Game(VOID)
 	//
 	// Settings
 	//
-	if (g_INI.GetBoolean("Fallout4", "SettingsPatch", FALSE))
+	if (g_INI->GetBoolean("Fallout4", "SettingsPatch", FALSE))
 	{
 		Fix_PatchSettings();
 	}
 
-	if (g_INI.GetBoolean("Fallout4", "AchievementsPatch", FALSE))
+	if (g_INI->GetBoolean("Fallout4", "AchievementsPatch", FALSE))
 	{
 		// opens access to steam achievements with mods
 		if (!Fix_PatchAchievements())
@@ -103,7 +103,7 @@ VOID FIXAPI MainFix_PatchFallout4Game(VOID)
 	//
 	// MemoryManager
 	//
-	if (g_INI.GetBoolean("Fallout4", "MemoryPatch", FALSE))
+	if (g_INI->GetBoolean("Fallout4", "MemoryPatch", FALSE))
 	{
 		Fix_PatchMemory();
 

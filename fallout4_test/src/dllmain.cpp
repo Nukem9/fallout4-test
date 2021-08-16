@@ -48,18 +48,7 @@ VOID FIXAPI Sys_ApplyPatches(VOID)
 	switch (g_LoadType)
 	{
 	case GAME_EXECUTABLE_TYPE::CREATIONKIT_FALLOUT4:
-		if (g_INI.GetBoolean("Voice", "bRunCK32ForLips", FALSE))
-		{
-			// To generate .lip files, need creationkit32.exe
-
-			AssertMsg(std::filesystem::exists(std::filesystem::absolute(L"CreationKit32.exe").c_str()),
-					  "To generate .lip files, need creationkit32.exe")
-
-			ShellExecuteW(NULL, L"open", L"CreationKit32.exe", NULL, std::filesystem::absolute(L"").c_str(), SW_SHOW);
-			exit(0);
-		}
-		else
-			MainFix_PatchFallout4CreationKit();
+		MainFix_PatchFallout4CreationKit();
 		break;
 	case GAME_EXECUTABLE_TYPE::GAME_FALLOUT4:
 		MainFix_PatchFallout4Game();
@@ -113,11 +102,51 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD fdwReason, LPVOID lpReserved)
 		{
 		case GAME_EXECUTABLE_TYPE::GAME_FALLOUT4:
 		case GAME_EXECUTABLE_TYPE::CREATIONKIT_FALLOUT4:
+		{
+			// FIX: 
+			// Bug report "pra": Cannot use CK to preview NIFs
+			// Set current path to app and create ini reader objects
+			//
+
+			CHAR creationkitPath[MAX_PATH + 1];
+			GetModuleFileNameA(NULL, creationkitPath, MAX_PATH);
+			if (!GetLastError())
+			{
+				std::string directory, source(creationkitPath);
+				const size_t last_slash_idx = source.rfind('\\');
+				if (std::string::npos != last_slash_idx)
+					directory = source.substr(0, last_slash_idx);
+				if (directory.length() > 0)
+				{
+					if (!SetCurrentDirectoryA(directory.c_str()))
+						goto SetCurPathLabFailed;
+				}
+				else
+					goto SetCurPathLabFailed;
+			}
+			else
+			SetCurPathLabFailed:
+				MessageBoxA(
+					NULL,
+					"An error occurred when determining or setting the current path,"
+					"perhaps this will lead to other errors or incorrect operation of the program.",
+					"Warning",
+					MB_OK);
+#if FALLOUT4_MINI_PROJECT
+			g_INI = new mINIReader("fallout4_test.ini");
+			g_INI_CK = new mINIReader("CreationKitPrefs.ini");
+			g_INI_CK_Cfg = new mINIReader("CreationKit.ini");
+			g_INI_CK_CfgCustom = new mINIReader("CreationKitCustom.ini");
+#else
+			g_INI = new INIReader("fallout4_test.ini");
+			g_INI_CK_Cfg = new INIReader("CreationKit.ini");
+			g_INI_CK_CfgCustom = new INIReader("CreationKitCustom.ini");
+#endif
 #if FALLOUT4_CREATIONKIT_ONLY
 			if (g_LoadType != GAME_EXECUTABLE_TYPE::CREATIONKIT_FALLOUT4)
 				return TRUE;
 #else
-			if (!g_INI.GetBoolean("Mode", "Extended", FALSE) && (g_LoadType != GAME_EXECUTABLE_TYPE::CREATIONKIT_FALLOUT4))
+			if (!g_INI->GetBoolean("Mode", "Extended", FALSE) && (g_LoadType != GAME_EXECUTABLE_TYPE::CREATIONKIT_FALLOUT4))
 			{
 				return TRUE;
 			}
@@ -125,6 +154,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD fdwReason, LPVOID lpReserved)
 
 			Sys_DumpEnableBreakpoint();
 			break;
+		}
 		}
     }
 

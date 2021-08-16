@@ -78,7 +78,7 @@ namespace LogWindow
 		LoadWarningBlacklist();
 
 		// File output
-		const std::string logPath = g_INI.Get("CreationKit_Log", "OutputFile", "none");
+		const std::string logPath = g_INI->Get("CreationKit_Log", "OutputFile", "none");
 
 		if (strcmp(logPath.c_str(), "none") != 0)
 		{
@@ -201,7 +201,7 @@ namespace LogWindow
 
 	VOID FIXAPI LoadWarningBlacklist(VOID)
 	{
-		if (!g_INI.GetBoolean("CreationKit", "WarningBlacklist", FALSE))
+		if (!g_INI->GetBoolean("CreationKit", "WarningBlacklist", FALSE))
 			return;
 
 		// Keep reading entries until an empty one is hit
@@ -282,9 +282,9 @@ namespace LogWindow
 			CHARFORMAT2A format = {};
 			format.cbSize = sizeof(format);
 			format.dwMask = CFM_FACE | CFM_SIZE | CFM_WEIGHT;
-			format.yHeight = g_INI.GetInteger("CreationKit_Log", "FontSize", 10) * 20;
-			format.wWeight = (WORD)g_INI.GetInteger("CreationKit_Log", "FontWeight", FW_NORMAL);
-			strcpy_s(format.szFaceName, g_INI.Get("CreationKit_Log", "Font", "Consolas").c_str());
+			format.yHeight = g_INI->GetInteger("CreationKit_Log", "FontSize", 10) * 20;
+			format.wWeight = (WORD)g_INI->GetInteger("CreationKit_Log", "FontWeight", FW_NORMAL);
+			strcpy_s(format.szFaceName, g_INI->Get("CreationKit_Log", "Font", "Consolas").c_str());
 
 			SendMessageA(richEditHwnd, EM_SETCHARFORMAT, SCF_ALL, (LPARAM)& format);
 
@@ -292,14 +292,14 @@ namespace LogWindow
 			SendMessageA(richEditHwnd, EM_SETEVENTMASK, 0, ENM_MOUSEEVENTS | ENM_SELCHANGE);
 
 			// Set default position
-			INT32 winX = g_INI.GetInteger("CreationKit_Log", "X", info->x);
-			INT32 winY = g_INI.GetInteger("CreationKit_Log", "Y", info->y);
-			INT32 winW = g_INI.GetInteger("CreationKit_Log", "Width", info->cx);
-			INT32 winH = g_INI.GetInteger("CreationKit_Log", "Height", info->cy);
+			INT32 winX = g_INI->GetInteger("CreationKit_Log", "X", info->x);
+			INT32 winY = g_INI->GetInteger("CreationKit_Log", "Y", info->y);
+			INT32 winW = g_INI->GetInteger("CreationKit_Log", "Width", info->cx);
+			INT32 winH = g_INI->GetInteger("CreationKit_Log", "Height", info->cy);
 
 			MoveWindow(Hwnd, winX, winY, winW, winH, FALSE);
 
-			if (((winW != 0) && (winH != 0)) && (!g_INI.GetBoolean("CreationKit_Log", "TurnOffLogWindow", FALSE)))
+			if (((winW != 0) && (winH != 0)) && (!g_INI->GetBoolean("CreationKit_Log", "TurnOffLogWindow", FALSE)))
 			{
 				ShowWindow(Hwnd, SW_SHOW);
 				UpdateWindow(Hwnd);

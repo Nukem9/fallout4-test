@@ -117,15 +117,15 @@ namespace UITheme
 		switch (g_i8DialogMode)
 		{
 	/*	case 2:
-			listFont = new Classes::CUIFont("Microsoft Sans Serif", 9, {}, g_INI.GetInteger("Font", "Charset", DEFAULT_CHARSET), Core::Classes::UI::fqClearTypeNatural, Core::Classes::UI::fpVariable);
+			listFont = new Classes::CUIFont("Microsoft Sans Serif", 9, {}, g_INI->GetInteger("Font", "Charset", DEFAULT_CHARSET), Core::Classes::UI::fqClearTypeNatural, Core::Classes::UI::fpVariable);
 			Theme::ThemeFont = new Classes::CUIFont("Microsoft Sans Serif", 9, {}, DEFAULT_CHARSET, Core::Classes::UI::fqClearTypeNatural, Core::Classes::UI::fpVariable);
 			break;*/
 		case 3:
-			listFont = new Classes::CUIFont("Microsoft Sans Serif", 10, {}, g_INI.GetInteger("Font", "Charset", DEFAULT_CHARSET), Core::Classes::UI::fqClearTypeNatural, Core::Classes::UI::fpVariable);
+			listFont = new Classes::CUIFont("Microsoft Sans Serif", 10, {}, g_INI->GetInteger("Font", "Charset", DEFAULT_CHARSET), Core::Classes::UI::fqClearTypeNatural, Core::Classes::UI::fpVariable);
 			Theme::ThemeFont = new Classes::CUIFont("Microsoft Sans Serif", 10, {}, DEFAULT_CHARSET, Core::Classes::UI::fqClearTypeNatural, Core::Classes::UI::fpVariable);
 			break;
 		default:
-			listFont = new Classes::CUIFont("Microsoft Sans Serif", 8, {}, g_INI.GetInteger("Font", "Charset", DEFAULT_CHARSET), Core::Classes::UI::fqClearTypeNatural, Core::Classes::UI::fpVariable);
+			listFont = new Classes::CUIFont("Microsoft Sans Serif", 8, {}, g_INI->GetInteger("Font", "Charset", DEFAULT_CHARSET), Core::Classes::UI::fqClearTypeNatural, Core::Classes::UI::fpVariable);
 			Theme::ThemeFont = new Classes::CUIFont("Microsoft Sans Serif", 8, {}, DEFAULT_CHARSET, Core::Classes::UI::fqClearTypeNatural, Core::Classes::UI::fpVariable);
 			break;
 	    }

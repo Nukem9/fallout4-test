@@ -140,7 +140,7 @@ VOID FIXAPI F_RequiredPatches(VOID)
 	XUtil::DetourCall(OFFSET(0x5B6DF7, 0), &QuitHandler);
 	XUtil::DetourCall(OFFSET(0x2D48FC0, 0), &QuitHandler);
 	XUtil::DetourCall(OFFSET(0x2D48FCF, 0), &QuitHandler);
-
+	
 #if FALLOUT4_STUDY_CK64_INIFILE
 	//
 	// For study ini
@@ -276,8 +276,11 @@ VOID FIXAPI F_UIPatches(VOID)
 	auto comDll = (uintptr_t)GetModuleHandleA("comctl32.dll");
 	Assert(comDll);
 
-	if (INT theme_id = (INT)g_INI.GetInteger("CreationKit", "UITheme", 0); theme_id > 0)
+	
+	if (INT theme_id = (INT)g_INI->GetInteger("CreationKit", "UITheme", 0); theme_id > 0)
 	{
+		MessageBoxA(0, "", "", 0);
+
 		// Setting the colors
 		UITheme::Initialize((UITheme::Theme::Theme)theme_id);
 
@@ -390,7 +393,7 @@ VOID FIXAPI F_UIPatches(VOID)
 	// Replacing the Tips window "Do you know...". Which appears when the plugin is loaded. (no support cmd line)
 	//
 
-	if (BOOL enable = (BOOL)g_INI.GetBoolean("CreationKit", "ReplacingTipsWithProgressBar", FALSE); enable)
+	if (BOOL enable = (BOOL)g_INI->GetBoolean("CreationKit", "ReplacingTipsWithProgressBar", FALSE); enable)
 	{
 		if (nCountArgCmdLine == 1)
 		{
@@ -437,7 +440,7 @@ VOID FIXAPI F_UnicodePatches(VOID)
 	//
 	// Convert Utf-8 to WinCP when loading and back when saving
 	//
-	if (g_INI.GetBoolean("CreationKit", "Unicode", FALSE))
+	if (g_INI->GetBoolean("CreationKit", "Unicode", FALSE))
 	{
 #if FALLOUT4_LAZ_UNICODE_PLUGIN
 		// Initialization CreationKitUnicodePlugin.dll
@@ -569,13 +572,15 @@ VOID FIXAPI MainFix_PatchFallout4CreationKit(VOID)
 		return;
 	}
 
-	g_UIEnabled = (bool)g_INI.GetBoolean("CreationKit", "UI", false);
-	g_i8DialogMode = (int8_t)g_INI.GetInteger("CreationKit", "DialogMode", 0);
+	///////////////////////////////////////////////////////////////////////
+
+	g_UIEnabled = (bool)g_INI->GetBoolean("CreationKit", "UI", false);
+	g_i8DialogMode = (int8_t)g_INI->GetInteger("CreationKit", "DialogMode", 0);
 
 	//
 	// Replace broken crash dump functionality
 	//
-	if (g_INI.GetBoolean("CreationKit", "GenerateCrashdumps", TRUE))
+	if (g_INI->GetBoolean("CreationKit", "GenerateCrashdumps", TRUE))
 	{
 		Fix_GenerateCrashdumps();
 
@@ -589,15 +594,15 @@ VOID FIXAPI MainFix_PatchFallout4CreationKit(VOID)
 	F_UIPatches();
 	F_UnicodePatches();
 
-	if (g_INI.GetBoolean("CreationKit", "DisableWindowGhosting", FALSE))
+	if (g_INI->GetBoolean("CreationKit", "DisableWindowGhosting", FALSE))
 		DisableProcessWindowsGhosting();
 
 	//
 	// AllowSaveESM   - Allow saving ESMs directly without version control
 	// AllowMasterESP - Allow ESP files to act as master files while saving
 	//
-	TESFile_CK::AllowSaveESM = g_INI.GetBoolean("CreationKit", "AllowSaveESM", FALSE);
-	TESFile_CK::AllowMasterESP = g_INI.GetBoolean("CreationKit", "AllowMasterESP", FALSE);
+	TESFile_CK::AllowSaveESM = g_INI->GetBoolean("CreationKit", "AllowSaveESM", FALSE);
+	TESFile_CK::AllowMasterESP = g_INI->GetBoolean("CreationKit", "AllowMasterESP", FALSE);
 
 	if (TESFile_CK::AllowSaveESM || TESFile_CK::AllowMasterESP)
 	{
@@ -629,14 +634,14 @@ VOID FIXAPI MainFix_PatchFallout4CreationKit(VOID)
 	//
 	// Force the render window to draw at 60fps while idle (SetTimer(1ms)). 
 	//
-	if (g_INI.GetBoolean("CreationKit", "RenderWindowUnlockedFPS", FALSE))
+	if (g_INI->GetBoolean("CreationKit", "RenderWindowUnlockedFPS", FALSE))
 	{
 		// SetTimer minimum value 10ms
 		// https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-settimer
 		XUtil::PatchMemory(OFFSET(0x0463383, 0), { (uint8_t)USER_TIMER_MINIMUM });
 
 		// In a separate option VSync
-		if (!g_INI.GetBoolean("CreationKit", "VSyncRender", FALSE))
+		if (!g_INI->GetBoolean("CreationKit", "VSyncRender", FALSE))
 			XUtil::PatchMemory(OFFSET(0x2A39142, 0), { 0x33, 0xD2, 0x90 });
 	}
 }
