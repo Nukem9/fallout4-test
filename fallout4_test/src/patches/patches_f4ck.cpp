@@ -275,12 +275,9 @@ VOID FIXAPI F_UIPatches(VOID)
 
 	auto comDll = (uintptr_t)GetModuleHandleA("comctl32.dll");
 	Assert(comDll);
-
 	
 	if (INT theme_id = (INT)g_INI->GetInteger("CreationKit", "UITheme", 0); theme_id > 0)
 	{
-		MessageBoxA(0, "", "", 0);
-
 		// Setting the colors
 		UITheme::Initialize((UITheme::Theme::Theme)theme_id);
 
