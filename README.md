@@ -60,6 +60,7 @@ All deleted .dll files will be restored after this time.
 [MIT License](https://opensource.org/licenses/MIT)
 
 Copyright (c) 2020 Nukem9 <email:Nukem@outlook.com>
+
 Copyright (c) 2020-2021 Perchik71 <email:perchik71@outlook.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this
