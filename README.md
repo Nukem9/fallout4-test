@@ -44,8 +44,8 @@ WinCP is the current encoding in your operating system.
 **IMPORTANT**: In **Win10**, in the language settings, there is now an option to work with UTF-8, you need to turn it off otherwise there will be only "?".
 
 # Compilation
-At the moment, the project is built on **MS Visual Studio 2019 version 16.0.2**.  
-On **MS Visual Studio 2019 version 16.8.4**, the project has errors and even if they fix the behavior the .dll will not be working.
+At the moment, the project is built on **MS Visual Studio 2019 version 16.11.2**.  
+I rebuilt it in a new studio, however, I also stick to **C++17**, there are so many things errors with **C++20**.... Well, him!.
 (Optional *CreationKitUnicodePlugin.dll* to compile, use **Lazarus 1.8.2 and higher**)  
 
 # Important 
@@ -55,7 +55,28 @@ The program is console and simple, for 15 seconds removes from the known to me .
 All deleted .dll files will be restored after this time.
 
 # License
-I deliver the code as-is with no restrictions for the global community and fans **Fallout 4**.
+![MIT License](https://camo.githubusercontent.com/20666e1b72ed1ea8f0a7c1d1e0ea35769a7c24f879ecc27ac16641b46f225a01/68747470733a2f2f6f70656e736f757263652e6f72672f74726164656d61726b732f6f70656e736f757263652f4f53492d417070726f7665642d4c6963656e73652d313030783133372e706e67)
+
+[MIT License](https://opensource.org/licenses/MIT)
+
+Copyright (c) 2020 Nukem9 <email:Nukem@outlook.com>
+Copyright (c) 2020-2021 Perchik71 <email:perchik71@outlook.com>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this
+software and associated documentation files (the "Software"), to deal in the Software
+without restriction, including without limitation the rights to use, copy, modify, merge,
+publish, distribute, sublicense, and/or sell copies of the Software, and to permit
+persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or
+substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+DEALINGS IN THE SOFTWARE.
 
 # Future
 In the future, I will not be so active in the project, due to the fact that this is enough for me.  

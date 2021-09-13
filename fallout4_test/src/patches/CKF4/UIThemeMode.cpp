@@ -1,10 +1,27 @@
-#include "../../common.h"
-
+//////////////////////////////////////////
 /*
-
-This file is part of Fallout 4 Fixes source code.
-
+* Copyright (c) 2020 Nukem9 <email:Nukem@outlook.com>
+* Copyright (c) 2020-2021 Perchik71 <email:perchik71@outlook.com>
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy of this
+* software and associated documentation files (the "Software"), to deal in the Software
+* without restriction, including without limitation the rights to use, copy, modify, merge,
+* publish, distribute, sublicense, and/or sell copies of the Software, and to permit
+* persons to whom the Software is furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in all copies or
+* substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+* INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+* PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+* FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+* OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+* DEALINGS IN THE SOFTWARE.
 */
+//////////////////////////////////////////
+
+#include "../../common.h"
 
 #define THEME_DEBUG 0
 
@@ -116,17 +133,14 @@ namespace UITheme
 		
 		switch (g_i8DialogMode)
 		{
-	/*	case 2:
-			listFont = new Classes::CUIFont("Microsoft Sans Serif", 9, {}, g_INI->GetInteger("Font", "Charset", DEFAULT_CHARSET), Core::Classes::UI::fqClearTypeNatural, Core::Classes::UI::fpVariable);
-			Theme::ThemeFont = new Classes::CUIFont("Microsoft Sans Serif", 9, {}, DEFAULT_CHARSET, Core::Classes::UI::fqClearTypeNatural, Core::Classes::UI::fpVariable);
-			break;*/
+		case 2:
+			Theme::ThemeFont = new Classes::CUIFont("Microsoft Sans Serif", 10, {}, g_INI->GetInteger("Font", "Charset", DEFAULT_CHARSET), Classes::fqClearTypeNatural, Classes::fpVariable);
+			break;
 		case 3:
-			listFont = new Classes::CUIFont("Microsoft Sans Serif", 10, {}, g_INI->GetInteger("Font", "Charset", DEFAULT_CHARSET), Core::Classes::UI::fqClearTypeNatural, Core::Classes::UI::fpVariable);
-			Theme::ThemeFont = new Classes::CUIFont("Microsoft Sans Serif", 10, {}, DEFAULT_CHARSET, Core::Classes::UI::fqClearTypeNatural, Core::Classes::UI::fpVariable);
+			Theme::ThemeFont = new Classes::CUIFont("Microsoft Sans Serif", 11, {}, g_INI->GetInteger("Font", "Charset", DEFAULT_CHARSET), Classes::fqClearTypeNatural, Classes::fpVariable);
 			break;
 		default:
-			listFont = new Classes::CUIFont("Microsoft Sans Serif", 8, {}, g_INI->GetInteger("Font", "Charset", DEFAULT_CHARSET), Core::Classes::UI::fqClearTypeNatural, Core::Classes::UI::fpVariable);
-			Theme::ThemeFont = new Classes::CUIFont("Microsoft Sans Serif", 8, {}, DEFAULT_CHARSET, Core::Classes::UI::fqClearTypeNatural, Core::Classes::UI::fpVariable);
+			Theme::ThemeFont = new Classes::CUIFont("Microsoft Sans Serif", 8, {}, g_INI->GetInteger("Font", "Charset", DEFAULT_CHARSET), Classes::fqClearTypeNatural, Classes::fpVariable);
 			break;
 	    }
 
@@ -439,7 +453,7 @@ namespace UITheme
 					format.cbSize = sizeof(CHARFORMATA);
 					format.dwMask = CFM_COLOR | CFM_CHARSET;
 					format.crTextColor = Theme::GetThemeSysColor(Theme::ThemeColor_Text_4);
-					format.bCharSet = (BYTE)listFont->CharSet;
+					format.bCharSet = (BYTE)Theme::ThemeFont->CharSet;
 					SendMessageA(hWnd, EM_SETCHARFORMAT, SCF_ALL, (LPARAM)&format);
 					SendMessageA(hWnd, EM_SETCHARFORMAT, SCF_SELECTION, (LPARAM)&format);
 					SendMessageA(hWnd, EM_SETBKGNDCOLOR, FALSE, Theme::GetThemeSysColor(Theme::ThemeColor_Edit_Color));
@@ -460,7 +474,7 @@ namespace UITheme
 					(((uStyles & WS_VSCROLL) == WS_VSCROLL) || ((uStyles & WS_HSCROLL) == WS_HSCROLL)))
 					// this memo control
 					scrollBarTheme = Theme::Memo::Initialize(hWnd);
-				PostMessageA(hWnd, WM_SETFONT, (WPARAM)listFont->Handle, TRUE);
+				PostMessageA(hWnd, WM_SETFONT, (WPARAM)Theme::ThemeFont->Handle, TRUE);
 				break;
 			case ThemeType::ListBox:
 				{
@@ -468,19 +482,22 @@ namespace UITheme
 
 				LONG_PTR uID = GetWindowLongPtrA(hWnd, GWLP_ID);
 				if (uID != 0x7D0 && uID != 0x7D1)
-					PostMessageA(hWnd, WM_SETFONT, (WPARAM)listFont->Handle, TRUE);
+					PostMessageA(hWnd, WM_SETFONT, (WPARAM)Theme::ThemeFont->Handle, TRUE);
 				}
 				break;
 			case ThemeType::ListView:
 				scrollBarTheme = Theme::ListView::Initialize(hWnd);
-				PostMessageA(hWnd, WM_SETFONT, (WPARAM)listFont->Handle, TRUE);
+				PostMessageA(hWnd, WM_SETFONT, (WPARAM)Theme::ThemeFont->Handle, TRUE);
 				break;
 			case ThemeType::TreeView:
 				scrollBarTheme = Theme::TreeView::Initialize(hWnd);
-				PostMessageA(hWnd, WM_SETFONT, (WPARAM)listFont->Handle, TRUE);
+				PostMessageA(hWnd, WM_SETFONT, (WPARAM)Theme::ThemeFont->Handle, TRUE);
 				break;
 			case ThemeType::TabControl:
 				Theme::PageControl::Initialize(hWnd); 
+				break;
+			case ThemeType::StatusBar:
+				Theme::StatusBar::Func::AdjustHeightByTextHeight(hWnd, (HFONT)Theme::ThemeFont->Handle);
 				break;
 			case ThemeType::ToolBar:
 				// Magic numbers to exclude paint of the standard dialog for opening and saving files
@@ -666,12 +683,6 @@ namespace UITheme
 		auto themeType = ThemeType::None;
 		if (auto itr = ThemeHandles.find(hTheme); itr != ThemeHandles.end())
 			themeType = itr->second;
-
-	/*	if (ThemeType::StatusBar != themeType)
-		{
-			// no shadow
-			Canvas.Font.Name = "MS Sans Serif";
-		}*/
 
 		RECT rc = *pRect;
 

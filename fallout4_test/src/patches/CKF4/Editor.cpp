@@ -1,3 +1,26 @@
+//////////////////////////////////////////
+/*
+* Copyright (c) 2020 Nukem9 <email:Nukem@outlook.com>
+* Copyright (c) 2020-2021 Perchik71 <email:perchik71@outlook.com>
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy of this
+* software and associated documentation files (the "Software"), to deal in the Software
+* without restriction, including without limitation the rights to use, copy, modify, merge,
+* publish, distribute, sublicense, and/or sell copies of the Software, and to permit
+* persons to whom the Software is furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in all copies or
+* substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+* INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+* PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+* FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+* OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+* DEALINGS IN THE SOFTWARE.
+*/
+//////////////////////////////////////////
+
 #include <libdeflate/libdeflate.h>
 #include <xbyak/xbyak.h>
 #include <CommCtrl.h>
@@ -10,12 +33,6 @@
 #include "MainWindow.h"
 #include "ActorWindow.h"
 #include "UIDialogManager.h"
-
-/*
-
-This file is part of Fallout 4 Fixes source code.
-
-*/
 
 BOOL bFogToggle = TRUE;
 BOOL bAllowPoolMessage = FALSE;
@@ -165,11 +182,11 @@ HWND WINAPI hk_CreateDialogParamA(HINSTANCE hInstance, LPCSTR lpTemplateName, HW
 		case 1:
 			dialog = g_DialogManager->GetDialog((ULONG)m_lpTemplateName, Core::Classes::UI::jdt8pt);
 			break;
-		/*case 2:
-			dialog = g_DialogManager->GetDialog((ULONG)m_lpTemplateName, Core::Classes::UI::jdt9pt);
-			break;*/
-		case 3:
+		case 2:
 			dialog = g_DialogManager->GetDialog((ULONG)m_lpTemplateName, Core::Classes::UI::jdt10pt);
+			break;
+		case 3:
+			dialog = g_DialogManager->GetDialog((ULONG)m_lpTemplateName, Core::Classes::UI::jdt12pt);
 			break;
 		}
 
@@ -213,7 +230,7 @@ INT_PTR WINAPI hk_DialogBoxParamA(HINSTANCE hInstance, LPCSTR lpTemplateName, HW
 	case 279:
 	case 316:
 	case 350:
-		hInstance = (HINSTANCE)& __ImageBase;
+		hInstance = (HINSTANCE)&__ImageBase;
 		break;
 		// Actor Dlg
 	case 3202:
@@ -231,11 +248,11 @@ INT_PTR WINAPI hk_DialogBoxParamA(HINSTANCE hInstance, LPCSTR lpTemplateName, HW
 		case 1:
 			dialog = g_DialogManager->GetDialog((ULONG)m_lpTemplateName, Core::Classes::UI::jdt8pt);
 			break;
-		/*case 2:
-			dialog = g_DialogManager->GetDialog((ULONG)m_lpTemplateName, Core::Classes::UI::jdt9pt);
-			break;*/
-		case 3:
+		case 2:
 			dialog = g_DialogManager->GetDialog((ULONG)m_lpTemplateName, Core::Classes::UI::jdt10pt);
+			break;
+		case 3:
+			dialog = g_DialogManager->GetDialog((ULONG)m_lpTemplateName, Core::Classes::UI::jdt12pt);
 			break;
 		}
 
@@ -887,6 +904,11 @@ VOID FIXAPI RestoreGenerateSingleLip(LPSTR lpCmdLine, LPSTR arg2)
 	}
 
 	((VOID(__fastcall*)(LPCSTR))OFFSET(0x2001A90, 0))(((LPSTR)OFFSET(0x3837940, 0)));
+}
+
+HANDLE WINAPI hk_FindFirstFileA(LPCSTR lpFileName, LPWIN32_FIND_DATAA lpFindFileData) 
+{
+	return FindFirstFileExA(lpFileName, FindExInfoStandard, lpFindFileData, FindExSearchNameMatch, nullptr, FIND_FIRST_EX_LARGE_FETCH);
 }
 
 VOID FIXAPI PatchCmdLineWithQuote(VOID)

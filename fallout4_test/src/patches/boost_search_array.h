@@ -1,42 +1,36 @@
-#pragma once
-
+//////////////////////////////////////////
 /*
-
-This file is part of Fallout 4 Fixes source code.
-
+* Copyright (c) 2020 Nukem9 <email:Nukem@outlook.com>
+* Copyright (c) 2020-2021 Perchik71 <email:perchik71@outlook.com>
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy of this
+* software and associated documentation files (the "Software"), to deal in the Software
+* without restriction, including without limitation the rights to use, copy, modify, merge,
+* publish, distribute, sublicense, and/or sell copies of the Software, and to permit
+* persons to whom the Software is furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in all copies or
+* substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+* INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+* PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+* FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+* OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+* DEALINGS IN THE SOFTWARE.
 */
+//////////////////////////////////////////
+
+#pragma once
 
 #include "..\common.h"
 #include "TES/BSTArray.h"
 
-/*
-==================
-sub_1405B31C0
-
-Optimized search for faster loading of large plugins
-==================
-*/
-uint32_t FIXAPI Fix_BoostArraySearchItem(BSTArray<LPVOID>& Array, LPCVOID& Target);
-uint32_t FIXAPI Fix_BoostArraySearchItemWithOffset(BSTArray<LPVOID>& Array, LPCVOID& Target, uint32_t start_index);
-
-
-/*
-==================
-sub_1405B31C0_SSE41
-
-Optimized search for faster loading of large plugins using SIMD instructions need SSE 4.1
-==================
-*/
-uint32_t FIXAPI Fix_NuukemBoostArraySearchItem(BSTArray<LPVOID>& Array, LPCVOID& Target);
-uint32_t FIXAPI Fix_NuukemBoostArraySearchItemWithOffset(BSTArray<LPVOID>& Array, LPCVOID& Target, uint32_t start_index);
-
-/*
-==================
-sub_1405B31C0_SSE41_Ex
-
-Optimized search to speed up the loading of large plugins using SIMD instructions, SSE 4.1 is needed.
-Selection of 16 pointers at a time.
-==================
-*/
-uint32_t FIXAPI Fix_SSE41_BoostArraySearchItem_16Pointer(BSTArray<LPVOID>& Array, LPCVOID& Target);
-uint32_t FIXAPI Fix_SSE41_BoostArraySearchItemWithOffset_16Pointer(BSTArray<LPVOID>& Array, LPCVOID& Target, uint32_t start_index);
+namespace Experimental {
+	uint32_t FIXAPI BSTArraySearchItem(BSTArray<LPVOID>& Array, LPCVOID& Target);
+	uint32_t FIXAPI BSTArraySearchItemWithOffset(BSTArray<LPVOID>& Array, LPCVOID& Target, uint32_t start_index);
+	uint32_t FIXAPI BSTArraySIMDSearchItem(BSTArray<LPVOID>& Array, LPCVOID& Target);
+	uint32_t FIXAPI BSTArraySIMDSearchItemWithOffset(BSTArray<LPVOID>& Array, LPCVOID& Target, uint32_t start_index);
+	uint32_t FIXAPI BSTArraySIMD2SearchItem(BSTArray<LPVOID>& Array, LPCVOID& Target);
+	uint32_t FIXAPI BSTArraySIMD2SearchItemWithOffset(BSTArray<LPVOID>& Array, LPCVOID& Target, uint32_t start_index);
+}

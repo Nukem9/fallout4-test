@@ -27,8 +27,8 @@ namespace Core
 			{
 				jdtUnknown,
 				jdt8pt,
-				//jdt9pt,
-				jdt10pt
+				jdt10pt,
+				jdt12pt,
 			};
 
 			typedef class CDialogManager
@@ -38,8 +38,10 @@ namespace Core
 			private:
 				BOOL m_bInit;
 				tbb_map m_items_8pt;
-				tbb_map m_items_9pt;
 				tbb_map m_items_10pt;
+				tbb_map m_items_12pt;
+			private:
+				tbb_map* GetItems(const CDialogFontType type);
 			public:
 				BOOL IsDialog(const LONG uid, const CDialogFontType type);
 				BOOL AddDialog(const std::string& json_file, const LONG uid, const CDialogFontType type);

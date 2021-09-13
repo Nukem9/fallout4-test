@@ -1,3 +1,26 @@
+//////////////////////////////////////////
+/*
+* Copyright (c) 2020 Nukem9 <email:Nukem@outlook.com>
+* Copyright (c) 2020-2021 Perchik71 <email:perchik71@outlook.com>
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy of this
+* software and associated documentation files (the "Software"), to deal in the Software
+* without restriction, including without limitation the rights to use, copy, modify, merge,
+* publish, distribute, sublicense, and/or sell copies of the Software, and to permit
+* persons to whom the Software is furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in all copies or
+* substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+* INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+* PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+* FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+* OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+* DEALINGS IN THE SOFTWARE.
+*/
+//////////////////////////////////////////
+
 #pragma once
 
 #pragma warning(disable:4094) // untagged 'struct' declared no symbols
@@ -157,6 +180,8 @@ namespace XUtil
 
 	namespace Str
 	{
+		static char* whitespaceDelimiters = " \t\n\r\f\v";
+
 		// https://thispointer.com/implementing-a-case-insensitive-stringfind-in-c/
 
 		/*
@@ -174,37 +199,6 @@ namespace XUtil
 				: fname.substr(0, pos);
 		}
 
-		// trim https://stackoverflow.com/questions/216823/whats-the-best-way-to-trim-stdstring
-
-		// trim from start (in place)
-		static inline std::string ltrim(std::string& s) {
-			s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch) { return !std::isspace(ch); }));
-			return s;
-		}
-
-		static inline std::string ltrim(const std::string& s) {
-			return ltrim(const_cast<std::string&>(s));
-		}
-
-		// trim from end (in place)
-		static inline std::string rtrim(std::string& s) {
-			s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) { return !std::isspace(ch); }).base(), s.end());
-			return s;
-		}
-
-		static inline std::string rtrim(const std::string& s) {
-			return rtrim(const_cast<std::string&>(s));
-		}
-
-		// trim from both ends
-		static inline std::string& trim(std::string& s) {
-			return ltrim(rtrim(s));
-		}
-
-		static inline std::string trim(const std::string& s) {
-			return trim(const_cast<std::string&>(s));
-		}
-		
 		// convert string to upper case
 		static inline std::string& UpperCase(std::string& s) {
 			std::for_each(s.begin(), s.end(), [](char& c) {
@@ -233,6 +227,19 @@ namespace XUtil
 				return sfile.substr(0, it) + snewext;
 			else
 				return sfile + snewext;
+		}
+
+		inline std::string& trim(std::string& str) {
+
+			str.erase(str.find_last_not_of(whitespaceDelimiters) + 1);
+			str.erase(0, str.find_first_not_of(whitespaceDelimiters));
+
+			return str;
+		}
+
+		inline std::string trim(const char* s) {
+			std::string str(s);
+			return trim(str);
 		}
 	}
 

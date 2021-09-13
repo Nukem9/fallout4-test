@@ -48,7 +48,7 @@ VOID HideConsole(VOID)
 
 BOOL FileExists(const std::wstring fname)
 {
-	return std::experimental::filesystem::exists(app_path + fname);
+	return std::filesystem::exists(app_path + fname);
 }
 
 VOID ReadFileToMemory(VOID)
@@ -137,7 +137,7 @@ INT32 WINAPI main(INT32 argc, LPWSTR argv[])
 #endif
 	WCHAR basePath[2048] = L"";
 	GetFullPathNameW(argv[0], 2048, basePath, NULL);
-	std::experimental::filesystem::path p = basePath;
+	std::filesystem::path p(basePath);
 
 	app_path = p.parent_path();
 	app_path += L"\\";

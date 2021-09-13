@@ -1,3 +1,26 @@
+//////////////////////////////////////////
+/*
+* Copyright (c) 2020 Nukem9 <email:Nukem@outlook.com>
+* Copyright (c) 2020-2021 Perchik71 <email:perchik71@outlook.com>
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy of this
+* software and associated documentation files (the "Software"), to deal in the Software
+* without restriction, including without limitation the rights to use, copy, modify, merge,
+* publish, distribute, sublicense, and/or sell copies of the Software, and to permit
+* persons to whom the Software is furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in all copies or
+* substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+* INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+* PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+* FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+* OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+* DEALINGS IN THE SOFTWARE.
+*/
+//////////////////////////////////////////
+
 #include "../common.h"
 #include <libdeflate/libdeflate.h>
 #include <intrin.h>
@@ -39,6 +62,7 @@ This file is part of Fallout 4 Fixes source code.
 VOID FIXAPI Fix_PatchMemory(VOID);
 VOID FIXAPI Fix_PatchThreading(VOID);
 VOID FIXAPI Fix_GenerateCrashdumps(VOID);
+size_t FIXAPI BNetConvertUnicodeString(char* Destination, size_t DestSize, const wchar_t* Source, size_t SourceSize);
 
 namespace Classes = Core::Classes::UI;
 
@@ -232,6 +256,11 @@ VOID FIXAPI F_RequiredPatches(VOID)
 	XUtil::PatchMemory(OFFSET(0x5C180B, 0), { 0xEB, 0x10 });
 	
 	//
+	// Fix crash when Unicode string conversion fails with bethesda.net http responses
+	//
+	XUtil::DetourJump(OFFSET(0x27DAF60, 0), &BNetConvertUnicodeString);
+
+	//
 	// Change the default " 64-bit"
 	//
 	const char* newTitlePart = " Fallout 4 64-bit";
@@ -244,20 +273,71 @@ VOID FIXAPI F_RequiredPatches(VOID)
 
 	INT32 cpuinfo[4];
 	__cpuid(cpuinfo, 1);
+	bool sse41 = (cpuinfo[2] & (1 << 19)) != 0;
 
-	// Utilize SSE4.1 instructions if available
-	if ((cpuinfo[2] & (1 << 19)) != 0)
-		XUtil::DetourJump(OFFSET(0x05B31C0, 0), &Fix_SSE41_BoostArraySearchItem_16Pointer);
-	else
-		XUtil::DetourJump(OFFSET(0x05B31C0, 0), &Fix_BoostArraySearchItem);
+	if (!g_INI->GetBoolean("CreationKit", "BSTArraySearchItemReplacement", FALSE)) {
+		// Utilize SSE4.1 instructions if available
+		if (sse41) {
+			LogWindow::Log("Utilize SSE4.1 instructions if available and loading optimizations enabled");
+			XUtil::DetourJump(OFFSET(0x05B31C0, 0), &Experimental::BSTArraySIMD2SearchItem);
+		}
+		else
+			XUtil::DetourJump(OFFSET(0x05B31C0, 0), &Experimental::BSTArraySearchItem);
+	}
+	else {
+		// Search for a set of functions for accessing an array and getting an index.
+		// Imho, there are a lot of functions and one and the same,
+		// I don't even know what to say about this, there is another function with the third parameter, I assume this offset from.
+
+		std::vector<uintptr_t> matches = XUtil::FindPatterns(g_CodeBase, g_CodeEnd - g_CodeBase,
+			"48 89 5C 24 10 48 89 74 24 18 57 41 56 41 57 48 83 EC 30 44 8B 71 10 83 CB FF 33 FF 4C 8B FA 48 8B F1 45 85 F6");
+
+		std::vector<uintptr_t> matches2 = XUtil::FindPatterns(g_CodeBase, g_CodeEnd - g_CodeBase,
+			"48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 41 56 41 57 48 83 EC 30 44 8B 71 10 83 CB FF 41 8B F8");
+		
+		//
+		// Removal from the change, cause the loading of the quest diagram to hang
+		//
+		matches.erase(matches.begin() + 89); // 0xA14500
+		matches.erase(matches.begin() + 53); // 0x525A50
+		matches.erase(matches.begin() + 7);  // 0x193D20
+
+		auto search_array_func = [](auto it) { XUtil::DetourJump(it, &Experimental::BSTArraySearchItem); };
+		auto search_array_func_2 = [](auto it) { XUtil::DetourJump(it, &Experimental::BSTArraySearchItemWithOffset); };
+		auto search_array_func_3 = [](auto it) { XUtil::DetourJump(it, &Experimental::BSTArraySIMD2SearchItem); };
+		auto search_array_func_3_2 = [](auto it) { XUtil::DetourJump(it, &Experimental::BSTArraySIMD2SearchItemWithOffset); };
+		std::vector<uintptr_t>::iterator match;
+
+		// Utilize SSE4.1 instructions if available
+		if (sse41)
+		{
+			LogWindow::Log("Utilize SSE4.1 instructions if available and loading optimizations enabled");
+			XUtil::Parallel::for_each(match = matches.begin(), matches.end(), search_array_func_3);
+			XUtil::Parallel::for_each(match = matches2.begin(), matches2.end(), search_array_func_3_2);
+		}
+		else
+		{
+			XUtil::Parallel::for_each(match = matches.begin(), matches.end(), search_array_func);
+			XUtil::Parallel::for_each(match = matches2.begin(), matches2.end(), search_array_func_2);
+		}
+	}
 
 	XUtil::DetourCall(OFFSET(0x08056B7, 0), &hk_inflateInit);
 	XUtil::DetourCall(OFFSET(0x08056F7, 0), &hk_inflate);
+	PatchIAT(hk_FindFirstFileA, "kernel32.dll", "FindFirstFileA");
 
-	// Experimental. Must be run last to avoid interfering with other hooks and patches.
-	// Optimization that nuukem did in CK SSE
-	// https://github.com/Nukem9/SkyrimSETest/blob/master/skyrim64_test/src/patches/CKSSE/Experimental.cpp
-	Experimental::RunOptimizations();
+	if (g_INI->GetBoolean("CreationKit", "SkipChangeWorldSpace", FALSE))
+		XUtil::PatchMemoryNop(OFFSET(0x5FBE14, 0), 0x13);
+
+	if (g_INI->GetBoolean("CreationKit", "SkipChecksDataWhenLoad", FALSE)) {
+		//
+		// Loading Files... Done! and continue
+		//
+
+		// Something that spends a lot of time, but if you cut it out, it WORKS!!!
+		// I thought to distribute it to threads, but for now I will leave this option, if it works, I will not do anything.
+		XUtil::PatchMemory(OFFSET(0xB2E7C, 0), { 0xB8, 0x01, 0x0, 0x0, 0x0, 0x0 });
+	}
 }
 
 
@@ -641,4 +721,9 @@ VOID FIXAPI MainFix_PatchFallout4CreationKit(VOID)
 		if (!g_INI->GetBoolean("CreationKit", "VSyncRender", FALSE))
 			XUtil::PatchMemory(OFFSET(0x2A39142, 0), { 0x33, 0xD2, 0x90 });
 	}
+
+	// Experimental. Must be run last to avoid interfering with other hooks and patches.
+	// Optimization that nuukem did in CK SSE
+	// https://github.com/Nukem9/SkyrimSETest/blob/master/skyrim64_test/src/patches/CKSSE/Experimental.cpp
+	Experimental::RunOptimizations();
 }

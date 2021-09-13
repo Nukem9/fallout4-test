@@ -1,3 +1,25 @@
+//////////////////////////////////////////
+/*
+* Copyright (c) 2020-2021 Perchik71 <email:perchik71@outlook.com>
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy of this
+* software and associated documentation files (the "Software"), to deal in the Software
+* without restriction, including without limitation the rights to use, copy, modify, merge,
+* publish, distribute, sublicense, and/or sell copies of the Software, and to permit
+* persons to whom the Software is furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in all copies or
+* substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+* INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+* PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+* FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+* OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+* DEALINGS IN THE SOFTWARE.
+*/
+//////////////////////////////////////////
+
 #pragma once
 
 #include "TESFile_CK.h"
@@ -5,9 +27,6 @@
 
 #include <vector>
 
-/// <summary>
-/// Class that works with archived game files
-/// </summary>
 class TESDataFileHandler_CK
 {
 public:
@@ -15,66 +34,22 @@ public:
 	using TESFileListPtr_CK = TESFileList_CK*;
 	using TESFileArray_CK = std::vector<TESFile_CK*>;
 public:
-	/// <summary>
-	/// Used in a hook, do not use!
-	/// </summary>
-	/// <param name="Unknown">Unknown value that is equal to zero</param>
-	/// <returns>Return True if loading and defining dependencies is successful</returns>
-	bool Load(int Unknown);							
-	/// <summary>
-	/// Used in a hook, do not use!
-	/// </summary>
-	/// <param name="">No parms</param>
-	/// <returns>Return True if some initialization is successful</returns>
+	bool Load(int Unknown);	
 	bool InitUnknownDataSetTextStatusBar(void);	
-	/// <summary>
-	/// Used in a hook, do not use!
-	/// </summary>
-	/// <param name="File">Pointer to the archive file</param>
 	static void DetectSelectFile(TESFile_CK* File);
+	static void EndLoadEvent_SendDone(int32_t index, LPCSTR message);
 public:
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <param name="">No parms</param>
-	/// <returns>Return an list of all archives</returns>
 	static TESFileListPtr_CK GetArchiveFiles(void);
-	/// <summary>
-	/// Self-written array with selected archives.
-	/// </summary>
-	/// <param name="">No parms</param>
-	/// <returns>Return an array of selected archives</returns>
 	static TESFileArray_CK* GetSelectedFiles(void);
-	/// <summary>
-	/// Can be NULL. If only Master Files are loaded.
-	/// </summary>
-	/// <param name="">No parms</param>
-	/// <returns>Returns the active file that has target save</returns>
 	TESFile_CK* GetActiveFile(void) const;
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <param name="">No parms</param>
-	/// <returns>Return True if active file is exists</returns>
 	bool IsActiveFile(void) const;
+	bool IsLoaded(void) const;
 public:
-	/// <summary>
-	/// do not use!
-	/// </summary>
-	/// <param name="">No parms</param>
 	static void Initialize(void);
 public:
-	/// <summary>
-	/// Return an list of all archives.
-	/// </summary>
 	__declspec(property(get = GetArchiveFiles)) TESFileListPtr_CK ArchiveFiles;
-	/// <summary>
-	/// Return an array of selected archives.
-	/// </summary>
 	__declspec(property(get = GetSelectedFiles)) TESFileArray_CK* SelectedFiles;
-	/// <summary>
-	/// Returns the active file that has target save. Can be NULL. If only Master Files are loaded.
-	/// </summary>
+	__declspec(property(get = GetActiveFile)) TESFile_CK* ActiveFile;
 	__declspec(property(get = GetActiveFile)) TESFile_CK* ActiveFile;
 };
 

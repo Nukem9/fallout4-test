@@ -27,9 +27,6 @@
     <Filter Include="Source Files\UI">
       <UniqueIdentifier>{8ac21372-4a9a-4e6b-ac6d-0248039f9a3c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Patches">
-      <UniqueIdentifier>{ae770148-f22f-4c77-8ee3-fb61014bba30}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Patches">
       <UniqueIdentifier>{6ecca651-f6ac-4430-b4b5-a9d5fb31e2fc}</UniqueIdentifier>
     </Filter>
@@ -53,9 +50,6 @@
     </Filter>
     <Filter Include="Source Files\Patches\CK">
       <UniqueIdentifier>{9a61be2f-a22e-47e3-a8dc-97bb27863811}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Patches\CK">
-      <UniqueIdentifier>{cd26e7a2-a163-4aa0-923d-f4759c8c3eac}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Tools">
       <UniqueIdentifier>{729a6042-ea7b-4b04-9748-e89acfd10058}</UniqueIdentifier>
@@ -89,6 +83,12 @@
     </Filter>
     <Filter Include="__dependencies\jDialogs">
       <UniqueIdentifier>{480afd49-7d48-4f91-a6cb-125fb4154eca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Patches">
+      <UniqueIdentifier>{ae770148-f22f-4c77-8ee3-fb61014bba30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Patches\CK">
+      <UniqueIdentifier>{cd26e7a2-a163-4aa0-923d-f4759c8c3eac}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -242,9 +242,6 @@
     <ClInclude Include="src\tools\INIHookInputToFile.h">
       <Filter>Header Files\Tools</Filter>
     </ClInclude>
-    <ClInclude Include="src\erase_if.h">
-      <Filter>Header Files\Utils</Filter>
-    </ClInclude>
     <ClInclude Include="src\patches\CKF4\EditorUIProgressDialog.h">
       <Filter>Header Files\UI</Filter>
     </ClInclude>
@@ -385,6 +382,9 @@
     </ClInclude>
     <ClInclude Include="src\patches\CKF4\TranslateUnicode_CK.h">
       <Filter>Header Files\Patches\CK</Filter>
+    </ClInclude>
+    <ClInclude Include="src\erase_if.h">
+      <Filter>Header Files\Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

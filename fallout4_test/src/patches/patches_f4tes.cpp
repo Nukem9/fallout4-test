@@ -1,3 +1,25 @@
+//////////////////////////////////////////
+/*
+* Copyright (c) 2020-2021 Perchik71 <email:perchik71@outlook.com>
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy of this
+* software and associated documentation files (the "Software"), to deal in the Software
+* without restriction, including without limitation the rights to use, copy, modify, merge,
+* publish, distribute, sublicense, and/or sell copies of the Software, and to permit
+* persons to whom the Software is furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in all copies or
+* substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+* INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+* PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+* FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+* OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+* DEALINGS IN THE SOFTWARE.
+*/
+//////////////////////////////////////////
+
 #include "../common.h"
 #include "deflate.h"
 #include "boost_search_array.h"
@@ -19,7 +41,6 @@ VOID FIXAPI Fix_PatchMemory(VOID);
 VOID FIXAPI Fix_PatchThreading(VOID);
 VOID FIXAPI Fix_PatchWindow(VOID);
 BOOL FIXAPI Fix_PatchAchievements(VOID);
-
 
 /*
 ==================
@@ -86,10 +107,10 @@ VOID FIXAPI MainFix_PatchFallout4Game(VOID)
 	//
 	// Settings
 	//
-	if (g_INI->GetBoolean("Fallout4", "SettingsPatch", FALSE))
+	/*if (g_INI->GetBoolean("Fallout4", "SettingsPatch", FALSE))
 	{
 		Fix_PatchSettings();
-	}
+	}*/
 
 	if (g_INI->GetBoolean("Fallout4", "AchievementsPatch", FALSE))
 	{
@@ -125,38 +146,22 @@ VOID FIXAPI MainFix_PatchFallout4Game(VOID)
 	//
 	// Threads
 	//
-	//if (g_INI.GetBoolean("Fallout4", "ThreadingPatch", FALSE))
-//	{
-	Fix_PatchThreading();
-//	}
+	if (g_INI->GetBoolean("Fallout4", "ThreadingPatch", FALSE))
+	{
+		Fix_PatchThreading();
+	}
 
 	//
 	// Window
 	//
-	Fix_PatchWindow();
+	if (g_INI->GetBoolean("Fallout4", "WindowPatch", FALSE))
+	{
+		Fix_PatchWindow();
+	}
 
 	//
 	// Loading optimizations
 	//
-	/*
-	INT32 cpuinfo[4];
-	__cpuid(cpuinfo, 1);
-
-	// Utilize SSE4.1 instructions if available
-	if ((cpuinfo[2] & (1 << 19)) != 0)
-	{
-		std::vector<uintptr_t> matches = XUtil::FindPatterns(g_CodeBase, g_CodeEnd - g_CodeBase,
-			"83 FB FF 75 1F 48 8B 0A 49 8B 03 49 39 04 09 41 0F 44 D8 41 FF C0 49 83 C1 08 45 3B C2 72 E1");
-		std::vector<uintptr_t>::iterator match;
-
-		XUtil::Parallel::for_each(match = matches.begin(), matches.end(), [](auto it) { 
-			XUtil::PatchMemoryNop(it, 0x1F);
-			XUtil::PatchMemory(it - 6, { 0x48, 0x89, 0xD1, 0x4C, 0x89, 0xDA, 0x48, 0x83, 0xEC, 0x30 });
-			XUtil::DetourCall(it + 4, &Fix_BoostArraySearchItem);
-			XUtil::PatchMemory(it + 9, { 0x48, 0x83, 0xC4, 0x30, 0x89, 0xC3, 0x49, 0x89, 0xD3, 0x48, 0x89, 0xCA });
-			});
-	}*/
-
 	XUtil::DetourCall(OFFSET(0x13267D, 0), &hk_inflateInit);
 	XUtil::DetourCall(OFFSET(0x1326AF, 0), &hk_inflate);
 }

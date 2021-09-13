@@ -1,3 +1,26 @@
+//////////////////////////////////////////
+/*
+* Copyright (c) 2020 Nukem9 <email:Nukem@outlook.com>
+* Copyright (c) 2020-2021 Perchik71 <email:perchik71@outlook.com>
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy of this
+* software and associated documentation files (the "Software"), to deal in the Software
+* without restriction, including without limitation the rights to use, copy, modify, merge,
+* publish, distribute, sublicense, and/or sell copies of the Software, and to permit
+* persons to whom the Software is furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in all copies or
+* substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+* INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+* PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+* FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+* OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+* DEALINGS IN THE SOFTWARE.
+*/
+//////////////////////////////////////////
+
 #pragma once
 
 #include "../../common.h"
@@ -24,7 +47,36 @@ namespace CellViewWindow
 {
 	namespace Classes = Core::Classes::UI;
 
+	struct CellViewWindowControls_t
+	{
+		BOOL Initialize = FALSE;
+		BOOL NowFiltering = FALSE;
+		BOOL LockFiltering = FALSE;
+		std::string FilterCell;
+
+		Classes::CUIBaseControl LabelWorldSpace;
+		Classes::CUIBaseControl LabelFilter;
+		Classes::CUIBaseControl NoCellSellected;
+		Classes::CUIBaseControl WorldSpaceCombo;
+		Classes::CUIBaseControl LoadedAtTop;
+		Classes::CUIBaseControl FilteredOnly;
+		Classes::CUIBaseControl VisibleOnly;
+		Classes::CUIBaseControl SelectedOnly;
+		Classes::CUIBaseControl LabelX;
+		Classes::CUIBaseControl LabelY;
+		Classes::CUIBaseControl EditX;
+		Classes::CUIBaseControl EditY;
+		Classes::CUIBaseControl EditCellObjsFiltered;
+		Classes::CUIBaseControl BtnGo;
+		Classes::CUIBaseControl Lst1;
+		Classes::CUIBaseControl Lst2;
+		Classes::CUIBaseControl EditFilterCell;
+		Classes::CUICheckbox ActiveOnly;
+		Classes::CUICheckbox ActiveOnlyObjs;
+	};
+
 	extern DLGPROC OldDlgProc;
+	extern CellViewWindowControls_t CellViewWindowControls;
 
 	HWND FIXAPI GetWindow(VOID);
 	Classes::CUICustomWindow& FIXAPI GetWindowObj(VOID);

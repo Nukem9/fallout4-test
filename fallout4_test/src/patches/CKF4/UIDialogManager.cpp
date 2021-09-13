@@ -1,3 +1,25 @@
+//////////////////////////////////////////
+/*
+* Copyright (c) 2020-2021 Perchik71 <email:perchik71@outlook.com>
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy of this
+* software and associated documentation files (the "Software"), to deal in the Software
+* without restriction, including without limitation the rights to use, copy, modify, merge,
+* publish, distribute, sublicense, and/or sell copies of the Software, and to permit
+* persons to whom the Software is furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in all copies or
+* substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+* INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+* PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+* FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+* OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+* DEALINGS IN THE SOFTWARE.
+*/
+//////////////////////////////////////////
+
 #include "LogWindow.h"
 #include "UIGraphics.h"
 #include "UIDialogManager.h"
@@ -30,32 +52,33 @@ namespace Core
 				{
 				case 8:
 					return CDialogFontType::jdt8pt;
-			/*	case 9:
-					return CDialogFontType::jdt9pt;*/
 				case 10:
 					return CDialogFontType::jdt10pt;
+				case 12:
+					return CDialogFontType::jdt12pt;
 				default:
 					return CDialogFontType::jdtUnknown;
 				}
 			}
 
-			BOOL CDialogManager::IsDialog(const LONG uid, const CDialogFontType type)
+			CDialogManager::tbb_map* CDialogManager::GetItems(const CDialogFontType type)
 			{
-				tbb_map* map = NULL;
-
 				switch (type)
 				{
 				case Core::Classes::UI::jdt8pt:
-					map = &m_items_8pt;
-					break;
-		/*		case Core::Classes::UI::jdt9pt:
-					map = &m_items_9pt;
-					break;*/
+					return &m_items_8pt;
 				case Core::Classes::UI::jdt10pt:
-					map = &m_items_10pt;
-					break;
+					return &m_items_10pt;
+				case Core::Classes::UI::jdt12pt:
+					return &m_items_12pt;
+				default:
+					return NULL;
 				}
+			}
 
+			BOOL CDialogManager::IsDialog(const LONG uid, const CDialogFontType type)
+			{
+				tbb_map* map = GetItems(type);
 				if (!map)
 					return FALSE;
 
@@ -64,20 +87,7 @@ namespace Core
 
 			BOOL CDialogManager::AddDialog(const string& json_file, const LONG uid, const CDialogFontType type)
 			{
-				tbb_map* map = NULL;
-
-				switch (type)
-				{
-				case Core::Classes::UI::jdt8pt:
-					map = &m_items_8pt;
-					break;
-			/*	case Core::Classes::UI::jdt9pt:
-					map = &m_items_9pt;
-					break;*/
-				case Core::Classes::UI::jdt10pt:
-					map = &m_items_10pt;
-					break;
-				}
+				tbb_map* map = GetItems(type);
 
 				if (!map || (map->find(uid) != map->end()))
 					return FALSE;
@@ -99,20 +109,7 @@ namespace Core
 
 			BOOL CDialogManager::AddDialogByCode(const std::string& json_code, const LONG uid, const CDialogFontType type)
 			{
-				tbb_map* map = NULL;
-
-				switch (type)
-				{
-				case Core::Classes::UI::jdt8pt:
-					map = &m_items_8pt;
-					break;
-				/*case Core::Classes::UI::jdt9pt:
-					map = &m_items_9pt;
-					break;*/
-				case Core::Classes::UI::jdt10pt:
-					map = &m_items_10pt;
-					break;
-				}
+				tbb_map* map = GetItems(type);
 
 				if (!map || (map->find(uid) != map->end()))
 					return FALSE;
@@ -134,20 +131,7 @@ namespace Core
 
 			jDialog* CDialogManager::GetDialog(const LONG uid, const CDialogFontType type)
 			{
-				tbb_map* map = NULL;
-
-				switch (type)
-				{
-				case Core::Classes::UI::jdt8pt:
-					map = &m_items_8pt;
-					break;
-				/*case Core::Classes::UI::jdt9pt:
-					map = &m_items_9pt;
-					break;*/
-				case Core::Classes::UI::jdt10pt:
-					map = &m_items_10pt;
-					break;
-				}
+				tbb_map* map = GetItems(type);
 
 				if (!map)
 					return NULL;
@@ -295,7 +279,7 @@ namespace Core
 					FindClose(hFind);
 				}
 				
-				m_bInit = m_items_8pt.size() > 0 || m_items_9pt.size() > 0 || m_items_10pt.size() > 0;
+				m_bInit = m_items_8pt.size() > 0 || m_items_12pt.size() > 0 || m_items_10pt.size() > 0;
 			}
 
 			VOID CDialogManager::Release(VOID)

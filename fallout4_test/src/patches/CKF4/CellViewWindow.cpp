@@ -1,38 +1,35 @@
+//////////////////////////////////////////
+/*
+* Copyright (c) 2020 Nukem9 <email:Nukem@outlook.com>
+* Copyright (c) 2020-2021 Perchik71 <email:perchik71@outlook.com>
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy of this
+* software and associated documentation files (the "Software"), to deal in the Software
+* without restriction, including without limitation the rights to use, copy, modify, merge,
+* publish, distribute, sublicense, and/or sell copies of the Software, and to permit
+* persons to whom the Software is furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in all copies or
+* substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+* INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+* PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+* FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+* OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+* DEALINGS IN THE SOFTWARE.
+*/
+//////////////////////////////////////////
+
 #include "CellViewWindow.h"
 
 #include "LogWindow.h"
+#include "TESDataFileHandler_CK.h"
 
 namespace CellViewWindow
 {
 	Classes::CUICustomWindow CellViewWindow;
-
-	struct CellViewWindowControls_t
-	{
-		BOOL Initialize = FALSE;
-		BOOL NowFiltering = FALSE;
-		BOOL LockFiltering = FALSE;
-		std::string FilterCell;
-
-		Classes::CUIBaseControl LabelWorldSpace;
-		Classes::CUIBaseControl LabelFilter;
-		Classes::CUIBaseControl NoCellSellected;
-		Classes::CUIBaseControl WorldSpaceCombo;
-		Classes::CUIBaseControl LoadedAtTop;
-		Classes::CUIBaseControl FilteredOnly;
-		Classes::CUIBaseControl VisibleOnly;
-		Classes::CUIBaseControl SelectedOnly;
-		Classes::CUIBaseControl LabelX;
-		Classes::CUIBaseControl LabelY;
-		Classes::CUIBaseControl EditX;
-		Classes::CUIBaseControl EditY;
-		Classes::CUIBaseControl EditCellObjsFiltered;
-		Classes::CUIBaseControl BtnGo;
-		Classes::CUIBaseControl Lst1;
-		Classes::CUIBaseControl Lst2;
-		Classes::CUIBaseControl EditFilterCell;
-		Classes::CUICheckbox ActiveOnly;
-		Classes::CUICheckbox ActiveOnlyObjs;
-	} CellViewWindowControls;
+	CellViewWindowControls_t CellViewWindowControls;
 
 	DLGPROC OldDlgProc;
 
@@ -216,24 +213,26 @@ namespace CellViewWindow
 		return OldDlgProc(DialogHwnd, Message, wParam, lParam);
 	}
 
-	VOID FIXAPI hk_7FF70C322BC0(HWND ListViewHandle, TESForm_CK* Form, BOOL UseImage, int32_t ItemIndex)
-	{
-		BOOL allowInsert = TRUE;
-		CellViewWindow.Perform(UI_CELL_WINDOW_ADD_ITEM, (WPARAM)Form, (LPARAM)&allowInsert);
+	VOID FIXAPI hk_7FF70C322BC0(HWND ListViewHandle, TESForm_CK* Form, BOOL UseImage, int32_t ItemIndex) {
+		if (FileHandler->IsLoaded()) {
+			BOOL allowInsert = TRUE;
+			CellViewWindow.Perform(UI_CELL_WINDOW_ADD_ITEM, (WPARAM)Form, (LPARAM)&allowInsert);
 
-		if (!allowInsert)
-			return;
+			if (!allowInsert)
+				return;
+		}
 
 		return ((VOID(__fastcall*)(HWND, TESForm_CK*, BOOL, int32_t))OFFSET(0x562BC0, 0))(ListViewHandle, Form, UseImage, ItemIndex);
 	}
 
-	INT32 FIXAPI hk_call_5A43B5(HWND** ListViewHandle, TESForm_CK** Form, INT64 a3)
-	{
-		BOOL allowInsert = TRUE;
-		CellViewWindow.Perform(UI_CELL_VIEW_ADD_CELL_OBJECT_ITEM, (WPARAM)*Form, (LPARAM)&allowInsert);
+	INT32 FIXAPI hk_call_5A43B5(HWND** ListViewHandle, TESForm_CK** Form, INT64 a3) {
+		if (FileHandler->IsLoaded()) {
+			BOOL allowInsert = TRUE;
+			CellViewWindow.Perform(UI_CELL_VIEW_ADD_CELL_OBJECT_ITEM, (WPARAM)*Form, (LPARAM)&allowInsert);
 
-		if (!allowInsert)
-			return 1;
+			if (!allowInsert)
+				return 1;
+		}
 
 		return ((INT32(__fastcall*)(HWND**, TESForm_CK**, INT64))OFFSET(0x5A4900, 0))(ListViewHandle, Form, a3);
 	}
