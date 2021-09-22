@@ -142,12 +142,12 @@ namespace LogWindow
 			if (!LogWindowHandle)
 				return false;
 
-			LogWindow::Log("MemoryManager::ScrapHeap set %u Mb", DWORD(g_ScrapSize / 1048576));
+			_MESSAGE_FMT("MemoryManager::ScrapHeap set %u Mb", DWORD(g_ScrapSize / 1048576));
 
 			if (g_bhkMemSize >= 0x40000000)
-				LogWindow::Log("MemoryManager::bhkThreadMemorySource set %u Gb", DWORD(g_bhkMemSize / 1073741824));
+				_MESSAGE_FMT("MemoryManager::bhkThreadMemorySource set %u Gb", DWORD(g_bhkMemSize / 1073741824));
 			else
-				LogWindow::Log("MemoryManager::bhkThreadMemorySource set %u Mb", DWORD(g_bhkMemSize / 1048576));
+				_MESSAGE_FMT("MemoryManager::bhkThreadMemorySource set %u Mb", DWORD(g_bhkMemSize / 1048576));
 
 			// Poll every 100ms for new lines
 			SetTimer(LogWindowHandle, UI_LOG_CMD_ADDTEXT, 100, NULL);

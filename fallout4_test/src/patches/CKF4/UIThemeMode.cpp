@@ -134,13 +134,13 @@ namespace UITheme
 		switch (g_i8DialogMode)
 		{
 		case 2:
-			Theme::ThemeFont = new Classes::CUIFont("Microsoft Sans Serif", 10, {}, g_INI->GetInteger("Font", "Charset", DEFAULT_CHARSET), Classes::fqClearTypeNatural, Classes::fpVariable);
+			Theme::ThemeFont = new Classes::CUIFont("Microsoft Sans Serif", 10, {}, g_INI->GetInteger("CreationKit_Font", "Charset", DEFAULT_CHARSET), Classes::fqClearTypeNatural, Classes::fpVariable);
 			break;
 		case 3:
-			Theme::ThemeFont = new Classes::CUIFont("Microsoft Sans Serif", 11, {}, g_INI->GetInteger("Font", "Charset", DEFAULT_CHARSET), Classes::fqClearTypeNatural, Classes::fpVariable);
+			Theme::ThemeFont = new Classes::CUIFont("Microsoft Sans Serif", 11, {}, g_INI->GetInteger("CreationKit_Font", "Charset", DEFAULT_CHARSET), Classes::fqClearTypeNatural, Classes::fpVariable);
 			break;
 		default:
-			Theme::ThemeFont = new Classes::CUIFont("Microsoft Sans Serif", 8, {}, g_INI->GetInteger("Font", "Charset", DEFAULT_CHARSET), Classes::fqClearTypeNatural, Classes::fpVariable);
+			Theme::ThemeFont = new Classes::CUIFont("Microsoft Sans Serif", 8, {}, g_INI->GetInteger("CreationKit_Font", "Charset", DEFAULT_CHARSET), Classes::fqClearTypeNatural, Classes::fpVariable);
 			break;
 	    }
 

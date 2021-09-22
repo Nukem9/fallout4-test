@@ -57,7 +57,7 @@ namespace Experimental {
 #if FALLOUT4_CK64_BSTARRAY_DBG
 		auto end = F64_NOW;
 		std::chrono::duration<double> elapsed_seconds = end - start;
-		LogWindow::Log("items %i elapsed time: %f", count, elapsed_seconds.count());
+		_MESSAGE_FMT("items %i elapsed time: %f", count, elapsed_seconds.count());
 #endif
 		return res;
 	}
@@ -112,7 +112,7 @@ namespace Experimental {
 #if FALLOUT4_CK64_BSTARRAY_DBG
 		auto end = F64_NOW;
 		std::chrono::duration<double> elapsed_seconds = end - start;
-		LogWindow::Log("items %i elapsed time: %f", (Array.QSize() - start_index), elapsed_seconds.count());
+		_MESSAGE_FMT("items %i elapsed time: %f", (Array.QSize() - start_index), elapsed_seconds.count());
 #endif
 		EndSearchSIMD:
 		return res;
@@ -165,7 +165,7 @@ namespace Experimental {
 #if FALLOUT4_CK64_BSTARRAY_DBG
 		auto end = F64_NOW;
 		std::chrono::duration<double> elapsed_seconds = end - start;
-		LogWindow::Log("items %i elapsed time: %f", (Array.QSize() - start_index), elapsed_seconds.count());
+		_MESSAGE_FMT("items %i elapsed time: %f", (Array.QSize() - start_index), elapsed_seconds.count());
 #endif
 	EndSearchSIMD2:
 		return res;

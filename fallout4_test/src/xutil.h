@@ -38,6 +38,8 @@
 #define AssertMsgVa(Cond, Msg, ...)		if(!(Cond)) XUtil::XAssert(__FILE__, __LINE__, "%s\n\n" Msg, #Cond, ##__VA_ARGS__);
 #define AssertMsg(Cond, Msg)			AssertMsgVa(Cond, Msg)
 #define AssertMsgDebug(Cond, Msg)		AssertMsgVa(Cond, Msg)
+#define _MESSAGE(x)						LogWindow::Log(x)
+#define _MESSAGE_FMT(x, ...)			LogWindow::Log(x, ##__VA_ARGS__)
 
 #define templated(...)					__VA_ARGS__
 #define AutoPtr(Type, Name, Offset)		static Type& Name = (*(Type *)((uintptr_t)GetModuleHandle(nullptr) + Offset))

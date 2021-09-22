@@ -75,8 +75,7 @@ F_RequiredPatches
 Patches that are installed by default
 ==================
 */
-VOID FIXAPI F_RequiredPatches(VOID)
-{
+VOID FIXAPI F_RequiredPatches(VOID) {
 	//
 	// MemoryManager
 	//
@@ -137,8 +136,7 @@ VOID FIXAPI F_RequiredPatches(VOID)
 	PatchSky();
 
 	// no support cmd line
-	if (nCountArgCmdLine == 1)
-	{
+	if (nCountArgCmdLine == 1) {
 		//
 		// Processing messages during file upload so that the window doesn't hang
 		//
@@ -278,7 +276,7 @@ VOID FIXAPI F_RequiredPatches(VOID)
 	if (!g_INI->GetBoolean("CreationKit", "BSTArraySearchItemReplacement", FALSE)) {
 		// Utilize SSE4.1 instructions if available
 		if (sse41) {
-			LogWindow::Log("Utilize SSE4.1 instructions if available and loading optimizations enabled");
+			_MESSAGE("Utilize SSE4.1 instructions if available and loading optimizations enabled");
 			XUtil::DetourJump(OFFSET(0x05B31C0, 0), &Experimental::BSTArraySIMD2SearchItem);
 		}
 		else
@@ -309,14 +307,12 @@ VOID FIXAPI F_RequiredPatches(VOID)
 		std::vector<uintptr_t>::iterator match;
 
 		// Utilize SSE4.1 instructions if available
-		if (sse41)
-		{
-			LogWindow::Log("Utilize SSE4.1 instructions if available and loading optimizations enabled");
+		if (sse41) {
+			_MESSAGE("Utilize SSE4.1 instructions if available and loading optimizations enabled");
 			XUtil::Parallel::for_each(match = matches.begin(), matches.end(), search_array_func_3);
 			XUtil::Parallel::for_each(match = matches2.begin(), matches2.end(), search_array_func_3_2);
 		}
-		else
-		{
+		else {
 			XUtil::Parallel::for_each(match = matches.begin(), matches.end(), search_array_func);
 			XUtil::Parallel::for_each(match = matches2.begin(), matches2.end(), search_array_func_2);
 		}
@@ -325,19 +321,6 @@ VOID FIXAPI F_RequiredPatches(VOID)
 	XUtil::DetourCall(OFFSET(0x08056B7, 0), &hk_inflateInit);
 	XUtil::DetourCall(OFFSET(0x08056F7, 0), &hk_inflate);
 	PatchIAT(hk_FindFirstFileA, "kernel32.dll", "FindFirstFileA");
-
-	if (g_INI->GetBoolean("CreationKit", "SkipChangeWorldSpace", FALSE))
-		XUtil::PatchMemoryNop(OFFSET(0x5FBE14, 0), 0x13);
-
-	if (g_INI->GetBoolean("CreationKit", "SkipChecksDataWhenLoad", FALSE)) {
-		//
-		// Loading Files... Done! and continue
-		//
-
-		// Something that spends a lot of time, but if you cut it out, it WORKS!!!
-		// I thought to distribute it to threads, but for now I will leave this option, if it works, I will not do anything.
-		XUtil::PatchMemory(OFFSET(0xB2E7C, 0), { 0xB8, 0x01, 0x0, 0x0, 0x0, 0x0 });
-	}
 }
 
 
@@ -348,16 +331,14 @@ F_UIPatches
 Patches for the UI
 ==================
 */
-VOID FIXAPI F_UIPatches(VOID)
-{
+VOID FIXAPI F_UIPatches(VOID) {
 	if (!g_UIEnabled)
 		return;
 
 	auto comDll = (uintptr_t)GetModuleHandleA("comctl32.dll");
 	Assert(comDll);
 	
-	if (INT theme_id = (INT)g_INI->GetInteger("CreationKit", "UITheme", 0); theme_id > 0)
-	{
+	if (INT theme_id = (INT)g_INI->GetInteger("CreationKit", "UITheme", 0); theme_id > 0) {
 		// Setting the colors
 		UITheme::Initialize((UITheme::Theme::Theme)theme_id);
 
@@ -377,14 +358,12 @@ VOID FIXAPI F_UIPatches(VOID)
 		// Initializing the dialog manager. 
 		// Loading all supported dialogs.
 		g_DialogManager = new Classes::CDialogManager();
-		if (g_DialogManager && g_DialogManager->Empty())
-		{
-			LogWindow::Log("DIALOG: Failed initialization DialogManager or no dialogs detected");
+		if (g_DialogManager && g_DialogManager->Empty()) {
+			_MESSAGE("DIALOG: Failed initialization DialogManager or no dialogs detected");
 			delete g_DialogManager;
 			g_DialogManager = NULL;
 		}
-		else
-		{
+		else {
 			// Let's increase the "Filename" column in the Data dialog.
 			XUtil::PatchMemory(OFFSET(0x5A520A, 0), { 0x2C, 0x01 });
 		}
@@ -399,8 +378,7 @@ VOID FIXAPI F_UIPatches(VOID)
 	*(uintptr_t*)&RenderWindow::OldDlgProc = Detours::X64::DetourFunctionClass(OFFSET(0x460570, 0), &RenderWindow::DlgProc);
 	*(uintptr_t*)&DataWindow::OldDlgProc = Detours::X64::DetourFunctionClass(OFFSET(0x5A8250, 0), &DataWindow::DlgProc);
 
-	if (UITheme::IsEnabledMode())
-	{
+	if (UITheme::IsEnabledMode()) {
 		*(uintptr_t*)&PreferencesWindow::OldDlgProc = OFFSET(0x1335AF0, 0);
 		XUtil::DetourCall(OFFSET(0x1336521, 0), &PreferencesWindow::CreateDialogParamA);
 	}
@@ -470,10 +448,8 @@ VOID FIXAPI F_UIPatches(VOID)
 	// Replacing the Tips window "Do you know...". Which appears when the plugin is loaded. (no support cmd line)
 	//
 
-	if (BOOL enable = (BOOL)g_INI->GetBoolean("CreationKit", "ReplacingTipsWithProgressBar", FALSE); enable)
-	{
-		if (nCountArgCmdLine == 1)
-		{
+	if (BOOL enable = (BOOL)g_INI->GetBoolean("CreationKit", "ReplacingTipsWithProgressBar", FALSE); enable) {
+		if (nCountArgCmdLine == 1) {
 			XUtil::PatchMemory(OFFSET(0x392260, 0), { 0xC3 });
 			XUtil::PatchMemory(OFFSET(0x3923C3, 0), { 0xC3 });
 			XUtil::PatchMemoryNop(OFFSET(0x5BE590, 0), 5);
@@ -512,8 +488,7 @@ F_UnicodePatches
 Patches for multilingual support
 ==================
 */
-VOID FIXAPI F_UnicodePatches(VOID)
-{
+VOID FIXAPI F_UnicodePatches(VOID) {
 	//
 	// Convert Utf-8 to WinCP when loading and back when saving
 	//
@@ -524,7 +499,7 @@ VOID FIXAPI F_UnicodePatches(VOID)
 		BOOL bRes = XUtil::Conversion::LazUnicodePluginInit();
 		if (!bRes)
 		{
-			LogWindow::Log("Library 'CreationKitUnicodePlugin.dll' no found. Unicode support don't patched.");
+			_MESSAGE("Library 'CreationKitUnicodePlugin.dll' no found. Unicode support don't patched.");
 			goto label_skip_msg_closeall_dialog;
 		}
 		else
@@ -566,7 +541,7 @@ VOID FIXAPI F_UnicodePatches(VOID)
 			XUtil::PatchMemoryNop(OFFSET(0xBED343, 0), 5);
 		}
 #else
-		LogWindow::Log("Unfortunately, your compiled version does not support the 'Experimental::Unicode' option.");
+		_MESSAGE("Unfortunately, your compiled version does not support the 'Experimental::Unicode' option.");
 #endif // !FALLOUT4_LAZ_UNICODE_PLUGIN
 	}
 	else
@@ -577,6 +552,48 @@ VOID FIXAPI F_UnicodePatches(VOID)
 	}
 }
 
+
+/*
+==================
+F_UnicodePatches
+
+Patches for facegen
+==================
+*/
+VOID FIXAPI F_FaceGenPatches(VOID) {
+	// Disable automatic FaceGen on save
+	if (g_INI->GetBoolean("CreationKit_FaceGen", "DisableAutoFaceGen", FALSE))
+		XUtil::PatchMemory(OFFSET(0xAC1C80, 0), { 0xC3 });
+
+	// Don't produce DDS files
+	if (g_INI->GetBoolean("CreationKit_FaceGen", "DisableExportDDS", FALSE)) {
+		XUtil::PatchMemoryNop(OFFSET(0xACBF63, 0), 5);
+		XUtil::PatchMemoryNop(OFFSET(0xACBF83, 0), 5);
+		XUtil::PatchMemoryNop(OFFSET(0xACBFA8, 0), 5);
+		XUtil::PatchMemoryNop(OFFSET(0xACBFC8, 0), 5);
+		XUtil::PatchMemoryNop(OFFSET(0xACBFED, 0), 5);
+		XUtil::PatchMemoryNop(OFFSET(0xACC00D, 0), 5);
+	}
+		
+	// Don't produce TGA files
+	if (g_INI->GetBoolean("CreationKit_FaceGen", "DisableExportTGA", FALSE)) {
+		XUtil::PatchMemoryNop(OFFSET(0xACC031, 0), 5);
+		XUtil::PatchMemoryNop(OFFSET(0xACC050, 0), 5);
+		XUtil::PatchMemoryNop(OFFSET(0xACC074, 0), 5);
+		XUtil::PatchMemoryNop(OFFSET(0xACC093, 0), 5);
+		XUtil::PatchMemoryNop(OFFSET(0xACC0B7, 0), 5);
+		XUtil::PatchMemoryNop(OFFSET(0xACC0D6, 0), 5);
+	}
+
+	// Don't produce NIF files
+	if (g_INI->GetBoolean("CreationKit_FaceGen", "DisableExportNIF", FALSE))
+		XUtil::PatchMemory(OFFSET(0xACC160, 0), { 0xC3 });
+
+	// Allow variable tint mask resolution
+	uint32_t tintResolution = g_INI->GetInteger("CreationKit_FaceGen", "TintMaskResolution", 2048);
+	XUtil::PatchMemory(OFFSET(0x2B7732A, 0), (uint8_t*)&tintResolution, sizeof(uint32_t));
+	XUtil::PatchMemory(OFFSET(0x2B77331, 0), (uint8_t*)&tintResolution, sizeof(uint32_t));
+}
 
 /*
 ==================
@@ -631,7 +648,7 @@ VOID FIXAPI MainFix_PatchFallout4CreationKit(VOID)
 				goto ParserCommandLine;
 		}
 
-		LogWindow::Log("CommandLine: %d (Args) %s", nCountArgCmdLine, GetCommandLineA());
+		_MESSAGE_FMT("CommandLine: %d (Args) %s", nCountArgCmdLine, GetCommandLineA());
 	}
 	else
 	{
@@ -668,6 +685,27 @@ VOID FIXAPI MainFix_PatchFallout4CreationKit(VOID)
 	}
 
 	F_RequiredPatches();
+
+	if (g_INI->GetBoolean("CreationKit", "SkipChangeWorldSpace", FALSE))
+		XUtil::PatchMemoryNop(OFFSET(0x5FBE14, 0), 0x13);
+
+	if (g_INI->GetBoolean("CreationKit", "SkipAnimationBuildProcessData", FALSE)) {
+		//
+		// Loading Files... Done! and continue
+		//
+
+		// Skipping the build initialization AnimationBuildProcessDataExportUtils::DoDataExport
+		// For speed up load files
+		XUtil::PatchMemory(OFFSET(0xB2E48, 0), { 0xEB });
+		// Remove temporary files
+		DeleteFileA("TemporaryBehaviorEventInfoOutput.txt");
+		DeleteFileA("TemporaryClipDataOutput.txt");
+		DeleteFileA("TemporarySyncAnimDataOutput.txt");
+		// Skipping create temporary files
+		XUtil::PatchMemory(OFFSET(0xD36C0, 0), { 0xC3 });
+	}
+
+	F_FaceGenPatches();
 	F_UIPatches();
 	F_UnicodePatches();
 
