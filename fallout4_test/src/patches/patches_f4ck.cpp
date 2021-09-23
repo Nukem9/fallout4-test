@@ -561,10 +561,6 @@ Patches for facegen
 ==================
 */
 VOID FIXAPI F_FaceGenPatches(VOID) {
-	// Disable automatic FaceGen on save
-	if (g_INI->GetBoolean("CreationKit_FaceGen", "DisableAutoFaceGen", FALSE))
-		XUtil::PatchMemory(OFFSET(0xAC1C80, 0), { 0xC3 });
-
 	// Don't produce DDS files
 	if (g_INI->GetBoolean("CreationKit_FaceGen", "DisableExportDDS", FALSE)) {
 		XUtil::PatchMemoryNop(OFFSET(0xACBF63, 0), 5);
@@ -591,8 +587,15 @@ VOID FIXAPI F_FaceGenPatches(VOID) {
 
 	// Allow variable tint mask resolution
 	uint32_t tintResolution = g_INI->GetInteger("CreationKit_FaceGen", "TintMaskResolution", 2048);
-	XUtil::PatchMemory(OFFSET(0x2B7732A, 0), (uint8_t*)&tintResolution, sizeof(uint32_t));
-	XUtil::PatchMemory(OFFSET(0x2B77331, 0), (uint8_t*)&tintResolution, sizeof(uint32_t));
+	XUtil::PatchMemory(OFFSET(0x2B77ACC, 0), (uint8_t*)&tintResolution, sizeof(uint32_t));
+	XUtil::PatchMemory(OFFSET(0x2B77AD3, 0), (uint8_t*)&tintResolution, sizeof(uint32_t));
+
+	// Prevent internal filesystem reloads when exporting FaceGen for many NPCs
+	XUtil::PatchMemory(OFFSET(0x3FD451, 0), { 0x95 });
+	XUtil::PatchMemory(OFFSET(0x3FD45A, 0), { 0x48, 0x89, 0xF9, 0xE8, 0x9E, 0xE4, 0x00, 0x00 });
+	XUtil::PatchMemoryNop(OFFSET(0x3FD462, 0), 0x1C);
+	XUtil::DetourJump(OFFSET(0x40B900, 0), &ExportFaceGenForSelectedNPCs);
+	XUtil::PatchMemoryNop(OFFSET(0xAC20BD, 0), 5);
 }
 
 /*

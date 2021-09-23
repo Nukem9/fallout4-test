@@ -69,6 +69,14 @@ VOID FIXAPI PatchSky(VOID);
 
 /*
 ==================
+ExportFaceGenForSelectedNPCs
+==================
+*/
+VOID FIXAPI ExportFaceGenForSelectedNPCs(int64_t a1, int64_t a2);
+
+
+/*
+==================
 PatchLip
 
 The developers have cut out all the creation functionality .lip files.

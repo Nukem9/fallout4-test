@@ -694,8 +694,7 @@ Enable/disable the button for generating .lip files.
 All .wav files must exist with set flag loaded Y(L).
 ==================
 */
-VOID FIXAPI hk_jmp_B62A9B(HWND hWndButtonGenerate)
-{
+VOID FIXAPI hk_jmp_B62A9B(HWND hWndButtonGenerate) {
 	HWND hDlg = GetParent(hWndButtonGenerate);
 	HWND hList = GetDlgItem(hDlg, 0x878);
 	HWND hLTFCheck = GetDlgItem(hDlg, 0x94C);
@@ -723,14 +722,48 @@ VOID FIXAPI hk_jmp_B62A9B(HWND hWndButtonGenerate)
 
 /*
 ==================
+ExportFaceGenForSelectedNPCs
+==================
+*/
+VOID FIXAPI ExportFaceGenForSelectedNPCs(int64_t a1, int64_t a2) {
+	// Display confirmation message box first
+	if (!((BOOL(*)())OFFSET(0xAC2590, 0))())
+		return;
+
+	// In this memory area, the list handle is
+	HWND listHandle = *(HWND*)(a1 + 16);
+
+	auto sub_00007FF61C972F50 = (int64_t(*)(HWND, int64_t))OFFSET(0x562F50, 0);
+	auto sub_00007FF61CED25E0 = (BOOL(*)(int64_t, int64_t))OFFSET(0xAC25E0, 0);
+
+	// Go through all the selected elements and generate facegen
+	int32_t itemIndex = ListView_GetNextItem(listHandle, -1, LVNI_SELECTED);
+	int32_t itemCount = 0;
+	for (BOOL flag = TRUE; itemIndex >= 0 && flag; itemCount++) {
+		if (flag = sub_00007FF61CED25E0(a2, sub_00007FF61C972F50(listHandle, itemIndex)); flag) {
+			auto oldIndex = itemIndex;
+			if (itemIndex = ListView_GetNextItem(listHandle, itemIndex, LVNI_SELECTED); itemIndex == oldIndex)
+				itemIndex = -1;
+		}
+	}
+
+	// Reload loose file paths manually since it's patched out
+	_MESSAGE_FMT("Exported FaceGen for %d NPCs. Reloading loose file paths...", itemCount);
+	((VOID(*)(int64_t))OFFSET(0x7B9E70, 0))(*(int64_t*)OFFSET(0x6D54CF8, 0));
+
+	// Done
+	((VOID(*)())OFFSET(0xAC2670, 0))();
+}
+
+/*
+==================
 PatchLip
 
 The developers have cut out all the creation functionality .lip files. 
 But this patch will make the button available.
 ==================
 */
-VOID FIXAPI PatchLip(VOID)
-{
+VOID FIXAPI PatchLip(VOID) {
 	// Hooking the jump. I don't allow the deny button.
 	XUtil::DetourJump(OFFSET(0xB62A9B, 0), &hk_jmp_B62A9B);
 	// Then continue in the same spirit, remove the button.... skip it
@@ -751,14 +784,12 @@ I limit the impact of the message processing patch by setting the permission fla
 I will give permission when loading with ProgressDialog enabled.
 ==================
 */
-VOID FIXAPI PatchMessage(VOID)
-{
+VOID FIXAPI PatchMessage(VOID) {
 	if (bAllowPoolMessage)
 		Core::Classes::UI::CUIMainWindow::ProcessMessages();
 }
 
-VOID FIXAPI PatchTemplatedFormIterator(VOID)
-{
+VOID FIXAPI PatchTemplatedFormIterator(VOID) {
 	class FormIteratorHook : public Xbyak::CodeGenerator
 	{
 	public:
@@ -841,8 +872,7 @@ Adds support for quotation marks of some commands on the command line
 ==================
 */
 
-LPSTR FIXAPI Fixed_StrTok(LPSTR str, LPSTR delim, LPSTR* next_token)
-{
+LPSTR FIXAPI Fixed_StrTok(LPSTR str, LPSTR delim, LPSTR* next_token) {
 	if (str)
 	{
 		while (*str == ' ')
@@ -876,8 +906,8 @@ LPSTR FIXAPI Fixed_StrTok(LPSTR str, LPSTR delim, LPSTR* next_token)
 		return strtok_s(str, delim, next_token);
 };
 
-VOID FIXAPI RestoreGenerateSingleLip(LPSTR lpCmdLine, LPSTR arg2)
-{
+
+VOID FIXAPI RestoreGenerateSingleLip(LPSTR lpCmdLine, LPSTR arg2) {
 	namespace fs = std::filesystem;
 
 	LPSTR next_token = NULL;
@@ -906,13 +936,13 @@ VOID FIXAPI RestoreGenerateSingleLip(LPSTR lpCmdLine, LPSTR arg2)
 	((VOID(__fastcall*)(LPCSTR))OFFSET(0x2001A90, 0))(((LPSTR)OFFSET(0x3837940, 0)));
 }
 
-HANDLE WINAPI hk_FindFirstFileA(LPCSTR lpFileName, LPWIN32_FIND_DATAA lpFindFileData) 
-{
+
+HANDLE WINAPI hk_FindFirstFileA(LPCSTR lpFileName, LPWIN32_FIND_DATAA lpFindFileData) {
 	return FindFirstFileExA(lpFileName, FindExInfoStandard, lpFindFileData, FindExSearchNameMatch, nullptr, FIND_FIRST_EX_LARGE_FETCH);
 }
 
-VOID FIXAPI PatchCmdLineWithQuote(VOID)
-{
+
+VOID FIXAPI PatchCmdLineWithQuote(VOID) {
 	//	Add support quote to command line with -GeneratePreCombined
 	//	Should be: -GeneratePreCombined:"<ESMFilename>" [clean, filtered] [all, other, main, ints]
 
