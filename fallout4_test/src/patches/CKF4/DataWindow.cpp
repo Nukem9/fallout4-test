@@ -130,8 +130,6 @@ namespace DataWindow
 
 		if (bShowResultListView)
 		{
-			
-
 			// The width could be changed, will repeat for list
 			ListView_SetColumnWidth(hWndResult, 0, ListView_GetColumnWidth(hWnd, 0));
 			ListView_SetColumnWidth(hWndResult, 1, ListView_GetColumnWidth(hWnd, 1));
@@ -330,7 +328,7 @@ namespace DataWindow
 					{
 						INT idx_safe = idx;
 						ListView_GetItemText(hListViewResult, idx, 0, szStrs, SIZEBUF);
-						idx = ListView_FindItemByString(hListView, szStrs);
+						//idx = ListView_FindItemByString(hListView, szStrs);
 						ListView_SetSelectItem(hListView, ListView_FindItemByString(hListView, szStrs));
 
 						nRes = OldDlgProc(DialogHwnd, Message, wParam, lParam);
@@ -349,69 +347,65 @@ namespace DataWindow
 		{
 			if (LOWORD(wParam) == UI_NEW_LISTVIEW_CONTROL_TO_RESULT)
 			{
-				if (((LPNMHDR)lParam)->code == NM_DBLCLK)
+				switch (((LPNMHDR)lParam)->code)
 				{
-					// Double-click the mouse, just check the box, do the same
-
+				// Select
+				case NM_CLICK: {
 					LPNMITEMACTIVATE lpnmItem = (LPNMITEMACTIVATE)lParam;
 					HWND hWnd = DataWindowControls.ListViewPluginsResult.Handle;
 					HWND hWndOld = DataWindowControls.ListViewPlugins.Handle;
-					RECT rRectItem;
 					CHAR szStrs[SIZEBUF] = { 0 };
 
-					ListView_GetItemText(hWnd, lpnmItem->iItem, 0, szStrs, SIZEBUF);
-					INT idx = ListView_FindItemByString(hWndOld, szStrs);
-
-					Assert(idx != -1);
-					Assert(ListView_GetItemRect(hWndOld, idx, &rRectItem, LVIR_BOUNDS));
-
-					memset(&nmItemFake, 0, sizeof(nmItemFake));
-					nmItemFake.hdr.code = NM_DBLCLK;
-					nmItemFake.hdr.hwndFrom = hWndOld;
-					nmItemFake.hdr.idFrom = UI_LISTVIEW_PLUGINS;
-					nmItemFake.iItem = idx;
-					nmItemFake.ptAction.x = rRectItem.left + 5;
-					nmItemFake.ptAction.y = rRectItem.top + 5;
-
-					// fake click
-					SendMessageA(DialogHwnd, WM_NOTIFY, UI_LISTVIEW_PLUGINS, (LPARAM)&nmItemFake);
-
-					// update short list
-					CKF4Fixes_UpdateListViewResult();
-					ListView_SetSelectItem(hWnd, lpnmItem->iItem);
+					INT idx = ListView_GetSelectedItemIndex(hWnd);
+					if (idx != -1)
+					{
+						ListView_GetItemText(hWnd, lpnmItem->iItem, 0, szStrs, SIZEBUF);
+						ListView_SetSelectItem(hWndOld, ListView_FindItemByString(hWndOld, szStrs));
+					}
 				}
-				else if (((LPNMHDR)lParam)->code == NM_RDBLCLK)
-				{
-					// By double - clicking the right mouse button, 
-					// I get the active mod installed in the original list of mods.
-					// I model this behavior with a short list.
-
+				break;
+				// Double-click the mouse, just check the box, do the same
+				case NM_DBLCLK:
+				// By double - clicking the right mouse button, 
+				// I get the active mod installed in the original list of mods.
+				// I model this behavior with a short list.
+				case NM_RDBLCLK: {
 					LPNMITEMACTIVATE lpnmItem = (LPNMITEMACTIVATE)lParam;
 					HWND hWnd = DataWindowControls.ListViewPluginsResult.Handle;
 					HWND hWndOld = DataWindowControls.ListViewPlugins.Handle;
 					RECT rRectItem;
 					CHAR szStrs[SIZEBUF] = { 0 };
+					auto code = ((LPNMHDR)lParam)->code;
 
-					ListView_GetItemText(hWnd, lpnmItem->iItem, 0, szStrs, SIZEBUF);
-					INT idx = ListView_FindItemByString(hWndOld, szStrs);
+					// fix bug (can click in an empty space)
+					INT idx = ListView_GetSelectedItemIndex(hWnd);
+					if (idx != -1)
+					{
+						ListView_GetItemText(hWnd, lpnmItem->iItem, 0, szStrs, SIZEBUF);
+						INT idx = ListView_FindItemByString(hWndOld, szStrs);
 
-					Assert(idx != -1);
-					Assert(ListView_GetItemRect(hWndOld, idx, &rRectItem, LVIR_BOUNDS));
+						Assert(idx != -1);
+						Assert(ListView_GetItemRect(hWndOld, idx, &rRectItem, LVIR_BOUNDS));
 
-					memset(&nmItemFake, 0, sizeof(nmItemFake));
-					nmItemFake.hdr.code = NM_RDBLCLK;
-					nmItemFake.hdr.hwndFrom = hWndOld;
-					nmItemFake.hdr.idFrom = UI_LISTVIEW_PLUGINS;
-					nmItemFake.iItem = idx;
-					nmItemFake.ptAction.x = rRectItem.left + 5;
-					nmItemFake.ptAction.y = rRectItem.top + 5;
+						memset(&nmItemFake, 0, sizeof(nmItemFake));
+						nmItemFake.hdr.code = code;
+						nmItemFake.hdr.hwndFrom = hWndOld;
+						nmItemFake.hdr.idFrom = UI_LISTVIEW_PLUGINS;
+						nmItemFake.iItem = idx;
+						nmItemFake.ptAction.x = rRectItem.left + 5;
+						nmItemFake.ptAction.y = rRectItem.top + 5;
 
-					// fake click
-					SendMessageA(DialogHwnd, WM_NOTIFY, UI_LISTVIEW_PLUGINS, (LPARAM)&nmItemFake);
+						// fake click
+						SendMessageA(DialogHwnd, WM_NOTIFY, UI_LISTVIEW_PLUGINS, (LPARAM)&nmItemFake);
 
-					// update short list
-					CKF4Fixes_UpdateListViewResult();
-					ListView_SetSelectItem(hWnd, lpnmItem->iItem);
+						// update short list
+						CKF4Fixes_UpdateListViewResult();
+
+						ListView_SetSelectItem(hWnd, lpnmItem->iItem);
+						ListView_SetSelectItem(hWndOld, idx);
+					}
+				}
+				break;
 				}
 
 				return 0;
