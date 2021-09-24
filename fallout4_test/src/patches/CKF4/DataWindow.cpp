@@ -286,6 +286,9 @@ namespace DataWindow
 
 			ImageList_Destroy(hImageList);
 
+			// fix no checked in list 
+			RedrawWindow(DataWindowControls.ListViewPlugins.Handle, NULL, NULL, RDW_UPDATENOW | RDW_NOCHILDREN);
+
 			return nRes;
 		}
 		else if (Message == WM_COMMAND)
