@@ -265,6 +265,13 @@ VOID FIXAPI F_RequiredPatches(VOID) {
 	XUtil::PatchMemory(OFFSET(0x5C16CB, 0), { 0x8B });
 	XUtil::PatchMemory(OFFSET(0x3857828, 0), (uint8_t*)&newTitlePart, sizeof(newTitlePart));
 
+#if !FALLOUT4_STUDY_CK64_INIFILE
+	//
+	// Skip option bSkipValidateForms and bDisableDuplicateReferenceCheck
+	//
+	PatchIAT(hk_modGetPrivateProfileIntA, "kernel32.dll", "GetPrivateProfileIntA");
+#endif // !FALLOUT4_STUDY_CK64_INIFILE
+	
 	//
 	// Plugin loading optimizations
 	//

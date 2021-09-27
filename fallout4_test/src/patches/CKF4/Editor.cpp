@@ -942,6 +942,16 @@ HANDLE WINAPI hk_FindFirstFileA(LPCSTR lpFileName, LPWIN32_FIND_DATAA lpFindFile
 }
 
 
+DWORD WINAPI hk_modGetPrivateProfileIntA(LPCSTR lpAppName, LPCSTR lpKeyName, INT nDefault, LPCSTR lpFileName) {
+	if (lpAppName && !stricmp(lpAppName, "General")) {
+		if (lpKeyName && (!stricmp(lpKeyName, "bSkipValidateForms") || !stricmp(lpKeyName, "bDisableDuplicateReferenceCheck")))
+			return 1;
+	}
+	
+	return GetPrivateProfileIntA(lpAppName, lpKeyName, nDefault, lpFileName);
+}
+
+
 VOID FIXAPI PatchCmdLineWithQuote(VOID) {
 	//	Add support quote to command line with -GeneratePreCombined
 	//	Should be: -GeneratePreCombined:"<ESMFilename>" [clean, filtered] [all, other, main, ints]
