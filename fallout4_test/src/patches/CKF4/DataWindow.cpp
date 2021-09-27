@@ -22,6 +22,7 @@
 //////////////////////////////////////////
 
 #include "DataWindow.h"
+#include "EditorUI.h"
 #include "UIThemeMode.h"
 #include "UIImageList.h"
 #include "../../../resource.h"
@@ -31,7 +32,6 @@
 
 #include <windowsx.h>
 
-#define LVIS_SELFLAG LVIS_FOCUSED | LVIS_SELECTED
 #define SIZEBUF 1024
 
 #define OWNCOLUMNNAME "Filename"
@@ -42,49 +42,9 @@ namespace DataWindow
 	// need static (so not crash)
 	NMITEMACTIVATE nmItemFake;
 
-	VOID FIXAPI ListView_SetSelectItem(HWND hLV, INT idx)
-	{
-		ListView_SetItemState(hLV, -1, 0, LVIS_SELFLAG);
-		ListView_SetItemState(hLV, idx, LVIS_SELFLAG, LVIS_SELFLAG);
-		ListView_EnsureVisible(hLV, idx, FALSE);
-	}
-
-	INT FIXAPI ListView_GetSelectedItemIndex(HWND hLV)
-	{
-		// Get the first focused item
-		return ListView_GetNextItem(hLV, -1, LVNI_FOCUSED);
-	}
-
-	INT FIXAPI ListView_FindItemByString(HWND hLV, const std::string str, INT start_idx = 0)
-	{
-		// The standard search engine is too weak. 
-		// Mine allows you to find the first match in the list even if the word is somewhere in the middle. 
-		// Standard will only find if there is a match first.
-
-		if (str.length() == 0)
-			return -1;
-
-		CHAR szBuf[1024] = { 0 };
-		INT nRows = ListView_GetItemCount(hLV);
-
-		if (nRows > start_idx)
-		{
-			for (INT idx = start_idx; idx < nRows; idx++)
-			{
-				ListView_GetItemText(hLV, idx, 0, szBuf, sizeof(szBuf));
-
-				if (XUtil::Str::findCaseInsensitive(szBuf, str.c_str()) != std::string::npos)
-					return idx;
-			}
-		}
-
-		return -1;
-	}
-
 	Classes::CUICustomWindow DataWindow;
 
-	struct DataWindowControls_t
-	{
+	struct DataWindowControls_t {
 		Classes::CUIBaseControl ListViewPlugins;
 		Classes::CUIBaseControl ListViewPluginsResult;
 		Classes::CUIBaseControl ListViewDependences;
@@ -94,8 +54,7 @@ namespace DataWindow
 
 	DLGPROC OldDlgProc;
 
-	VOID FIXAPI CKF4Fixes_ListViewResultInitialize(VOID)
-	{
+	VOID FIXAPI CKF4Fixes_ListViewResultInitialize(VOID) {
 		HWND hWnd = DataWindowControls.ListViewPluginsResult.Handle;
 
 		// add list columns
@@ -120,24 +79,21 @@ namespace DataWindow
 		ListView_SetExtendedListViewStyleEx(hWnd, LVS_EX_DOUBLEBUFFER, LVS_EX_DOUBLEBUFFER);
 	}
 
-	VOID FIXAPI CKF4Fixes_ToggleListView(const BOOL bShowResultListView)
-	{
+	VOID FIXAPI CKF4Fixes_ToggleListView(const BOOL bShowResultListView) {
 		HWND hWnd = DataWindowControls.ListViewPlugins.Handle;
 		HWND hWndResult = DataWindowControls.ListViewPluginsResult.Handle;
 
 		DataWindowControls.ListViewPlugins.Visible = !bShowResultListView;
 		DataWindowControls.ListViewPluginsResult.Visible = bShowResultListView;
 
-		if (bShowResultListView)
-		{
+		if (bShowResultListView) {
 			// The width could be changed, will repeat for list
 			ListView_SetColumnWidth(hWndResult, 0, ListView_GetColumnWidth(hWnd, 0));
 			ListView_SetColumnWidth(hWndResult, 1, ListView_GetColumnWidth(hWnd, 1));
 		}
 	}
 
-	BOOL FIXAPI CKF4Fixes_AppendToListViewResult(const std::string sFileName, const std::string sType, const BOOL bCheck)
-	{
+	BOOL FIXAPI CKF4Fixes_AppendToListViewResult(const std::string sFileName, const std::string sType, const BOOL bCheck) {
 		HWND hWnd = DataWindowControls.ListViewPluginsResult.Handle;
 		INT iLastIndex = ListView_GetItemCount(hWnd);
 
@@ -157,8 +113,7 @@ namespace DataWindow
 		return TRUE;
 	}
 
-	VOID FIXAPI CKF4Fixes_UpdateListViewResult(VOID)
-	{
+	VOID FIXAPI CKF4Fixes_UpdateListViewResult(VOID) {
 		INT idx, idx_safe;
 		LVITEMA lvi = { 0 };
 		HWND hSrchEdit, hListView, hListViewResult;
@@ -170,8 +125,7 @@ namespace DataWindow
 
 		ListView_DeleteAllItems(hListViewResult);
 
-		if (Edit_GetTextLength(hSrchEdit) < 2)
-		{
+		if (Edit_GetTextLength(hSrchEdit) < 2) {
 			CKF4Fixes_ToggleListView(FALSE);
 			return;
 		}
@@ -179,8 +133,7 @@ namespace DataWindow
 		idx_safe = -1;
 		idx = -1;
 
-		while ((idx = ListView_FindItemByString(hListView, DataWindowControls.EditSearch.Caption, idx + 1)) != -1)
-		{
+		while ((idx = EditorUI::ListView_FindItemByString(hListView, DataWindowControls.EditSearch.Caption, idx + 1)) != -1) {
 			if (idx_safe == -1) idx_safe = idx;
 			ListView_GetItemText(hListView, idx, 0, szStrs[0], SIZEBUF);
 			ListView_GetItemText(hListView, idx, 1, szStrs[1], SIZEBUF);
@@ -192,34 +145,30 @@ namespace DataWindow
 			CKF4Fixes_AppendToListViewResult(szStrs[0], szStrs[1], lvi.iImage != 0);
 		}
 
-		if (!ListView_GetItemCount(hListViewResult))
-		{
-			ListView_SetSelectItem(hListView, 0);
+		if (!ListView_GetItemCount(hListViewResult)) {
+			EditorUI::ListView_SetSelectItem(hListView, 0);
 			CKF4Fixes_ToggleListView(FALSE);
 			return;
 		}
 
-		ListView_SetSelectItem(hListView, (idx_safe >= 0) ? idx_safe : 0);
+		EditorUI::ListView_SetSelectItem(hListView, (idx_safe >= 0) ? idx_safe : 0);
 		CKF4Fixes_ToggleListView(TRUE);
-		ListView_SetSelectItem(hListViewResult, 0);
+		EditorUI::ListView_SetSelectItem(hListViewResult, 0);
 
 		SendMessageA(hSrchEdit, WM_SETCURSOR, 0, 0);
 	}
 
-	BOOL FIXAPI CKF4Fixes_LoadImageFromFileA(HBITMAP &bitmap, const std::string& filename)
-	{
+	BOOL FIXAPI CKF4Fixes_LoadImageFromFileA(HBITMAP &bitmap, const std::string& filename) {
 		bitmap = (HBITMAP)LoadImageA(NULL, filename.c_str(), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
 		return bitmap != NULL;
 	}
 
-	BOOL FIXAPI CKF4Fixes_LoadImageFromResourceA(HBITMAP &bitmap, const std::string& name)
-	{
+	BOOL FIXAPI CKF4Fixes_LoadImageFromResourceA(HBITMAP &bitmap, const std::string& name) {
 		bitmap = (HBITMAP)LoadImageA(NULL, name.c_str(), IMAGE_BITMAP, 0, 0, 0);
 		return bitmap != NULL;
 	}
 
-	BOOL FIXAPI CKF4Fixes_ImageListReplaceA(HIMAGELIST imglst, INT idx, const std::string& filename)
-	{
+	BOOL FIXAPI CKF4Fixes_ImageListReplaceA(HIMAGELIST imglst, INT idx, const std::string& filename) {
 		HBITMAP bmp;
 		if (!CKF4Fixes_LoadImageFromFileA(bmp, filename))
 			return FALSE;
@@ -230,20 +179,17 @@ namespace DataWindow
 		return bRes;
 	}
 
-	HWND FIXAPI GetWindow(VOID)
-	{
+	HWND FIXAPI GetWindow(VOID) {
 		return DataWindow.Handle;
 	}
 
-	Classes::CUICustomWindow& FIXAPI GetWindowObj(VOID)
-	{
+	Classes::CUICustomWindow& FIXAPI GetWindowObj(VOID) {
 		return DataWindow;
 	}
 
 	INT_PTR CALLBACK DlgProc(HWND DialogHwnd, UINT Message, WPARAM wParam, LPARAM lParam)
 	{
-		if (Message == WM_INITDIALOG)
-		{
+		if (Message == WM_INITDIALOG) {
 			DataWindow = DialogHwnd;
 
 			DataWindowControls.ListViewPlugins = DataWindow.GetControl(UI_LISTVIEW_PLUGINS);
@@ -268,13 +214,11 @@ namespace DataWindow
         	DataWindowControls.ImageList.ReCreate(16, 16, TRUE, Core::Classes::UI::ilct24Bit);
 
 			if (UITheme::IsEnabledMode() && ((UITheme::Theme::GetTheme() == UITheme::Theme::Theme_Dark) || 
-				(UITheme::Theme::GetTheme() == UITheme::Theme::Theme_DarkGray)))
-			{
+				(UITheme::Theme::GetTheme() == UITheme::Theme::Theme_DarkGray))) {
 				DataWindowControls.ImageList.AddFromResource(g_hModule, MAKEINTRESOURCEA(IDB_BITMAP4), RGB(32, 32, 32));
 				DataWindowControls.ImageList.AddFromResource(g_hModule, MAKEINTRESOURCEA(IDB_BITMAP2), RGB(32, 32, 32));
 			}
-			else
-			{
+			else {
 				DataWindowControls.ImageList.AddFromResource(g_hModule, MAKEINTRESOURCEA(IDB_BITMAP3), RGB(255, 255, 255));
 				DataWindowControls.ImageList.AddFromResource(g_hModule, MAKEINTRESOURCEA(IDB_BITMAP1), RGB(255, 255, 255));
 			}
@@ -289,20 +233,14 @@ namespace DataWindow
 
 			return nRes;
 		}
-		else if (Message == WM_COMMAND)
-		{
-			switch (LOWORD(wParam))
-			{
-			case UI_EDIT_SEARCH_PLUGIN_BY_NAME:
-			{
+		else if (Message == WM_COMMAND) {
+			switch (LOWORD(wParam)) {
+			case UI_EDIT_SEARCH_PLUGIN_BY_NAME: {
 				if (HIWORD(wParam) == EN_CHANGE)
-				{
 					CKF4Fixes_UpdateListViewResult();
-				}
 			}
 			return 0;
-			case 1:
-			{
+			case 1: {
 				if (CellViewWindow::CellViewWindowControls.Initialize) {
 					CellViewWindow::CellViewWindowControls.EditFilterCell.Caption = "";
 					CellViewWindow::CellViewWindowControls.ActiveOnly.Checked = FALSE;
@@ -316,25 +254,21 @@ namespace DataWindow
 			{
 				if (!DataWindowControls.ListViewPluginsResult.Visible)
 					return OldDlgProc(DialogHwnd, Message, wParam, lParam);
-				else
-				{
+				else {
 					INT_PTR nRes = 0;
 					CHAR szStrs[SIZEBUF] = { 0 };
 					HWND hListView = DataWindowControls.ListViewPlugins.Handle;
 					HWND hListViewResult = DataWindowControls.ListViewPluginsResult.Handle;
 
-					INT idx = ListView_GetSelectedItemIndex(hListViewResult);
-					if (idx != -1)
-					{
-						INT idx_safe = idx;
+					INT idx = EditorUI::ListView_GetSelectedItemIndex(hListViewResult);
+					if (idx != -1) {
 						ListView_GetItemText(hListViewResult, idx, 0, szStrs, SIZEBUF);
-						//idx = ListView_FindItemByString(hListView, szStrs);
-						ListView_SetSelectItem(hListView, ListView_FindItemByString(hListView, szStrs));
+						EditorUI::ListView_SetSelectItem(hListView, EditorUI::ListView_FindItemByString(hListView, szStrs));
 
 						nRes = OldDlgProc(DialogHwnd, Message, wParam, lParam);
 						CKF4Fixes_UpdateListViewResult();
 
-						ListView_SetSelectItem(hListViewResult, idx_safe);
+						EditorUI::ListView_SetSelectItem(hListViewResult, idx);
 					}
 
 					return nRes;
@@ -343,12 +277,9 @@ namespace DataWindow
 			return OldDlgProc(DialogHwnd, Message, wParam, lParam);
 			}
 		}
-		else if (Message == WM_NOTIFY)
-		{
-			if (LOWORD(wParam) == UI_NEW_LISTVIEW_CONTROL_TO_RESULT)
-			{
-				switch (((LPNMHDR)lParam)->code)
-				{
+		else if (Message == WM_NOTIFY) {
+			if (LOWORD(wParam) == UI_NEW_LISTVIEW_CONTROL_TO_RESULT) {
+				switch (((LPNMHDR)lParam)->code) {
 				// Select
 				case NM_CLICK: {
 					LPNMITEMACTIVATE lpnmItem = (LPNMITEMACTIVATE)lParam;
@@ -356,11 +287,9 @@ namespace DataWindow
 					HWND hWndOld = DataWindowControls.ListViewPlugins.Handle;
 					CHAR szStrs[SIZEBUF] = { 0 };
 
-					INT idx = ListView_GetSelectedItemIndex(hWnd);
-					if (idx != -1)
-					{
+					if (lpnmItem->iItem != -1) {
 						ListView_GetItemText(hWnd, lpnmItem->iItem, 0, szStrs, SIZEBUF);
-						ListView_SetSelectItem(hWndOld, ListView_FindItemByString(hWndOld, szStrs));
+						EditorUI::ListView_SetSelectItem(hWndOld, EditorUI::ListView_FindItemByString(hWndOld, szStrs));
 					}
 				}
 				break;
@@ -378,11 +307,9 @@ namespace DataWindow
 					auto code = ((LPNMHDR)lParam)->code;
 
 					// fix bug (can click in an empty space)
-					INT idx = ListView_GetSelectedItemIndex(hWnd);
-					if (idx != -1)
-					{
+					if (lpnmItem->iItem != -1) {
 						ListView_GetItemText(hWnd, lpnmItem->iItem, 0, szStrs, SIZEBUF);
-						INT idx = ListView_FindItemByString(hWndOld, szStrs);
+						INT idx = EditorUI::ListView_FindItemByString(hWndOld, szStrs);
 
 						Assert(idx != -1);
 						Assert(ListView_GetItemRect(hWndOld, idx, &rRectItem, LVIR_BOUNDS));
@@ -401,8 +328,8 @@ namespace DataWindow
 						// update short list
 						CKF4Fixes_UpdateListViewResult();
 
-						ListView_SetSelectItem(hWnd, lpnmItem->iItem);
-						ListView_SetSelectItem(hWndOld, idx);
+						EditorUI::ListView_SetSelectItem(hWnd, lpnmItem->iItem);
+						EditorUI::ListView_SetSelectItem(hWndOld, idx);
 					}
 				}
 				break;

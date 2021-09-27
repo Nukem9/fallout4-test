@@ -37,6 +37,10 @@ namespace EditorUI
 	VOID   FIXAPI ListViewDeselectItem(HWND ListViewHandle, LPVOID Parameter);
 	VOID   FIXAPI TabControlDeleteItem(HWND TabControlHandle, uint32_t TabIndex);
 
+	VOID FIXAPI ListView_SetSelectItem(HWND hLV, INT idx);
+	INT FIXAPI ListView_GetSelectedItemIndex(HWND hLV);
+	INT FIXAPI ListView_FindItemByString(HWND hLV, const std::string str, INT start_idx = 0);
+
 	LRESULT FIXAPI hk_SetSettingsPartStatusBar(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 	VOID FIXAPI hk_SpamFPSToStatusBar(INT64 a1);

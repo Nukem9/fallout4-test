@@ -697,6 +697,8 @@ VOID FIXAPI MainFix_PatchFallout4CreationKit(VOID)
 		// Loading Files... Done! and continue
 		//
 
+		// Skip all
+		XUtil::PatchMemory(OFFSET(0xB22C0, 0), { 0xC3 });
 		// Skipping the build initialization AnimationBuildProcessDataExportUtils::DoDataExport
 		// For speed up load files
 		XUtil::PatchMemory(OFFSET(0xB2E48, 0), { 0xEB });

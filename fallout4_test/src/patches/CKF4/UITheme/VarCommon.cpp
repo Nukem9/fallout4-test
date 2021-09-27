@@ -189,8 +189,8 @@ namespace Core
 				RGB(184, 184, 184),											// ThemeColor_Divider_Highlighter_Gradient_Start
 				RGB(199, 199, 199),											// ThemeColor_Divider_Highlighter_Gradient_End
 				RGB(184, 184, 184),											// ThemeColor_Divider_Highlighter_Hot_Gradient_Start
-				RGB(142, 180, 203),											// ThemeColor_Divider_Highlighter_Hot_Gradient_End
-				RGB(75, 156, 245),											// ThemeColor_Divider_Highlighter_Pressed
+				RGB(186, 131, 176),											// ThemeColor_Divider_Highlighter_Hot_Gradient_End
+				RGB(201, 109, 205),											// ThemeColor_Divider_Highlighter_Pressed
 				RGB(139, 139, 139),											// ThemeColor_Button_Pressed_Gradient_Start
 				RGB(130, 130, 130),											// ThemeColor_Button_Pressed_Gradient_End
 				RGB(239, 239, 239),											// ThemeColor_Button_Hot_Gradient_Start
@@ -210,16 +210,16 @@ namespace Core
 				RGB(174, 174, 174),											// ThemeColor_ScrollBar_Thumb_Highlighter
 				RGB(184, 184, 184),											// ThemeColor_ScrollBar_Thumb_Highlighter_Hot
 				RGB(76, 76, 76),											// ThemeColor_Shape
-				RGB(123, 198, 225),											// ThemeColor_Shape_Hot
+				RGB(179, 0, 179),											// ThemeColor_Shape_Hot
 				RGB(55, 55, 55),											// ThemeColor_Shape_Pressed
 				RGB(129, 129, 129),											// ThemeColor_Shape_Disabled
 				RGB(220, 220, 220),											// ThemeColor_Shape_Shadow
 				RGB(190, 190, 190),											// ThemeColor_Shape_Shadow_Disabled
-				RGB(70, 149, 205),											// ThemeColor_Progress_Fill_Gradient_Start
-				RGB(42, 101, 143),											// ThemeColor_Progress_Fill_Gradient_End
-				RGB(87, 159, 209),											// ThemeColor_Progress_Fill_Highlighter
-				RGB(103, 175, 225),											// ThemeColor_Progress_Fill_Highlighter_Up
-				RGB(0, 137, 245),											// ThemeColor_Border_Window,
+				RGB(163, 57, 168),											// ThemeColor_Progress_Fill_Gradient_Start
+				RGB(133, 48, 137),											// ThemeColor_Progress_Fill_Gradient_End
+				RGB(186, 71, 192),											// ThemeColor_Progress_Fill_Highlighter
+				RGB(173, 62, 179),											// ThemeColor_Progress_Fill_Highlighter_Up
+				RGB(132, 0, 132),											// ThemeColor_Border_Window,
 				RGB(255, 255, 255),											// ThemeColor_StatusBar_Text
 				RGB(20, 20, 20),											// ThemeColor_Caption_Text
 				RGB(166, 166, 166),											// ThemeColor_Header_Normal_Gradient_Start
@@ -255,8 +255,8 @@ namespace Core
 				RGB(214, 214, 214),											// ThemeColor_Divider_Highlighter_Gradient_Start
 				RGB(232, 232, 232),											// ThemeColor_Divider_Highlighter_Gradient_End
 				RGB(214, 214, 214),											// ThemeColor_Divider_Highlighter_Hot_Gradient_Start
-				RGB(162, 200, 223),											// ThemeColor_Divider_Highlighter_Hot_Gradient_End
-				RGB(123, 183, 249),											// ThemeColor_Divider_Highlighter_Pressed
+				RGB(186, 131, 176),											// ThemeColor_Divider_Highlighter_Hot_Gradient_End
+				RGB(201, 109, 205),											// ThemeColor_Divider_Highlighter_Pressed
 				RGB(169, 169, 169),											// ThemeColor_Button_Pressed_Gradient_Start
 				RGB(160, 160, 160),											// ThemeColor_Button_Pressed_Gradient_End
 				RGB(243, 243, 243),											// ThemeColor_Button_Hot_Gradient_Start
@@ -276,16 +276,16 @@ namespace Core
 				RGB(190, 190, 190),											// ThemeColor_ScrollBar_Thumb_Highlighter
 				RGB(200, 200, 200),											// ThemeColor_ScrollBar_Thumb_Highlighter_Hot
 				RGB(94, 94, 94),											// ThemeColor_Shape
-				RGB(131, 162, 194),											// ThemeColor_Shape_Hot
+				RGB(179, 0, 179),											// ThemeColor_Shape_Hot
 				RGB(71, 71, 71),											// ThemeColor_Shape_Pressed
 				RGB(149, 149, 149),											// ThemeColor_Shape_Disabled
 				RGB(240, 240, 240),											// ThemeColor_Shape_Shadow
 				RGB(210, 210, 210),											// ThemeColor_Shape_Shadow_Disabled
-				RGB(70, 149, 205),											// ThemeColor_Progress_Fill_Gradient_Start
-				RGB(42, 101, 143),											// ThemeColor_Progress_Fill_Gradient_End
-				RGB(87, 159, 209),											// ThemeColor_Progress_Fill_Highlighter
-				RGB(103, 175, 225),											// ThemeColor_Progress_Fill_Highlighter_Up
-				RGB(0, 150, 250),											// ThemeColor_Border_Window,
+				RGB(163, 57, 168),											// ThemeColor_Progress_Fill_Gradient_Start
+				RGB(133, 48, 137),											// ThemeColor_Progress_Fill_Gradient_End
+				RGB(186, 71, 192),											// ThemeColor_Progress_Fill_Highlighter
+				RGB(173, 62, 179),											// ThemeColor_Progress_Fill_Highlighter_Up
+				RGB(132, 0, 132),											// ThemeColor_Border_Window,
 				RGB(255, 255, 255),											// ThemeColor_StatusBar_Text
 				RGB(20, 20, 20),											// ThemeColor_Caption_Text
 				RGB(196, 196, 196),											// ThemeColor_Header_Normal_Gradient_Start

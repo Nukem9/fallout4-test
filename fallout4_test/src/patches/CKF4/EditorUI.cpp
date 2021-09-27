@@ -30,6 +30,8 @@
 #include "LogWindow.h"
 #include "MainWindow.h"
 
+#define LVIS_SELFLAG LVIS_FOCUSED | LVIS_SELECTED
+
 namespace EditorUI
 {
 	WNDPROC OldWndProc;
@@ -94,6 +96,40 @@ namespace EditorUI
 		item.stateMask = Mask;
 
 		return (BOOL)SendMessageA(ListViewHandle, LVM_SETITEMSTATE, Index, (LPARAM)&item);
+	}
+
+	VOID FIXAPI ListView_SetSelectItem(HWND hLV, INT idx) {
+		ListView_SetItemState(hLV, -1, 0, LVIS_SELFLAG);
+		ListView_SetItemState(hLV, idx, LVIS_SELFLAG, LVIS_SELFLAG);
+		ListView_EnsureVisible(hLV, idx, FALSE);
+	}
+
+	INT FIXAPI ListView_GetSelectedItemIndex(HWND hLV) {
+		// Get the first focused item
+		return ListView_GetNextItem(hLV, -1, LVNI_FOCUSED);
+	}
+
+	INT FIXAPI ListView_FindItemByString(HWND hLV, const std::string str, INT start_idx) {
+		// The standard search engine is too weak. 
+		// Mine allows you to find the first match in the list even if the word is somewhere in the middle. 
+		// Standard will only find if there is a match first.
+
+		if (str.length() == 0)
+			return -1;
+
+		CHAR szBuf[1024] = { 0 };
+		INT nRows = ListView_GetItemCount(hLV);
+
+		if (nRows > start_idx) {
+			for (INT idx = start_idx; idx < nRows; idx++) {
+				ListView_GetItemText(hLV, idx, 0, szBuf, sizeof(szBuf));
+
+				if (XUtil::Str::findCaseInsensitive(szBuf, str.c_str()) != std::string::npos)
+					return idx;
+			}
+		}
+
+		return -1;
 	}
 
 	VOID FIXAPI ListViewSelectItem(HWND ListViewHandle, INT32 ItemIndex, bool KeepOtherSelections)

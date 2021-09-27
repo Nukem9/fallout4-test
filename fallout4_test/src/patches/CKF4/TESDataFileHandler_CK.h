@@ -38,6 +38,7 @@ public:
 	bool InitUnknownDataSetTextStatusBar(void);	
 	static void DetectSelectFile(TESFile_CK* File);
 	static void EndLoadEvent_SendDone(int32_t index, LPCSTR message);
+	static void AttachBA2File(LPCSTR _filename, LPCSTR _folder = NULL);
 public:
 	static TESFileListPtr_CK GetArchiveFiles(void);
 	static TESFileArray_CK* GetSelectedFiles(void);
@@ -47,10 +48,10 @@ public:
 public:
 	static void Initialize(void);
 public:
-	__declspec(property(get = GetArchiveFiles)) TESFileListPtr_CK ArchiveFiles;
-	__declspec(property(get = GetSelectedFiles)) TESFileArray_CK* SelectedFiles;
-	__declspec(property(get = GetActiveFile)) TESFile_CK* ActiveFile;
-	__declspec(property(get = GetActiveFile)) TESFile_CK* ActiveFile;
+	READ_PROPERTY(GetArchiveFiles) TESFileListPtr_CK ArchiveFiles;
+	READ_PROPERTY(GetSelectedFiles) TESFileArray_CK* SelectedFiles;
+	READ_PROPERTY(GetActiveFile) TESFile_CK* ActiveFile;
+	READ_PROPERTY(GetActiveFile) TESFile_CK* ActiveFile;
 };
 
 extern TESDataFileHandler_CK* FileHandler;
