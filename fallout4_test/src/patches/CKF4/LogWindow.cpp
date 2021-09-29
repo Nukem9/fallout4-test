@@ -608,4 +608,9 @@ namespace LogWindow
 
 		Log("ASSERTION: %s (%s line %d)", buffer, File, Line);
 	}
+
+	VOID FIXAPI LogInsteadOfMsgBox(HWND hWnd, LPCSTR lpText, LPCSTR lpCaption, UINT uType) {
+		if (lpText)
+			Log("MESSAGE: %s", lpText);
+	}
 }

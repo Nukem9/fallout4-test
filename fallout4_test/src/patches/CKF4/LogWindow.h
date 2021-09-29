@@ -44,6 +44,7 @@ namespace LogWindow
 	VOID FIXAPI LogWarningUnknown1(LPCSTR Format, ...);
 	VOID FIXAPI LogWarningUnknown2(INT64 Unused, LPCSTR Format, ...);
 	VOID FIXAPI LogAssert(LPCSTR File, INT32 Line, LPCSTR Message, ...);
+	VOID FIXAPI LogInsteadOfMsgBox(HWND hWnd, LPCSTR lpText, LPCSTR lpCaption, UINT uType);
 
 	VOID FIXAPI LogWcVa(LPCWSTR Format, va_list Va);
 	VOID FIXAPI LogWc(LPCWSTR Format, ...);

@@ -952,6 +952,20 @@ DWORD WINAPI hk_modGetPrivateProfileIntA(LPCSTR lpAppName, LPCSTR lpKeyName, INT
 }
 
 
+BOOL FIXAPI GetMasterFileNameByVersionControlEnabled(HWND ParentWindow, LPCSTR BasePath, BOOL IsESM, LPSTR Buffer, uint32_t BufferSize, LPCSTR Directory) {
+	Assert(g_INI_CK_CfgCustom->GetBoolean("General", "bUseVersionControl", FALSE));
+	
+	LPSTR* sActivePluginFilename = (LPSTR*)OFFSET(0x6D54CB0, 0);
+	Assert(sActivePluginFilename);
+
+	auto result = XUtil::Str::ChangeFileExt(*sActivePluginFilename, ".esm");
+
+	strcpy_s(Buffer, BufferSize, result.c_str());
+
+	return TRUE; 
+}
+
+
 VOID FIXAPI PatchCmdLineWithQuote(VOID) {
 	//	Add support quote to command line with -GeneratePreCombined
 	//	Should be: -GeneratePreCombined:"<ESMFilename>" [clean, filtered] [all, other, main, ints]

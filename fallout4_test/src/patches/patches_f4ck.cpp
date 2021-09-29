@@ -433,6 +433,18 @@ VOID FIXAPI F_UIPatches(VOID) {
 	// Cancel resize World Space combo
 	XUtil::PatchMemoryNop(OFFSET(0x59DA1D, 0), 5);
 
+	//
+	// Version Control fixes
+	//
+
+	XUtil::DetourCall(OFFSET(0x13339D6, 0), &LogWindow::LogInsteadOfMsgBox);
+	// By disabling version control, allow the start
+	XUtil::PatchMemory(OFFSET(0x5C3C4F, 0), { 0xEB, 0x81 });	// skip msgbox 
+	XUtil::PatchMemory(OFFSET(0x5C3C74, 0), { 0xEB, 0xD9 });	// skip msgbox 
+	
+	// Cut dialog Save
+	XUtil::DetourCall(OFFSET(0x611F3A, 0), &GetMasterFileNameByVersionControlEnabled);
+	
 	// Fixes lip generate
 	PatchLip();
 
