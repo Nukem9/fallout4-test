@@ -440,10 +440,7 @@ VOID FIXAPI F_UIPatches(VOID) {
 	XUtil::DetourCall(OFFSET(0x13339D6, 0), &LogWindow::LogInsteadOfMsgBox);
 	// By disabling version control, allow the start
 	XUtil::PatchMemory(OFFSET(0x5C3C4F, 0), { 0xEB, 0x81 });	// skip msgbox 
-	XUtil::PatchMemory(OFFSET(0x5C3C74, 0), { 0xEB, 0xD9 });	// skip msgbox 
-	
-	// Cut dialog Save
-	XUtil::DetourCall(OFFSET(0x611F3A, 0), &GetMasterFileNameByVersionControlEnabled);
+	XUtil::PatchMemory(OFFSET(0x5C3C74, 0), { 0xEB, 0xD9 });	// skip msgbox
 	
 	// Fixes lip generate
 	PatchLip();

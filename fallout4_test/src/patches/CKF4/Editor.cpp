@@ -63,8 +63,27 @@ BOOL FIXAPI OpenPluginSaveDialog(HWND ParentWindow, LPCSTR BasePath, BOOL IsESM,
 		extension = "esm";
 	}
 
-	return ((BOOL(__fastcall*)(HWND, LPCSTR, LPCSTR, LPCSTR, LPCSTR, LPVOID, BOOL, BOOL, LPSTR, uint32_t, LPCSTR, LPVOID))
+	auto result = ((BOOL(__fastcall*)(HWND, LPCSTR, LPCSTR, LPCSTR, LPCSTR, LPVOID, BOOL, BOOL, LPSTR, uint32_t, LPCSTR, LPVOID))
 		OFFSET(0x6461B0, 0))(ParentWindow, BasePath, filter, title, extension, NULL, FALSE, TRUE, Buffer, BufferSize, Directory, NULL);
+
+	if (result && g_INI_CK_CfgCustom->GetBoolean("General", "bUseVersionControl", FALSE)) {
+		std::string sbuf = Buffer;
+		auto ibegin = sbuf.find_last_of('\\');
+		if (ibegin == sbuf.npos) {
+			ibegin = sbuf.find_last_of('/');
+			if (ibegin == sbuf.npos)
+				goto end_func;
+			else
+				sbuf = sbuf.substr(ibegin + 1);
+		}
+		else
+			sbuf = sbuf.substr(ibegin + 1);
+
+		strcpy_s(Buffer, BufferSize, sbuf.c_str());
+	}
+
+end_func:
+	return result;
 }
 
 INT_PTR CALLBACK DialogFuncOverride(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -949,20 +968,6 @@ DWORD WINAPI hk_modGetPrivateProfileIntA(LPCSTR lpAppName, LPCSTR lpKeyName, INT
 	}
 	
 	return GetPrivateProfileIntA(lpAppName, lpKeyName, nDefault, lpFileName);
-}
-
-
-BOOL FIXAPI GetMasterFileNameByVersionControlEnabled(HWND ParentWindow, LPCSTR BasePath, BOOL IsESM, LPSTR Buffer, uint32_t BufferSize, LPCSTR Directory) {
-	Assert(g_INI_CK_CfgCustom->GetBoolean("General", "bUseVersionControl", FALSE));
-	
-	LPSTR* sActivePluginFilename = (LPSTR*)OFFSET(0x6D54CB0, 0);
-	Assert(sActivePluginFilename);
-
-	auto result = XUtil::Str::ChangeFileExt(*sActivePluginFilename, ".esm");
-
-	strcpy_s(Buffer, BufferSize, result.c_str());
-
-	return TRUE; 
 }
 
 
