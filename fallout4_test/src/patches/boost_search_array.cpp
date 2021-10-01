@@ -26,7 +26,8 @@
 #include <smmintrin.h>
 #include <functional>
 
-#define _mm_cmp1_epi128(targets, iptr) (_mm_movemask_pd(_mm_castsi128_pd(_mm_or_si128(_mm_cmpeq_epi64(targets, _mm_loadu_si128((__m128i*)iptr)), _mm_cmpeq_epi64(targets, _mm_loadu_si128((__m128i*)(iptr + 2)))))))
+#define _mm_cmp1_epi128_32(targets, iptr) (_mm_movemask_pd(_mm_castsi128_pd(_mm_or_si128(_mm_cmpeq_epi32(targets, _mm_loadu_si128((__m128i*)iptr)), _mm_cmpeq_epi32(targets, _mm_loadu_si128((__m128i*)(iptr + 4)))))))
+#define _mm_cmp1_epi128_64(targets, iptr) (_mm_movemask_pd(_mm_castsi128_pd(_mm_or_si128(_mm_cmpeq_epi64(targets, _mm_loadu_si128((__m128i*)iptr)), _mm_cmpeq_epi64(targets, _mm_loadu_si128((__m128i*)(iptr + 2)))))))
 
 #if FALLOUT4_CK64_BSTARRAY_DBG
 #include "CKF4/LogWindow.h"
@@ -36,138 +37,142 @@
 
 #pragma warning(disable:4533)
 
+#define QSIMD_INVALID_INDEX 0xFFFFFFFF
+
 namespace Experimental {
-	uint32_t FIXAPI BSTArraySearchItem(BSTArray<LPVOID>& Array, LPCVOID& Target) {
-		return BSTArraySearchItemWithOffset(Array, Target, 0);
-	}
 
-	uint32_t FIXAPI BSTArraySearchItemWithOffset(BSTArray<LPVOID>& Array, LPCVOID& Target, uint32_t start_index)
-	{
+	DWORD FIXAPI QSIMDFastSearchArrayItemOffsetDWORD(BSTArray<DWORD>& _array, DWORD& _target, DWORD _start_index) {
+		DWORD index = _start_index;
+		const DWORD size_array = _array.QSize();
+
+		if (size_array <= _start_index)
+			return QSIMD_INVALID_INDEX;
+
 #if FALLOUT4_CK64_BSTARRAY_DBG
 		auto start = F64_NOW;
 #endif
-		uint32_t i, res = 0xFFFFFFFF, count = Array.QSize();
-		for (i = start_index; i < count; i++)
-		{
-			if (Array[i] == Target) {
-				res = i;
-				break;
+
+		DWORD* data = (DWORD*)_array.QBuffer() + index;
+
+		if ((size_array - _start_index) < 50) {
+			for (; index < size_array; index++) {
+				if (data[index] == _target) {
+#if FALLOUT4_CK64_BSTARRAY_DBG
+					auto end = F64_NOW;
+					std::chrono::duration<double> elapsed_seconds = end - start;
+					_MESSAGE_FMT("items %i elapsed time: %f", (size_array - _start_index), elapsed_seconds.count());
+#endif
+					return index;
+				}
 			}
+
+#if FALLOUT4_CK64_BSTARRAY_DBG
+			auto end = F64_NOW;
+			std::chrono::duration<double> elapsed_seconds = end - start;
+			_MESSAGE_FMT("items %i elapsed time: %f", (size_array - _start_index), elapsed_seconds.count());
+#endif
+
+			return QSIMD_INVALID_INDEX;
 		}
-#if FALLOUT4_CK64_BSTARRAY_DBG
-		auto end = F64_NOW;
-		std::chrono::duration<double> elapsed_seconds = end - start;
-		_MESSAGE_FMT("items %i elapsed time: %f", count, elapsed_seconds.count());
-#endif
-		return res;
-	}
 
-	uint32_t FIXAPI BSTArraySIMDSearchItem(BSTArray<LPVOID>& Array, LPCVOID& Target) {
-		return BSTArraySIMDSearchItemWithOffset(Array, Target, 0);
-	}
-
-	uint32_t FIXAPI BSTArraySIMDSearchItemWithOffset(BSTArray<LPVOID>& Array, LPCVOID& Target, uint32_t start_index) {
-		uint32_t index = start_index, res = 0xFFFFFFFF;
-		
-		if (Array.QSize() <= start_index)
-			goto EndSearchSIMD;
-
-		if ((Array.QSize() - start_index) < 50)
-			return BSTArraySearchItemWithOffset(Array, Target, start_index);
-
-#if FALLOUT4_CK64_BSTARRAY_DBG
-		auto start = F64_NOW;
-#endif
-		
-		PINT64 data = (PINT64)Array.QBuffer();
-
-		const uint32_t comparesPerIter = 4;
-		const uint32_t vectorizedIterations = (Array.QSize() - index) / comparesPerIter;
+		DWORD res = QSIMD_INVALID_INDEX;
 
 		//
-		// Compare 4 pointers per iteration - use SIMD instructions to generate a bit mask. Set
+		// Compare 16 indexes per iteration - use SIMD instructions to generate a bit mask. Set
 		// bit 0 if 'array[i + 0]'=='target', set bit 1 if 'array[i + 1]'=='target', set bit X...
-		const __m128i targets = _mm_set1_epi64x((INT64)Target);
+		const DWORD comparesPerIter = 16;
+		const DWORD vectorizedIterations = (size_array - index) / comparesPerIter;
+		const __m128i target = _mm_set_epi32(_target, _target, _target, _target);
 
-		for (uint32_t iter = 0; iter < vectorizedIterations; iter++) {
-			__m128i test1 = _mm_cmpeq_epi64(targets, _mm_loadu_si128((__m128i*)&data[index + 0]));
-			__m128i test2 = _mm_cmpeq_epi64(targets, _mm_loadu_si128((__m128i*)&data[index + 2]));
-
-			INT32 mask = _mm_movemask_pd(_mm_castsi128_pd(_mm_or_si128(test1, test2)));
-
-			// if (target pointer found) { break into the remainder loop to get the index }
-			if (mask != 0)
+		for (std::size_t iter = 0; iter < vectorizedIterations; iter++) {
+			if (_mm_cmp1_epi128_32(target, &data[index]) || _mm_cmp1_epi128_32(target, &data[index + 8]))
 				break;
 
 			index += comparesPerIter;
 		}
 
 		// Scan the rest 1-by-1
-		for (; index < Array.QSize(); index++) {
-			if (data[index] == (INT64)Target) {
+		for (; index < size_array; index++) {
+			if (data[index] == _target) {
 				res = index;
 				break;
 			}
 		}
+
 #if FALLOUT4_CK64_BSTARRAY_DBG
 		auto end = F64_NOW;
 		std::chrono::duration<double> elapsed_seconds = end - start;
-		_MESSAGE_FMT("items %i elapsed time: %f", (Array.QSize() - start_index), elapsed_seconds.count());
+		_MESSAGE_FMT("items %i elapsed time: %f", (size_array - _start_index), elapsed_seconds.count());
 #endif
-		EndSearchSIMD:
+
 		return res;
 	}
 
-	uint32_t FIXAPI BSTArraySIMD2SearchItem(BSTArray<LPVOID>& Array, LPCVOID& Target) {
-		return BSTArraySIMD2SearchItemWithOffset(Array, Target, 0);
-	}
+	DWORD FIXAPI QSIMDFastSearchArrayItemOffsetQWORD(BSTArray<UINT64>& _array, UINT64& _target, DWORD _start_index) {
+		DWORD index = _start_index;
+		const DWORD size_array = _array.QSize();
 
-	uint32_t FIXAPI BSTArraySIMD2SearchItemWithOffset(BSTArray<LPVOID>& Array, LPCVOID& Target, uint32_t start_index) {
-		uint32_t index = start_index, res = 0xFFFFFFFF;
-		
-		if (Array.QSize() <= start_index)
-			goto EndSearchSIMD2;
-
-		if ((Array.QSize() - start_index) < 50)
-			return BSTArraySearchItemWithOffset(Array, Target, start_index);
+		if (size_array <= _start_index)
+			return QSIMD_INVALID_INDEX;
 
 #if FALLOUT4_CK64_BSTARRAY_DBG
 		auto start = F64_NOW;
 #endif
 
-		PINT64 data = (PINT64)Array.QBuffer() + index;
+		PUINT64 data = (PUINT64)_array.QBuffer() + index;
 
-		if ((Array.QSize() > 0) && (index < Array.QSize())) {
-			//
-			// Compare 16 pointers per iteration - use SIMD instructions to generate a bit mask. Set
-			// bit 0 if 'array[i + 0]'=='target', set bit 1 if 'array[i + 1]'=='target', set bit X...
-			const uint32_t comparesPerIter = 16;
-			const uint32_t vectorizedIterations = (Array.QSize() - index) / comparesPerIter;
-			const __m128i target = _mm_set1_epi64x((INT64)Target);
-
-			for (uint32_t iter = 0; iter < vectorizedIterations; iter++) {
-				if (_mm_cmp1_epi128(target, &data[index]) || _mm_cmp1_epi128(target, &data[index + 4]) ||
-					_mm_cmp1_epi128(target, &data[index + 8]) || _mm_cmp1_epi128(target, &data[index + 12]))
-					break;
-
-				index += comparesPerIter;
+		if ((size_array - _start_index) < 50) {
+			for (; index < size_array; index++) {
+				if (data[index] == _target) {
+#if FALLOUT4_CK64_BSTARRAY_DBG
+					auto end = F64_NOW;
+					std::chrono::duration<double> elapsed_seconds = end - start;
+					_MESSAGE_FMT("items %i elapsed time: %f", (size_array - _start_index), elapsed_seconds.count());
+#endif
+					return index;
+				}
 			}
 
-			// Scan the rest 1-by-1
-			for (; index < Array.QSize(); index++) {
-				if (data[index] == (INT64)Target) {
-					res = index;
-					break;
-				}
+#if FALLOUT4_CK64_BSTARRAY_DBG
+			auto end = F64_NOW;
+			std::chrono::duration<double> elapsed_seconds = end - start;
+			_MESSAGE_FMT("items %i elapsed time: %f", (size_array - _start_index), elapsed_seconds.count());
+#endif
+
+			return QSIMD_INVALID_INDEX;
+		}
+
+		DWORD res = QSIMD_INVALID_INDEX;
+
+		//
+		// Compare 16 pointers per iteration - use SIMD instructions to generate a bit mask. Set
+		// bit 0 if 'array[i + 0]'=='target', set bit 1 if 'array[i + 1]'=='target', set bit X...
+		const DWORD comparesPerIter = 16;
+		const DWORD vectorizedIterations = (size_array - index) / comparesPerIter;
+		const __m128i target = _mm_set_epi64x(_target, _target);
+
+		for (std::size_t iter = 0; iter < vectorizedIterations; iter++) {
+			if (_mm_cmp1_epi128_64(target, &data[index]) || _mm_cmp1_epi128_64(target, &data[index + 4]) ||
+				_mm_cmp1_epi128_64(target, &data[index + 8]) || _mm_cmp1_epi128_64(target, &data[index + 12]))
+				break;
+
+			index += comparesPerIter;
+		}
+
+		// Scan the rest 1-by-1
+		for (; index < size_array; index++) {
+			if (data[index] == _target) {
+				res = index;
+				break;
 			}
 		}
 
 #if FALLOUT4_CK64_BSTARRAY_DBG
 		auto end = F64_NOW;
 		std::chrono::duration<double> elapsed_seconds = end - start;
-		_MESSAGE_FMT("items %i elapsed time: %f", (Array.QSize() - start_index), elapsed_seconds.count());
+		_MESSAGE_FMT("items %i elapsed time: %f", (size_array - _start_index), elapsed_seconds.count());
 #endif
-	EndSearchSIMD2:
+
 		return res;
 	}
 }

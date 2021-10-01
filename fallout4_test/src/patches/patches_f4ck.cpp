@@ -275,54 +275,37 @@ VOID FIXAPI F_RequiredPatches(VOID) {
 	//
 	// Plugin loading optimizations
 	//
-
 	INT32 cpuinfo[4];
 	__cpuid(cpuinfo, 1);
 	bool sse41 = (cpuinfo[2] & (1 << 19)) != 0;
 
-	if (!g_INI->GetBoolean("CreationKit", "BSTArraySearchItemReplacement", FALSE)) {
-		// Utilize SSE4.1 instructions if available
-		if (sse41) {
-			_MESSAGE("Utilize SSE4.1 instructions if available and loading optimizations enabled");
-			XUtil::DetourJump(OFFSET(0x05B31C0, 0), &Experimental::BSTArraySIMD2SearchItem);
-		}
-		else
-			XUtil::DetourJump(OFFSET(0x05B31C0, 0), &Experimental::BSTArraySearchItem);
-	}
-	else {
-		// Search for a set of functions for accessing an array and getting an index.
-		// Imho, there are a lot of functions and one and the same,
-		// I don't even know what to say about this, there is another function with the third parameter, I assume this offset from.
-
-		std::vector<uintptr_t> matches = XUtil::FindPatterns(g_CodeBase, g_CodeEnd - g_CodeBase,
-			"48 89 5C 24 10 48 89 74 24 18 57 41 56 41 57 48 83 EC 30 44 8B 71 10 83 CB FF 33 FF 4C 8B FA 48 8B F1 45 85 F6");
-
-		std::vector<uintptr_t> matches2 = XUtil::FindPatterns(g_CodeBase, g_CodeEnd - g_CodeBase,
-			"48 89 5C 24 08 48 89 6C 24 10 48 89 74 24 18 57 41 56 41 57 48 83 EC 30 44 8B 71 10 83 CB FF 41 8B F8");
+	if (sse41 && g_INI->GetBoolean("CreationKit", "BSTArraySearchItemReplacement", FALSE)) {
+		// Without SIMD support, there is no pointand the code has been cut out
+		_MESSAGE("Utilize SSE4.1 instructions if available and loading optimizations enabled.");
 		
-		//
-		// Removal from the change, cause the loading of the quest diagram to hang
-		//
-		matches.erase(matches.begin() + 89); // 0xA14500
-		matches.erase(matches.begin() + 53); // 0x525A50
-		matches.erase(matches.begin() + 7);  // 0x193D20
+		// In the previous version, there was a different signature.
+		// I have redone and now it does not lead to errors in previs, because they were slightly different, namely the size of the data type.
 
-		auto search_array_func = [](auto it) { XUtil::DetourJump(it, &Experimental::BSTArraySearchItem); };
-		auto search_array_func_2 = [](auto it) { XUtil::DetourJump(it, &Experimental::BSTArraySearchItemWithOffset); };
-		auto search_array_func_3 = [](auto it) { XUtil::DetourJump(it, &Experimental::BSTArraySIMD2SearchItem); };
-		auto search_array_func_3_2 = [](auto it) { XUtil::DetourJump(it, &Experimental::BSTArraySIMD2SearchItemWithOffset); };
+		std::size_t count = 0;
+
 		std::vector<uintptr_t>::iterator match;
+		std::vector<uintptr_t> matches = XUtil::FindPatterns(g_CodeBase, g_CodeEnd - g_CodeBase, 
+			"48 83 C5 08 41 3B FE 72 9F 48 8B 6C 24 50 8B C3 48 8B 5C 24 58 48 8B 74 24 60 48 83 C4 30 41 5F 41 5E 5F C3 8B C3 EB E8");
 
-		// Utilize SSE4.1 instructions if available
-		if (sse41) {
-			_MESSAGE("Utilize SSE4.1 instructions if available and loading optimizations enabled");
-			XUtil::Parallel::for_each(match = matches.begin(), matches.end(), search_array_func_3);
-			XUtil::Parallel::for_each(match = matches2.begin(), matches2.end(), search_array_func_3_2);
-		}
-		else {
-			XUtil::Parallel::for_each(match = matches.begin(), matches.end(), search_array_func);
-			XUtil::Parallel::for_each(match = matches2.begin(), matches2.end(), search_array_func_2);
-		}
+		XUtil::Parallel::for_each(match = matches.begin(), matches.end(), [&count](auto it) { XUtil::DetourJump(it - 0x8A, &Experimental::QSIMDFastSearcArrayItemQWORD); count++; });
+
+		matches = XUtil::FindPatterns(g_CodeBase, g_CodeEnd - g_CodeBase,
+			"48 83 C5 08 41 3B FE 72 9F 48 8B 6C 24 58 48 8B 74 24 60 8B C3 48 8B 5C 24 50 48 83 C4 30 41 5F 41 5E 5F C3");
+
+		XUtil::Parallel::for_each(match = matches.begin(), matches.end(), [&count](auto it) { XUtil::DetourJump(it - 0x8D, &Experimental::QSIMDFastSearchArrayItemOffsetQWORD); count++; });
+
+		XUtil::DetourJump(OFFSET(0xB0930, 0), &Experimental::QSIMDFastSearchArrayItemDWORD);
+		XUtil::DetourJump(OFFSET(0x193D20, 0), &Experimental::QSIMDFastSearchArrayItemDWORD);
+		XUtil::DetourJump(OFFSET(0x409AB0, 0), &Experimental::QSIMDFastSearchArrayItemDWORD);
+
+		count += 3;
+
+		_MESSAGE_FMT("Replaced function with SIMD function: %d.", count);
 	}
 
 	XUtil::DetourCall(OFFSET(0x08056B7, 0), &hk_inflateInit);

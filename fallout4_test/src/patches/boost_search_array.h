@@ -27,10 +27,14 @@
 #include "TES/BSTArray.h"
 
 namespace Experimental {
-	uint32_t FIXAPI BSTArraySearchItem(BSTArray<LPVOID>& Array, LPCVOID& Target);
-	uint32_t FIXAPI BSTArraySearchItemWithOffset(BSTArray<LPVOID>& Array, LPCVOID& Target, uint32_t start_index);
-	uint32_t FIXAPI BSTArraySIMDSearchItem(BSTArray<LPVOID>& Array, LPCVOID& Target);
-	uint32_t FIXAPI BSTArraySIMDSearchItemWithOffset(BSTArray<LPVOID>& Array, LPCVOID& Target, uint32_t start_index);
-	uint32_t FIXAPI BSTArraySIMD2SearchItem(BSTArray<LPVOID>& Array, LPCVOID& Target);
-	uint32_t FIXAPI BSTArraySIMD2SearchItemWithOffset(BSTArray<LPVOID>& Array, LPCVOID& Target, uint32_t start_index);
+	DWORD FIXAPI QSIMDFastSearchArrayItemOffsetDWORD(BSTArray<DWORD>& _array, DWORD& _target, DWORD _start_index);
+	DWORD FIXAPI QSIMDFastSearchArrayItemOffsetQWORD(BSTArray<UINT64>& _array, UINT64& _target, DWORD _start_index);
+
+	inline DWORD FIXAPI QSIMDFastSearchArrayItemDWORD(BSTArray<DWORD>& _array, DWORD& _target) {
+		return QSIMDFastSearchArrayItemOffsetDWORD(_array, _target, 0);
+	}
+
+	inline DWORD FIXAPI QSIMDFastSearcArrayItemQWORD(BSTArray<UINT64>& _array, UINT64& _target) {
+		return QSIMDFastSearchArrayItemOffsetQWORD(_array, _target, 0);
+	}
 }
