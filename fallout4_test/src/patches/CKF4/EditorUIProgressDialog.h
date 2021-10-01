@@ -35,4 +35,8 @@ namespace EditorUI
 	VOID FIXAPI hk_SetTextAndSendStatusBar(UINT32 index, LPCSTR message);
 	VOID FIXAPI hk_SendFromCellViewToRender(LPVOID Unknown1, TESForm_CK* View, INT32 Unknown3);
 	VOID FIXAPI hk_EndSendFromCellViewToRender(VOID);
+
+	// Methods of the progress indicator displayed on a taskbar button.
+
+	VOID FIXAPI SetMarqueeInTaskbar(BOOL _value);
 }

@@ -24,6 +24,8 @@
 #include "TESDataFileHandler_CK.h"
 #include "UIProgressDialog.h"
 #include "LogWindow.h"
+#include "EditorUI.h"
+#include "EditorUIProgressDialog.h"
 
 #include <filesystem>
 
@@ -111,11 +113,13 @@ bool TESDataFileHandler_CK::Load(int Unknown) {
 
 bool TESDataFileHandler_CK::InitUnknownDataSetTextStatusBar(void) {
 	// Replacing Tips with a progress Bar
-	if (g_INI->GetBoolean("CreationKit", "UI", false) && g_INI->GetBoolean("CreationKit", "ReplacingTipsWithProgressBar", false))
+	if (g_UIEnabled && EditorUI::bReplaceTips)
 	{
 		// set to progressbar
 		Core::Classes::UI::ProgressDialog->MessageText = "Loading Files... Initializing...";
 		Core::Classes::UI::ProgressDialog->Marquee = TRUE;
+		// also in taskbar
+		EditorUI::SetMarqueeInTaskbar(TRUE);
 	}
 
 	// Unknown. Initializes something.
