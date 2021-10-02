@@ -118,6 +118,7 @@
       <DisableSpecificWarnings>4430;4267;4302;4311;4312;4996;4244;4477;26495</DisableSpecificWarnings>
       <FloatingPointExceptions>true</FloatingPointExceptions>
       <LanguageStandard_C>Default</LanguageStandard_C>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

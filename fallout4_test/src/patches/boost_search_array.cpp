@@ -26,9 +26,6 @@
 #include <smmintrin.h>
 #include <functional>
 
-#define _mm_cmp1_epi128_32(targets, iptr) (_mm_movemask_pd(_mm_castsi128_pd(_mm_or_si128(_mm_cmpeq_epi32(targets, _mm_loadu_si128((__m128i*)iptr)), _mm_cmpeq_epi32(targets, _mm_loadu_si128((__m128i*)(iptr + 4)))))))
-#define _mm_cmp1_epi128_64(targets, iptr) (_mm_movemask_pd(_mm_castsi128_pd(_mm_or_si128(_mm_cmpeq_epi64(targets, _mm_loadu_si128((__m128i*)iptr)), _mm_cmpeq_epi64(targets, _mm_loadu_si128((__m128i*)(iptr + 2)))))))
-
 #if FALLOUT4_CK64_BSTARRAY_DBG
 #include "CKF4/LogWindow.h"
 #include <chrono>
@@ -83,13 +80,26 @@ namespace Experimental {
 		const DWORD comparesPerIter = 16;
 		const DWORD vectorizedIterations = (size_array - index) / comparesPerIter;
 		const __m128i target = _mm_set_epi32(_target, _target, _target, _target);
+		UINT32 bsr_v;
+		UINT32 mask;
+		std::size_t iter = 0;
+		__m128i* ebp = (__m128i*)(data + index);
 
-		for (std::size_t iter = 0; iter < vectorizedIterations; iter++) {
-			if (_mm_cmp1_epi128_32(target, &data[index]) || _mm_cmp1_epi128_32(target, &data[index + 8]))
-				break;
+		for (; iter < vectorizedIterations; ebp += 4, iter++) {
+			if ((mask = (_mm_movemask_ps(_mm_castsi128_ps(_mm_cmpeq_epi32(target, _mm_loadu_si128(ebp))))) |
+				((_mm_movemask_ps(_mm_castsi128_ps(_mm_cmpeq_epi32(target, _mm_loadu_si128(ebp + 1))))) << 4) |
+				((_mm_movemask_ps(_mm_castsi128_ps(_mm_cmpeq_epi32(target, _mm_loadu_si128(ebp + 2))))) << 8) |
+				((_mm_movemask_ps(_mm_castsi128_ps(_mm_cmpeq_epi32(target, _mm_loadu_si128(ebp + 3))))) << 12))) {
+				_BitScanForward((unsigned long*)&bsr_v, mask);
 
-			index += comparesPerIter;
+				index += comparesPerIter * iter;
+				//_MESSAGE_FMT("items m%i bsf%i (%i == %i)", mask, bsr_v, data[index + bsr_v], _target);
+
+				return index + bsr_v;
+			}
 		}
+
+		index += comparesPerIter * iter;
 
 		// Scan the rest 1-by-1
 		for (; index < size_array; index++) {
@@ -150,14 +160,30 @@ namespace Experimental {
 		const DWORD comparesPerIter = 16;
 		const DWORD vectorizedIterations = (size_array - index) / comparesPerIter;
 		const __m128i target = _mm_set_epi64x(_target, _target);
+		UINT32 bsr_v;
+		UINT64 mask;
+		std::size_t iter = 0;
+		__m128i* ebp = (__m128i*)(data + index);
 
-		for (std::size_t iter = 0; iter < vectorizedIterations; iter++) {
-			if (_mm_cmp1_epi128_64(target, &data[index]) || _mm_cmp1_epi128_64(target, &data[index + 4]) ||
-				_mm_cmp1_epi128_64(target, &data[index + 8]) || _mm_cmp1_epi128_64(target, &data[index + 12]))
-				break;
+		for (; iter < vectorizedIterations; ebp += 8, iter++) {
+			if ((mask = ((UINT64)_mm_movemask_pd(_mm_castsi128_pd(_mm_cmpeq_epi64(target, _mm_loadu_si128(ebp))))) |
+				(((UINT64)_mm_movemask_pd(_mm_castsi128_pd(_mm_cmpeq_epi64(target, _mm_loadu_si128(ebp + 1))))) << 2) |
+				(((UINT64)_mm_movemask_pd(_mm_castsi128_pd(_mm_cmpeq_epi64(target, _mm_loadu_si128(ebp + 2))))) << 4) |
+				(((UINT64)_mm_movemask_pd(_mm_castsi128_pd(_mm_cmpeq_epi64(target, _mm_loadu_si128(ebp + 3))))) << 6) |
+				(((UINT64)_mm_movemask_pd(_mm_castsi128_pd(_mm_cmpeq_epi64(target, _mm_loadu_si128(ebp + 4))))) << 8) |
+				(((UINT64)_mm_movemask_pd(_mm_castsi128_pd(_mm_cmpeq_epi64(target, _mm_loadu_si128(ebp + 5))))) << 10) |
+				(((UINT64)_mm_movemask_pd(_mm_castsi128_pd(_mm_cmpeq_epi64(target, _mm_loadu_si128(ebp + 6))))) << 12) |
+				(((UINT64)_mm_movemask_pd(_mm_castsi128_pd(_mm_cmpeq_epi64(target, _mm_loadu_si128(ebp + 7))))) << 14))) {
+				_BitScanForward64((unsigned long*)&bsr_v, mask);
 
-			index += comparesPerIter;
+				index += comparesPerIter * iter;
+			//	_MESSAGE_FMT("items m%i bsf%i (%i == %i)", mask, bsr_v, data[index + bsr_v], _target);
+
+				return index + bsr_v;
+			}
 		}
+
+		index += comparesPerIter * iter;
 
 		// Scan the rest 1-by-1
 		for (; index < size_array; index++) {
