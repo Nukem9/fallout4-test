@@ -249,6 +249,17 @@ VOID FIXAPI F_RequiredPatches(VOID) {
 	PatchCmdLineWithQuote();
 
 	//
+	// Skip some warning
+	//
+
+	// Animation messages
+	XUtil::PatchMemoryNop(OFFSET(0x257CF88, 0), 5);
+	XUtil::PatchMemoryNop(OFFSET(0x257D4B3, 0), 5);
+	XUtil::PatchMemoryNop(OFFSET(0x257D518, 0), 5);
+	XUtil::PatchMemoryNop(OFFSET(0x257D44A, 0), 5);
+	XUtil::PatchMemoryNop(OFFSET(0x1C62B27, 0), 5);
+
+	//
 	// Skipping the program update check
 	//
 	XUtil::PatchMemory(OFFSET(0x5C180B, 0), { 0xEB, 0x10 });
@@ -292,7 +303,7 @@ VOID FIXAPI F_RequiredPatches(VOID) {
 		std::vector<uintptr_t> matches = XUtil::FindPatterns(g_CodeBase, g_CodeEnd - g_CodeBase, 
 			"48 83 C5 08 41 3B FE 72 9F 48 8B 6C 24 50 8B C3 48 8B 5C 24 58 48 8B 74 24 60 48 83 C4 30 41 5F 41 5E 5F C3 8B C3 EB E8");
 
-		XUtil::Parallel::for_each(match = matches.begin(), matches.end(), [&count](auto it) { XUtil::DetourJump(it - 0x8A, &Experimental::QSIMDFastSearcArrayItemQWORD); count++; });
+		XUtil::Parallel::for_each(match = matches.begin(), matches.end(), [&count](auto it) { XUtil::DetourJump(it - 0x8A, &Experimental::QSIMDFastSearchArrayItemQWORD); count++; });
 
 		matches = XUtil::FindPatterns(g_CodeBase, g_CodeEnd - g_CodeBase,
 			"48 83 C5 08 41 3B FE 72 9F 48 8B 6C 24 58 48 8B 74 24 60 8B C3 48 8B 5C 24 50 48 83 C4 30 41 5F 41 5E 5F C3");

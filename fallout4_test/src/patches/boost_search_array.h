@@ -34,7 +34,7 @@ namespace Experimental {
 		return QSIMDFastSearchArrayItemOffsetDWORD(_array, _target, 0);
 	}
 
-	inline DWORD FIXAPI QSIMDFastSearcArrayItemQWORD(BSTArray<UINT64>& _array, UINT64& _target) {
+	inline DWORD FIXAPI QSIMDFastSearchArrayItemQWORD(BSTArray<UINT64>& _array, UINT64& _target) {
 		return QSIMDFastSearchArrayItemOffsetQWORD(_array, _target, 0);
 	}
 }

@@ -37,6 +37,73 @@
 BOOL bFogToggle = TRUE;
 BOOL bAllowPoolMessage = FALSE;
 
+// clang-format off
+struct
+{
+	LPCSTR Section;
+	LPCSTR Key;
+	std::string Value;
+} CK_Settings[] = {
+	// CreationKit.ini or CreationKitCustom.ini
+	{ "General",		"bAllowMultipleEditors",				"1"	},
+	{ "General",		"bSkipValidateInfos",					"1"	},
+	{ "General",		"bSkipValidateForms",					"1"	},
+	{ "General",		"bDisableDuplicateReferenceCheck",		"1"	},
+	{ "General",		"bCheckForMultiFileForms",				"0"	},
+	{ "General",		"bCheckForRefCellChanges",				"0"	},
+	{ "General",		"iCheckCellRegionsOnInit",				"0"	},
+	{ "General",		"bCheckOutWorldspacesOnInit",			"0"	},
+	{ "General",		"bCheckDoorCollisionOnInit",			"0"	},
+	{ "General",		"bFixBadLocRefsOnInit",					"0"	},
+	{ "General",		"bFixBadBorderRegionDataOnInit",		"0"	},
+	{ "General",		"bFixPersistenceOnRefInit",				"0"	},
+	{ "General",		"bForceCheckOutOnRefFix",				"0"	},
+	{ "General",		"bCheckLevActorsOnInit",				"0"	},
+	{ "General",		"bUseToolTips",							"0"	},
+	{ "General",		"bOnlyActiveFileForRefFix",				"0"	},
+	{ "General",		"bFixAIPackagesOnLoad",					"0"	},
+	{ "General",		"bCheckInventoryItemNameLength",		"0"	},
+	{ "General",		"bWarnOnGameSettingLoad",				"0"	},
+	{ "General",		"bCheckHairOnInit",						"0"	},
+	{ "General",		"bCheckEyesOnInit",						"0"	},
+	{ "General",		"bForbidNifErrorMarkers",				"1"	},
+	{ "General",		"bEditorHotLoading",					"1"	},
+	{ "General",		"bHideImportantWarnings",				"1"	},
+	{ "General",		"bAllowResourceReloading",				"1"	},
+	{ "General",		"bDoMultithreadedVisQuery",				"1"	},
+	{ "Archive",		"bUseArchives",							"1"	},
+	{ "Archive",		"bAutoloadTESFileArchives",				"1"	},
+	{ "Archive",		"bInvalidateOlderFiles",				"1"	},
+	{ "Animation",		"bUseVariableCache",					"0"	},
+	{ "Animation",		"bIgnoreNIFFlags",						"1"	},
+	{ "Animation",		"bDisplayMarkWarning",					"0"	},
+	{ "Animation",		"bSkipAnimationTextExport",				"0"	},
+	{ "Bethesda.net",	"bEnablePlatformSelection",				"1"	},
+	{ "Bethesda.net",	"bEnableXB1",							"1"	},
+	{ "Bethesda.net",	"bEnablePS4",							"1"	},
+	{ "Display",		"bDeferredCommands",					"1"	},
+	{ "Display",		"bDynamicObjectQueryManager",			"0"	},
+	{ "Display",		"bMultiThreadedAccumulation",			"1"	},
+	{ "Display",		"bMultiThreadedRenderingUNP",			"1"	},
+	{ "Display",		"iTexMipMapMinimum",					"0"	},
+	{ "Display",		"bUsePreCulledObjects",					"0"	},
+	{ "Weather",		"bFogEnabled",							"1"	},
+	{ "Messages",		"bBlockMessageBoxes",					"1"	},
+	{ "Messages",		"bShowErrorMessages",					"0"	},
+	{ "Messages",		"bUseWindowsMessageBox",				"1"	},
+	{ "Messages",		"bSkipInitializationFlows",				"1"	},
+	{ "Messages",		"bSkipProgramFlows",					"1"	},
+	{ "Messages",		"bAllowYesToAll",						"1"	},
+	{ "Messages",		"bAllowFileWrite",						"0"	},
+	{ "Messages",		"bDisableWarning",						"1"	},
+	{ "Messages",		"bEnableAudio",							"0"	},
+	{ "Messages",		"bFaceGenWarnings",						"0"	},
+	{ "Messages",		"bDisableAssertQueuing",				"1"	},
+	{ "Messages",		"bShowMissingLipWarnings",				"0"	},
+	{ "Messages",		"bShowMissingAudioWarnings",			"0"	},
+	{ "Messages",		"bTopMostWarnings",						"0"	},
+};
+
 struct DialogOverrideData
 {
 	DLGPROC DialogFunc;	// Original function pointer
@@ -962,9 +1029,12 @@ HANDLE WINAPI hk_FindFirstFileA(LPCSTR lpFileName, LPWIN32_FIND_DATAA lpFindFile
 
 
 DWORD WINAPI hk_modGetPrivateProfileIntA(LPCSTR lpAppName, LPCSTR lpKeyName, INT nDefault, LPCSTR lpFileName) {
-	if (lpAppName && !stricmp(lpAppName, "General")) {
-		if (lpKeyName && (!stricmp(lpKeyName, "bSkipValidateForms") || !stricmp(lpKeyName, "bDisableDuplicateReferenceCheck")))
-			return 1;
+	// Check for overrides first
+	for (auto& setting : CK_Settings) {
+		if (!_stricmp(lpAppName, setting.Section) && !_stricmp(lpKeyName, setting.Key)) {
+			LPCSTR start = setting.Value.c_str();
+			return (DWORD)strtoul(start, NULL, 10);
+		}
 	}
 	
 	return GetPrivateProfileIntA(lpAppName, lpKeyName, nDefault, lpFileName);
