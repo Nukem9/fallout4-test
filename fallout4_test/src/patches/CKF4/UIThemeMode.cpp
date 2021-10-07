@@ -146,13 +146,13 @@ namespace UITheme
 
 		// change select color
 		// uses ThemeColor_Border_Window and ThemeColor_StatusBar_Text colors from theme
-
+		/*
 		INT elements[2] = { COLOR_HIGHLIGHT, COLOR_HIGHLIGHTTEXT };
 		DWORD newColors[2];
 		newColors[0] = GetThemeSysColor(Theme::ThemeColor_Border_Window);	// bk
 		newColors[1] = GetThemeSysColor(Theme::ThemeColor_StatusBar_Text);	// text
 
-		SetSysColors(2, elements, newColors);
+		SetSysColors(2, elements, newColors);*/
 #if THEME_DEBUG
 		ofs.open("__theme_debug.log");
 #endif
