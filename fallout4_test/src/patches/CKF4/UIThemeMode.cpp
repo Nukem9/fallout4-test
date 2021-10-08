@@ -77,18 +77,17 @@ namespace Classes = Core::Classes::UI;
 #include <fstream>
 #endif
 
+#pragma warning (disable : 26819; disable : 26812; disable : 26454)
+
 namespace UITheme
 {
-	struct string_equal_to
-	{
-		inline bool operator()(const std::string_view& lhs, const std::string_view& rhs) const
-		{
+	struct string_equal_to {
+		inline bool operator()(const std::string_view& lhs, const std::string_view& rhs) const {
 			return !_stricmp(lhs.data(), rhs.data());
 		}
 	};
 
-	const std::unordered_set<std::string_view> PermanentWindowSubclasses
-	{
+	const std::unordered_set<std::string_view> PermanentWindowSubclasses {
 		"Creation Kit",
 		"ActivatorClass",
 		"AlchemyClass",
@@ -123,16 +122,14 @@ namespace UITheme
 	static WNDPROC OldPopupMenuWndClass = NULL;
 	static Classes::CUIFont* listFont = NULL;
 
-	VOID FIXAPI Initialize(Theme::Theme ThemeID)
-	{
+	VOID FIXAPI Initialize(Theme::Theme ThemeID) {
 		Theme::SetTheme(ThemeID);
 		EnableThemeHooking = TRUE;
 
 		// I will new it once and forget about its existence
 		// I have no general idea where to destroy it. Yes, and it is not necessary, it will die along with the process.
 		
-		switch (g_i8DialogMode)
-		{
+		switch (g_i8DialogMode) {
 		case 2:
 			Theme::ThemeFont = new Classes::CUIFont("Microsoft Sans Serif", 10, {}, g_INI->GetInteger("CreationKit_Font", "Charset", DEFAULT_CHARSET), Classes::fqClearTypeNatural, Classes::fpVariable);
 			break;
@@ -144,34 +141,22 @@ namespace UITheme
 			break;
 	    }
 
-		// change select color
-		// uses ThemeColor_Border_Window and ThemeColor_StatusBar_Text colors from theme
-		/*
-		INT elements[2] = { COLOR_HIGHLIGHT, COLOR_HIGHLIGHTTEXT };
-		DWORD newColors[2];
-		newColors[0] = GetThemeSysColor(Theme::ThemeColor_Border_Window);	// bk
-		newColors[1] = GetThemeSysColor(Theme::ThemeColor_StatusBar_Text);	// text
-
-		SetSysColors(2, elements, newColors);*/
 #if THEME_DEBUG
 		ofs.open("__theme_debug.log");
 #endif
 	}
 
-	VOID FIXAPI InitializeThread(VOID)
-	{
+	VOID FIXAPI InitializeThread(VOID) {
 		if (EnableThemeHooking)
 			SetWindowsHookExA(WH_CALLWNDPROC, CallWndProcCallback, NULL, GetCurrentThreadId());
 	}
 
-	BOOL FIXAPI IsEnabledMode(VOID)
-	{
+	BOOL FIXAPI IsEnabledMode(VOID) {
 		return EnableThemeHooking;
 	}
 
 	HWND FIXAPI Comctl32CreateToolbarEx_1(HWND hwnd, DWORD ws, UINT wID, INT nBitmaps, HINSTANCE hBMInst, UINT_PTR wBMID, LPCTBBUTTON lpButtons,
-		INT iNumButtons, INT dxButton, INT dyButton, INT dxBitmap, INT dyBitmap, UINT uStructSize)
-	{
+		INT iNumButtons, INT dxButton, INT dyButton, INT dxBitmap, INT dyBitmap, UINT uStructSize) {
 		HIMAGELIST hImageList;
 
 		if ((Theme::GetTheme() != Theme::Theme_Light) && (Theme::GetTheme() != Theme::Theme_Gray))
@@ -192,8 +177,7 @@ namespace UITheme
 		return ret; 
 	}
 
-	HIMAGELIST FIXAPI Comctl32ImageList_LoadImageA_1(HINSTANCE hi, LPCSTR lpbmp, INT cx, INT cGrow, COLORREF crMask, UINT uType, UINT uFlags)
-	{
+	HIMAGELIST FIXAPI Comctl32ImageList_LoadImageA_1(HINSTANCE hi, LPCSTR lpbmp, INT cx, INT cGrow, COLORREF crMask, UINT uType, UINT uFlags) {
 		if ((Theme::GetTheme() != Theme::Theme_Light) && (Theme::GetTheme() != Theme::Theme_Gray))
 			return ImageList_LoadImageA(g_hModule, MAKEINTRESOURCEA(IDB_BITMAP6), cx, cGrow, crMask, IMAGE_BITMAP, LR_CREATEDIBSECTION | LR_LOADTRANSPARENT);
 		else
@@ -201,15 +185,13 @@ namespace UITheme
 	}
 
 	HWND FIXAPI Comctl32CreateWindowEx_1(DWORD dwExStyle, LPCTSTR lpClassName, LPCTSTR lpWindowName, DWORD dwStyle, INT x, INT y,
-		INT nWidth, INT nHeight, HWND hWndParent, HMENU hMenu, HINSTANCE hInstance, LPVOID lpParam)
-	{
+		INT nWidth, INT nHeight, HWND hWndParent, HMENU hMenu, HINSTANCE hInstance, LPVOID lpParam) {
 		HWND ret = CreateWindowExA(dwExStyle, lpClassName, lpWindowName, WS_CHILD | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | WS_VISIBLE | SS_LEFT, x, y, nWidth, nHeight, hWndParent, hMenu, hInstance, lpParam);
 
 		return ret;
 	}
 
-	VOID FIXAPI HideOldTimeOfDayComponents(VOID)
-	{
+	VOID FIXAPI HideOldTimeOfDayComponents(VOID) {
 		// I will hide the old ones, but I will rely on them when sending messages, however, in the end, I will fake the event to change the time of day
 
 		Theme::TimeOfDay::OldUITimeOfDayComponents.hWndLabel = GetDlgItem(Theme::TimeOfDay::OldUITimeOfDayComponents.hWndToolBar.Handle, 0x16D2);
@@ -231,10 +213,8 @@ namespace UITheme
 	}
 
 	// Returns a valid visual theme type, depending on the window class
-	ThemeType FIXAPI GetThemeTypeFromWindow(HWND hWindow)
-	{
-		static std::unordered_map<std::string_view, ThemeType, std::hash<std::string_view>, string_equal_to> TargetWindowThemes
-		{
+	ThemeType FIXAPI GetThemeTypeFromWindow(HWND hWindow) {
+		static std::unordered_map<std::string_view, ThemeType, std::hash<std::string_view>, string_equal_to> TargetWindowThemes {
 			{ STATUSCLASSNAMEA, ThemeType::StatusBar },
 			{ "mdiclient", ThemeType::MDIClient },
 			{ WC_STATICA, ThemeType::Static },
@@ -268,8 +248,7 @@ namespace UITheme
 
 	// Binds the specified class type to the visual theme. hWindow takes only HTHEME
 	// Returns TRUE if successful
-	BOOL FIXAPI RegisterThemeHandle(HWND hWindow, ThemeType eTheme)
-	{
+	BOOL FIXAPI RegisterThemeHandle(HWND hWindow, ThemeType eTheme) {
 		HTHEME windowTheme = GetWindowTheme(hWindow);
 		if (!windowTheme)
 			return FALSE;
@@ -279,13 +258,11 @@ namespace UITheme
 
 	// Binds the specified class type to the visual theme
 	// Returns TRUE if successful
-	BOOL FIXAPI RegisterThemeHandle(HTHEME hTheme, ThemeType eTheme)
-	{
+	BOOL FIXAPI RegisterThemeHandle(HTHEME hTheme, ThemeType eTheme) {
 		if (ThemeType::None == eTheme)
 			return FALSE;
 
-		for (auto it = ThemeHandles.begin(); it != ThemeHandles.end(); it++)
-		{
+		for (auto it = ThemeHandles.begin(); it != ThemeHandles.end(); it++) {
 			if ((*it).second == eTheme)
 				return FALSE;
 		}
@@ -298,15 +275,12 @@ namespace UITheme
 
 	LRESULT CALLBACK CallWndProcCallback(INT nCode, WPARAM wParam, LPARAM lParam)
 	{
-		if (nCode == HC_ACTION)
-		{
+		if (nCode == HC_ACTION) {
 			auto messageData = reinterpret_cast<CWPSTRUCT*>(lParam);
 
-			if (messageData->message == WM_CREATE)
-			{
+			if (messageData->message == WM_CREATE) {
 				LPCREATESTRUCTA lpCreateStruct = (LPCREATESTRUCTA)messageData->lParam;
-				if (lpCreateStruct)
-				{
+				if (lpCreateStruct) {
 #if THEME_DEBUG		
 					ofs << "WM_CREATE: " << std::endl
 						<< "cx: " << lpCreateStruct->cx << " "
@@ -331,10 +305,8 @@ namespace UITheme
 						<< "x: " << lpCreateStruct->x << " "
 						<< "y: " << lpCreateStruct->y << std::endl;
 #endif
-					if ((lpCreateStruct->hInstance) && (lpCreateStruct->hInstance != GetModuleHandleA("comdlg32.dll")))
-					{
-						if (WindowHandles.find(messageData->hwnd) == WindowHandles.end())
-						{
+					if ((lpCreateStruct->hInstance) && (lpCreateStruct->hInstance != GetModuleHandleA("comdlg32.dll"))) {
+						if (WindowHandles.find(messageData->hwnd) == WindowHandles.end()) {
 							SetWindowSubclass(messageData->hwnd, WindowSubclass, 0, reinterpret_cast<DWORD_PTR>(WindowSubclass));
 							WindowHandles.emplace(messageData->hwnd, FALSE);
 						}
@@ -342,16 +314,13 @@ namespace UITheme
 						
 				}
 			}
-			else if (messageData->message == WM_INITDIALOG)
-			{
+			else if (messageData->message == WM_INITDIALOG) {
 				auto wnd = WindowHandles.find(messageData->hwnd);
-				if (wnd == WindowHandles.end())
-				{
+				if (wnd == WindowHandles.end()) {
 					SetWindowSubclass(messageData->hwnd, DialogSubclass, 0, reinterpret_cast<DWORD_PTR>(DialogSubclass));
 					WindowHandles.emplace(messageData->hwnd, TRUE);
 				}
-				else
-				{
+				else {
 					RemoveWindowSubclass(messageData->hwnd, WindowSubclass, 0);
 					SetWindowSubclass(messageData->hwnd, DialogSubclass, 0, reinterpret_cast<DWORD_PTR>(DialogSubclass));
 					wnd->second = TRUE;
@@ -366,10 +335,8 @@ namespace UITheme
 	{
 		LRESULT result = WindowSubclass(hWnd, uMsg, wParam, lParam, uIdSubclass, dwRefData);
 
-		switch (uMsg)
-		{
-		case WM_PAINT:
-		{
+		switch (uMsg) {
+		case WM_PAINT: {
 			// Special override for DialogBoxIndirectParam (MessageBox) since the bottom half doesn't get themed correctly. ReactOS
 			// says this is MSGBOX_IDTEXT. Standard message boxes will have 3 buttons or less.
 			if (GetDlgItem(hWnd, 0xFFFF))
@@ -387,8 +354,7 @@ namespace UITheme
 						return TRUE;
 					}, reinterpret_cast<LPARAM>(&buttonCount));
 
-				if (buttonCount <= 3)
-				{
+				if (buttonCount <= 3) {
 					Classes::CUICustomWindow Window = hWnd;
 					Classes::CUICanvas Canvas(GetDC(hWnd));
 					Classes::CRECT windowArea(Window.ClientRect());
@@ -405,18 +371,15 @@ namespace UITheme
 	
 	LRESULT CALLBACK WindowSubclass(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData)
 	{
-		switch (uMsg)
-		{
-		case WM_CTLCOLOREDIT:
-		{
+		switch (uMsg) {
+		case WM_CTLCOLOREDIT: {
 			if (HDC hdc = reinterpret_cast<HDC>(wParam); hdc)
 				return Theme::EditText::OnCtlColorEdit(hdc);
 		}
 
 		case WM_CTLCOLORSTATIC:
 		case WM_CTLCOLORBTN:
-		case WM_CTLCOLORDLG:
-		{
+		case WM_CTLCOLORDLG: {
 			if (HDC hdc = reinterpret_cast<HDC>(wParam); hdc)
 			{
 				SetTextColor(hdc, Theme::GetThemeSysColor(Theme::ThemeColor_Text_3));
@@ -426,20 +389,14 @@ namespace UITheme
 			return reinterpret_cast<INT_PTR>(Theme::Comctl32GetSysColorBrush(COLOR_BTNFACE));
 		}
 
-		case WM_CTLCOLORLISTBOX:
-		{
+		case WM_CTLCOLORLISTBOX: {
 			if (HDC hdc = reinterpret_cast<HDC>(wParam); hdc)
 				return Theme::ListBox::OnCtlColorListBox(hWnd, hdc);
 		}
-		}
-		
-		switch (uMsg)
-		{
-		case WM_INITDIALOG:
-		case WM_CREATE:
-		{
-			DefSubclassProc(hWnd, uMsg, wParam, lParam);
 
+		case WM_INITDIALOG:
+		case WM_CREATE: {
+			DefSubclassProc(hWnd, uMsg, wParam, lParam);
 			// Theme settings are initialized after WM_CREATE is processed
 
 			HTHEME scrollBarTheme = NULL;
@@ -450,8 +407,7 @@ namespace UITheme
 			UINT uStylesEx = Window.StyleEx;
 			std::string className = Window.Name;
 
-			switch (themeType)
-			{
+			switch (themeType) {
 			case ThemeType::MDIClient:
 				Theme::MDIClient::Initialize(hWnd);
 				break;
@@ -473,10 +429,8 @@ namespace UITheme
 				break;
 			case ThemeType::Button:
 				if (((uStylesEx & WS_EX_CLIENTEDGE) == WS_EX_CLIENTEDGE) && ((uStylesEx & WS_EX_STATICEDGE) == WS_EX_STATICEDGE))
-				{
 					// IMAGE (DirectX window)
 					Theme::CustomBox::Initialize(hWnd, Theme::CustomBox::abColor);
-				}
 				break;
 			case ThemeType::Edit:
 				if (((uStyles & ES_MULTILINE) == ES_MULTILINE) && 
@@ -484,9 +438,9 @@ namespace UITheme
 					// this memo control
 					scrollBarTheme = Theme::Memo::Initialize(hWnd);
 				PostMessageA(hWnd, WM_SETFONT, (WPARAM)Theme::ThemeFont->Handle, TRUE);
+				PostMessageA(hWnd, WM_SYSCOLORCHANGE, 0, 0);
 				break;
-			case ThemeType::ListBox:
-				{
+			case ThemeType::ListBox: {
 				scrollBarTheme = Theme::ListBox::Initialize(hWnd);
 
 				LONG_PTR uID = GetWindowLongPtrA(hWnd, GWLP_ID);
@@ -516,8 +470,7 @@ namespace UITheme
 			case ThemeType::ProgressBar:
 				Theme::ProgressBar::Initialize(hWnd);
 				break;
-			case ThemeType::PopupMenu:
-				{
+			case ThemeType::PopupMenu: {
 					Classes::CUIMonitor Monitor = Classes::Screen.MonitorFromWindow(hWnd);
 					// Avoid the up and down arrows in PopupMenu
 					if (Monitor.WorkAreaRect.Height > 768)
@@ -529,13 +482,11 @@ namespace UITheme
 				break;
 			default:
 				// fix slowdown render window... exclude from subclassing
-				if ((ThemeType::Static == themeType) && ((uStyles & SS_BLACKRECT) == SS_BLACKRECT) && (GetWindowLongPtrA(hWnd, GWLP_ID) == 0xA3B))
-				{
+				if ((ThemeType::Static == themeType) && ((uStyles & SS_BLACKRECT) == SS_BLACKRECT) && (GetWindowLongPtrA(hWnd, GWLP_ID) == 0xA3B)) {
 					RemoveWindowSubclass(hWnd, WindowSubclass, 0);
 					break;
 				}
-				else if ((uStyles & SS_SUNKEN) == SS_SUNKEN)
-				{
+				else if ((uStyles & SS_SUNKEN) == SS_SUNKEN) {
 					// 1. Label with frame
 					// 2. ColorBox (and DialogColor)
 					// 3. Edit (Disabled) (don't understand)	--- SS_EDITCONTROL
@@ -544,8 +495,7 @@ namespace UITheme
 					if ((uStyles & SS_BLACKFRAME) == SS_BLACKFRAME)
 						// CK deprecated control (Icon)
 						Theme::CustomBox::Initialize(hWnd, Theme::CustomBox::abNormal);
-					else
-					{
+					else {
 						// skip edit control 
 						if (((uStyles & SS_EDITCONTROL) == SS_EDITCONTROL) || ((uStyles & ES_AUTOHSCROLL) == ES_AUTOHSCROLL) ||
 							((uStyles & ES_AUTOVSCROLL) == ES_AUTOVSCROLL))
@@ -558,19 +508,13 @@ namespace UITheme
 
 					break;
 				}
-				else if (((uStyles & SS_CENTERIMAGE) == SS_CENTERIMAGE) && ((uStylesEx & WS_EX_CLIENTEDGE) == WS_EX_CLIENTEDGE))
-				{
+				else if (((uStyles & SS_CENTERIMAGE) == SS_CENTERIMAGE) && ((uStylesEx & WS_EX_CLIENTEDGE) == WS_EX_CLIENTEDGE)) 
 					// CK deprecated control (material count)
 					Theme::CustomBox::Initialize(hWnd, Theme::CustomBox::abNormal);
-				}
 				else if ((ThemeType::Static == themeType) && (((uStylesEx & WS_EX_CLIENTEDGE) == WS_EX_CLIENTEDGE) || ((uStylesEx & WS_EX_STATICEDGE) == WS_EX_STATICEDGE)))
-				{
 					Theme::CustomBox::Initialize(hWnd, Theme::CustomBox::abNormal);
-				}
-				else if (((uStyles & WS_CAPTION) == WS_CAPTION) && ((uStyles & WS_CHILD) != WS_CHILD))
-				{
-					if ((uStyles & WS_SYSMENU) == WS_SYSMENU)
-					{
+				else if (((uStyles & WS_CAPTION) == WS_CAPTION) && ((uStyles & WS_CHILD) != WS_CHILD)) {
+					if ((uStyles & WS_SYSMENU) == WS_SYSMENU) {
 						SetClassLongPtrA(hWnd, GCLP_HICON, (LONG)LoadIconA((HINSTANCE)g_ModuleBase, MAKEINTRESOURCEA(318)));
 						SetClassLongPtrA(hWnd, GCLP_HICONSM, (LONG)LoadIconA((HINSTANCE)g_ModuleBase, MAKEINTRESOURCEA(318)));
 					}
@@ -588,8 +532,7 @@ namespace UITheme
 		}
 		return S_OK;
 
-		case WM_INITMENUPOPUP:
-		{
+		case WM_INITMENUPOPUP: {
 			Classes::CUIMonitor Monitor = Classes::Screen.MonitorFromWindow(hWnd);
 			// Avoid the up and down arrows in PopupMenu
 			if (Monitor.WorkAreaRect.Height > 768)
@@ -602,8 +545,7 @@ namespace UITheme
 		}
 		break;
 
-		case WM_MEASUREITEM:
-		{
+		case WM_MEASUREITEM: {
 			LPMEASUREITEMSTRUCT lpmis = (LPMEASUREITEMSTRUCT)lParam;
 
 			if (lpmis->CtlType == ODT_MENU)
@@ -618,8 +560,7 @@ namespace UITheme
 		
 		// WHAT? They use this message to render the preview
 		// Fixed
-		case WM_DRAWITEM:
-		{
+		case WM_DRAWITEM: {
 			LPDRAWITEMSTRUCT lpdis = (LPDRAWITEMSTRUCT)lParam;
 
 			if (lpdis->CtlType == ODT_MENU)
@@ -632,25 +573,21 @@ namespace UITheme
 		}
 		break;
 
-		case WM_DESTROY:
-		{
+		case WM_DESTROY: {
 			auto it = WindowHandles.find(hWnd);
 			if (it != WindowHandles.end())
 				WindowHandles.unsafe_erase(it);
 		}
 		break;
 
-		case WM_NOTIFY:
-		{
+		case WM_NOTIFY: {
 			LPNMHDR nmhdr = (LPNMHDR)lParam;
 
 			// Custom drawing (ToolBar)
-			if (nmhdr->code == NM_CUSTOMDRAW)
-			{
+			if (nmhdr->code == NM_CUSTOMDRAW) {
 				auto themeType = GetThemeTypeFromWindow(nmhdr->hwndFrom);
 
-				switch (themeType)
-				{
+				switch (themeType) {
 				case UITheme::ThemeType::ListView:
 					return Theme::ListView::OnCustomDraw(hWnd, (LPNMLVCUSTOMDRAW)lParam);
 				case UITheme::ThemeType::ToolBar:
@@ -665,24 +602,20 @@ namespace UITheme
 		return DefSubclassProc(hWnd, uMsg, wParam, lParam);
 	}
 
-	DWORD FIXAPI Comctl32GetSysColor(INT nIndex)
-	{
+	DWORD FIXAPI Comctl32GetSysColor(INT nIndex) {
 		return Theme::Comctl32GetSysColor(nIndex);
 	}
 
-	HBRUSH FIXAPI Comctl32GetSysColorBrush(INT nIndex)
-	{
+	HBRUSH FIXAPI Comctl32GetSysColorBrush(INT nIndex) {
 		return Theme::Comctl32GetSysColorBrush(nIndex);
 	}
 
-	HRESULT FIXAPI Comctl32DrawThemeText(HTHEME hTheme, HDC hdc, INT iPartId, INT iStateId, LPCWSTR pszText, INT cchText, DWORD dwTextFlags, DWORD dwTextFlags2, LPCRECT pRect)
-	{
+	HRESULT FIXAPI Comctl32DrawThemeText(HTHEME hTheme, HDC hdc, INT iPartId, INT iStateId, LPCWSTR pszText, INT cchText, DWORD dwTextFlags, DWORD dwTextFlags2, LPCRECT pRect) {
 		Classes::CUICanvas Canvas(hdc);
 		Canvas.TransparentMode = TRUE;
 		Canvas.Font.Assign(*Theme::ThemeFont);
 
-		if ((Theme::GetTheme() == Theme::Theme_Dark) || (Theme::GetTheme() == Theme::Theme_DarkGray))
-		{
+		if ((Theme::GetTheme() == Theme::Theme_Dark) || (Theme::GetTheme() == Theme::Theme_DarkGray)) {
 			// detected standart OS theme (comdlg32)
 			COLORREF clTest = GetPixel(hdc, pRect->left + ((pRect->right - pRect->left) >> 1), pRect->top + 2);
 			if (CLR_INVALID != clTest && ((GetRValue(clTest) + GetGValue(clTest) + GetBValue(clTest)) / 3) > 128)
@@ -695,8 +628,7 @@ namespace UITheme
 
 		RECT rc = *pRect;
 
-		switch (themeType)
-		{
+		switch (themeType) {
 		case ThemeType::StatusBar:
 			Theme::StatusBar::Event::OnBeforeDrawText(Canvas, dwTextFlags);
 			break;
@@ -726,9 +658,7 @@ namespace UITheme
 			}
 			break;		
 		case ThemeType::ComboBox:
-			{
-				Theme::ComboBox::Event::OnBeforeDrawText(Canvas, dwTextFlags, iStateId);
-			}
+			Theme::ComboBox::Event::OnBeforeDrawText(Canvas, dwTextFlags, iStateId);
 			break;
 		default:
 			Canvas.ColorText = Theme::GetThemeSysColor(Theme::ThemeColor_Text_4);
@@ -741,8 +671,7 @@ namespace UITheme
 		return S_OK;
 	}
 
-	HRESULT FIXAPI Comctl32DrawThemeBackground(HTHEME hTheme, HDC hdc, INT iPartId, INT iStateId, LPCRECT pRect, LPCRECT pClipRect)
-	{
+	HRESULT FIXAPI Comctl32DrawThemeBackground(HTHEME hTheme, HDC hdc, INT iPartId, INT iStateId, LPCRECT pRect, LPCRECT pClipRect) {
 		auto themeType = ThemeType::None;
 
 		if (auto itr = ThemeHandles.find(hTheme); itr != ThemeHandles.end())
@@ -750,10 +679,8 @@ namespace UITheme
 
 		Classes::CUICanvas Canvas(hdc);
 
-		if (themeType == ThemeType::ScrollBar)
-		{
-			switch (iPartId)
-			{
+		if (themeType == ThemeType::ScrollBar) {
+			switch (iPartId) {
 			case SBP_THUMBBTNHORZ:	// Horizontal drag bar
 			{
 				if (iStateId == SCRBS_HOT || iStateId == SCRBS_PRESSED)
@@ -773,16 +700,12 @@ namespace UITheme
 
 			case SBP_LOWERTRACKHORZ:// Horizontal background
 			case SBP_UPPERTRACKHORZ:// Horizontal background
-			{
 				Theme::ScrollBar::Render::DrawBackgroundHorz(Canvas, pRect);
-			}
 			return S_OK;
 
 			case SBP_LOWERTRACKVERT:// Vertical background
 			case SBP_UPPERTRACKVERT:// Vertical background
-			{
 				Theme::ScrollBar::Render::DrawBackgroundVert(Canvas, pRect);
-			}
 			return S_OK;
 
 			case SBP_ARROWBTN:		// Arrow button
@@ -874,20 +797,17 @@ namespace UITheme
 					}
 				}
 
-				if (isHot)
-				{
+				if (isHot) {
 					Theme::ScrollBar::Render::DrawButton_Hot(Canvas, pRect);
 
 					Canvas.Pen.Color = Theme::GetThemeSysColor(Theme::ThemeColor_Shape);
 				}
-				else if (isDisabled)
-				{
+				else if (isDisabled) {
 					Theme::ScrollBar::Render::DrawButton_Disabled(Canvas, pRect);
 
 					Canvas.Pen.Color = Theme::GetThemeSysColor(Theme::ThemeColor_Shape_Disabled);
 				}
-				else
-				{
+				else {
 					if (isHorz)
 						Theme::ScrollBar::Render::DrawBackgroundHorz(Canvas, pRect);
 					else
@@ -926,35 +846,25 @@ namespace UITheme
 				return S_OK;
 			}
 		}
-		else if (themeType == ThemeType::StatusBar)
-		{
-			switch (iPartId)
-			{
+		else if (themeType == ThemeType::StatusBar) {
+			switch (iPartId) {
 			case 0:
-			{
 				// Outside border (top, right)
 				Theme::StatusBar::Render::DrawBorder(Canvas, pRect);
-			}
 			return S_OK;
 
 			case SP_PANE:
 			case SP_GRIPPERPANE:
 			case SP_GRIPPER:
-			{
 				// Everything else
 				Theme::StatusBar::Render::DrawBackground(Canvas, pRect);
-			}
 			return S_OK;
 			}
 		}
-		else if (themeType == ThemeType::Spin)
-		{
-			switch (iPartId)
-			{
-				case SPNP_UP:
-				{
-					switch (iStateId)
-					{
+		else if (themeType == ThemeType::Spin) {
+			switch (iPartId) {
+				case SPNP_UP: {
+					switch (iStateId) {
 					case DNS_HOT:
 						Theme::UpDown::Render::DrawUp_Hot(Canvas, pRect);
 						break;
@@ -971,10 +881,8 @@ namespace UITheme
 				}
 				return S_OK;
 
-				case SPNP_DOWN:
-				{
-					switch (iStateId)
-					{
+				case SPNP_DOWN: {
+					switch (iStateId) {
 					case UPS_HOT:
 						Theme::UpDown::Render::DrawDown_Hot(Canvas, pRect);
 						break;
@@ -991,10 +899,8 @@ namespace UITheme
 				}
 				return S_OK;
 				
-				case SPNP_UPHORZ:
-				{
-					switch (iStateId)
-					{
+				case SPNP_UPHORZ: {
+					switch (iStateId) {
 					case UPHZS_HOT:
 						Theme::UpDown::Render::DrawRight_Hot(Canvas, pRect);
 						break;
@@ -1011,10 +917,8 @@ namespace UITheme
 				}
 				return S_OK;
 
-				case SPNP_DOWNHORZ:
-				{
-					switch (iStateId)
-					{
+				case SPNP_DOWNHORZ: {
+					switch (iStateId) {
 					case DNHZS_HOT:
 						Theme::UpDown::Render::DrawLeft_Hot(Canvas, pRect);
 						break;
@@ -1032,14 +936,10 @@ namespace UITheme
 				return S_OK;
 			}
 		}
-		else if (themeType == ThemeType::Edit)
-		{
-			switch (iPartId)
-			{
-			case EP_EDITBORDER_NOSCROLL:
-			{
-				switch (iStateId)
-				{
+		else if (themeType == ThemeType::Edit) {
+			switch (iPartId) {
+			case EP_EDITBORDER_NOSCROLL: {
+				switch (iStateId) {
 				case ETS_DISABLED:
 					Theme::EditText::Render::DrawEditText_Disabled(Canvas, pRect);
 					break;
@@ -1057,10 +957,8 @@ namespace UITheme
 			}
 			return S_OK;
 
-			case EP_EDITBORDER_VSCROLL:
-			{
-				switch (iStateId)
-				{
+			case EP_EDITBORDER_VSCROLL: {
+				switch (iStateId) {
 				case EPSV_DISABLED:
 					Theme::EditText::Render::DrawEditText_Disabled(Canvas, pRect);
 					break;
@@ -1077,10 +975,8 @@ namespace UITheme
 			}
 			return S_OK;
 
-			case EP_EDITBORDER_HSCROLL:
-			{
-				switch (iStateId)
-				{
+			case EP_EDITBORDER_HSCROLL: {
+				switch (iStateId) {
 				case EPSH_DISABLED:
 					Theme::EditText::Render::DrawEditText_Disabled(Canvas, pRect);
 					break;
@@ -1097,10 +993,8 @@ namespace UITheme
 			}
 			return S_OK;
 
-			case EP_EDITBORDER_HVSCROLL:
-			{
-				switch (iStateId)
-				{
+			case EP_EDITBORDER_HVSCROLL: {
+				switch (iStateId) {
 				case EPSHV_DISABLED:
 					Theme::EditText::Render::DrawEditText_Disabled(Canvas, pRect);
 					break;
@@ -1118,35 +1012,24 @@ namespace UITheme
 			return S_OK;
 			}
 		}
-		else if (themeType == ThemeType::ProgressBar)
-		{
-			switch (iPartId)
-			{
+		else if (themeType == ThemeType::ProgressBar) {
+			switch (iPartId) {
 			case PP_BAR:
 			case PP_TRANSPARENTBAR:
-			{
 				Theme::ProgressBar::Render::DrawBar(Canvas, pRect);
-			}
 			return S_OK;
-
 			case PP_FILL:
-			{
 				Theme::ProgressBar::Render::DrawFill(Canvas, pRect);
-			}
 			return S_OK;
 			}
 
 			// skip other
 			return S_OK;
 		}
-		else if (themeType == ThemeType::Button)
-		{
-			switch (iPartId)
-			{
-			case BP_PUSHBUTTON:
-			{
-				switch (iStateId)
-				{
+		else if (themeType == ThemeType::Button) {
+			switch (iPartId) {
+			case BP_PUSHBUTTON: {
+				switch (iStateId) {
 				case PBS_HOT:
 					Theme::PushButton::Render::DrawPushButton_Hot(Canvas, pRect);
 					break;
@@ -1163,10 +1046,8 @@ namespace UITheme
 			}
 			return S_OK;
 
-			case BP_GROUPBOX:
-			{
-				switch (iStateId)
-				{
+			case BP_GROUPBOX: {
+				switch (iStateId) {
 				case GBS_DISABLED:
 					Theme::GroupBox::Render::DrawGroupBox_Disabled(Canvas, pRect);
 					break;
@@ -1177,10 +1058,8 @@ namespace UITheme
 			}
 			return S_OK;
 
-			case BP_CHECKBOX:
-			{
-				switch (iStateId)
-				{
+			case BP_CHECKBOX: {
+				switch (iStateId) {
 				case CBS_UNCHECKEDDISABLED:
 					Theme::PushButton::Render::DrawPushButton_Disabled(Canvas, pRect);
 					break;
@@ -1231,10 +1110,8 @@ namespace UITheme
 			}
 			return S_OK;
 
-			case BP_RADIOBUTTON:
-			{
-				switch (iStateId)
-				{
+			case BP_RADIOBUTTON: {
+				switch (iStateId) {
 				case RBS_UNCHECKEDDISABLED:
 					Theme::RadioButton::Render::DrawPushButtonR_Disabled(Canvas, pRect);
 					break;
@@ -1271,25 +1148,19 @@ namespace UITheme
 
 			}
 		}
-		else if (themeType == ThemeType::TrackBar)
-		{
-			switch (iPartId)
-			{
+		else if (themeType == ThemeType::TrackBar) {
+			switch (iPartId) {
 			case TKP_TRACK:
 			case TKP_TRACKVERT:
-			{
 				Theme::TrackBar::Render::DrawTrack(Canvas, pRect);
-			}
 			return S_OK;
 			case TKP_THUMB:
 			case TKP_THUMBVERT:
 			case TKP_THUMBBOTTOM:
 			case TKP_THUMBTOP:
 			case TKP_THUMBLEFT:
-			case TKP_THUMBRIGHT:
-			{
-				switch (iStateId)
-				{
+			case TKP_THUMBRIGHT: {
+				switch (iStateId) {
 				case TUS_HOT:
 					Theme::TrackBar::Render::DrawSlider_Hot(Canvas, pRect);
 					break;
@@ -1311,14 +1182,11 @@ namespace UITheme
 
 			return S_OK;
 		}
-		else if (themeType == ThemeType::ComboBox)
-		{
-			switch (iPartId)
-			{
+		else if (themeType == ThemeType::ComboBox) {
+			switch (iPartId) {
 			case CP_READONLY:			// Main control
 			{
-				switch (iStateId)
-				{
+				switch (iStateId) {
 				case CBRO_HOT:
 					Theme::PushButton::Render::DrawPushButton_Hot(Canvas, pRect);
 					break;
@@ -1376,15 +1244,12 @@ namespace UITheme
 				return S_OK;
 			}
 		}
-		else if (themeType == ThemeType::Header)
-		{
-			switch (iPartId)
-			{
+		else if (themeType == ThemeType::Header) {
+			switch (iPartId) {
 			case 0:
 			case HP_HEADERITEM:
 			case HP_HEADERITEMLEFT:
-			case HP_HEADERITEMRIGHT:
-			{
+			case HP_HEADERITEMRIGHT: {
 				if ((iPartId == 0 && iStateId == HIS_NORMAL) ||
 					(iPartId == HP_HEADERITEM && iStateId == HIS_NORMAL) ||
 					(iPartId == HP_HEADERITEMLEFT && iStateId == HILS_NORMAL) ||
@@ -1416,11 +1281,8 @@ namespace UITheme
 
 			}
 		}
-		else if (themeType == ThemeType::TabControl)
-		{
-			switch (iPartId)
-			{
-
+		else if (themeType == ThemeType::TabControl) {
+			switch (iPartId) {
 			case TABP_PANE:
 				Theme::PageControl::Render::DrawBorder(Canvas, pRect);
 				break;
@@ -1489,3 +1351,5 @@ namespace UITheme
 		return DrawThemeBackground(hTheme, hdc, iPartId, iStateId, pRect, pClipRect);
 	}
 }
+
+#pragma warning (default : 26819; default : 26812; default : 26454)

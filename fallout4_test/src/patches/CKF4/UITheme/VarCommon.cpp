@@ -300,6 +300,8 @@ namespace Core
 			HBRUSH hThemeDividerBrush = NULL;
 			HBRUSH hThemeText4Brush = NULL;
 			HBRUSH hThemeBorderWindowBrush = NULL;
+			HBRUSH hThemeHighlightBrush = NULL;
+			HBRUSH hThemeHighlightTextBrush = NULL;
 			COLORREF* szCurrentScheme = NULL;
 
 			static Theme generalCurentTheme = Theme_Dark;
@@ -335,6 +337,8 @@ namespace Core
 				DeleteObject(hThemeDividerBrush);
 				DeleteObject(hThemeText4Brush);
 				DeleteObject(hThemeBorderWindowBrush);
+				DeleteObject(hThemeHighlightBrush);
+				DeleteObject(hThemeHighlightTextBrush);
 
 				hThemeDefaultBrush = CreateSolidBrush(GetThemeSysColor(ThemeColor_Default));
 				hThemeText3Brush = CreateSolidBrush(GetThemeSysColor(ThemeColor_Text_3));
@@ -342,6 +346,8 @@ namespace Core
 				hThemeDividerBrush = CreateSolidBrush(GetThemeSysColor(ThemeColor_Divider_Color));
 				hThemeText4Brush = CreateSolidBrush(GetThemeSysColor(ThemeColor_Text_4));
 				hThemeBorderWindowBrush = CreateSolidBrush(GetThemeSysColor(ThemeColor_Border_Window));
+				hThemeHighlightBrush = CreateSolidBrush(GetThemeSysColor(ThemeColor_Border_Window));
+				hThemeHighlightTextBrush = CreateSolidBrush(GetThemeSysColor(ThemeColor_StatusBar_Text));
 			}
 
 			COLORREF FIXAPI GetThemeSysColor(const ThemeColor color)
@@ -363,6 +369,8 @@ namespace Core
 				case COLOR_WINDOWTEXT: return GetThemeSysColor(ThemeColor_Text_4);
 				case COLOR_ACTIVEBORDER: return GetThemeSysColor(ThemeColor_Border_Window);
 				case COLOR_INACTIVEBORDER: return GetThemeSysColor(ThemeColor_Divider_Color);
+				case COLOR_HIGHLIGHT: return GetThemeSysColor(ThemeColor_Border_Window);
+				case COLOR_HIGHLIGHTTEXT: return GetThemeSysColor(ThemeColor_StatusBar_Text);
 				default:
 					return ::GetSysColor(nIndex);
 				}
@@ -386,6 +394,8 @@ namespace Core
 				case COLOR_WINDOWTEXT: return hThemeText4Brush;
 				case COLOR_ACTIVEBORDER: return hThemeBorderWindowBrush;
 				case COLOR_INACTIVEBORDER: return hThemeDividerBrush;
+				case COLOR_HIGHLIGHT: return hThemeHighlightBrush;
+				case COLOR_HIGHLIGHTTEXT: return hThemeHighlightTextBrush;
 				default:
 					return ::GetSysColorBrush(nIndex);
 				}
