@@ -51,7 +51,6 @@ public:
 	READ_PROPERTY(GetArchiveFiles) TESFileListPtr_CK ArchiveFiles;
 	READ_PROPERTY(GetSelectedFiles) TESFileArray_CK* SelectedFiles;
 	READ_PROPERTY(GetActiveFile) TESFile_CK* ActiveFile;
-	READ_PROPERTY(GetActiveFile) TESFile_CK* ActiveFile;
 };
 
 extern TESDataFileHandler_CK* FileHandler;

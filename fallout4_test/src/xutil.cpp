@@ -182,6 +182,29 @@ size_t XUtil::Str::findCaseInsensitive(std::string data, std::string toSearch, s
 	return data.find(toSearch, pos);
 }
 
+void XUtil::Str::replaceAll(std::string& source, const std::string& from, const std::string& to)
+{
+	// https://stackoverflow.com/questions/2896600/how-to-replace-all-occurrences-of-a-character-in-string
+
+	std::string newString;
+	newString.reserve(source.length());  // avoids a few memory allocations
+
+	std::string::size_type lastPos = 0;
+	std::string::size_type findPos;
+
+	while (std::string::npos != (findPos = source.find(from, lastPos)))
+	{
+		newString.append(source, lastPos, findPos - lastPos);
+		newString += to;
+		lastPos = findPos + from.length();
+	}
+
+	// Care for the rest after last occurrence
+	newString += source.substr(lastPos);
+
+	source.swap(newString);
+}
+
 std::string XUtil::Str::format(const char* fmt, ...)
 {
 	va_list va;

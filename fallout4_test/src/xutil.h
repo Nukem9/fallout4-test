@@ -243,6 +243,8 @@ namespace XUtil
 			std::string str(s);
 			return trim(str);
 		}
+
+		void replaceAll(std::string& source, const std::string& from, const std::string& to);
 	}
 
 	void SetThreadName(uint32_t ThreadID, const char *ThreadName);

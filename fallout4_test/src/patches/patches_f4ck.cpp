@@ -720,6 +720,15 @@ VOID FIXAPI MainFix_PatchFallout4CreationKit(VOID)
 		XUtil::PatchMemory(OFFSET(0xD36C0, 0), { 0xC3 });
 	}
 
+	if (DWORD autosavetimeout = g_INI->GetInteger("CreationKit", "AutosavePluginTimeout", 0); autosavetimeout) {
+		XUtil::PatchMemory(OFFSET(0x5FC156, 0), { 0x41, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x90 });	// every N min
+		XUtil::PatchMemory(OFFSET(0x5FC158, 0), (uint8_t*)&autosavetimeout, sizeof(DWORD));		// ^
+		XUtil::PatchMemory(OFFSET(0x5FC0DD, 0), { 0x03 });										// 4 part statusbar
+		XUtil::PatchMemory(OFFSET(0x5FC12A, 0), { 0x03 });										// ^
+		XUtil::PatchMemory(OFFSET(0x5FC036, 0), { 0xEB, 0x53 });								// skip GetActiveWindow
+		XUtil::DetourCall(OFFSET(0x7E1F51, 0), &hk_vsprintf_autosave);							// generate filename
+	}
+
 	F_FaceGenPatches();
 	F_UIPatches();
 	F_UnicodePatches();

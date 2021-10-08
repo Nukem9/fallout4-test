@@ -308,7 +308,7 @@ namespace LogWindow
 			format.wWeight = (WORD)g_INI->GetInteger("CreationKit_Log", "FontWeight", FW_NORMAL);
 			strcpy_s(format.szFaceName, g_INI->Get("CreationKit_Log", "Font", "Consolas").c_str());
 
-			SendMessageA(richEditHwnd, EM_SETCHARFORMAT, SCF_ALL, (LPARAM)& format);
+			SendMessageA(richEditHwnd, EM_SETCHARFORMAT, SCF_ALL, (LPARAM)&format);
 
 			// Subscribe to EN_MSGFILTER and EN_SELCHANGE
 			SendMessageA(richEditHwnd, EM_SETEVENTMASK, 0, ENM_MOUSEEVENTS | ENM_SELCHANGE);

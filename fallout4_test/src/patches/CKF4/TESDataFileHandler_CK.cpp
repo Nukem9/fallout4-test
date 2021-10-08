@@ -168,7 +168,7 @@ TESDataFileHandler_CK::TESFileArray_CK* TESDataFileHandler_CK::GetSelectedFiles(
 }
 
 TESFile_CK* TESDataFileHandler_CK::GetActiveFile(void) const {
-	return (TESFile_CK*)(((char*)this) + 0xFA8);
+	return *(TESFile_CK**)(((char*)this) + 0xFA8);
 }
 
 bool TESDataFileHandler_CK::IsActiveFile(void) const {

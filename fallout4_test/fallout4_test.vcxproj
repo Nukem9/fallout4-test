@@ -129,6 +129,7 @@
       <AdditionalLibraryDirectories>..\x64\Release-MT;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <StackReserveSize>32768</StackReserveSize>
       <AdditionalDependencies>comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <StackCommitSize>32768</StackCommitSize>
     </Link>
     <PreBuildEvent>
       <Command>powershell -ExecutionPolicy Bypass -File "$(SolutionDir)release.ps1" 4</Command>

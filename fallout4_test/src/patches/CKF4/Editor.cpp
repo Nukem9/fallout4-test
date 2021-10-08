@@ -27,6 +27,7 @@
 #include <filesystem>
 
 #include "TESCellViewScene_CK.h"
+#include "TESDataFileHandler_CK.h"
 #include "Editor.h"
 #include "EditorUI.h"
 #include "LogWindow.h"
@@ -36,6 +37,8 @@
 
 BOOL bFogToggle = TRUE;
 BOOL bAllowPoolMessage = FALSE;
+
+#pragma warning(disable : 26819; disable : 6387; disable : 6001)
 
 // clang-format off
 struct
@@ -104,8 +107,7 @@ struct
 	{ "Messages",		"bTopMostWarnings",						"0"	},
 };
 
-struct DialogOverrideData
-{
+struct DialogOverrideData {
 	DLGPROC DialogFunc;	// Original function pointer
 	BOOL IsDialog;		// True if it requires EndDialog()
 };
@@ -114,8 +116,7 @@ std::recursive_mutex g_DialogMutex;
 std::unordered_map<HWND, DialogOverrideData> g_DialogOverrides;
 thread_local DialogOverrideData DlgData;
 
-BOOL FIXAPI OpenPluginSaveDialog(HWND ParentWindow, LPCSTR BasePath, BOOL IsESM, LPSTR Buffer, uint32_t BufferSize, LPCSTR Directory)
-{
+BOOL FIXAPI OpenPluginSaveDialog(HWND ParentWindow, LPCSTR BasePath, BOOL IsESM, LPSTR Buffer, uint32_t BufferSize, LPCSTR Directory) {
 	if (!BasePath)
 		BasePath = "\\Data";
 
@@ -123,8 +124,7 @@ BOOL FIXAPI OpenPluginSaveDialog(HWND ParentWindow, LPCSTR BasePath, BOOL IsESM,
 	LPCSTR title = "Select Target Plugin";
 	LPCSTR extension = "esp";
 
-	if (IsESM)
-	{
+	if (IsESM) {
 		filter = "TES Master Files (*.esm)\0*.esm\0\0";
 		title = "Select Target Master";
 		extension = "esm";
@@ -153,18 +153,15 @@ end_func:
 	return result;
 }
 
-INT_PTR CALLBACK DialogFuncOverride(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
+INT_PTR CALLBACK DialogFuncOverride(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	DLGPROC proc = NULL;
 
-	g_DialogMutex.lock();
-	{
+	g_DialogMutex.lock(); {
 		if (auto itr = g_DialogOverrides.find(hwndDlg); itr != g_DialogOverrides.end())
 			proc = itr->second.DialogFunc;
 
 		// if (is new entry)
-		if (!proc)
-		{
+		if (!proc) {
 			g_DialogOverrides[hwndDlg] = DlgData;
 			proc = DlgData.DialogFunc;
 
@@ -173,12 +170,9 @@ INT_PTR CALLBACK DialogFuncOverride(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPAR
 		}
 
 		// Purge old entries every now and then
-		if (g_DialogOverrides.size() >= 50)
-		{
-			for (auto itr = g_DialogOverrides.begin(); itr != g_DialogOverrides.end();)
-			{
-				if (itr->first == hwndDlg || IsWindow(itr->first))
-				{
+		if (g_DialogOverrides.size() >= 50) {
+			for (auto itr = g_DialogOverrides.begin(); itr != g_DialogOverrides.end();) {
+				if (itr->first == hwndDlg || IsWindow(itr->first)) {
 					itr++;
 					continue;
 				}
@@ -192,12 +186,9 @@ INT_PTR CALLBACK DialogFuncOverride(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPAR
 	return proc(hwndDlg, uMsg, wParam, lParam);
 }
 
-INT_PTR CALLBACK DialogFuncAbout(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-	switch (uMsg)
-	{
-	case WM_INITDIALOG:
-	{
+INT_PTR CALLBACK DialogFuncAbout(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+	switch (uMsg) {
+	case WM_INITDIALOG: {
 		Core::Classes::UI::CUIMonitor monitor = Core::Classes::UI::Screen.MonitorFromWindow(hwndDlg);
 		Core::Classes::UI::CRECT wa = monitor.WorkAreaRect;
 
@@ -205,10 +196,8 @@ INT_PTR CALLBACK DialogFuncAbout(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM 
 		ShowWindow(hwndDlg, SW_SHOW);
 		return (INT_PTR)TRUE;
 	}
-	case WM_ACTIVATE:
-	{
-		if (LOWORD(wParam) == WA_INACTIVE)
-		{
+	case WM_ACTIVATE: {
+		if (LOWORD(wParam) == WA_INACTIVE) {
 			hk_EndDialog(hwndDlg, 1);
 			return (INT_PTR)TRUE;
 		}
@@ -232,8 +221,7 @@ HWND WINAPI hk_CreateDialogParamA(HINSTANCE hInstance, LPCSTR lpTemplateName, HW
 	if (!g_UIEnabled)
 		goto skip_hk_CreateDialogParamA;
 
-	switch (m_lpTemplateName)
-	{
+	switch (m_lpTemplateName) {
 	// Override certain default dialogs to use this DLL's resources
 	case 100:
 		m_lpTemplateName = 235;
@@ -259,12 +247,10 @@ HWND WINAPI hk_CreateDialogParamA(HINSTANCE hInstance, LPCSTR lpTemplateName, HW
 		break;
 	}
 	
-	if ((g_i8DialogMode > 0) && g_DialogManager)
-	{
+	if ((g_i8DialogMode > 0) && g_DialogManager) {
 		Core::Classes::UI::jDialog* dialog = NULL;
 
-		switch (g_i8DialogMode)
-		{
+		switch (g_i8DialogMode) {
 		case 1:
 			dialog = g_DialogManager->GetDialog((ULONG)m_lpTemplateName, Core::Classes::UI::jdt8pt);
 			break;
@@ -298,8 +284,7 @@ INT_PTR WINAPI hk_DialogBoxParamA(HINSTANCE hInstance, LPCSTR lpTemplateName, HW
 	if (!g_UIEnabled)
 		goto skip_hk_DialogBoxParamA;
 
-	switch (m_lpTemplateName)
-	{
+	switch (m_lpTemplateName) {
 		// Override certain default dialogs to use this DLL's resources
 	case 100:
 		m_lpTemplateName = 235;
@@ -325,12 +310,10 @@ INT_PTR WINAPI hk_DialogBoxParamA(HINSTANCE hInstance, LPCSTR lpTemplateName, HW
 		break;
 	}
 
-	if ((g_i8DialogMode > 0) && g_DialogManager)
-	{
+	if ((g_i8DialogMode > 0) && g_DialogManager) {
 		Core::Classes::UI::jDialog* dialog = NULL;
 
-		switch (g_i8DialogMode)
-		{
+		switch (g_i8DialogMode) {
 		case 1:
 			dialog = g_DialogManager->GetDialog((ULONG)m_lpTemplateName, Core::Classes::UI::jdt8pt);
 			break;
@@ -350,13 +333,11 @@ skip_hk_DialogBoxParamA:
 	return DialogBoxParamA(hInstance, (LPCSTR)m_lpTemplateName, hWndParent, DialogFuncOverride, dwInitParam);
 }
 
-BOOL WINAPI hk_EndDialog(HWND hDlg, INT_PTR nResult)
-{
+BOOL WINAPI hk_EndDialog(HWND hDlg, INT_PTR nResult) {
 	std::lock_guard lock(g_DialogMutex);
 
 	// Fix for the CK calling EndDialog on a CreateDialogParamA window
-	if (auto itr = g_DialogOverrides.find(hDlg); itr != g_DialogOverrides.end() && !itr->second.IsDialog)
-	{
+	if (auto itr = g_DialogOverrides.find(hDlg); itr != g_DialogOverrides.end() && !itr->second.IsDialog) {
 		DestroyWindow(hDlg);
 		return TRUE;
 	}
@@ -364,15 +345,12 @@ BOOL WINAPI hk_EndDialog(HWND hDlg, INT_PTR nResult)
 	return EndDialog(hDlg, nResult);
 }
 
-LRESULT WINAPI hk_SendMessageA(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
-{
-	if (hWnd && Msg == WM_DESTROY)
-	{
+LRESULT WINAPI hk_SendMessageA(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) {
+	if (hWnd && Msg == WM_DESTROY) {
 		std::lock_guard lock(g_DialogMutex);
 
 		// If this is a dialog, we can't call DestroyWindow on it
-		if (auto itr = g_DialogOverrides.find(hWnd); itr != g_DialogOverrides.end())
-		{
+		if (auto itr = g_DialogOverrides.find(hWnd); itr != g_DialogOverrides.end()) {
 			if (!itr->second.IsDialog)
 				DestroyWindow(hWnd);
 		}
@@ -383,24 +361,21 @@ LRESULT WINAPI hk_SendMessageA(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
 	return SendMessageA(hWnd, Msg, wParam, lParam);
 }
 
-VOID FIXAPI UpdateObjectWindowTreeView(LPVOID Thisptr, HWND ControlHandle, INT64 Unknown)
-{
+VOID FIXAPI UpdateObjectWindowTreeView(LPVOID Thisptr, HWND ControlHandle, INT64 Unknown) {
 	SendMessageA(ControlHandle, WM_SETREDRAW, FALSE, 0);
 	((VOID(__fastcall*)(LPVOID, HWND, INT64))OFFSET(0x0413EB0, 0))(Thisptr, ControlHandle, Unknown);
 	SendMessageA(ControlHandle, WM_SETREDRAW, TRUE, 0);
 	RedrawWindow(ControlHandle, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_NOCHILDREN);
 }
 
-VOID FIXAPI UpdateCellViewCellList(LPVOID Thisptr, HWND ControlHandle, INT64 Unknown)
-{
+VOID FIXAPI UpdateCellViewCellList(LPVOID Thisptr, HWND ControlHandle, INT64 Unknown) {
 	SendMessageA(ControlHandle, WM_SETREDRAW, FALSE, 0);
 	((VOID(__fastcall*)(LPVOID, HWND, INT64))OFFSET(0x06434C0, 0))(Thisptr, ControlHandle, Unknown);
 	SendMessageA(ControlHandle, WM_SETREDRAW, TRUE, 0);
 	RedrawWindow(ControlHandle, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_NOCHILDREN);
 }
 
-VOID FIXAPI UpdateCellViewObjectList(LPVOID Thisptr, HWND *ControlHandle)
-{
+VOID FIXAPI UpdateCellViewObjectList(LPVOID Thisptr, HWND *ControlHandle) {
 	SendMessageA(*ControlHandle, WM_SETREDRAW, FALSE, 0);
 	((VOID(__fastcall*)(LPVOID, HWND*))OFFSET(0x05A4320, 0))(Thisptr, ControlHandle);
 	SendMessageA(*ControlHandle, WM_SETREDRAW, TRUE, 0);
@@ -414,8 +389,7 @@ uintptr_t g_DeferredStringLength;
 BOOL g_AllowResize;
 std::vector<std::pair<LPCSTR, LPVOID>> g_DeferredMenuItems;
 
-VOID FIXAPI ResetUIDefer(VOID)
-{
+VOID FIXAPI ResetUIDefer(VOID) {
 	g_UseDeferredDialogInsert = FALSE;
 	g_DeferredListView = NULL;
 	g_DeferredComboBox = NULL;
@@ -424,55 +398,69 @@ VOID FIXAPI ResetUIDefer(VOID)
 	g_DeferredMenuItems.clear();
 }
 
-VOID FIXAPI BeginUIDefer(VOID)
-{
+VOID FIXAPI BeginUIDefer(VOID) {
 	ResetUIDefer();
 	g_UseDeferredDialogInsert = TRUE;
 }
 
-VOID FIXAPI SuspendComboBoxUpdates(HWND ComboHandle, BOOL Suspend)
-{
-	COMBOBOXINFO info = {};
+VOID FIXAPI hk_vsprintf_autosave(LPSTR lpBuffer, UINT uBufferSize, LPCSTR lpFormat, LPCSTR lpDefaultName) {
+	static LPCSTR format = "autosave_%s_%s.bak";
+	auto time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+	// Mon Oct 2 00:59 : 08 2017
+	std::string stime = XUtil::Str::LowerCase(XUtil::Str::trim(std::ctime(&time)));
+	XUtil::Str::replaceAll(stime, " ", "_");
+	XUtil::Str::replaceAll(stime, ":", "_");
+
+	if (FileHandler && FileHandler->ActiveFile) {
+		auto name = FileHandler->ActiveFile->FileName;
+
+		if (!name.length())
+			goto l_default;
+
+		sprintf_s(lpBuffer, uBufferSize, format, name.c_str(), stime.c_str());
+		return;
+	}
+
+	l_default:
+	sprintf_s(lpBuffer, uBufferSize, format, lpDefaultName, stime.c_str());
+}
+
+VOID FIXAPI SuspendComboBoxUpdates(HWND ComboHandle, BOOL Suspend){
+	COMBOBOXINFO info = { 0 };
 	info.cbSize = sizeof(COMBOBOXINFO);
 
 	if (!GetComboBoxInfo(ComboHandle, &info))
 		return;
 
-	if (!Suspend)
-	{
+	if (!Suspend) {
 		SendMessageA(info.hwndList, WM_SETREDRAW, TRUE, 0);
 		SendMessageA(ComboHandle, CB_SETMINVISIBLE, 30, 0);
 		SendMessageA(ComboHandle, WM_SETREDRAW, TRUE, 0);
 	}
-	else
-	{
+	else {
 		SendMessageA(ComboHandle, WM_SETREDRAW, FALSE, 0);// Prevent repainting until finished
 		SendMessageA(ComboHandle, CB_SETMINVISIBLE, 1, 0);// Possible optimization for older libraries (source: MSDN forums)
 		SendMessageA(info.hwndList, WM_SETREDRAW, FALSE, 0);
 	}
 }
 
-VOID FIXAPI EndUIDefer(VOID)
-{
+VOID FIXAPI EndUIDefer(VOID) {
 	if (!g_UseDeferredDialogInsert)
 		return;
 
-	if (g_DeferredListView)
-	{
+	if (g_DeferredListView) {
 		SendMessage(g_DeferredListView, WM_SETREDRAW, TRUE, 0);
 		RedrawWindow(g_DeferredListView, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_NOCHILDREN);
 	}
 
-	if (!g_DeferredMenuItems.empty())
-	{
+	if (!g_DeferredMenuItems.empty()) {
 		const HWND control = g_DeferredComboBox;
 
 		// Sort alphabetically if requested to try and speed up inserts
 		INT32 finalWidth = 0;
 		LONG_PTR style = GetWindowLongPtr(control, GWL_STYLE);
 
-		if ((style & CBS_SORT) == CBS_SORT)
-		{
+		if ((style & CBS_SORT) == CBS_SORT) {
 			std::sort(g_DeferredMenuItems.begin(), g_DeferredMenuItems.end(),
 				[](const std::pair<LPCSTR, LPVOID>& a, const std::pair<LPCSTR, LPVOID>& b) -> BOOL
 			{
@@ -482,28 +470,24 @@ VOID FIXAPI EndUIDefer(VOID)
 
 		SendMessage(control, CB_INITSTORAGE, g_DeferredMenuItems.size(), g_DeferredStringLength * sizeof(CHAR));
 
-		if (HDC hdc = GetDC(control); hdc)
-		{
+		if (HDC hdc = GetDC(control); hdc) {
 			SuspendComboBoxUpdates(control, TRUE);
 
 			// Pre-calculate font widths for resizing, starting with TrueType
 			INT32 fontWidths[UCHAR_MAX + 1];
 			ABC trueTypeFontWidths[UCHAR_MAX + 1];
 
-			if (!GetCharABCWidthsA(hdc, 0, ARRAYSIZE(trueTypeFontWidths) - 1, trueTypeFontWidths))
-			{
+			if (!GetCharABCWidthsA(hdc, 0, ARRAYSIZE(trueTypeFontWidths) - 1, trueTypeFontWidths)) {
 				BOOL result = GetCharWidthA(hdc, 0, ARRAYSIZE(fontWidths) - 1, fontWidths);
 				AssertMsg(result, "Failed to determine any font widths");
 			}
-			else
-			{
+			else {
 				for (INT32 i = 0; i < ARRAYSIZE(fontWidths); i++)
 					fontWidths[i] = trueTypeFontWidths[i].abcB;
 			}
 
 			// Insert everything all at once
-			for (auto [display, value] : g_DeferredMenuItems)
-			{
+			for (auto [display, value] : g_DeferredMenuItems) {
 				LRESULT index = SendMessageA(control, CB_ADDSTRING, 0, (LPARAM)display);
 				INT32 lineSize = 0;
 
@@ -523,8 +507,7 @@ VOID FIXAPI EndUIDefer(VOID)
 		}
 
 		// Resize to fit
-		if (g_AllowResize)
-		{
+		if (g_AllowResize) {
 			LRESULT currentWidth = SendMessageA(control, CB_GETDROPPEDWIDTH, 0, 0);
 
 			if (finalWidth > currentWidth)
@@ -535,16 +518,14 @@ VOID FIXAPI EndUIDefer(VOID)
 	ResetUIDefer();
 }
 
-VOID FIXAPI InsertComboBoxItem(HWND ComboBoxHandle, LPCSTR DisplayText, LPVOID Value, BOOL AllowResize)
-{
+VOID FIXAPI InsertComboBoxItem(HWND ComboBoxHandle, LPCSTR DisplayText, LPVOID Value, BOOL AllowResize) {
 	if (!ComboBoxHandle)
 		return;
 
 	if (!DisplayText)
 		DisplayText = "NONE";
 
-	if (g_UseDeferredDialogInsert)
-	{
+	if (g_UseDeferredDialogInsert) {
 		AssertMsg(!g_DeferredComboBox || (g_DeferredComboBox == ComboBoxHandle), "Got handles to different combo boxes? Reset probably wasn't called.");
 
 		g_DeferredComboBox = ComboBoxHandle;
@@ -554,14 +535,10 @@ VOID FIXAPI InsertComboBoxItem(HWND ComboBoxHandle, LPCSTR DisplayText, LPVOID V
 		// A copy must be created since lifetime isn't guaranteed after this function returns
 		g_DeferredMenuItems.emplace_back(_strdup(DisplayText), Value);
 	}
-	else
-	{
-		if (AllowResize)
-		{
-			if (HDC hdc = GetDC(ComboBoxHandle); hdc)
-			{
-				if (SIZE size; GetTextExtentPoint32A(hdc, DisplayText, (INT32)strlen(DisplayText), &size))
-				{
+	else {
+		if (AllowResize) {
+			if (HDC hdc = GetDC(ComboBoxHandle); hdc) {
+				if (SIZE size; GetTextExtentPoint32A(hdc, DisplayText, (INT32)strlen(DisplayText), &size)) {
 					LRESULT currentWidth = SendMessageA(ComboBoxHandle, CB_GETDROPPEDWIDTH, 0, 0);
 
 					if (size.cx > currentWidth)
@@ -579,8 +556,7 @@ VOID FIXAPI InsertComboBoxItem(HWND ComboBoxHandle, LPCSTR DisplayText, LPVOID V
 	}
 }
 
-VOID FIXAPI InsertListViewItem(HWND ListViewHandle, LPVOID Parameter, BOOL UseImage, INT32 ItemIndex)
-{
+VOID FIXAPI InsertListViewItem(HWND ListViewHandle, LPVOID Parameter, BOOL UseImage, INT32 ItemIndex) {
 	if (ItemIndex == -1)
 		ItemIndex = INT_MAX;
 
@@ -592,18 +568,15 @@ VOID FIXAPI InsertListViewItem(HWND ListViewHandle, LPVOID Parameter, BOOL UseIm
 	item.lParam = (LPARAM)Parameter;
 	item.pszText = LPSTR_TEXTCALLBACK;
 	
-	if (UseImage)
-	{
+	if (UseImage) {
 		item.mask |= LVIF_IMAGE;
 		item.iImage = I_IMAGECALLBACK;
 	}
 
-	if (g_UseDeferredDialogInsert)
-	{
+	if (g_UseDeferredDialogInsert) {
 		AssertMsg(!g_DeferredListView || (g_DeferredListView == ListViewHandle), "Got handles to different list views? Reset probably wasn't called.");
 
-		if (!g_DeferredListView)
-		{
+		if (!g_DeferredListView) {
 			g_DeferredListView = ListViewHandle;
 			SendMessageA(ListViewHandle, WM_SETREDRAW, FALSE, 0);
 		}
@@ -612,19 +585,16 @@ VOID FIXAPI InsertListViewItem(HWND ListViewHandle, LPVOID Parameter, BOOL UseIm
 	ListView_InsertItem(ListViewHandle, &item);
 }
 
-VOID FIXAPI QuitHandler(VOID)
-{
+VOID FIXAPI QuitHandler(VOID) {
 	TerminateProcess(GetCurrentProcess(), 0);
 }
 
-VOID FIXAPI hk_call_140906407(INT64 a1, INT64 a2, INT64 a3)
-{
+VOID FIXAPI hk_call_140906407(INT64 a1, INT64 a2, INT64 a3) {
 	if (a2)
 		((VOID(__fastcall*)(INT64, INT64, INT64))OFFSET(0x2A6B230, 0))(a1, a2, a3);
 }
 
-BOOL FIXAPI hk_call_12E852C(HWND RichEditControl, LPCSTR Text)
-{
+BOOL FIXAPI hk_call_12E852C(HWND RichEditControl, LPCSTR Text) {
 	SendMessageA(RichEditControl, EM_LIMITTEXT, 500000, 0);
 	return SetWindowTextA(RichEditControl, Text);
 }
@@ -651,10 +621,8 @@ CreationKit+0x2511176:
 This happens when you close the application
 ==================
 */
-VOID FIXAPI hk_call_2511176(LPVOID a1, LPVOID a2, LPVOID a3)
-{
-	if (a1)
-	{
+VOID FIXAPI hk_call_2511176(LPVOID a1, LPVOID a2, LPVOID a3) {
+	if (a1) {
 		uintptr_t f = (uintptr_t)(*(PINT64)a1);
 		if ((g_ModuleBase & 0xffffffff00000000) == (*((uintptr_t*)(f + 0x190)) & 0xffffffff00000000))
 			(*(VOID(__fastcall**)(LPVOID a1, LPVOID a2, LPVOID a3))(f + 0x190))(a1, a2, 0);
@@ -668,8 +636,7 @@ VOID FIXAPI hk_call_2511176(LPVOID a1, LPVOID a2, LPVOID a3)
 hk_call_F8CAF3
 ==================
 */
-BOOL FIXAPI hk_call_F8CAF3(VOID)
-{
+BOOL FIXAPI hk_call_F8CAF3(VOID) {
 	TESCellViewScene_CK* ViewScene = TESCellViewScene_CK::GetCellViewScene();
 
 	/*
@@ -702,10 +669,8 @@ BOOL FIXAPI hk_call_F8CAF3(VOID)
 hk_call_F8AF16
 ==================
 */
-VOID FIXAPI hk_call_F8AF16(const TESCellViewSceneRenderInfo_CK* RenderInfo)
-{
-	if (TESCellViewScene_CK* ViewScene = TESCellViewScene_CK::GetCellViewScene(); ViewScene->IsInteriorsCell())
-	{
+VOID FIXAPI hk_call_F8AF16(const TESCellViewSceneRenderInfo_CK* RenderInfo) {
+	if (TESCellViewScene_CK* ViewScene = TESCellViewScene_CK::GetCellViewScene(); ViewScene->IsInteriorsCell()) {
 		if (bFogToggle)
 			return;
 	}
@@ -725,8 +690,7 @@ This option is set to TRUE by default, but you can override.
 The patch sets its variable to bypass.
 ==================
 */
-VOID FIXAPI PatchSky(VOID)
-{
+VOID FIXAPI PatchSky(VOID) {
 	// Call our function and check the rax
 	XUtil::DetourCall(OFFSET(0xF8CAF3, 0), &hk_call_F8CAF3);
 	XUtil::PatchMemory(OFFSET(0xF8CAF8, 0), { 0x85, 0xC0 });
@@ -736,8 +700,6 @@ VOID FIXAPI PatchSky(VOID)
 	XUtil::DetourJump(OFFSET(0xF90CE0, 0), &hk_call_F8CAF3);
 	// Update fog params
 	XUtil::DetourCall(OFFSET(0xF8AF16, 0), &hk_call_F8AF16);
-	// Enable/Disable sky (update UI)
-//	XUtil::DetourJump(OFFSET(0xF8A7DC, 0), &hk_jmp_F8A7DC);
 }
 
 
@@ -749,8 +711,7 @@ The program simply writes about an erroneous value and passes it into the calcul
 the function will now correct the value from 0.0 to 1.0
 ==================
 */
-FLOAT FIXAPI Fixed_IncorrectSmoothnessValueToMaterialNif(FLOAT a1, FLOAT a2)
-{
+FLOAT FIXAPI Fixed_IncorrectSmoothnessValueToMaterialNif(FLOAT a1, FLOAT a2) {
 	return (a2 > 1.0) ? 1.0 : ((a2 < 0.0) ? 0.0 : a2);
 }
 
@@ -762,8 +723,7 @@ Fixed_DeleteTintingRace
 The function removes from lists without looping
 ==================
 */
-VOID FIXAPI Fixed_DeleteTintingRace(INT64 count, INT64 item_id, HWND listview)
-{
+VOID FIXAPI Fixed_DeleteTintingRace(INT64 count, INT64 item_id, HWND listview) {
 	if (!count)
 		return;
 	
@@ -792,10 +752,8 @@ VOID FIXAPI hk_jmp_B62A9B(HWND hWndButtonGenerate) {
 
 	BOOL bEnableGenerate = FALSE;
 	
-	if (INT iCount = ListView_GetItemCount(hList); iCount > 0)
-	{
-		if (auto item = (INT64)EditorUI::ListViewGetSelectedItem(hList); item)
-		{
+	if (INT iCount = ListView_GetItemCount(hList); iCount > 0) {
+		if (auto item = (INT64)EditorUI::ListViewGetSelectedItem(hList); item) {
 			bEnableGenerate =
 				IsDlgButtonChecked(hDlg, 2379) && *(PUINT32)(item + 0x110) ||
 				IsDlgButtonChecked(hDlg, 2380) && *(PUINT32)(item + 0x118);
@@ -876,8 +834,7 @@ VOID FIXAPI PatchMessage(VOID) {
 }
 
 VOID FIXAPI PatchTemplatedFormIterator(VOID) {
-	class FormIteratorHook : public Xbyak::CodeGenerator
-	{
+	class FormIteratorHook : public Xbyak::CodeGenerator {
 	public:
 		FormIteratorHook(uintptr_t Callback) : Xbyak::CodeGenerator()
 		{
@@ -921,8 +878,7 @@ VOID FIXAPI PatchTemplatedFormIterator(VOID) {
 			ret();
 		}
 
-		static VOID Generate(uintptr_t Target)
-		{
+		static VOID Generate(uintptr_t Target) {
 			// Manually resolve the called function address. NOTE: This is leaking memory on purpose. It's a mess.
 			Assert(*(uint8_t *)Target == 0xE9);
 
@@ -959,25 +915,19 @@ Adds support for quotation marks of some commands on the command line
 */
 
 LPSTR FIXAPI Fixed_StrTok(LPSTR str, LPSTR delim, LPSTR* next_token) {
-	if (str)
-	{
-		while (*str == ' ')
-		{
+	if (str) {
+		while (*str == ' ') {
 			if (*str == '\0')
 				return NULL;
-
 			str++;
 		}
-
 		if (*str == '\"')
 			return strtok_s(++str, "\"", next_token);
 		else
 			return strtok_s(str, " ", next_token);
 	}
-	else if (next_token && *next_token)
-	{
-		if (strchr(*next_token, '\"'))
-		{
+	else if (next_token && *next_token) {
+		if (strchr(*next_token, '\"')) {
 			LPSTR lpRes = strtok_s(NULL, "\"", next_token);
 			
 			if (lpRes && !XUtil::Str::trim(lpRes).length())
@@ -999,18 +949,15 @@ VOID FIXAPI RestoreGenerateSingleLip(LPSTR lpCmdLine, LPSTR arg2) {
 	LPSTR next_token = NULL;
 
 	LPSTR token = Fixed_StrTok(lpCmdLine, " ", &next_token);
-	if (token)
-	{
+	if (token) {
 		LPSTR filename = token;
 		token = Fixed_StrTok(NULL, " ", &next_token);
-		if (token)
-		{
+		if (token) {
 			auto pathAudioFile = fs::path(filename);
 			// Replacement by .wav
 			pathAudioFile.replace_extension(L".wav");
 
-			if (fs::exists(pathAudioFile))
-			{
+			if (fs::exists(pathAudioFile)) {
 				auto AudioFilePath = XUtil::Conversion::WideToAnsi(pathAudioFile);
 				((BOOL(__fastcall*)(HWND, LPCSTR, LPCSTR))OFFSET(0x0B66BF0, 0))(MainWindow::GetWindow(), AudioFilePath.c_str(), token);
 
@@ -1153,3 +1100,5 @@ VOID FIXAPI PatchCmdLineWithQuote(VOID) {
 
 	XUtil::DetourCall(OFFSET(0x33C10D, 0), &Fixed_StrTok);
 }
+
+#pragma warning(default : 26819; default : 6387; default : 6001)

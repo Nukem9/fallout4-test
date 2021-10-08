@@ -48,8 +48,8 @@ private:
 	CHAR _pad1[0xBC];
 	UINT32 m_Flags;
 public:
-	inline std::string GetFileName(VOID) const { return m_FileName; }
-	inline std::string GetFilePath(VOID) const { return m_FilePath; }
+	inline std::string GetFileName(VOID) const { return m_FileName ? m_FileName : ""; }
+	inline std::string GetFilePath(VOID) const { return m_FilePath ? m_FilePath : ""; }
 	inline UINT32 GetFlags(VOID) const { return m_Flags; }
 	inline BOOL IsMaster(VOID) const { return m_Flags & FILE_RECORD_ESM; }
 	inline BOOL IsSelected(VOID) const { return m_Flags & FILE_RECORD_CHECKED; }
