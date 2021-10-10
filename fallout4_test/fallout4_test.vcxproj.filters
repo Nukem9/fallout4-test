@@ -631,6 +631,9 @@
     <ClCompile Include="src\patches\CKF4\TranslateUnicode_CK.cpp">
       <Filter>Source Files\Patches\CK</Filter>
     </ClCompile>
+    <ClCompile Include="src\patches\CKF4\ENBSeriesFixableRun.cpp">
+      <Filter>Source Files\Patches\CK</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\typeinfo\ni_rtti.inl">
@@ -640,6 +643,7 @@
       <Filter>Header Files\RTTI\NiRTTI</Filter>
     </None>
     <None Include="cpp.hint" />
+    <None Include="..\Resources\f4ck_loader.bin" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\Resources\check_darktheme.bmp">

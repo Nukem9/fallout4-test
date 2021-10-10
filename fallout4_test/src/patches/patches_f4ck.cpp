@@ -59,6 +59,7 @@ This file is part of Fallout 4 Fixes source code.
 
 */
 
+VOID FIXAPI ENBSeriesFixableRunHandler(VOID);
 VOID FIXAPI Fix_PatchMemory(VOID);
 VOID FIXAPI Fix_PatchThreading(VOID);
 VOID FIXAPI Fix_GenerateCrashdumps(VOID);
@@ -680,6 +681,13 @@ VOID FIXAPI MainFix_PatchFallout4CreationKit(VOID)
 	}
 
 	///////////////////////////////////////////////////////////////////////
+
+#if FALLOUT4_CK64_ENB_FIXABLE
+	//
+	// ENBSeries detected and create double launch CreationKit
+	//
+	ENBSeriesFixableRunHandler();
+#endif // FALLOUT4_CK64_ENB_FIXABLE
 
 	g_UIEnabled = (bool)g_INI->GetBoolean("CreationKit", "UI", false);
 	g_i8DialogMode = (int8_t)g_INI->GetInteger("CreationKit", "DialogMode", 0);

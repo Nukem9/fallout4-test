@@ -276,6 +276,7 @@
     <ClCompile Include="src\patches\CKF4\CellViewWindow.cpp" />
     <ClCompile Include="src\patches\CKF4\DataWindow.cpp" />
     <ClCompile Include="src\patches\CKF4\Editor.cpp" />
+    <ClCompile Include="src\patches\CKF4\ENBSeriesFixableRun.cpp" />
     <ClCompile Include="src\patches\CKF4\TranslateUnicode_CK.cpp" />
     <ClCompile Include="src\patches\CKF4\UIDialogManager.cpp" />
     <ClCompile Include="src\patches\CKF4\PreferencesWindow.cpp" />
@@ -350,6 +351,7 @@
     <ClCompile Include="src\typeinfo\ms_rtti.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\Resources\f4ck_loader.bin" />
     <None Include="cpp.hint" />
     <None Include="src\patches\TES\NiMain\NiRTTI.inl" />
     <None Include="src\typeinfo\ni_rtti.inl" />

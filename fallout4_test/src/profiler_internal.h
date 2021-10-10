@@ -98,6 +98,17 @@ constexpr uint32_t CRC32(const char *in)
 	return ~crc;
 }
 
+constexpr uint32_t CRC32Buffer(const void* in, const uint32_t size)
+{
+	uint32_t crc = 0xFFFFFFFF;
+	const uint8_t* buf = (const uint8_t*)in;
+
+	for (uint32_t i = 0; i < size; ++i)
+		crc = crc_table[(crc ^ buf[i]) & 0xFF] ^ (crc >> 8);
+
+	return ~crc;
+}
+
 struct Entry
 {
 	int64_t Value;
