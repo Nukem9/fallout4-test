@@ -24,7 +24,6 @@
 #include "ObjectWindow.h"
 #include "EditorUI.h"
 #include "MainWindow.h"
-#include "TESDataFileHandler_CK.h"
 
 #include <unordered_map>
 

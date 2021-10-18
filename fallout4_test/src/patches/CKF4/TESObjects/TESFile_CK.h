@@ -23,7 +23,7 @@
 
 #pragma once
 
-#include "..\ComClasses.h"
+#include "../../ComClasses.h"
 
 #pragma pack(push, 1)
 

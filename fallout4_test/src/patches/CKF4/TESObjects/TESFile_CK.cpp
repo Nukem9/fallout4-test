@@ -21,10 +21,10 @@
 */
 //////////////////////////////////////////
 
-#include "../../common.h"
-#include "UIBaseWindow.h"
+#include "../../../common.h"
+#include "../UIBaseWindow.h"
+#include "../LogWindow.h"
 #include "TESFile_CK.h"
-#include "LogWindow.h"
 
 INT32 TESFile_CK::hk_LoadTESInfo(VOID)
 {

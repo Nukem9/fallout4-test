@@ -1,6 +1,5 @@
 //////////////////////////////////////////
 /*
-* Copyright (c) 2020 Nukem9 <email:Nukem@outlook.com>
 * Copyright (c) 2020-2021 Perchik71 <email:perchik71@outlook.com>
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy of this
@@ -23,28 +22,35 @@
 
 #pragma once
 
-#include "../../common.h"
-#include "TESObjects/TES.h"
+#include "TESFile_CK.h"
+#include "../../TES/BSTList.h"
 
-#include "UIMenus.h"
-#include "UIBaseWindow.h"
-#include "UICheckboxControl.h"
+#include <vector>
 
-#include <CommCtrl.h>
-
-#define UI_LISTVIEW_PLUGINS					1056						// See: resource.rc
-#define UI_EDIT_SEARCH_PLUGIN_BY_NAME		(UI_CUSTOM_MESSAGE + 4)	
-#define UI_NEW_LISTVIEW_CONTROL_TO_RESULT	(UI_CUSTOM_MESSAGE + 5)	
-#define UI_SETACTIVEPLUGIN_BUTTON			1121						// See: resource.rc
-
-namespace DataWindow
+class TESDataFileHandler_CK
 {
-	namespace Classes = Core::Classes::UI;
+public:
+	using TESFileList_CK = BSSimpleList<TESFile_CK*>;
+	using TESFileListPtr_CK = TESFileList_CK*;
+	using TESFileArray_CK = std::vector<TESFile_CK*>;
+public:
+	bool Load(int Unknown);	
+	bool InitUnknownDataSetTextStatusBar(void);	
+	static void DetectSelectFile(TESFile_CK* File);
+	static void EndLoadEvent_SendDone(int32_t index, LPCSTR message);
+	static void AttachBA2File(LPCSTR _filename, LPCSTR _folder = NULL);
+public:
+	static TESFileListPtr_CK GetArchiveFiles(void);
+	static TESFileArray_CK* GetSelectedFiles(void);
+	TESFile_CK* GetActiveFile(void) const;
+	bool IsActiveFile(void) const;
+	bool IsLoaded(void) const;
+public:
+	static void Initialize(void);
+public:
+	READ_PROPERTY(GetArchiveFiles) TESFileListPtr_CK ArchiveFiles;
+	READ_PROPERTY(GetSelectedFiles) TESFileArray_CK* SelectedFiles;
+	READ_PROPERTY(GetActiveFile) TESFile_CK* ActiveFile;
+};
 
-	extern DLGPROC OldDlgProc;
-
-	HWND FIXAPI GetWindow(VOID);
-	Classes::CUICustomWindow& FIXAPI GetWindowObj(VOID);
-
-	INT_PTR CALLBACK DlgProc(HWND DialogHwnd, UINT Message, WPARAM wParam, LPARAM lParam);
-}
+extern TESDataFileHandler_CK* FileHandler;

@@ -1,6 +1,5 @@
 //////////////////////////////////////////
 /*
-* Copyright (c) 2020 Nukem9 <email:Nukem@outlook.com>
 * Copyright (c) 2020-2021 Perchik71 <email:perchik71@outlook.com>
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy of this
@@ -21,30 +20,18 @@
 */
 //////////////////////////////////////////
 
-#pragma once
+#include "TESFormRef_CK.h"
 
-#include "../../common.h"
-#include "TESObjects/TES.h"
+std::string TESFormRef_CK::GetEditID(VOID) const {
+	AssertMsg(((TESForm_CK*)this)->TypeID == ftReference, "TESFormRef_CK doesn't have a reference type.");
+	AssertMsg(_parent, "TESFormRef_CK doesn't have a parent.");
 
-#include "UIMenus.h"
-#include "UIBaseWindow.h"
-#include "UICheckboxControl.h"
+	return _parent->EditID;
+}
 
-#include <CommCtrl.h>
+CHAR TESFormRef_CK::GetTypeID(VOID) const {
+	AssertMsg(((TESForm_CK*)this)->TypeID == ftReference, "TESFormRef_CK doesn't have a reference type.");
+	AssertMsg(_parent, "TESFormRef_CK doesn't have a parent.");
 
-#define UI_LISTVIEW_PLUGINS					1056						// See: resource.rc
-#define UI_EDIT_SEARCH_PLUGIN_BY_NAME		(UI_CUSTOM_MESSAGE + 4)	
-#define UI_NEW_LISTVIEW_CONTROL_TO_RESULT	(UI_CUSTOM_MESSAGE + 5)	
-#define UI_SETACTIVEPLUGIN_BUTTON			1121						// See: resource.rc
-
-namespace DataWindow
-{
-	namespace Classes = Core::Classes::UI;
-
-	extern DLGPROC OldDlgProc;
-
-	HWND FIXAPI GetWindow(VOID);
-	Classes::CUICustomWindow& FIXAPI GetWindowObj(VOID);
-
-	INT_PTR CALLBACK DlgProc(HWND DialogHwnd, UINT Message, WPARAM wParam, LPARAM lParam);
+	return _parent->TypeID;
 }

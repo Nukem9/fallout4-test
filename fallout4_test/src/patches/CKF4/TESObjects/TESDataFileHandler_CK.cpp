@@ -20,12 +20,12 @@
 */
 //////////////////////////////////////////
 
-#include "../../common.h"
+#include "../../../common.h"
+#include "../UIProgressDialog.h"
+#include "../LogWindow.h"
+#include "../EditorUI.h"
+#include "../EditorUIProgressDialog.h"
 #include "TESDataFileHandler_CK.h"
-#include "UIProgressDialog.h"
-#include "LogWindow.h"
-#include "EditorUI.h"
-#include "EditorUIProgressDialog.h"
 
 #include <filesystem>
 

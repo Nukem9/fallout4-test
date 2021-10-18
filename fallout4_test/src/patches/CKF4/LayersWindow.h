@@ -1,6 +1,5 @@
 //////////////////////////////////////////
 /*
-* Copyright (c) 2020 Nukem9 <email:Nukem@outlook.com>
 * Copyright (c) 2020-2021 Perchik71 <email:perchik71@outlook.com>
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy of this
@@ -21,14 +20,24 @@
 */
 //////////////////////////////////////////
 
-#include "TESForm_CK.h"
+#pragma once
 
-TESForm_CK* TESForm_CK::GetFormByNumericID(UINT32 SearchID)
-{
-	return ((TESForm_CK*(__fastcall*)(UINT32))OFFSET(0x853220, 0))(SearchID);
-}
+#include "../../common.h"
+#include "TESObjects/TES.h"
 
-std::string TESForm_CK::GetEditID(VOID) const
+#include "UIMenus.h"
+#include "UIBaseWindow.h"
+
+namespace LayersWindow
 {
-	return ((LPCSTR(__fastcall*)(const TESForm_CK*))OFFSET(0x1E63F0, 0))(this);
+	namespace Classes = Core::Classes::UI;
+	extern DLGPROC OldDlgProc;
+
+	BOOL WINAPI MoveWindowBody(HWND hWnd, INT X, INT Y, INT nWidth, INT nHeight, BOOL bRepaint);
+	BOOL WINAPI MoveWindowHeader(HWND hWnd, INT X, INT Y, INT nWidth, INT nHeight, BOOL bRepaint);
+
+	HWND FIXAPI GetWindow(VOID);
+	Classes::CUICustomWindow& FIXAPI GetWindowObj(VOID);
+
+	INT_PTR CALLBACK DlgProc(HWND DialogHwnd, UINT Message, WPARAM wParam, LPARAM lParam);
 }

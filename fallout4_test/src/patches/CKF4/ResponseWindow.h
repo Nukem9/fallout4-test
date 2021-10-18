@@ -24,8 +24,7 @@
 #pragma once
 
 #include "../../common.h"
-#include "TESForm_CK.h"
-#include "TESFile_CK.h"
+#include "TESObjects/TES.h"
 
 #include "UIMenus.h"
 #include "UIBaseWindow.h"

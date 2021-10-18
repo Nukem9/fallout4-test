@@ -25,6 +25,8 @@
 #include <set>
 #include "..\ComClasses.h"
 
+#pragma warning (disable : 26812)
+
 namespace Core
 {
 	namespace Classes
@@ -414,3 +416,5 @@ namespace Core
 		}
 	}
 }
+
+#pragma warning (default : 26812)

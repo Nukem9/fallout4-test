@@ -1,0 +1,68 @@
+{
+  "ExStyle": 0,
+  "Style": [ "DS_CENTER", "WS_POPUP", "WS_SYSMENU" ],
+  "Title": "Data",
+  "Width": 815,
+  "Height": 680,
+  "FontName": "Microsoft Sans Serif",
+  "FontSize": 10,
+  "FontWeight": 400,
+  "FontItalic": 0,
+  "Controls": [
+    {
+      "Type": "LTEXT",
+      "Title": "Scope Event: NONE",
+      "Id": 5343,
+      "x": 4,
+      "y": 4,
+      "Width": 200,
+      "Height": 16
+    },
+    {
+      "Type": "LTEXT",
+      "Title": "Aliases",
+      "x": 4,
+      "y": 24,
+      "Width": 60,
+      "Height": 16
+    },
+    {
+      "ExStyle": [ "WS_EX_CLIENTEDGE" ],
+      "Type": "LISTVIEW",
+      "Title": "",
+      "Id": 5299,
+      "Style": [ "LVS_REPORT", "LVS_SHOWSELALWAYS", "WS_BORDER", "LVS_NOSORTHEADER" ],
+      "x": 4,
+      "y": 44,
+      "Width": 807,
+      "Height": 392
+    },
+    {
+      "Type": "PUSHBUTTON",
+      "Title": "<<",
+      "Id": 4008,
+      "x": 4,
+      "y": 440,
+      "Width": 32,
+      "Height": 28
+    },
+    {
+      "Type": "PUSHBUTTON",
+      "Title": ">>",
+      "Id": 4009,
+      "x": 40,
+      "y": 440,
+      "Width": 32,
+      "Height": 28
+    },
+    {
+      "Type": "LTEXT",
+      "Title": "Story Manager Conditions",
+      "Id": 2159,
+      "x": 4,
+      "y": 472,
+      "Width": 200,
+      "Height": 16
+    }
+  ]
+}

@@ -31,11 +31,14 @@
 #include <vssym32.h>
 #include <Richedit.h>
 
+#include "LogWindow.h"
+
 #include <stdlib.h>
 
 #include "UIThemeMode.h"
 #include "UIBaseWindow.h"
 #include "MainWindow.h"
+#include "Editor.h"
 
 /// THEMES
 
@@ -87,7 +90,7 @@ namespace UITheme
 		}
 	};
 
-	const std::unordered_set<std::string_view> PermanentWindowSubclasses {
+	const std::unordered_set<std::string_view> PermanentWindowSubclasses{
 		"Creation Kit",
 		"ActivatorClass",
 		"AlchemyClass",
@@ -122,6 +125,96 @@ namespace UITheme
 	static WNDPROC OldPopupMenuWndClass = NULL;
 	static Classes::CUIFont* listFont = NULL;
 
+	namespace hook_func {
+		COLORREF WINAPI SetTextColor(HDC hdc, COLORREF color) {
+			return ::SetTextColor(hdc, !color ? Theme::GetThemeSysColor(Theme::ThemeColor_Text_4) : color);
+		}
+
+		BOOL WINAPI DrawEdge(HDC hdc, LPRECT qrc, UINT edge, UINT grfFlags) {
+			if (!qrc || !hdc)
+				return FALSE;
+
+			Classes::CUICanvas canvas = hdc;
+
+			if ((grfFlags & BF_MIDDLE) == BF_MIDDLE)
+				canvas.Fill(*qrc, Theme::GetThemeSysColor(Theme::ThemeColor_TreeView_Color));
+			
+			canvas.Pen.Color = Theme::GetThemeSysColor(Theme::ThemeColor_Default);
+
+			if ((grfFlags & BF_LEFT) == BF_LEFT) {
+				canvas.MoveTo(qrc->left, qrc->top);
+				canvas.LineTo(qrc->left, qrc->bottom);
+
+				if ((grfFlags & BF_ADJUST) == BF_ADJUST)
+					qrc->left++;
+			}
+
+			if ((grfFlags & BF_TOP) == BF_TOP) {
+				canvas.MoveTo(qrc->left, qrc->top);
+				canvas.LineTo(qrc->right, qrc->top);
+
+				if ((grfFlags & BF_ADJUST) == BF_ADJUST)
+					qrc->top++;
+			}
+
+			if ((grfFlags & BF_RIGHT) == BF_RIGHT) {
+				canvas.MoveTo(qrc->right, qrc->top);
+				canvas.LineTo(qrc->right, qrc->bottom);
+
+				if ((grfFlags & BF_ADJUST) == BF_ADJUST)
+					qrc->right--;
+			}
+
+			if ((grfFlags & BF_BOTTOM) == BF_BOTTOM) {
+				canvas.MoveTo(qrc->left, qrc->bottom);
+				canvas.LineTo(qrc->right, qrc->bottom);
+
+				if ((grfFlags & BF_ADJUST) == BF_ADJUST)
+					qrc->bottom--;
+			}
+
+			if ((grfFlags & BF_DIAGONAL_ENDBOTTOMLEFT) == BF_DIAGONAL_ENDBOTTOMLEFT) {
+				canvas.MoveTo(qrc->right, qrc->top);
+				canvas.LineTo(qrc->left, qrc->bottom);
+			}
+
+			if ((grfFlags & BF_DIAGONAL_ENDBOTTOMRIGHT) == BF_DIAGONAL_ENDBOTTOMRIGHT) {
+				canvas.MoveTo(qrc->left, qrc->top);
+				canvas.LineTo(qrc->right, qrc->bottom);
+			}
+
+			if ((grfFlags & BF_DIAGONAL_ENDTOPLEFT) == BF_DIAGONAL_ENDTOPLEFT) {
+				canvas.MoveTo(qrc->right, qrc->bottom);
+				canvas.LineTo(qrc->left, qrc->top);
+			}
+
+			if ((grfFlags & BF_DIAGONAL_ENDTOPRIGHT) == BF_DIAGONAL_ENDTOPRIGHT) {
+				canvas.MoveTo(qrc->left, qrc->bottom);
+				canvas.LineTo(qrc->right, qrc->top);
+			}
+
+			return TRUE;
+		}
+
+		HFONT WINAPI CreateFontA(INT cHeight, INT cWidth, INT cEscapement, INT cOrientation, INT cWeight,
+			DWORD  bItalic, DWORD  bUnderline, DWORD bStrikeOut, DWORD iCharSet, DWORD iOutPrecision,
+			DWORD  iClipPrecision, DWORD iQuality, DWORD iPitchAndFamily, LPCSTR pszFaceName) {
+
+			return (HFONT)::CreateFontA(Theme::ThemeFont->Height, 0, cEscapement, cOrientation, cWeight, bItalic, bUnderline,
+				bStrikeOut, g_INI->GetInteger("CreationKit_Font", "Charset", DEFAULT_CHARSET), iOutPrecision, iClipPrecision, 
+				CLEARTYPE_NATURAL_QUALITY, VARIABLE_PITCH, Theme::ThemeFont->Name.c_str());
+		}
+
+		HIMAGELIST ImageList_LoadImageA(HINSTANCE hi, LPCSTR lpbmp, INT cx, INT cGrow, COLORREF crMask, UINT uType, UINT uFlags) {
+			if ((ULONG_PTR)lpbmp == 430) {
+				if ((Theme::GetTheme() != Theme::Theme_Light) && (Theme::GetTheme() != Theme::Theme_Gray))
+					return ::ImageList_LoadImageA(g_hModule, MAKEINTRESOURCEA(IDB_BITMAP9), 16, 0, RGB(63, 63, 63), IMAGE_BITMAP, LR_CREATEDIBSECTION | LR_LOADTRANSPARENT);
+			}
+			
+			return ::ImageList_LoadImageA(hi, lpbmp, cx, cGrow, crMask, uType, uFlags);
+		}
+	}
+
 	VOID FIXAPI Initialize(Theme::Theme ThemeID) {
 		Theme::SetTheme(ThemeID);
 		EnableThemeHooking = TRUE;
@@ -140,6 +233,31 @@ namespace UITheme
 			Theme::ThemeFont = new Classes::CUIFont("Microsoft Sans Serif", 8, {}, g_INI->GetInteger("CreationKit_Font", "Charset", DEFAULT_CHARSET), Classes::fqClearTypeNatural, Classes::fpVariable);
 			break;
 	    }
+
+		//
+		// Layers Dialog fix
+		//
+
+		// Create font
+		XUtil::DetourCall(OFFSET(0x67A179, 0), &hook_func::CreateFontA);
+		//XUtil::DetourCall(OFFSET(0x67A1D3, 0), &hook_func::CreateFontA);
+		XUtil::DetourCall(OFFSET(0x67A226, 0), &hook_func::CreateFontA);
+
+		// Colored fix
+		XUtil::PatchMemoryNop(OFFSET(0x67A460, 0), 6);
+		XUtil::PatchMemoryNop(OFFSET(0x67A475, 0), 6);
+		// rechange color text
+		XUtil::DetourCall(OFFSET(0x67CD93, 0), &hook_func::SetTextColor);
+		XUtil::DetourCall(OFFSET(0x67CFA5, 0), &hook_func::SetTextColor);
+		XUtil::DetourCall(OFFSET(0x67D204, 0), &hook_func::SetTextColor);
+		XUtil::DetourCall(OFFSET(0x67D21E, 0), &hook_func::SetTextColor);
+		XUtil::DetourCall(OFFSET(0x67D2DA, 0), &hook_func::SetTextColor);
+		// skip edge draw
+		XUtil::DetourCall(OFFSET(0x67CEA1, 0), &hook_func::DrawEdge);
+		XUtil::DetourCall(OFFSET(0x67CECD, 0), &hook_func::DrawEdge);
+		XUtil::DetourCall(OFFSET(0x67D30D, 0), &hook_func::DrawEdge);
+
+		XUtil::DetourCall(OFFSET(0x3C76EE, 0), &hook_func::ImageList_LoadImageA);
 
 #if THEME_DEBUG
 		ofs.open("__theme_debug.log");

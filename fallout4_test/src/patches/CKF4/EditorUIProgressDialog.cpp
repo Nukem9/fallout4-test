@@ -31,8 +31,6 @@
 #include "MainWindow.h"
 #include "LogWindow.h"
 
-#include "TESCellViewScene_CK.h"
-
 #include <ShObjIdl_core.h>
 
 namespace EditorUI

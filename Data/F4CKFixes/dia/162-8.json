@@ -3,7 +3,7 @@
   "Style": [ "DS_SYSMODAL", "DS_CENTER", "WS_SYSMENU", "WS_DLGFRAME", "DS_MODALFRAME", "WS_CAPTION" ],
   "Title": "Data",
   "Width": 640,
-  "Height": 800,
+  "Height": 600,
   "FontName": "Microsoft Sans Serif",
   "FontSize": 8,
   "FontWeight": 400,
@@ -14,7 +14,7 @@
       "Title": "OK",
       "Id": 1,
       "x": 432,
-      "y": 768,
+      "y": 568,
       "Width": 100,
       "Height": 28
     },
@@ -23,7 +23,7 @@
       "Title": "Cancel",
       "Id": 2,
       "x": 536,
-      "y": 768,
+      "y": 568,
       "Width": 100,
       "Height": 28
     },
@@ -32,7 +32,7 @@
       "Id": 1121,
       "Title": "Set as Active File",
       "x": 4,
-      "y": 768,
+      "y": 568,
       "Width": 100,
       "Height": 28
     },
@@ -41,7 +41,7 @@
       "Id": 1185,
       "Title": "Details...",
       "x": 184,
-      "y": 768,
+      "y": 568,
       "Width": 100,
       "Height": 28
     },
@@ -54,7 +54,7 @@
       "x": 4,
       "y": 72,
       "Width": 280,
-      "Height": 692
+      "Height": 492
     },
     {
       "Type": "EDITTEXT",
@@ -74,7 +74,7 @@
       "x": 288,
       "y": 72,
       "Width": 186,
-      "Height": 652
+      "Height": 452
     },
     {
       "ExStyle": [ "WS_EX_CLIENTEDGE" ],
@@ -85,7 +85,7 @@
       "x": 478,
       "y": 24,
       "Width": 158,
-      "Height": 700
+      "Height": 500
     },
     {
       "Type": "LTEXT",
@@ -123,7 +123,7 @@
       "Type": "LTEXT",
       "Title": "Created On:",
       "x": 288,
-      "y": 728,
+      "y": 528,
       "Width": 75,
       "Height": 16
     },
@@ -131,7 +131,7 @@
       "Type": "LTEXT",
       "Title": "Last Modified:",
       "x": 288,
-      "y": 748,
+      "y": 548,
       "Width": 75,
       "Height": 16
     },
@@ -140,7 +140,7 @@
       "Title": "(Unknown)",
       "Id": 1026,
       "x": 542,
-      "y": 728,
+      "y": 528,
       "Width": 45,
       "Height": 16
     },
@@ -149,7 +149,7 @@
       "Title": "(Unknown)",
       "Id": 1027,
       "x": 542,
-      "y": 748,
+      "y": 548,
       "Width": 45,
       "Height": 16
     },
@@ -159,7 +159,7 @@
       "Style": [ "NOT WS_VISIBLE" ],
       "Id": 2406,
       "x": 512,
-      "y": 728,
+      "y": 528,
       "Width": 75,
       "Height": 16
     },
@@ -169,7 +169,7 @@
       "Style": [ "NOT WS_VISIBLE" ],
       "Id": 2407,
       "x": 512,
-      "y": 748,
+      "y": 548,
       "Width": 75,
       "Height": 16
     },
@@ -179,7 +179,7 @@
       "Style": [ "NOT WS_VISIBLE" ],
       "Id": 1681,
       "x": 591,
-      "y": 728,
+      "y": 528,
       "Width": 45,
       "Height": 16
     },
@@ -189,7 +189,7 @@
       "Style": [ "NOT WS_VISIBLE" ],
       "Id": 1682,
       "x": 591,
-      "y": 748,
+      "y": 548,
       "Width": 45,
       "Height": 16
     },
@@ -198,7 +198,7 @@
       "Title": "(Unknown)",
       "Id": 1028,
       "x": 591,
-      "y": 728,
+      "y": 528,
       "Width": 45,
       "Height": 16
     },
@@ -207,7 +207,7 @@
       "Title": "(Unknown)",
       "Id": 1029,
       "x": 591,
-      "y": 748,
+      "y": 548,
       "Width": 45,
       "Height": 16
     },
@@ -238,7 +238,7 @@
       "x": 4,
       "y": 72,
       "Width": 280,
-      "Height": 692
+      "Height": 492
     }
   ]
 }

@@ -26,8 +26,6 @@
 #include <CommCtrl.h>
 #include <filesystem>
 
-#include "TESCellViewScene_CK.h"
-#include "TESDataFileHandler_CK.h"
 #include "Editor.h"
 #include "EditorUI.h"
 #include "LogWindow.h"
@@ -38,7 +36,7 @@
 BOOL bFogToggle = TRUE;
 BOOL bAllowPoolMessage = FALSE;
 
-#pragma warning(disable : 26819; disable : 6387; disable : 6001)
+#pragma warning(disable : 26819; disable : 26451; disable : 6387; disable : 6001)
 
 // clang-format off
 struct
@@ -49,6 +47,7 @@ struct
 } CK_Settings[] = {
 	// CreationKit.ini or CreationKitCustom.ini
 	{ "General",		"bAllowMultipleEditors",				"1"	},
+	{ "General",		"bAllowMultipleMasterLoads",			"1"	},
 	{ "General",		"bSkipValidateInfos",					"1"	},
 	{ "General",		"bSkipValidateForms",					"1"	},
 	{ "General",		"bDisableDuplicateReferenceCheck",		"1"	},
@@ -74,13 +73,15 @@ struct
 	{ "General",		"bHideImportantWarnings",				"1"	},
 	{ "General",		"bAllowResourceReloading",				"1"	},
 	{ "General",		"bDoMultithreadedVisQuery",				"1"	},
+	{ "General",		"bUpdateCellViewToMatchRenderWindow",	"0"	},
+	{ "General",		"bUseMenuLoadCellPreload",				"0"	},
 	{ "Archive",		"bUseArchives",							"1"	},
 	{ "Archive",		"bAutoloadTESFileArchives",				"1"	},
 	{ "Archive",		"bInvalidateOlderFiles",				"1"	},
 	{ "Animation",		"bUseVariableCache",					"0"	},
 	{ "Animation",		"bIgnoreNIFFlags",						"1"	},
 	{ "Animation",		"bDisplayMarkWarning",					"0"	},
-	{ "Animation",		"bSkipAnimationTextExport",				"0"	},
+	{ "Animation",		"bSkipAnimationTextExport",				"1"	},
 	{ "Bethesda.net",	"bEnablePlatformSelection",				"1"	},
 	{ "Bethesda.net",	"bEnableXB1",							"1"	},
 	{ "Bethesda.net",	"bEnablePS4",							"1"	},
@@ -238,6 +239,7 @@ HWND WINAPI hk_CreateDialogParamA(HINSTANCE hInstance, LPCSTR lpTemplateName, HW
 	case 279:
 	case 316:
 	case 350:
+	case 468:
 		hInstance = (HINSTANCE)&__ImageBase;
 		break;
 	// Actor Dlg
@@ -301,6 +303,7 @@ INT_PTR WINAPI hk_DialogBoxParamA(HINSTANCE hInstance, LPCSTR lpTemplateName, HW
 	case 279:
 	case 316:
 	case 350:
+	case 468:
 		hInstance = (HINSTANCE)&__ImageBase;
 		break;
 		// Actor Dlg
@@ -669,14 +672,14 @@ BOOL FIXAPI hk_call_F8CAF3(VOID) {
 hk_call_F8AF16
 ==================
 */
-VOID FIXAPI hk_call_F8AF16(const TESCellViewSceneRenderInfo_CK* RenderInfo) {
+VOID FIXAPI hk_call_F8AF16(const TESCellViewScene_CK::TESRenderInfo_CK* RenderInfo) {
 	if (TESCellViewScene_CK* ViewScene = TESCellViewScene_CK::GetCellViewScene(); ViewScene->IsInteriorsCell()) {
 		if (bFogToggle)
 			return;
 	}
 
 	//This function resets the fog parameters and resets them again...
-	((VOID(__fastcall*)(const TESCellViewSceneRenderInfo_CK*))OFFSET(0xF8B6A0, 0))(RenderInfo);
+	((VOID(__fastcall*)(const TESCellViewScene_CK::TESRenderInfo_CK*))OFFSET(0xF8B6A0, 0))(RenderInfo);
 }
 
 
@@ -971,7 +974,22 @@ VOID FIXAPI RestoreGenerateSingleLip(LPSTR lpCmdLine, LPSTR arg2) {
 
 
 HANDLE WINAPI hk_FindFirstFileA(LPCSTR lpFileName, LPWIN32_FIND_DATAA lpFindFileData) {
-	return FindFirstFileExA(lpFileName, FindExInfoStandard, lpFindFileData, FindExSearchNameMatch, nullptr, FIND_FIRST_EX_LARGE_FETCH);
+	return FindFirstFileExA(lpFileName, FindExInfoStandard, lpFindFileData, FindExSearchNameMatch, NULL, FIND_FIRST_EX_LARGE_FETCH);
+}
+
+
+DWORD FIXAPI GetCountItemInLayer(LPVOID unknown, TESLayer_CK* layer) {
+	DWORD dwRet = 0;
+
+	if (!unknown || !layer)
+		return dwRet;
+
+	auto scene = TES::Scene();
+
+	if (scene->IsInteriorsCell())
+		return layer->GetItemsCountInCell(scene->Interios);
+	else
+		return layer->GetItemsCountInCell(NULL);
 }
 
 
@@ -1101,4 +1119,4 @@ VOID FIXAPI PatchCmdLineWithQuote(VOID) {
 	XUtil::DetourCall(OFFSET(0x33C10D, 0), &Fixed_StrTok);
 }
 
-#pragma warning(default : 26819; default : 6387; default : 6001)
+#pragma warning(default : 26819; default : 26451; default : 6387; default : 6001)

@@ -24,7 +24,6 @@
 #include "CellViewWindow.h"
 
 #include "LogWindow.h"
-#include "TESDataFileHandler_CK.h"
 
 namespace CellViewWindow
 {

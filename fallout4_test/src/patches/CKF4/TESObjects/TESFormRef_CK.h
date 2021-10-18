@@ -22,35 +22,39 @@
 
 #pragma once
 
-#include "TESFile_CK.h"
-#include "../TES/BSTList.h"
+#include "TESForm_CK.h"
+#include "TESCell_CK.h"
 
-#include <vector>
-
-class TESDataFileHandler_CK
-{
+/* 
+	The class of objects that are not something, but have a parent object.
+	Such objects are used in Cells and Layers.
+*/
+class TESFormRef_CK : public TESBaseForm_CK {
+private:
+	CHAR _pad1[0xA0];			// 0x28
+	TESCell_CK* _parentcell;	// 0xC8
+	CHAR _pad2[0x20];			// 0xD0
+	TESForm_CK* _parent;		// 0xF0
 public:
-	using TESFileList_CK = BSSimpleList<TESFile_CK*>;
-	using TESFileListPtr_CK = TESFileList_CK*;
-	using TESFileArray_CK = std::vector<TESFile_CK*>;
+	inline const TESCell_CK* GetParentCellConst(VOID) const {
+		return _parentcell;
+	}
+	inline const TESForm_CK* GetParentConst(VOID) const {
+		return _parent;
+	}
+	inline TESCell_CK* GetParentCell(VOID) {
+		return _parentcell;
+	}
+	inline TESForm_CK* GetParent(VOID) {
+		return _parent;
+	}
+	std::string GetEditID(VOID) const;
+	CHAR GetTypeID(VOID) const;
 public:
-	bool Load(int Unknown);	
-	bool InitUnknownDataSetTextStatusBar(void);	
-	static void DetectSelectFile(TESFile_CK* File);
-	static void EndLoadEvent_SendDone(int32_t index, LPCSTR message);
-	static void AttachBA2File(LPCSTR _filename, LPCSTR _folder = NULL);
-public:
-	static TESFileListPtr_CK GetArchiveFiles(void);
-	static TESFileArray_CK* GetSelectedFiles(void);
-	TESFile_CK* GetActiveFile(void) const;
-	bool IsActiveFile(void) const;
-	bool IsLoaded(void) const;
-public:
-	static void Initialize(void);
-public:
-	READ_PROPERTY(GetArchiveFiles) TESFileListPtr_CK ArchiveFiles;
-	READ_PROPERTY(GetSelectedFiles) TESFileArray_CK* SelectedFiles;
-	READ_PROPERTY(GetActiveFile) TESFile_CK* ActiveFile;
+	READ_PROPERTY(GetEditID) std::string EditID;
+	READ_PROPERTY(GetTypeID) CHAR TypeID;
+	READ_PROPERTY(GetParentCell) TESCell_CK* ParentCell;
+	READ_PROPERTY(GetParent) TESForm_CK* Parent;
+	READ_PROPERTY(GetParentCellConst) const TESCell_CK* ParentCellConst;
+	READ_PROPERTY(GetParentConst) const TESForm_CK* ParentConst;
 };
-
-extern TESDataFileHandler_CK* FileHandler;

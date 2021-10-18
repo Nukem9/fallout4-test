@@ -83,63 +83,60 @@ public:
 	using const_reference = const _Ty&;
 	using size_type = uint32_t;
 
-	BSTArray()
-	{
+	BSTArray(void) {
 	}
 
-	reference operator[](const size_type Pos)
-	{
+	reference operator[](const size_type Pos) {
 		return (this->_Myfirst()[Pos]);
 	}
 
-	const_reference operator[](const size_type Pos) const
-	{
-		return (this->_Myfirst()[Pos]);
+	const_reference operator[](const size_type Pos) const {
+		return (this->_const_Myfirst()[Pos]);
 	}
 
-	reference at(const size_type Pos)
-	{
+	reference at(const size_type Pos) {
 		AssertMsg(Pos >= 0 && Pos < QSize(), "Exceeded array bounds");
 
 		return (this->_Myfirst()[Pos]);
 	}
 
-	const_reference at(const size_type Pos) const
-	{
+	const_reference at(const size_type Pos) const {
 		AssertMsg(Pos >= 0 && Pos < QSize(), "Exceeded array bounds");
 
 		return (this->_Myfirst()[Pos]);
 	}
 	
-	reference front()
-	{
+	reference front(void) {
 		return (*this->_Myfirst());
 	}
 
-	const_reference front() const
-	{
-		return (*this->_Myfirst());
+	const_reference const_front(void) const {
+		return (*this->_const_Myfirst());
 	}
 
-	reference back()
-	{
+	reference back(void) {
 		return (this->_Mylast()[-1]);
 	}
 
-	const_reference back() const
-	{
-		return (this->_Mylast()[-1]);
+	const_reference const_back(void) const {
+		return (this->_const_Mylast()[-1]);
 	}
 
 private:
-	_Ty *_Myfirst()
-	{
+	_Ty *_Myfirst(void) {
 		return (_Ty *)QBuffer();
 	}
 
-	_Ty *_Mylast()
-	{
+	_Ty *_Mylast(void) {
 		return ((_Ty *)QBuffer()) + QSize();
+	}
+
+	const _Ty* _const_Myfirst(void) const {
+		return (_Ty*)QBuffer();
+	}
+
+	const _Ty* _const_Mylast(void) const {
+		return ((_Ty*)QBuffer()) + QSize();
 	}
 };
 

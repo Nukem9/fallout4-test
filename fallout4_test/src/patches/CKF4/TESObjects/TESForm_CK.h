@@ -23,28 +23,15 @@
 
 #pragma once
 
-#include "../../common.h"
-#include "TESObjects/TES.h"
+#include "TESBaseForm_CK.h"
 
-#include "UIMenus.h"
-#include "UIBaseWindow.h"
-#include "UICheckboxControl.h"
-
-#include <CommCtrl.h>
-
-#define UI_LISTVIEW_PLUGINS					1056						// See: resource.rc
-#define UI_EDIT_SEARCH_PLUGIN_BY_NAME		(UI_CUSTOM_MESSAGE + 4)	
-#define UI_NEW_LISTVIEW_CONTROL_TO_RESULT	(UI_CUSTOM_MESSAGE + 5)	
-#define UI_SETACTIVEPLUGIN_BUTTON			1121						// See: resource.rc
-
-namespace DataWindow
-{
-	namespace Classes = Core::Classes::UI;
-
-	extern DLGPROC OldDlgProc;
-
-	HWND FIXAPI GetWindow(VOID);
-	Classes::CUICustomWindow& FIXAPI GetWindowObj(VOID);
-
-	INT_PTR CALLBACK DlgProc(HWND DialogHwnd, UINT Message, WPARAM wParam, LPARAM lParam);
-}
+class TESForm_CK : public TESBaseForm_CK {
+public:
+	std::string GetEditID(VOID) const;
+	inline CHAR GetTypeID(VOID) const { return __GetTypeID(); }
+public:
+	READ_PROPERTY(GetEditID) std::string EditID;
+	READ_PROPERTY(GetTypeID) CHAR TypeID;
+public:
+	static TESForm_CK* GetFormByNumericID(UINT32 SearchID);
+};

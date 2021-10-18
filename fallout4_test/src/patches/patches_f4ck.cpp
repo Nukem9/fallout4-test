@@ -39,6 +39,7 @@
 #include "CKF4/EditorUIProgressDialog.h"
 
 // include windows
+#include "CKF4/LayersWindow.h"
 #include "CKF4/LogWindow.h"
 #include "CKF4/CellViewWindow.h"
 #include "CKF4/ObjectWindow.h"
@@ -320,6 +321,16 @@ VOID FIXAPI F_RequiredPatches(VOID) {
 		_MESSAGE_FMT("Replaced function with SIMD function: %d.", count);
 	}
 
+	//
+	// Skip remove failed forms
+	//
+	XUtil::PatchMemory(OFFSET(0x7E4064, 0), { 0xEB });
+
+	//
+	// Skip preload interier or exterier
+	//
+	XUtil::PatchMemory(OFFSET(0x5BE646, 0), { 0xEB });
+
 	XUtil::DetourCall(OFFSET(0x08056B7, 0), &hk_inflateInit);
 	XUtil::DetourCall(OFFSET(0x08056F7, 0), &hk_inflate);
 	PatchIAT(hk_FindFirstFileA, "kernel32.dll", "FindFirstFileA");
@@ -379,11 +390,28 @@ VOID FIXAPI F_UIPatches(VOID) {
 	*(uintptr_t*)&ResponseWindow::OldDlgProc = Detours::X64::DetourFunctionClass(OFFSET(0x0B5EB50, 0), &ResponseWindow::DlgProc);
 	*(uintptr_t*)&RenderWindow::OldDlgProc = Detours::X64::DetourFunctionClass(OFFSET(0x460570, 0), &RenderWindow::DlgProc);
 	*(uintptr_t*)&DataWindow::OldDlgProc = Detours::X64::DetourFunctionClass(OFFSET(0x5A8250, 0), &DataWindow::DlgProc);
+	*(uintptr_t*)&LayersWindow::OldDlgProc = Detours::X64::DetourFunctionClass(OFFSET(0x3C7A80, 0), &LayersWindow::DlgProc);
 
 	if (UITheme::IsEnabledMode()) {
 		*(uintptr_t*)&PreferencesWindow::OldDlgProc = OFFSET(0x1335AF0, 0);
 		XUtil::DetourCall(OFFSET(0x1336521, 0), &PreferencesWindow::CreateDialogParamA);
 	}
+
+	// Layers dialog fix resize
+	XUtil::DetourCall(OFFSET(0x67C135, 0), &LayersWindow::MoveWindowBody);
+	XUtil::DetourCall(OFFSET(0x67C165, 0), &LayersWindow::MoveWindowHeader);
+	// Layers no inc 
+	XUtil::PatchMemoryNop(OFFSET(0x3C6CC1, 0), 2);
+	//
+	// Fix: "Layer Window harmless bug" by woodfuzzy
+	// The essence of the bug: there are markers with a "primitive" flag. 
+	// Such markers are generated every time something is done with them, even if you click Edit then they are deleted, I don't know why.
+	// In layers, the counter increases, but if it decreases when closing Preferences, then it does not when moving.
+	// 
+	// 
+	// IMPORTANT: The layer may contain objects of an unloaded scene of another parent cell.
+	//
+	XUtil::DetourJump(OFFSET(0x3C7260, 0), &GetCountItemInLayer);
 
 	// CheckMenuItem is called, however, it always gets zero, but eight is written on top, which is equal to MFS_CHECKED.
 	XUtil::PatchMemoryNop(OFFSET(0x5B820D, 0), 6);
@@ -681,7 +709,7 @@ VOID FIXAPI MainFix_PatchFallout4CreationKit(VOID)
 	}
 
 	///////////////////////////////////////////////////////////////////////
-
+	
 #if FALLOUT4_CK64_ENB_FIXABLE
 	//
 	// ENBSeries detected and create double launch CreationKit

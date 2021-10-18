@@ -23,8 +23,7 @@
 #pragma once
 
 #include "../../common.h"
-#include "TESDataFileHandler_CK.h"
-#include "TESForm_CK.h"
+#include "TESObjects/TES.h"
 
 namespace EditorUI
 {

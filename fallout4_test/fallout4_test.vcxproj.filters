@@ -90,6 +90,12 @@
     <Filter Include="Header Files\Patches\CK">
       <UniqueIdentifier>{cd26e7a2-a163-4aa0-923d-f4759c8c3eac}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Classes\CK">
+      <UniqueIdentifier>{92ecdc46-a44d-4913-ac89-4227a22582f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Classes\CK">
+      <UniqueIdentifier>{d5a434c2-eb02-4f57-88f6-b9620c20a5de}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\profiler.h">
@@ -203,9 +209,6 @@
     <ClInclude Include="src\patches\TES\BSTArray.h">
       <Filter>Header Files\Classes</Filter>
     </ClInclude>
-    <ClInclude Include="src\patches\CKF4\TESForm_CK.h">
-      <Filter>Header Files\Classes</Filter>
-    </ClInclude>
     <ClInclude Include="src\patches\CKF4\UIMenus.h">
       <Filter>Header Files\UI\Classes</Filter>
     </ClInclude>
@@ -229,12 +232,6 @@
     </ClInclude>
     <ClInclude Include="src\patches\CKF4\UIProgressDialog.h">
       <Filter>Header Files\UI\Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="src\patches\CKF4\TESDataFileHandler_CK.h">
-      <Filter>Header Files\Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="src\patches\CKF4\TESFile_CK.h">
-      <Filter>Header Files\Classes</Filter>
     </ClInclude>
     <ClInclude Include="src\patches\ComClasses.h">
       <Filter>Header Files\Classes</Filter>
@@ -356,9 +353,6 @@
     <ClInclude Include="src\patches\CKF4\ShowHideWindow.h">
       <Filter>Header Files\UI\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="src\patches\CKF4\TESCellViewScene_CK.h">
-      <Filter>Header Files\Classes</Filter>
-    </ClInclude>
     <ClInclude Include="src\patches\CKF4\ActorWindow.h">
       <Filter>Header Files\UI\Windows</Filter>
     </ClInclude>
@@ -385,6 +379,36 @@
     </ClInclude>
     <ClInclude Include="src\erase_if.h">
       <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\LayersWindow.h">
+      <Filter>Header Files\UI\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\TESObjects\TESDataFileHandler_CK.h">
+      <Filter>Header Files\Classes\CK</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\TESObjects\TESFile_CK.h">
+      <Filter>Header Files\Classes\CK</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\TESObjects\TESForm_CK.h">
+      <Filter>Header Files\Classes\CK</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\TESObjects\TESCell_CK.h">
+      <Filter>Header Files\Classes\CK</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\TESObjects\TESCellViewScene_CK.h">
+      <Filter>Header Files\Classes\CK</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\TESObjects\TES.h">
+      <Filter>Header Files\Classes\CK</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\TESObjects\TESLayer_CK.h">
+      <Filter>Header Files\Classes\CK</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\TESObjects\TESFormRef_CK.h">
+      <Filter>Header Files\Classes\CK</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\TESObjects\TESBaseForm_CK.h">
+      <Filter>Header Files\Classes\CK</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -436,9 +460,6 @@
     <ClCompile Include="src\typeinfo\ms_rtti.cpp">
       <Filter>Source Files\RTTI</Filter>
     </ClCompile>
-    <ClCompile Include="src\patches\CKF4\TESForm_CK.cpp">
-      <Filter>Source Files\Classes</Filter>
-    </ClCompile>
     <ClCompile Include="src\patches\CKF4\UIMenus.cpp">
       <Filter>Source Files\UI\Classes</Filter>
     </ClCompile>
@@ -459,12 +480,6 @@
     </ClCompile>
     <ClCompile Include="src\patches\CKF4\UIProgressDialog.cpp">
       <Filter>Source Files\UI\Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="src\patches\CKF4\TESDataFileHandler_CK.cpp">
-      <Filter>Source Files\Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="src\patches\CKF4\TESFile_CK.cpp">
-      <Filter>Source Files\Classes</Filter>
     </ClCompile>
     <ClCompile Include="src\patches\threading.cpp">
       <Filter>Source Files\Patches</Filter>
@@ -604,9 +619,6 @@
     <ClCompile Include="src\patches\CKF4\ShowHideWindow.cpp">
       <Filter>Source Files\UI\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="src\patches\CKF4\TESCellViewScene_CK.cpp">
-      <Filter>Source Files\Classes</Filter>
-    </ClCompile>
     <ClCompile Include="src\INIReader.cpp">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
@@ -633,6 +645,27 @@
     </ClCompile>
     <ClCompile Include="src\patches\CKF4\ENBSeriesFixableRun.cpp">
       <Filter>Source Files\Patches\CK</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\LayersWindow.cpp">
+      <Filter>Source Files\UI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\TESObjects\TESCellViewScene_CK.cpp">
+      <Filter>Source Files\Classes\CK</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\TESObjects\TESDataFileHandler_CK.cpp">
+      <Filter>Source Files\Classes\CK</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\TESObjects\TESFile_CK.cpp">
+      <Filter>Source Files\Classes\CK</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\TESObjects\TESForm_CK.cpp">
+      <Filter>Source Files\Classes\CK</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\TESObjects\TESFormRef_CK.cpp">
+      <Filter>Source Files\Classes\CK</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\TESObjects\TESLayer_CK.cpp">
+      <Filter>Source Files\Classes\CK</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -670,6 +703,7 @@
     <Image Include="..\Resources\logo.bmp">
       <Filter>Resources</Filter>
     </Image>
+    <Image Include="..\Resources\Bitmap_430_w.bmp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc">

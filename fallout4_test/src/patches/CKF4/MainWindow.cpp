@@ -29,13 +29,13 @@
 #include "Editor.h"
 #include "EditorUI.h"
 
-#include "TESCellViewScene_CK.h"
-
 #include <commdlg.h>
 #include <shellapi.h>
 #include <filesystem>
 
 #include <Uxtheme.h>
+
+#pragma warning (disable : 6387)
 
 namespace MainWindow
 {
@@ -391,7 +391,7 @@ namespace MainWindow
 
 				if (TESCellViewScene_CK* view = TESCellViewScene_CK::GetCellViewScene(); view)
 				{
-					if (TESForm_CK* form = view->CellInteriosInfo; form)
+					if (TESForm_CK* form = view->Interios; form)
 					{
 						// Fake update scene
 						((VOID(__stdcall*)(TESCellViewScene_CK*, TESForm_CK*))OFFSET(0x7B1E80, 0))(view, form);
@@ -436,3 +436,5 @@ namespace MainWindow
 		return CallWindowProcA(OldWndProc, Hwnd, Message, wParam, lParam);
 	}
 }
+
+#pragma warning (default : 6387)
