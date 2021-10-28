@@ -243,35 +243,10 @@ powershell Copy-Item -Path "$(SolutionDir)$(Platform)\$(Configuration)\f4ck_load
     <ClInclude Include="src\patches\deflate.h" />
     <ClInclude Include="src\patches\offsets.h" />
     <ClInclude Include="src\patches\TES\bhkThreadMemorySource.h" />
-    <ClInclude Include="src\patches\TES\NiMain\NiAlphaProperty.h" />
-    <ClInclude Include="src\patches\TES\NiMain\NiAVObject.h" />
-    <ClInclude Include="src\patches\TES\NiMain\NiCamera.h" />
-    <ClInclude Include="src\patches\TES\NiMain\NiCollisionUtils.h" />
-    <ClInclude Include="src\patches\TES\NiMain\NiColor.h" />
-    <ClInclude Include="src\patches\TES\NiMain\NiCullingProcess.h" />
-    <ClInclude Include="src\patches\TES\NiMain\NiDirectionalLight.h" />
-    <ClInclude Include="src\patches\TES\NiMain\NiFogProperty.h" />
-    <ClInclude Include="src\patches\TES\NiMain\NiFrustum.h" />
-    <ClInclude Include="src\patches\TES\NiMain\NiLight.h" />
-    <ClInclude Include="src\patches\TES\NiMain\NiMatrix.h" />
-    <ClInclude Include="src\patches\TES\NiMain\NiNode.h" />
-    <ClInclude Include="src\patches\TES\NiMain\NiObject.h" />
-    <ClInclude Include="src\patches\TES\NiMain\NiObjectNET.h" />
-    <ClInclude Include="src\patches\TES\NiMain\NiPick.h" />
-    <ClInclude Include="src\patches\TES\NiMain\NiPoint.h" />
-    <ClInclude Include="src\patches\TES\NiMain\NiPointer.h" />
-    <ClInclude Include="src\patches\TES\NiMain\NiRefObject.h" />
-    <ClInclude Include="src\patches\TES\NiMain\NiRTTI.h" />
-    <ClInclude Include="src\patches\TES\NiMain\NiSkinInstance.h" />
-    <ClInclude Include="src\patches\TES\NiMain\NiSourceTexture.h" />
-    <ClInclude Include="src\patches\TES\NiMain\NiTexture.h" />
-    <ClInclude Include="src\patches\TES\NiMain\NiTransform.h" />
     <ClInclude Include="src\patches\TES\Setting.h" />
     <ClInclude Include="src\profiler_internal.h" />
     <ClInclude Include="src\profiler.h" />
     <ClInclude Include="src\tools\INIHookInputToFile.h" />
-    <ClInclude Include="src\typeinfo\hk_rtti.h" />
-    <ClInclude Include="src\typeinfo\ms_rtti.h" />
     <ClInclude Include="src\common.h" />
     <ClInclude Include="src\UtfStr.h" />
     <ClInclude Include="src\xutil.h" />
@@ -362,8 +337,6 @@ powershell Copy-Item -Path "$(SolutionDir)$(Platform)\$(Configuration)\f4ck_load
   <ItemGroup>
     <None Include="..\Resources\f4ck_loader.bin" />
     <None Include="cpp.hint" />
-    <None Include="src\patches\TES\NiMain\NiRTTI.inl" />
-    <None Include="src\typeinfo\ni_rtti.inl" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
