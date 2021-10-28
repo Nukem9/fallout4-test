@@ -22,22 +22,39 @@
 
 #pragma once
 
-#include "../../common.h"
-#include "../../api/CommIncAPI.h"
+#include "TESForm.h"
+#include "TESCell.h"
 
-namespace EditorUI
-{
-	using namespace api;
+#include "NiMain/NiTypes.h"
 
-	BOOL FIXAPI hk_CallLoadFile(TESDataFileHandler* io_handler, INT32 _zero_only);
-	VOID FIXAPI hk_EndLoadFile(VOID);
-	VOID FIXAPI hk_StepItProgress(LPCSTR* str);
-	BOOL FIXAPI hk_UpdateProgress(LPVOID __this, INT32 __1);
-	VOID FIXAPI hk_SetTextAndSendStatusBar(UINT32 index, LPCSTR message);
-	VOID FIXAPI hk_SendFromCellViewToRender(LPVOID Unknown1, TESForm* View, INT32 Unknown3);
-	VOID FIXAPI hk_EndSendFromCellViewToRender(VOID);
+#pragma pack(push, 1)
 
-	// Methods of the progress indicator displayed on a taskbar button.
-
-	VOID FIXAPI SetMarqueeInTaskbar(BOOL _value);
+namespace api {
+	class TESObjectREFR : public TESForm {
+	private:
+		enum { eTypeID = ftReference };
+	private:
+		CHAR _pad1[0xA0];			// 0x28
+		TESCell* _parentCell;		// 0xC8
+		NiPoint3 _rotate;			// C0, C4, C8
+		FLOAT _unkCC;
+		NiPoint3 _position;			// D0, D4, D8
+		FLOAT _unkDC;
+		TESForm* _baseForm;			// E0
+		LPVOID _unkE8;				// E8
+	public:
+		virtual ~TESObjectREFR(VOID) = 0;
+	public:
+		inline const TESCell* GetParentCellConst(VOID) const { return _parentCell; }
+		inline const TESForm* GetParentConst(VOID) const { return _baseForm; }
+		inline TESCell* GetParentCell(VOID) { return _parentCell; }
+		inline TESForm* GetParent(VOID) { return _baseForm; }
+	public:
+		READ_PROPERTY(GetParentCell) TESCell* ParentCell;
+		READ_PROPERTY(GetParent) TESForm* Parent;
+		READ_PROPERTY(GetParentCellConst) const TESCell* ParentCellConst;
+		READ_PROPERTY(GetParentConst) const TESForm* ParentConst;
+	};
 }
+
+#pragma pack(pop)

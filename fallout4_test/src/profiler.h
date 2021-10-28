@@ -159,4 +159,4 @@ namespace Profiler
 	float GetThreadUsagePercent();
 	float GetGpuUsagePercent(int GpuIndex = 0);
 }
-#endif // SKYRIM64_USE_PROFILER
+#endif // FALLOUT4_USE_PROFILER

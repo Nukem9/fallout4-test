@@ -23,7 +23,7 @@
 #pragma once
 
 #include "../../common.h"
-#include "TESObjects/TES.h"
+#include "../../api/CommIncAPI.h"
 
 #include "UIMenus.h"
 #include "UIBaseWindow.h"
@@ -31,6 +31,8 @@
 namespace RenderWindow
 {
 	extern DLGPROC OldDlgProc;
+
+	using namespace api;
 
 	HWND GetWindow(void);
 	Core::Classes::UI::CUICustomWindow& GetWindowObj(void);

@@ -20,24 +20,25 @@
 */
 //////////////////////////////////////////
 
-#pragma once
+#include "TESCellViewScene.h"
 
-#include "../../common.h"
-#include "../../api/CommIncAPI.h"
-
-namespace EditorUI
+BOOL api::TESCellViewScene::TESRenderInfo::IsSky(VOID) const
 {
-	using namespace api;
+	BYTE flag = *(BYTE*)(((uintptr_t)this) + 0x37C);
+	// 
+	// 37C == 1 or 3
+	return (flag == 1) || (flag == 3);
+}
 
-	BOOL FIXAPI hk_CallLoadFile(TESDataFileHandler* io_handler, INT32 _zero_only);
-	VOID FIXAPI hk_EndLoadFile(VOID);
-	VOID FIXAPI hk_StepItProgress(LPCSTR* str);
-	BOOL FIXAPI hk_UpdateProgress(LPVOID __this, INT32 __1);
-	VOID FIXAPI hk_SetTextAndSendStatusBar(UINT32 index, LPCSTR message);
-	VOID FIXAPI hk_SendFromCellViewToRender(LPVOID Unknown1, TESForm* View, INT32 Unknown3);
-	VOID FIXAPI hk_EndSendFromCellViewToRender(VOID);
 
-	// Methods of the progress indicator displayed on a taskbar button.
+api::TESCellViewScene* api::TESCellViewScene::GetCellViewScene(VOID)
+{
+	return *(TESCellViewScene**)(OFFSET(0x6D54CF8, 0));
+}
 
-	VOID FIXAPI SetMarqueeInTaskbar(BOOL _value);
+
+BOOL api::TESCellViewScene::IsEmpty(VOID) const
+{
+	return (*(PDWORD)(_pad1 + 0x48) == 0x7FFFFFFF) && (*(PDWORD)(_pad1 + 0x4C) == 0x7FFFFFFF) &&
+		(*(PDWORD)(_pad1 + 0x50) == 0x7FFFFFFF) && (*(PDWORD)(_pad1 + 0x54) == 0x7FFFFFFF);
 }

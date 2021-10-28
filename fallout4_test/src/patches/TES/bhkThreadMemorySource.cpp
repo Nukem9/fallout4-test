@@ -20,7 +20,7 @@
 */
 //////////////////////////////////////////
 
-#include "MemoryManager.h"
+#include "../../common/MemoryManager.h"
 #include "bhkThreadMemorySource.h"
 
 bhkThreadMemorySource::bhkThreadMemorySource(VOID)

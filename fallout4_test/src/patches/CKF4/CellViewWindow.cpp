@@ -32,39 +32,32 @@ namespace CellViewWindow
 
 	DLGPROC OldDlgProc;
 
-	HWND FIXAPI GetWindow(VOID)
-	{
+	HWND FIXAPI GetWindow(VOID) {
 		return CellViewWindow.Handle;
 	}
 
-	Classes::CUICustomWindow& FIXAPI GetWindowObj(VOID)
-	{
+	Classes::CUICustomWindow& FIXAPI GetWindowObj(VOID) {
 		return CellViewWindow;
 	}
 
-	VOID FIXAPI SetCellWindowFilter(const BOOL actived)
-	{
+	VOID FIXAPI SetCellWindowFilter(const BOOL actived) {
 		CellViewWindowControls.FilterCell = CellViewWindowControls.EditFilterCell.Caption;
 		CellViewWindowControls.ActiveOnly.Checked = actived;
 		// Fake the dropdown list being activated
 		CellViewWindow.Perform(WM_COMMAND, MAKEWPARAM(2083, 1), 0);
 	}
 
-	VOID FIXAPI SetCellObjectsWindowFilter(const BOOL actived)
-	{
+	VOID FIXAPI SetCellObjectsWindowFilter(const BOOL actived) {
 		CellViewWindowControls.ActiveOnlyObjs.Checked = actived;
 		// Fake a filter text box change
 		CellViewWindow.Perform(WM_COMMAND, MAKEWPARAM(2581, EN_CHANGE), 0);
 	}
 
-	INT_PTR CALLBACK DlgProc(HWND DialogHwnd, UINT Message, WPARAM wParam, LPARAM lParam)
-	{
-		if (Message == WM_INITDIALOG)
-		{
+	INT_PTR CALLBACK DlgProc(HWND DialogHwnd, UINT Message, WPARAM wParam, LPARAM lParam) {
+		if (Message == WM_INITDIALOG) {
 			// This message is called a great many times, especially when updating World Space
 
-			if (!CellViewWindowControls.Initialize)
-			{
+			if (!CellViewWindowControls.Initialize) {
 				CellViewWindowControls.Initialize = TRUE;
 				CellViewWindow = DialogHwnd;
 
@@ -95,8 +88,7 @@ namespace CellViewWindow
 				ShowWindow(GetDlgItem(DialogHwnd, 1007), SW_HIDE);
 				SetTimer(DialogHwnd, UI_TIMER_FILTER_CELL, 2000, NULL);
 			}
-			else
-			{
+			else {
 				// Let's use this feature
 
 				CellViewWindowControls.LockFiltering = TRUE;
@@ -105,9 +97,8 @@ namespace CellViewWindow
 				CellViewWindowControls.EditFilterCell.Caption = "";
 			}
 		}
-		else if (Message == UI_CELL_WINDOW_ADD_ITEM)
-		{
-			auto form = reinterpret_cast<const TESForm_CK*>(wParam);
+		else if (Message == UI_CELL_WINDOW_ADD_ITEM) {
+			auto form = reinterpret_cast<const TESForm*>(wParam);
 			auto allowInsert = reinterpret_cast<BOOL*>(lParam);
 			*allowInsert = TRUE;
 
@@ -123,9 +114,8 @@ namespace CellViewWindow
 
 			return S_OK;
 		}
-		else if (Message == UI_CELL_VIEW_ADD_CELL_OBJECT_ITEM)
-		{
-			auto form = reinterpret_cast<const TESForm_CK*>(wParam);
+		else if (Message == UI_CELL_VIEW_ADD_CELL_OBJECT_ITEM) {
+			auto form = reinterpret_cast<const TESForm*>(wParam);
 			auto allowInsert = reinterpret_cast<BOOL*>(lParam);
 			*allowInsert = TRUE;
 
@@ -139,8 +129,7 @@ namespace CellViewWindow
 			return S_OK;
 		}
 		// Don't let us reduce the window too much
-		else if (Message == WM_GETMINMAXINFO)
-		{
+		else if (Message == WM_GETMINMAXINFO) {
 			if (lParam)
 			{
 				LPMINMAXINFO lpMMI = (LPMINMAXINFO)lParam;
@@ -150,8 +139,7 @@ namespace CellViewWindow
 
 			return S_OK;
 		}
-		else if (Message == WM_TIMER)
-		{
+		else if (Message == WM_TIMER) {
 			if (wParam == UI_TIMER_FILTER_CELL)
 			{
 				if (CellViewWindowControls.NowFiltering)
@@ -161,10 +149,8 @@ namespace CellViewWindow
 				}
 			}
 		}
-		else if (Message == WM_COMMAND)
-		{
-			switch (LOWORD(wParam))
-			{
+		else if (Message == WM_COMMAND) {
+			switch (LOWORD(wParam)) {
 			case UI_CELL_WINDOW_ADD_ITEM:
 				SetCellWindowFilter(!CellViewWindowControls.ActiveOnly.Checked);
 				return S_OK;
@@ -172,11 +158,9 @@ namespace CellViewWindow
 				SetCellObjectsWindowFilter(!CellViewWindowControls.ActiveOnlyObjs.Checked);
 				return S_OK;
 			case UI_CELL_VIEW_FILTER_EDITTEXT:
-				if (HIWORD(wParam) == EN_CHANGE)
-				{
+				if (HIWORD(wParam) == EN_CHANGE) {
 					UINT32 len = GetWindowTextLengthA(CellViewWindowControls.EditFilterCell.Handle);
-					if (len > 2)
-					{
+					if (len > 2) {
 						CellViewWindowControls.LockFiltering = FALSE;
 						CellViewWindowControls.NowFiltering = TRUE;
 					}
@@ -184,10 +168,22 @@ namespace CellViewWindow
 						SetCellWindowFilter(CellViewWindowControls.ActiveOnly.Checked);
 				}
 				return S_OK;
+			/*case UI_CELL_VIEW_WORLDSPACE_COMBOBOX:
+				if (HIWORD(wParam) == CBN_SELCHANGE) {
+					int ItemIndex = SendMessageA((HWND)lParam, CB_GETCURSEL, 0, 0);
+					TCHAR cbItem[MAX_PATH];
+					(TCHAR)SendMessageA((HWND)lParam, CB_GETLBTEXT, (WPARAM)ItemIndex, (LPARAM)cbItem);
+
+				//	MessageBox(0, "", "", 0);
+
+					BOOL bResult = !stricmp(cbItem, "Recent Cells");
+					CellViewWindowControls.ActiveOnly.Enabled = !bResult;
+					if (bResult)
+						CellViewWindowControls.ActiveOnly.Checked = FALSE;
+				}*/
 			}
 		}
-		else if (Message == WM_SIZE)
-		{
+		else if (Message == WM_SIZE) {
 			LRESULT lResult = OldDlgProc(DialogHwnd, Message, wParam, lParam);
 
 			// Fix the "World Space" label positioning on window resize
@@ -204,15 +200,14 @@ namespace CellViewWindow
 
 			return lResult;
 		}
-		else if (Message == WM_DESTROY)
-		{
+		else if (Message == WM_DESTROY) {
 			KillTimer(DialogHwnd, UI_TIMER_FILTER_CELL);
 		}
 
 		return OldDlgProc(DialogHwnd, Message, wParam, lParam);
 	}
 
-	VOID FIXAPI hk_7FF70C322BC0(HWND ListViewHandle, TESForm_CK* Form, BOOL UseImage, int32_t ItemIndex) {
+	VOID FIXAPI hk_7FF70C322BC0(HWND ListViewHandle, TESCell* Form, BOOL UseImage, int32_t ItemIndex) {
 		if (FileHandler->IsLoaded()) {
 			BOOL allowInsert = TRUE;
 			CellViewWindow.Perform(UI_CELL_WINDOW_ADD_ITEM, (WPARAM)Form, (LPARAM)&allowInsert);
@@ -221,10 +216,10 @@ namespace CellViewWindow
 				return;
 		}
 
-		return ((VOID(__fastcall*)(HWND, TESForm_CK*, BOOL, int32_t))OFFSET(0x562BC0, 0))(ListViewHandle, Form, UseImage, ItemIndex);
+		return ((VOID(__fastcall*)(HWND, TESCell*, BOOL, int32_t))OFFSET(0x562BC0, 0))(ListViewHandle, Form, UseImage, ItemIndex);
 	}
 
-	INT32 FIXAPI hk_call_5A43B5(HWND** ListViewHandle, TESForm_CK** Form, INT64 a3) {
+	INT32 FIXAPI hk_call_5A43B5(HWND** ListViewHandle, TESObjectREFR** Form, INT64 a3) {
 		if (FileHandler->IsLoaded()) {
 			BOOL allowInsert = TRUE;
 			CellViewWindow.Perform(UI_CELL_VIEW_ADD_CELL_OBJECT_ITEM, (WPARAM)*Form, (LPARAM)&allowInsert);
@@ -233,6 +228,6 @@ namespace CellViewWindow
 				return 1;
 		}
 
-		return ((INT32(__fastcall*)(HWND**, TESForm_CK**, INT64))OFFSET(0x5A4900, 0))(ListViewHandle, Form, a3);
+		return ((INT32(__fastcall*)(HWND**, TESObjectREFR**, INT64))OFFSET(0x5A4900, 0))(ListViewHandle, Form, a3);
 	}
 }

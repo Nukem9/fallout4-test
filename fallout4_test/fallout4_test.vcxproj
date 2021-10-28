@@ -115,7 +115,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/D "NOMINMAX" /D "ZYDIS_STATIC_DEFINE"  /D "TRACY_ON_DEMAND" /D "_REENTRANT" /D "JEMALLOC_EXPORT=" %(AdditionalOptions)</AdditionalOptions>
       <OmitFramePointers>true</OmitFramePointers>
-      <DisableSpecificWarnings>4430;4267;4302;4311;4312;4996;4244;4477;26495</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4430;4267;4302;4311;4312;4996;4244;4477;26495;26451;26812</DisableSpecificWarnings>
       <FloatingPointExceptions>true</FloatingPointExceptions>
       <LanguageStandard_C>Default</LanguageStandard_C>
       <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
@@ -132,7 +132,8 @@
       <StackCommitSize>32768</StackCommitSize>
     </Link>
     <PreBuildEvent>
-      <Command>powershell -ExecutionPolicy Bypass -File "$(SolutionDir)release.ps1" 4</Command>
+      <Command>powershell -ExecutionPolicy Bypass -File "$(SolutionDir)release.ps1" 4
+powershell Copy-Item -Path "$(SolutionDir)$(Platform)\$(Configuration)\f4ck_loader.exe" -Destination "$(SolutionDir)Resources\f4ck_loader.bin"</Command>
     </PreBuildEvent>
     <PreBuildEvent>
       <Message>Update version_info.h</Message>
@@ -171,6 +172,22 @@
     <ClInclude Include="..\Dependencies\zipper\src\miniz.h" />
     <ClInclude Include="..\Dependencies\zipper\src\zip.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="src\api\BGLayer.h" />
+    <ClInclude Include="src\api\BSTArray.h" />
+    <ClInclude Include="src\api\BSTList.h" />
+    <ClInclude Include="src\api\ComClasses.h" />
+    <ClInclude Include="src\api\CommIncAPI.h" />
+    <ClInclude Include="src\api\NiMain\GameAPI.h" />
+    <ClInclude Include="src\api\NiMain\GameTypes.h" />
+    <ClInclude Include="src\api\NiMain\NiTypes.h" />
+    <ClInclude Include="src\api\TESFormComponents.h" />
+    <ClInclude Include="src\api\TESCell.h" />
+    <ClInclude Include="src\api\TESCellViewScene.h" />
+    <ClInclude Include="src\api\TESDataFileHandler.h" />
+    <ClInclude Include="src\api\TESFile.h" />
+    <ClInclude Include="src\api\TESForm.h" />
+    <ClInclude Include="src\api\TESObjectREFR.h" />
+    <ClInclude Include="src\common\MemoryManager.h" />
     <ClInclude Include="src\config.h" />
     <ClInclude Include="src\erase_if.h" />
     <ClInclude Include="src\INIReader.h" />
@@ -181,15 +198,6 @@
     <ClInclude Include="src\patches\CKF4\Editor.h" />
     <ClInclude Include="src\patches\CKF4\EditorUI.h" />
     <ClInclude Include="src\patches\CKF4\LayersWindow.h" />
-    <ClInclude Include="src\patches\CKF4\TESObjects\TES.h" />
-    <ClInclude Include="src\patches\CKF4\TESObjects\TESBaseForm_CK.h" />
-    <ClInclude Include="src\patches\CKF4\TESObjects\TESCellViewScene_CK.h" />
-    <ClInclude Include="src\patches\CKF4\TESObjects\TESCell_CK.h" />
-    <ClInclude Include="src\patches\CKF4\TESObjects\TESDataFileHandler_CK.h" />
-    <ClInclude Include="src\patches\CKF4\TESObjects\TESFile_CK.h" />
-    <ClInclude Include="src\patches\CKF4\TESObjects\TESFormRef_CK.h" />
-    <ClInclude Include="src\patches\CKF4\TESObjects\TESForm_CK.h" />
-    <ClInclude Include="src\patches\CKF4\TESObjects\TESLayer_CK.h" />
     <ClInclude Include="src\patches\CKF4\TranslateUnicode_CK.h" />
     <ClInclude Include="src\patches\CKF4\UIDialogManager.h" />
     <ClInclude Include="src\patches\CKF4\PreferencesWindow.h" />
@@ -232,12 +240,9 @@
     <ClInclude Include="src\patches\CKF4\UITheme\UpDown.h" />
     <ClInclude Include="src\patches\CKF4\UITheme\VarCommon.h" />
     <ClInclude Include="src\patches\CKF4\UITheme\PopupMenu.h" />
-    <ClInclude Include="src\patches\ComClasses.h" />
     <ClInclude Include="src\patches\deflate.h" />
     <ClInclude Include="src\patches\offsets.h" />
     <ClInclude Include="src\patches\TES\bhkThreadMemorySource.h" />
-    <ClInclude Include="src\patches\TES\BSTList.h" />
-    <ClInclude Include="src\patches\TES\BSTArray.h" />
     <ClInclude Include="src\patches\TES\NiMain\NiAlphaProperty.h" />
     <ClInclude Include="src\patches\TES\NiMain\NiAVObject.h" />
     <ClInclude Include="src\patches\TES\NiMain\NiCamera.h" />
@@ -267,7 +272,6 @@
     <ClInclude Include="src\tools\INIHookInputToFile.h" />
     <ClInclude Include="src\typeinfo\hk_rtti.h" />
     <ClInclude Include="src\typeinfo\ms_rtti.h" />
-    <ClInclude Include="src\patches\TES\MemoryManager.h" />
     <ClInclude Include="src\common.h" />
     <ClInclude Include="src\UtfStr.h" />
     <ClInclude Include="src\xutil.h" />
@@ -275,6 +279,15 @@
   <ItemGroup>
     <ClCompile Include="..\..\jDialogs\jDialogs\include\jdialogs.cpp" />
     <ClCompile Include="..\Dependencies\zipper\src\zip.c" />
+    <ClCompile Include="src\api\BGLayer.cpp" />
+    <ClCompile Include="src\api\NiMain\GameAPI.cpp" />
+    <ClCompile Include="src\api\NiMain\GameTypes.cpp" />
+    <ClCompile Include="src\api\NiMain\NiTypes.cpp" />
+    <ClCompile Include="src\api\TESCellViewScene.cpp" />
+    <ClCompile Include="src\api\TESDataFileHandler.cpp" />
+    <ClCompile Include="src\api\TESFile.cpp" />
+    <ClCompile Include="src\api\TESForm.cpp" />
+    <ClCompile Include="src\common\MemoryManager.cpp" />
     <ClCompile Include="src\INIReader.cpp" />
     <ClCompile Include="src\patches\bnet.cpp" />
     <ClCompile Include="src\patches\boost_search_array.cpp" />
@@ -284,12 +297,6 @@
     <ClCompile Include="src\patches\CKF4\Editor.cpp" />
     <ClCompile Include="src\patches\CKF4\ENBSeriesFixableRun.cpp" />
     <ClCompile Include="src\patches\CKF4\LayersWindow.cpp" />
-    <ClCompile Include="src\patches\CKF4\TESObjects\TESCellViewScene_CK.cpp" />
-    <ClCompile Include="src\patches\CKF4\TESObjects\TESDataFileHandler_CK.cpp" />
-    <ClCompile Include="src\patches\CKF4\TESObjects\TESFile_CK.cpp" />
-    <ClCompile Include="src\patches\CKF4\TESObjects\TESFormRef_CK.cpp" />
-    <ClCompile Include="src\patches\CKF4\TESObjects\TESForm_CK.cpp" />
-    <ClCompile Include="src\patches\CKF4\TESObjects\TESLayer_CK.cpp" />
     <ClCompile Include="src\patches\CKF4\TranslateUnicode_CK.cpp" />
     <ClCompile Include="src\patches\CKF4\UIDialogManager.cpp" />
     <ClCompile Include="src\patches\CKF4\PreferencesWindow.cpp" />
@@ -338,7 +345,6 @@
     <ClCompile Include="src\patches\patches_f4tes.cpp" />
     <ClCompile Include="src\patches\settings.cpp" />
     <ClCompile Include="src\patches\TES\Achievements.cpp" />
-    <ClCompile Include="src\patches\TES\NiMain\NiCollisionUtils.cpp" />
     <ClCompile Include="src\patches\threading.cpp" />
     <ClCompile Include="src\patches\window.cpp" />
     <ClCompile Include="src\tools\INIHookInputToFile.cpp" />
@@ -349,15 +355,9 @@
     <ClCompile Include="src\dllmain.cpp" />
     <ClCompile Include="src\dump.cpp" />
     <ClCompile Include="src\patches\TES\bhkThreadMemorySource.cpp" />
-    <ClCompile Include="src\patches\TES\NiMain\NiMain.cpp" />
-    <ClCompile Include="src\patches\TES\NiMain\NiRTTI.cpp" />
     <ClCompile Include="src\patches\TES\Setting.cpp" />
     <ClCompile Include="src\profiler.cpp" />
-    <ClCompile Include="src\typeinfo\hk_rtti.cpp" />
-    <ClCompile Include="src\typeinfo\ni_rtti.cpp" />
-    <ClCompile Include="src\patches\TES\MemoryManager.cpp" />
     <ClCompile Include="src\xutil.cpp" />
-    <ClCompile Include="src\typeinfo\ms_rtti.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Resources\f4ck_loader.bin" />

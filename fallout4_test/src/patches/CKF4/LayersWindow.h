@@ -23,7 +23,7 @@
 #pragma once
 
 #include "../../common.h"
-#include "TESObjects/TES.h"
+#include "../../api/CommIncAPI.h"
 
 #include "UIMenus.h"
 #include "UIBaseWindow.h"
@@ -31,6 +31,8 @@
 namespace LayersWindow
 {
 	namespace Classes = Core::Classes::UI;
+	using namespace api;
+
 	extern DLGPROC OldDlgProc;
 
 	BOOL WINAPI MoveWindowBody(HWND hWnd, INT X, INT Y, INT nWidth, INT nHeight, BOOL bRepaint);

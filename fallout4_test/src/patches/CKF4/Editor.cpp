@@ -414,8 +414,8 @@ VOID FIXAPI hk_vsprintf_autosave(LPSTR lpBuffer, UINT uBufferSize, LPCSTR lpForm
 	XUtil::Str::replaceAll(stime, " ", "_");
 	XUtil::Str::replaceAll(stime, ":", "_");
 
-	if (FileHandler && FileHandler->ActiveFile) {
-		auto name = FileHandler->ActiveFile->FileName;
+	if (api::FileHandler && api::FileHandler->ActiveFile) {
+		auto name = api::FileHandler->ActiveFile->FileName;
 
 		if (!name.length())
 			goto l_default;
@@ -640,7 +640,7 @@ hk_call_F8CAF3
 ==================
 */
 BOOL FIXAPI hk_call_F8CAF3(VOID) {
-	TESCellViewScene_CK* ViewScene = TESCellViewScene_CK::GetCellViewScene();
+	api::TESCellViewScene* ViewScene = api::TESCellViewScene::GetCellViewScene();
 
 	/*
 	Don't draw fog without a scene...
@@ -672,14 +672,14 @@ BOOL FIXAPI hk_call_F8CAF3(VOID) {
 hk_call_F8AF16
 ==================
 */
-VOID FIXAPI hk_call_F8AF16(const TESCellViewScene_CK::TESRenderInfo_CK* RenderInfo) {
-	if (TESCellViewScene_CK* ViewScene = TESCellViewScene_CK::GetCellViewScene(); ViewScene->IsInteriorsCell()) {
+VOID FIXAPI hk_call_F8AF16(const api::TESCellViewScene::TESRenderInfo* RenderInfo) {
+	if (api::TESCellViewScene* ViewScene = api::TESCellViewScene::GetCellViewScene(); ViewScene->IsInteriorsCell()) {
 		if (bFogToggle)
 			return;
 	}
 
 	//This function resets the fog parameters and resets them again...
-	((VOID(__fastcall*)(const TESCellViewScene_CK::TESRenderInfo_CK*))OFFSET(0xF8B6A0, 0))(RenderInfo);
+	((VOID(__fastcall*)(const api::TESCellViewScene::TESRenderInfo*))OFFSET(0xF8B6A0, 0))(RenderInfo);
 }
 
 
@@ -978,16 +978,19 @@ HANDLE WINAPI hk_FindFirstFileA(LPCSTR lpFileName, LPWIN32_FIND_DATAA lpFindFile
 }
 
 
-DWORD FIXAPI GetCountItemInLayer(LPVOID unknown, TESLayer_CK* layer) {
+DWORD FIXAPI GetCountItemInLayer(LPVOID unknown, api::BGLayer* layer) {
 	DWORD dwRet = 0;
 
 	if (!unknown || !layer)
 		return dwRet;
 
-	auto scene = TES::Scene();
+	auto scene = api::TESCellViewScene::GetCellViewScene();
 
-	if (scene->IsInteriorsCell())
+	if (scene->IsInteriorsCell()) {
+		LogWindow::Log("cell %s %d", scene->Interios->GetFullName().c_str(), scene->Interios->GetItemsCount());
+		
 		return layer->GetItemsCountInCell(scene->Interios);
+	}
 	else
 		return layer->GetItemsCountInCell(NULL);
 }

@@ -20,24 +20,15 @@
 */
 //////////////////////////////////////////
 
-#pragma once
+#include "TESForm.h"
 
-#include "../../common.h"
-#include "../../api/CommIncAPI.h"
+std::string api::TESForm::GetID(VOID) const {
+	if (!GetEditIDLength())
+		return "";
+	else
+		return GetEditID();
+}
 
-namespace EditorUI
-{
-	using namespace api;
-
-	BOOL FIXAPI hk_CallLoadFile(TESDataFileHandler* io_handler, INT32 _zero_only);
-	VOID FIXAPI hk_EndLoadFile(VOID);
-	VOID FIXAPI hk_StepItProgress(LPCSTR* str);
-	BOOL FIXAPI hk_UpdateProgress(LPVOID __this, INT32 __1);
-	VOID FIXAPI hk_SetTextAndSendStatusBar(UINT32 index, LPCSTR message);
-	VOID FIXAPI hk_SendFromCellViewToRender(LPVOID Unknown1, TESForm* View, INT32 Unknown3);
-	VOID FIXAPI hk_EndSendFromCellViewToRender(VOID);
-
-	// Methods of the progress indicator displayed on a taskbar button.
-
-	VOID FIXAPI SetMarqueeInTaskbar(BOOL _value);
+api::TESForm* api::GetFormByNumericID(const DWORD SearchID) {
+	return ((TESForm*(__fastcall*)(DWORD))OFFSET(0x853220, 0))(SearchID);
 }

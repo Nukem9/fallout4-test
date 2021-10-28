@@ -25,7 +25,7 @@
 #include <libdeflate/libdeflate.h>
 #include <intrin.h>
 #include "../tools/INIHookInputToFile.h"
-#include "TES/MemoryManager.h"
+#include "../common/MemoryManager.h"
 #include "TES/bhkThreadMemorySource.h"
 
 #include "CKF4/ExperimentalNuukem.h"
@@ -102,7 +102,7 @@ VOID FIXAPI F_RequiredPatches(VOID) {
 	PatchIAT(hk_DialogBoxParamA, "USER32.DLL", "DialogBoxParamA");
 	PatchIAT(hk_EndDialog, "USER32.DLL", "EndDialog");
 	PatchIAT(hk_SendMessageA, "USER32.DLL", "SendMessageA");
-
+	
 	//
 	// Threads
 	//
@@ -115,7 +115,7 @@ VOID FIXAPI F_RequiredPatches(VOID) {
 	XUtil::PatchMemory(OFFSET(0x2881FB4, 0), { 0x74, 0x26, 0x90, 0x90, 0x90, 0x90 });
 	XUtil::PatchMemory(OFFSET(0x2881FF4, 0), { 0x74, 0x1D, 0x90, 0x90, 0x90, 0x90 });
 
-	TESDataFileHandler_CK::Initialize();
+	api::TESDataFileHandler::Initialize();
 
 	// Getting a pointer to TESDataFileHandler_CK. (no actual)
 	// And when the ReplacingTipsWithProgressBar option is enabled, the dialog starts.
@@ -171,7 +171,7 @@ VOID FIXAPI F_RequiredPatches(VOID) {
 	//
 	Tools::IniHookInputInit();
 #endif // !FALLOUT4_STUDY_CK64_INIFILE
-
+	
 	//
 	// Fixed failed load d3dcompiler.dll
 	//
@@ -226,13 +226,13 @@ VOID FIXAPI F_RequiredPatches(VOID) {
 	//
 	// Fix for crash when tab control buttons are deleted. Uninitialized TCITEMA structure variables.
 	//
-	XUtil::DetourJump(OFFSET(0x0564E30, 0), &EditorUI::TabControlDeleteItem);
+	//XUtil::DetourJump(OFFSET(0x0564E30, 0), &EditorUI::TabControlDeleteItem);
 
 	//
 	// Fix for crash (recursive sorting function stack overflow) when saving certain ESP files (i.e SimSettlements.esp)
 	//
-	XUtil::DetourJump(OFFSET(0x07ED840, 0), &ArrayQuickSortRecursive<class TESForm_CK*>);
-	XUtil::PatchMemory(OFFSET(0x07EDA50, 0), { 0xC3 });
+	//XUtil::DetourJump(OFFSET(0x07ED840, 0), &ArrayQuickSortRecursive<class TESForm_CK*>);
+	//XUtil::PatchMemory(OFFSET(0x07EDA50, 0), { 0xC3 });
 	
 	//
 	// Raise the papyrus script editor text limit to 500k characters from 64k
@@ -249,7 +249,7 @@ VOID FIXAPI F_RequiredPatches(VOID) {
 	// Adds support for quotation marks of some commands on the command line
 	//
 	PatchCmdLineWithQuote();
-
+	
 	//
 	// Skip some warning
 	//
@@ -402,6 +402,9 @@ VOID FIXAPI F_UIPatches(VOID) {
 	XUtil::DetourCall(OFFSET(0x67C165, 0), &LayersWindow::MoveWindowHeader);
 	// Layers no inc 
 	XUtil::PatchMemoryNop(OFFSET(0x3C6CC1, 0), 2);
+	// Layers no dec
+	XUtil::PatchMemoryNop(OFFSET(0x3C6ED0, 0), 2);
+
 	//
 	// Fix: "Layer Window harmless bug" by woodfuzzy
 	// The essence of the bug: there are markers with a "primitive" flag. 
@@ -498,7 +501,7 @@ VOID FIXAPI F_UIPatches(VOID) {
 			XUtil::PatchMemory(OFFSET(0x7DEA5B, 0), { 0xEB, 0x05 });
 
 			// Load Files... Initializing...
-			XUtil::DetourClassCall(OFFSET(0x7E2FF6, 0), &TESDataFileHandler_CK::InitUnknownDataSetTextStatusBar);
+			XUtil::DetourClassCall(OFFSET(0x7E2FF6, 0), &api::TESDataFileHandler::InitUnknownDataSetTextStatusBar);
 			// During the entire process, the update is only 95 times for each percentage.... very little, get in here for an update
 			XUtil::DetourCall(OFFSET(0x7DEA67, 0), &EditorUI::hk_UpdateProgress);
 			// Load Files... Done... etc.
@@ -776,18 +779,18 @@ VOID FIXAPI MainFix_PatchFallout4CreationKit(VOID)
 	// AllowSaveESM   - Allow saving ESMs directly without version control
 	// AllowMasterESP - Allow ESP files to act as master files while saving
 	//
-	TESFile_CK::AllowSaveESM = g_INI->GetBoolean("CreationKit", "AllowSaveESM", FALSE);
-	TESFile_CK::AllowMasterESP = g_INI->GetBoolean("CreationKit", "AllowMasterESP", FALSE);
+	api::TESFile::AllowSaveESM = g_INI->GetBoolean("CreationKit", "AllowSaveESM", FALSE);
+	api::TESFile::AllowMasterESP = g_INI->GetBoolean("CreationKit", "AllowMasterESP", FALSE);
 
-	if (TESFile_CK::AllowSaveESM || TESFile_CK::AllowMasterESP)
+	if (api::TESFile::AllowSaveESM || api::TESFile::AllowMasterESP)
 	{
-		*(uintptr_t*)&TESFile_CK::LoadTESInfo = Detours::X64::DetourFunctionClass(OFFSET(0x7FFF10, 0), &TESFile_CK::hk_LoadTESInfo);
-		*(uintptr_t*)&TESFile_CK::WriteTESInfo = Detours::X64::DetourFunctionClass(OFFSET(0x800850, 0), &TESFile_CK::hk_WriteTESInfo);
+		*(uintptr_t*)&api::TESFile::LoadTESInfo = Detours::X64::DetourFunctionClass(OFFSET(0x7FFF10, 0), &api::TESFile::hk_LoadTESInfo);
+		*(uintptr_t*)&api::TESFile::WriteTESInfo = Detours::X64::DetourFunctionClass(OFFSET(0x800850, 0), &api::TESFile::hk_WriteTESInfo);
 
-		if (TESFile_CK::AllowSaveESM)
+		if (api::TESFile::AllowSaveESM)
 		{
 			// Also allow non-game ESMs to be set as "Active File"
-			XUtil::DetourCall(OFFSET(0x5A569F, 0), &TESFile_CK::IsActiveFileBlacklist);
+			XUtil::DetourCall(OFFSET(0x5A569F, 0), &api::TESFile::IsActiveFileBlacklist);
 			XUtil::PatchMemoryNop(OFFSET(0x7D9CD8, 0), 2);
 
 			// Disable: "File '%s' is a master file or is in use.\n\nPlease select another file to save to."
@@ -799,7 +802,7 @@ VOID FIXAPI MainFix_PatchFallout4CreationKit(VOID)
 			XUtil::DetourJump(OFFSET(0x646BD0, 0), &OpenPluginSaveDialog);	
 		}
 		
-		if (TESFile_CK::AllowMasterESP)
+		if (api::TESFile::AllowMasterESP)
 		{
 			// Remove the check for IsMaster()
 			XUtil::PatchMemoryNop(OFFSET(0x7EF13C, 0), 9);

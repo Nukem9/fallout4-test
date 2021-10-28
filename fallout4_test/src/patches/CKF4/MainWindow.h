@@ -24,7 +24,7 @@
 #pragma once
 
 #include "../../common.h"
-#include "TESObjects/TES.h"
+#include "../../api/CommIncAPI.h"
 
 #include "UIMenus.h"
 #include "UIBaseWindow.h"
@@ -54,6 +54,7 @@
 namespace MainWindow
 {
 	namespace Classes = Core::Classes::UI;
+	using namespace api;
 
 	extern WNDPROC OldWndProc;
 

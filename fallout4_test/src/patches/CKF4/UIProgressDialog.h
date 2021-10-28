@@ -24,7 +24,6 @@
 
 #include "../../Common.h"
 #include "UIBaseWindow.h"
-#include "TESObjects/TES.h"
 
 #define UI_PROGRESS_CMD_STEPIT	(UI_CUSTOM_MESSAGE + 5)
 

@@ -1,5 +1,6 @@
 //////////////////////////////////////////
 /*
+* Copyright (c) 2020 Nukem9 <email:Nukem@outlook.com>
 * Copyright (c) 2020-2021 Perchik71 <email:perchik71@outlook.com>
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy of this
@@ -22,22 +23,45 @@
 
 #pragma once
 
-#include "../../common.h"
-#include "../../api/CommIncAPI.h"
+#include "../common.h"
 
-namespace EditorUI
+/*
+==================
+class MemoryManager
+
+Main
+==================
+*/
+class MemoryManager
 {
-	using namespace api;
+private:
+	// We do not describe constructors and destructors
+	// The class is just a shell
 
-	BOOL FIXAPI hk_CallLoadFile(TESDataFileHandler* io_handler, INT32 _zero_only);
-	VOID FIXAPI hk_EndLoadFile(VOID);
-	VOID FIXAPI hk_StepItProgress(LPCSTR* str);
-	BOOL FIXAPI hk_UpdateProgress(LPVOID __this, INT32 __1);
-	VOID FIXAPI hk_SetTextAndSendStatusBar(UINT32 index, LPCSTR message);
-	VOID FIXAPI hk_SendFromCellViewToRender(LPVOID Unknown1, TESForm* View, INT32 Unknown3);
-	VOID FIXAPI hk_EndSendFromCellViewToRender(VOID);
+	MemoryManager(VOID) = default;
+	~MemoryManager(VOID) = default;
+public:
+	static LPVOID Allocate(MemoryManager *Manager, UINT64 Size, UINT32 Alignment, BOOL Aligned);
+	static VOID   Deallocate(MemoryManager *Manager, LPVOID Memory, BOOL Aligned);
+	static UINT64 Size(MemoryManager *Manager, LPVOID Memory);
+};
 
-	// Methods of the progress indicator displayed on a taskbar button.
+/*
+==================
+class ScrapHeap
 
-	VOID FIXAPI SetMarqueeInTaskbar(BOOL _value);
-}
+For small things (maximum 32, 64, 128 Mbytes size)
+==================
+*/
+class ScrapHeap
+{
+private:
+	// We do not describe constructors and destructors
+	// The class is just a shell
+
+	ScrapHeap(VOID) = default;
+	~ScrapHeap(VOID) = default;
+public:
+	LPVOID Allocate(UINT64 Size, UINT32 Alignment);
+	VOID   Deallocate(LPVOID Memory);
+};

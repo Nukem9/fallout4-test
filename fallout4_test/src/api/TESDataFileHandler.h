@@ -22,22 +22,37 @@
 
 #pragma once
 
-#include "../../common.h"
-#include "../../api/CommIncAPI.h"
+#include "TESFile.h"
+#include "BSTList.h"
 
-namespace EditorUI
-{
-	using namespace api;
+#include <vector>
 
-	BOOL FIXAPI hk_CallLoadFile(TESDataFileHandler* io_handler, INT32 _zero_only);
-	VOID FIXAPI hk_EndLoadFile(VOID);
-	VOID FIXAPI hk_StepItProgress(LPCSTR* str);
-	BOOL FIXAPI hk_UpdateProgress(LPVOID __this, INT32 __1);
-	VOID FIXAPI hk_SetTextAndSendStatusBar(UINT32 index, LPCSTR message);
-	VOID FIXAPI hk_SendFromCellViewToRender(LPVOID Unknown1, TESForm* View, INT32 Unknown3);
-	VOID FIXAPI hk_EndSendFromCellViewToRender(VOID);
+namespace api {
+	class TESDataFileHandler
+	{
+	public:
+		using TESFileList = BSSimpleList<TESFile*>;
+		using TESFileListPtr = TESFileList*;
+		using TESFileArray = std::vector<TESFile*>;
+	public:
+		bool Load(int Unknown);
+		bool InitUnknownDataSetTextStatusBar(void);
+		static void DetectSelectFile(TESFile* File);
+		static void EndLoadEvent_SendDone(int32_t index, LPCSTR message);
+		static void AttachBA2File(LPCSTR _filename, LPCSTR _folder = NULL);
+	public:
+		static TESFileListPtr GetArchiveFiles(void);
+		static TESFileArray* GetSelectedFiles(void);
+		TESFile* GetActiveFile(void) const;
+		bool IsActiveFile(void) const;
+		bool IsLoaded(void) const;
+	public:
+		static void Initialize(void);
+	public:
+		READ_PROPERTY(GetArchiveFiles) TESFileListPtr ArchiveFiles;
+		READ_PROPERTY(GetSelectedFiles) TESFileArray* SelectedFiles;
+		READ_PROPERTY(GetActiveFile) TESFile* ActiveFile;
+	};
 
-	// Methods of the progress indicator displayed on a taskbar button.
-
-	VOID FIXAPI SetMarqueeInTaskbar(BOOL _value);
+	extern TESDataFileHandler* FileHandler;
 }

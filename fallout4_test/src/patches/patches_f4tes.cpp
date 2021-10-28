@@ -23,9 +23,9 @@
 #include "../common.h"
 #include "deflate.h"
 #include "boost_search_array.h"
-#include "TES/MemoryManager.h"
+#include "../common/MemoryManager.h"
 #include "TES/bhkThreadMemorySource.h"
-#include "TES/BSTArray.h"
+#include "../api/BSTArray.h"
 
 #include <string>	
 #include <intrin.h>

@@ -23,7 +23,7 @@
 #pragma once
 
 #include <set>
-#include "..\ComClasses.h"
+#include "../../api/ComClasses.h"
 
 #pragma warning (disable : 26812)
 

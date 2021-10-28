@@ -20,8 +20,8 @@
 */
 //////////////////////////////////////////
 
-#include "../ComClasses.h"
-#include "../TES/MemoryManager.h"
+#include "../../api/ComClasses.h"
+#include "../../common/MemoryManager.h"
 #include "../../profiler_internal.h"
 
 #include <shellapi.h>

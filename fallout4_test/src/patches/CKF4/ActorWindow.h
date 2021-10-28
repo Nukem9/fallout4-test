@@ -23,13 +23,14 @@
 #pragma once
 
 #include "../../common.h"
-#include "TESObjects/TES.h"
+#include "../../api/CommIncAPI.h"
 
 #include "UIMenus.h"
 #include "UIBaseWindow.h"
 
 namespace ActorWindow
 {
+	using namespace api;
 	extern DLGPROC OldDlgProc;
 
 	HWND FIXAPI GetWindow(VOID);

@@ -164,16 +164,16 @@ namespace MainWindow
 		}
 		else if (Message == WM_COMMAND)
 		{
-			const uint32_t param = LOWORD(wParam);
+			const DWORD param = LOWORD(wParam);
 
 			switch (param)
 			{
 			case UI_EDITOR_OPENFORMBYID:
 			{
-				auto form = TESForm_CK::GetFormByNumericID((uint32_t)lParam);
+				auto form = GetFormByNumericID((DWORD)lParam);
 
 				if (form)
-					(*(void(__fastcall **)(TESForm_CK*, HWND, __int64, __int64))(*(__int64*)form + 0x340))(form, Hwnd, 0, 1);
+					(*(void(__fastcall **)(TESForm*, HWND, __int64, __int64))(*(__int64*)form + 0x340))(form, Hwnd, 0, 1);
 			}
 			return S_OK;
 
@@ -306,11 +306,11 @@ namespace MainWindow
 			{
 				for (uint32_t i = 0; i < 2048; i++)
 				{
-					auto form = TESForm_CK::GetFormByNumericID(i);
+					auto form = GetFormByNumericID(i);
 
 					if (form)
 					{
-						(*(void(__fastcall **)(TESForm_CK*, __int64))(*(__int64*)form + 0x1A0))(form, 1);
+						(*(void(__fastcall **)(TESForm*, __int64))(*(__int64*)form + 0x1A0))(form, 1);
 						LogWindow::Log("SetFormModified(%08X)", i);
 					}
 				}
@@ -389,12 +389,12 @@ namespace MainWindow
 				MenuItem.Checked = !MenuItem.Checked;
 				bFogToggle = MenuItem.Checked;
 
-				if (TESCellViewScene_CK* view = TESCellViewScene_CK::GetCellViewScene(); view)
+				if (TESCellViewScene* view = TESCellViewScene::GetCellViewScene(); view)
 				{
-					if (TESForm_CK* form = view->Interios; form)
+					if (TESForm* form = view->Interios; form)
 					{
 						// Fake update scene
-						((VOID(__stdcall*)(TESCellViewScene_CK*, TESForm_CK*))OFFSET(0x7B1E80, 0))(view, form);
+						((VOID(__stdcall*)(TESCellViewScene*, TESForm*))OFFSET(0x7B1E80, 0))(view, form);
 					}
 				}
 			}

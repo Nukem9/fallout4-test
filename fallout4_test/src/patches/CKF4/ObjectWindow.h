@@ -24,7 +24,7 @@
 #pragma once
 
 #include "../../common.h"
-#include "TESObjects/TES.h"
+#include "../../api/CommIncAPI.h"
 
 #include "UIMenus.h"
 #include "UIBaseWindow.h"
@@ -38,6 +38,7 @@
 namespace ObjectWindow
 {
 	namespace Classes = Core::Classes::UI;
+	using namespace api;
 
 	typedef struct tagOBJWND_CONTROLS
 	{
@@ -68,5 +69,5 @@ namespace ObjectWindow
 	INT_PTR CALLBACK DlgProc(HWND DialogHwnd, UINT Message, WPARAM wParam, LPARAM lParam);
 
 	BOOL WINAPI hk_MoveWindow(HWND hWindow, INT32 X, INT32 Y, INT32 nWidth, INT32 nHeight, BOOL bRepaint);
-	int32_t FIXAPI hk_7FF72F57F8F0(const int64_t ObjectListInsertData, TESForm_CK* Form);
+	int32_t FIXAPI hk_7FF72F57F8F0(const int64_t ObjectListInsertData, TESForm* Form);
 }

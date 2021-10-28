@@ -20,24 +20,23 @@
 */
 //////////////////////////////////////////
 
-#pragma once
+#include "BGLayer.h"
+#include "TESCell.h"
+#include "TESObjectREFR.h"
 
-#include "../../common.h"
-#include "../../api/CommIncAPI.h"
+DWORD api::BGLayer::GetItemsCountInCell(const TESCell* cell) const {
+	DWORD dwSize = ItemsCount;
 
-namespace EditorUI
-{
-	using namespace api;
+	if (!cell)
+		return dwSize;
 
-	BOOL FIXAPI hk_CallLoadFile(TESDataFileHandler* io_handler, INT32 _zero_only);
-	VOID FIXAPI hk_EndLoadFile(VOID);
-	VOID FIXAPI hk_StepItProgress(LPCSTR* str);
-	BOOL FIXAPI hk_UpdateProgress(LPVOID __this, INT32 __1);
-	VOID FIXAPI hk_SetTextAndSendStatusBar(UINT32 index, LPCSTR message);
-	VOID FIXAPI hk_SendFromCellViewToRender(LPVOID Unknown1, TESForm* View, INT32 Unknown3);
-	VOID FIXAPI hk_EndSendFromCellViewToRender(VOID);
+	auto lpData = ItemsArrayConst;
+	DWORD dwResult = 0;
 
-	// Methods of the progress indicator displayed on a taskbar button.
+	for (DWORD i = 0; i < dwSize; i++) {
+		if (lpData[i]->ParentCellConst == cell)
+			dwResult++;
+	}
 
-	VOID FIXAPI SetMarqueeInTaskbar(BOOL _value);
+	return dwResult;
 }

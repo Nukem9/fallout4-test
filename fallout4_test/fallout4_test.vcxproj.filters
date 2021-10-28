@@ -9,12 +9,6 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
-    <Filter Include="Source Files\RTTI">
-      <UniqueIdentifier>{35ec8d65-0314-4ba5-b3b8-c4b0d305fd93}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\RTTI\NiRTTI">
-      <UniqueIdentifier>{50666074-f04e-49df-b1ef-ebec84513633}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\RTTI">
       <UniqueIdentifier>{744f2e83-7807-45a2-846e-e098caf43cc5}</UniqueIdentifier>
     </Filter>
@@ -29,12 +23,6 @@
     </Filter>
     <Filter Include="Source Files\Patches">
       <UniqueIdentifier>{6ecca651-f6ac-4430-b4b5-a9d5fb31e2fc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Classes">
-      <UniqueIdentifier>{a7766be7-54b7-4d4d-8e6b-5e4819048994}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Classes">
-      <UniqueIdentifier>{7a39de88-cf1e-4c4d-9288-3967c45c9d73}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\UI\Classes">
       <UniqueIdentifier>{b7db8a77-7b3c-45db-b7ed-adbc6fbea900}</UniqueIdentifier>
@@ -90,11 +78,23 @@
     <Filter Include="Header Files\Patches\CK">
       <UniqueIdentifier>{cd26e7a2-a163-4aa0-923d-f4759c8c3eac}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Classes\CK">
-      <UniqueIdentifier>{92ecdc46-a44d-4913-ac89-4227a22582f0}</UniqueIdentifier>
+    <Filter Include="Source Files\api">
+      <UniqueIdentifier>{9e4bc9b2-3d14-4bf0-98ae-e6d7a3108875}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Classes\CK">
-      <UniqueIdentifier>{d5a434c2-eb02-4f57-88f6-b9620c20a5de}</UniqueIdentifier>
+    <Filter Include="Header Files\api">
+      <UniqueIdentifier>{77647173-e309-499e-817d-efba3a4a4853}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\api\NiMain">
+      <UniqueIdentifier>{84802889-1025-4cd6-a058-dfbb299ca34f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\api\NiMain">
+      <UniqueIdentifier>{abf91942-adb7-4809-b66d-40658cb59791}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\common">
+      <UniqueIdentifier>{130df124-0e45-4bf7-8201-f186b3092561}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common">
+      <UniqueIdentifier>{a3e8dfbd-a04d-4210-b5d6-09fa8050185a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -200,15 +200,6 @@
     <ClInclude Include="src\patches\CKF4\EditorUI.h">
       <Filter>Header Files\UI</Filter>
     </ClInclude>
-    <ClInclude Include="src\patches\TES\MemoryManager.h">
-      <Filter>Header Files\Patches</Filter>
-    </ClInclude>
-    <ClInclude Include="src\patches\TES\BSTList.h">
-      <Filter>Header Files\Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="src\patches\TES\BSTArray.h">
-      <Filter>Header Files\Classes</Filter>
-    </ClInclude>
     <ClInclude Include="src\patches\CKF4\UIMenus.h">
       <Filter>Header Files\UI\Classes</Filter>
     </ClInclude>
@@ -232,9 +223,6 @@
     </ClInclude>
     <ClInclude Include="src\patches\CKF4\UIProgressDialog.h">
       <Filter>Header Files\UI\Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="src\patches\ComClasses.h">
-      <Filter>Header Files\Classes</Filter>
     </ClInclude>
     <ClInclude Include="src\tools\INIHookInputToFile.h">
       <Filter>Header Files\Tools</Filter>
@@ -383,32 +371,53 @@
     <ClInclude Include="src\patches\CKF4\LayersWindow.h">
       <Filter>Header Files\UI\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="src\patches\CKF4\TESObjects\TESDataFileHandler_CK.h">
-      <Filter>Header Files\Classes\CK</Filter>
+    <ClInclude Include="src\api\TESFormComponents.h">
+      <Filter>Header Files\api</Filter>
     </ClInclude>
-    <ClInclude Include="src\patches\CKF4\TESObjects\TESFile_CK.h">
-      <Filter>Header Files\Classes\CK</Filter>
+    <ClInclude Include="src\api\TESForm.h">
+      <Filter>Header Files\api</Filter>
     </ClInclude>
-    <ClInclude Include="src\patches\CKF4\TESObjects\TESForm_CK.h">
-      <Filter>Header Files\Classes\CK</Filter>
+    <ClInclude Include="src\api\CommIncAPI.h">
+      <Filter>Header Files\api</Filter>
     </ClInclude>
-    <ClInclude Include="src\patches\CKF4\TESObjects\TESCell_CK.h">
-      <Filter>Header Files\Classes\CK</Filter>
+    <ClInclude Include="src\api\ComClasses.h">
+      <Filter>Header Files\api</Filter>
     </ClInclude>
-    <ClInclude Include="src\patches\CKF4\TESObjects\TESCellViewScene_CK.h">
-      <Filter>Header Files\Classes\CK</Filter>
+    <ClInclude Include="src\api\BSTList.h">
+      <Filter>Header Files\api</Filter>
     </ClInclude>
-    <ClInclude Include="src\patches\CKF4\TESObjects\TES.h">
-      <Filter>Header Files\Classes\CK</Filter>
+    <ClInclude Include="src\api\BSTArray.h">
+      <Filter>Header Files\api</Filter>
     </ClInclude>
-    <ClInclude Include="src\patches\CKF4\TESObjects\TESLayer_CK.h">
-      <Filter>Header Files\Classes\CK</Filter>
+    <ClInclude Include="src\api\TESDataFileHandler.h">
+      <Filter>Header Files\api</Filter>
     </ClInclude>
-    <ClInclude Include="src\patches\CKF4\TESObjects\TESFormRef_CK.h">
-      <Filter>Header Files\Classes\CK</Filter>
+    <ClInclude Include="src\api\TESCellViewScene.h">
+      <Filter>Header Files\api</Filter>
     </ClInclude>
-    <ClInclude Include="src\patches\CKF4\TESObjects\TESBaseForm_CK.h">
-      <Filter>Header Files\Classes\CK</Filter>
+    <ClInclude Include="src\api\TESCell.h">
+      <Filter>Header Files\api</Filter>
+    </ClInclude>
+    <ClInclude Include="src\api\TESFile.h">
+      <Filter>Header Files\api</Filter>
+    </ClInclude>
+    <ClInclude Include="src\api\TESObjectREFR.h">
+      <Filter>Header Files\api</Filter>
+    </ClInclude>
+    <ClInclude Include="src\api\NiMain\NiTypes.h">
+      <Filter>Header Files\api\NiMain</Filter>
+    </ClInclude>
+    <ClInclude Include="src\api\NiMain\GameAPI.h">
+      <Filter>Header Files\api\NiMain</Filter>
+    </ClInclude>
+    <ClInclude Include="src\api\BGLayer.h">
+      <Filter>Header Files\api</Filter>
+    </ClInclude>
+    <ClInclude Include="src\api\NiMain\GameTypes.h">
+      <Filter>Header Files\api\NiMain</Filter>
+    </ClInclude>
+    <ClInclude Include="src\common\MemoryManager.h">
+      <Filter>Header Files\common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -417,9 +426,6 @@
     </ClCompile>
     <ClCompile Include="src\profiler.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\patches\TES\MemoryManager.cpp">
-      <Filter>Source Files\Patches</Filter>
     </ClCompile>
     <ClCompile Include="src\patches\TES\Setting.cpp">
       <Filter>Source Files</Filter>
@@ -441,24 +447,6 @@
     </ClCompile>
     <ClCompile Include="src\patches\patches_f4ck.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\patches\TES\NiMain\NiRTTI.cpp">
-      <Filter>Source Files\RTTI\NiRTTI</Filter>
-    </ClCompile>
-    <ClCompile Include="src\patches\TES\NiMain\NiMain.cpp">
-      <Filter>Source Files\RTTI\NiRTTI</Filter>
-    </ClCompile>
-    <ClCompile Include="src\patches\TES\NiMain\NiCollisionUtils.cpp">
-      <Filter>Source Files\RTTI\NiRTTI</Filter>
-    </ClCompile>
-    <ClCompile Include="src\typeinfo\ni_rtti.cpp">
-      <Filter>Source Files\RTTI\NiRTTI</Filter>
-    </ClCompile>
-    <ClCompile Include="src\typeinfo\hk_rtti.cpp">
-      <Filter>Source Files\RTTI</Filter>
-    </ClCompile>
-    <ClCompile Include="src\typeinfo\ms_rtti.cpp">
-      <Filter>Source Files\RTTI</Filter>
     </ClCompile>
     <ClCompile Include="src\patches\CKF4\UIMenus.cpp">
       <Filter>Source Files\UI\Classes</Filter>
@@ -649,23 +637,32 @@
     <ClCompile Include="src\patches\CKF4\LayersWindow.cpp">
       <Filter>Source Files\UI\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="src\patches\CKF4\TESObjects\TESCellViewScene_CK.cpp">
-      <Filter>Source Files\Classes\CK</Filter>
+    <ClCompile Include="src\api\TESForm.cpp">
+      <Filter>Source Files\api</Filter>
     </ClCompile>
-    <ClCompile Include="src\patches\CKF4\TESObjects\TESDataFileHandler_CK.cpp">
-      <Filter>Source Files\Classes\CK</Filter>
+    <ClCompile Include="src\api\TESDataFileHandler.cpp">
+      <Filter>Source Files\api</Filter>
     </ClCompile>
-    <ClCompile Include="src\patches\CKF4\TESObjects\TESFile_CK.cpp">
-      <Filter>Source Files\Classes\CK</Filter>
+    <ClCompile Include="src\api\TESCellViewScene.cpp">
+      <Filter>Source Files\api</Filter>
     </ClCompile>
-    <ClCompile Include="src\patches\CKF4\TESObjects\TESForm_CK.cpp">
-      <Filter>Source Files\Classes\CK</Filter>
+    <ClCompile Include="src\api\TESFile.cpp">
+      <Filter>Source Files\api</Filter>
     </ClCompile>
-    <ClCompile Include="src\patches\CKF4\TESObjects\TESFormRef_CK.cpp">
-      <Filter>Source Files\Classes\CK</Filter>
+    <ClCompile Include="src\api\NiMain\NiTypes.cpp">
+      <Filter>Source Files\api\NiMain</Filter>
     </ClCompile>
-    <ClCompile Include="src\patches\CKF4\TESObjects\TESLayer_CK.cpp">
-      <Filter>Source Files\Classes\CK</Filter>
+    <ClCompile Include="src\api\NiMain\GameAPI.cpp">
+      <Filter>Source Files\api\NiMain</Filter>
+    </ClCompile>
+    <ClCompile Include="src\api\BGLayer.cpp">
+      <Filter>Source Files\api</Filter>
+    </ClCompile>
+    <ClCompile Include="src\api\NiMain\GameTypes.cpp">
+      <Filter>Source Files\api\NiMain</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\MemoryManager.cpp">
+      <Filter>Source Files\common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -675,8 +672,12 @@
     <None Include="src\patches\TES\NiMain\NiRTTI.inl">
       <Filter>Header Files\RTTI\NiRTTI</Filter>
     </None>
-    <None Include="cpp.hint" />
-    <None Include="..\Resources\f4ck_loader.bin" />
+    <None Include="..\Resources\f4ck_loader.bin">
+      <Filter>Resources</Filter>
+    </None>
+    <None Include="cpp.hint">
+      <Filter>Resources</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\Resources\check_darktheme.bmp">
@@ -703,7 +704,9 @@
     <Image Include="..\Resources\logo.bmp">
       <Filter>Resources</Filter>
     </Image>
-    <Image Include="..\Resources\Bitmap_430_w.bmp" />
+    <Image Include="..\Resources\Bitmap_430_w.bmp">
+      <Filter>Resources</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc">

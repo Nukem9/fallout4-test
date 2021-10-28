@@ -22,22 +22,10 @@
 
 #pragma once
 
-#include "../../common.h"
-#include "../../api/CommIncAPI.h"
+#include "TESForm.h"
+#include "TESCell.h"
+#include "BGLayer.h"
+#include "TESObjectREFR.h"
 
-namespace EditorUI
-{
-	using namespace api;
-
-	BOOL FIXAPI hk_CallLoadFile(TESDataFileHandler* io_handler, INT32 _zero_only);
-	VOID FIXAPI hk_EndLoadFile(VOID);
-	VOID FIXAPI hk_StepItProgress(LPCSTR* str);
-	BOOL FIXAPI hk_UpdateProgress(LPVOID __this, INT32 __1);
-	VOID FIXAPI hk_SetTextAndSendStatusBar(UINT32 index, LPCSTR message);
-	VOID FIXAPI hk_SendFromCellViewToRender(LPVOID Unknown1, TESForm* View, INT32 Unknown3);
-	VOID FIXAPI hk_EndSendFromCellViewToRender(VOID);
-
-	// Methods of the progress indicator displayed on a taskbar button.
-
-	VOID FIXAPI SetMarqueeInTaskbar(BOOL _value);
-}
+#include "TESDataFileHandler.h"
+#include "TESCellViewScene.h"

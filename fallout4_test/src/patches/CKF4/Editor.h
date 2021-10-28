@@ -25,9 +25,8 @@
 
 #include "../../common.h"
 #include "../deflate.h"
-#include "../TES/BSTArray.h"
 #include "../boost_search_array.h"
-#include "TESObjects/TES.h"
+#include "../../api/CommIncAPI.h"
 
 extern BOOL bFogToggle;
 extern BOOL bAllowPoolMessage;
@@ -49,7 +48,7 @@ VOID FIXAPI BeginUIDefer(VOID);
 VOID FIXAPI EndUIDefer(VOID);
 VOID FIXAPI InsertComboBoxItem(HWND ComboBoxHandle, LPCSTR DisplayText, LPVOID Value, BOOL AllowResize);
 VOID FIXAPI InsertListViewItem(HWND ListViewHandle, LPVOID Parameter, BOOL UseImage, INT32 ItemIndex);
-DWORD FIXAPI GetCountItemInLayer(LPVOID unknown, TESLayer_CK* layer);
+DWORD FIXAPI GetCountItemInLayer(LPVOID unknown, api::BGLayer* layer);
 
 VOID FIXAPI QuitHandler(VOID);
 

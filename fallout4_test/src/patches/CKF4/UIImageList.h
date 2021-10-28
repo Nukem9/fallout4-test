@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include"..\ComClasses.h"
+#include "../../api/ComClasses.h"
 
 #include <CommCtrl.h>
 

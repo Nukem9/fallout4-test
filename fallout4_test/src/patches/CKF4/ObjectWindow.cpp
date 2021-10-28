@@ -113,7 +113,7 @@ namespace ObjectWindow
 		lpObjWnd->Controls.EditFilter.Caption = lpObjWnd->Controls.EditFilter.Caption;
 	}
 
-	int32_t FIXAPI hk_7FF72F57F8F0(const int64_t ObjectListInsertData, TESForm_CK* Form)
+	int32_t FIXAPI hk_7FF72F57F8F0(const int64_t ObjectListInsertData, TESForm* Form)
 	{
 		if (ObjectListInsertData && FileHandler->IsLoaded())
 		{
@@ -129,7 +129,7 @@ namespace ObjectWindow
 			}
 		}
 
-		return ((int32_t(__fastcall*)(int64_t, TESForm_CK*))OFFSET(0x40F8F0, 0))(ObjectListInsertData, Form);
+		return ((int32_t(__fastcall*)(int64_t, TESForm*))OFFSET(0x40F8F0, 0))(ObjectListInsertData, Form);
 	}
 
 	INT_PTR CALLBACK DlgProc(HWND DialogHwnd, UINT Message, WPARAM wParam, LPARAM lParam)
@@ -190,7 +190,7 @@ namespace ObjectWindow
 		}
 		else if (Message == UI_OBJECT_WINDOW_ADD_ITEM)
 		{
-			auto form = reinterpret_cast<const TESForm_CK*>(wParam);
+			auto form = reinterpret_cast<const TESForm*>(wParam);
 			auto allowInsert = reinterpret_cast<BOOL*>(lParam);
 			*allowInsert = TRUE;
 

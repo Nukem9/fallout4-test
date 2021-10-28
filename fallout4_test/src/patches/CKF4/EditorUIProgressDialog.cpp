@@ -113,7 +113,7 @@ namespace EditorUI
 
 	static ProgressOnTaskBar* g_pProgressOnTaskBar = NULL;
 
-	BOOL FIXAPI hk_CallLoadFile(TESDataFileHandler_CK* io_handler, INT32 _zero_only)
+	BOOL FIXAPI hk_CallLoadFile(TESDataFileHandler* io_handler, INT32 _zero_only)
 	{
 		// get and save F4FileDataHandler from CK
 		// FileHandler = io_handler; 0x6D67960 and doesn't change
@@ -204,7 +204,7 @@ namespace EditorUI
 		Core::Classes::UI::CUIMainWindow::ProcessMessages();
 	}
 
-	VOID FIXAPI hk_SendFromCellViewToRender(LPVOID Unknown1, TESForm_CK* View, INT32 Unknown3)
+	VOID FIXAPI hk_SendFromCellViewToRender(LPVOID Unknown1, TESForm* View, INT32 Unknown3)
 	{
 		Assert(!sys::ProgressDialog);
 		// show Progress
@@ -222,7 +222,7 @@ namespace EditorUI
 		g_pProgressOnTaskBar->SetMarquee(TRUE);
 
 		// send
-		((VOID(__fastcall*)(LPVOID, TESForm_CK*, INT32))OFFSET(0x45FE60, 0))(Unknown1, View, Unknown3);
+		((VOID(__fastcall*)(LPVOID, TESForm*, INT32))OFFSET(0x45FE60, 0))(Unknown1, View, Unknown3);
 	}
 
 	VOID FIXAPI hk_EndSendFromCellViewToRender(VOID)
