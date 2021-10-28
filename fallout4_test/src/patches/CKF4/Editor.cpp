@@ -986,11 +986,8 @@ DWORD FIXAPI GetCountItemInLayer(LPVOID unknown, api::BGLayer* layer) {
 
 	auto scene = api::TESCellViewScene::GetCellViewScene();
 
-	if (scene->IsInteriorsCell()) {
-		LogWindow::Log("cell %s %d", scene->Interios->GetFullName().c_str(), scene->Interios->GetItemsCount());
-		
+	if (scene->IsInteriorsCell())
 		return layer->GetItemsCountInCell(scene->Interios);
-	}
 	else
 		return layer->GetItemsCountInCell(NULL);
 }
