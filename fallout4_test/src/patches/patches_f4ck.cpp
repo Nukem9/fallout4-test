@@ -226,13 +226,13 @@ VOID FIXAPI F_RequiredPatches(VOID) {
 	//
 	// Fix for crash when tab control buttons are deleted. Uninitialized TCITEMA structure variables.
 	//
-	//XUtil::DetourJump(OFFSET(0x0564E30, 0), &EditorUI::TabControlDeleteItem);
+	XUtil::DetourJump(OFFSET(0x0564E30, 0), &EditorUI::TabControlDeleteItem);
 
 	//
 	// Fix for crash (recursive sorting function stack overflow) when saving certain ESP files (i.e SimSettlements.esp)
 	//
-	//XUtil::DetourJump(OFFSET(0x07ED840, 0), &ArrayQuickSortRecursive<class TESForm_CK*>);
-	//XUtil::PatchMemory(OFFSET(0x07EDA50, 0), { 0xC3 });
+	XUtil::DetourJump(OFFSET(0x07ED840, 0), &ArrayQuickSortRecursive<class TESForm_CK*>);
+	XUtil::PatchMemory(OFFSET(0x07EDA50, 0), { 0xC3 });
 	
 	//
 	// Raise the papyrus script editor text limit to 500k characters from 64k
@@ -397,6 +397,8 @@ VOID FIXAPI F_UIPatches(VOID) {
 		XUtil::DetourCall(OFFSET(0x1336521, 0), &PreferencesWindow::CreateDialogParamA);
 	}
 
+	// Layers enable doublebuffered
+	XUtil::DetourCall(OFFSET(0x67A325, 0), &LayersWindow::SendMessageAfterCreateTreeView);
 	// Layers dialog fix resize
 	XUtil::DetourCall(OFFSET(0x67C135, 0), &LayersWindow::MoveWindowBody);
 	XUtil::DetourCall(OFFSET(0x67C165, 0), &LayersWindow::MoveWindowHeader);

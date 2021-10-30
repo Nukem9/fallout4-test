@@ -32,10 +32,10 @@ namespace api {
 	private:
 		enum { eTypeID = ftCell };
 	public:
-		struct TESMaxHeightData {
-			DWORD unk00;			// 00
-			DWORD unk04;			// 04
-			CHAR* maxHeightBlock;	// 08
+		struct TESCellDataExt {
+			INT32 gridX;		// 00
+			INT32 gridY;		// 04
+			DWORD* maxHeight;	// 08
 		};
 	private:
 		enum {
@@ -48,7 +48,7 @@ namespace api {
 		UINT16 _cell_flags;
 		CHAR _pad2[0x6];
 		LPVOID _extradata;
-		TESMaxHeightData* _maxheightdata;
+		TESCellDataExt* _maxheightdata;
 		TESForm* _landspace;
 		CHAR _pad3[0x8];
 		BSTArray<TESForm*>* _navmeshes;
@@ -63,9 +63,9 @@ namespace api {
 		inline DWORD GetNavMeshesCount(VOID) const { return (DWORD)_navmeshes->QSize(); }
 		inline const TESForm** GetNavMeshesConst(VOID) const { return (const TESForm**)_navmeshes->QBuffer(); }
 		inline TESForm** GetNavMeshes(VOID) { return (TESForm**)_navmeshes->QBuffer(); }
-		inline BOOL IsMaxHeightData(VOID) const { return _maxheightdata != NULL; }
-		inline const TESMaxHeightData* GetMaxHeightDataConst(VOID) const { return _maxheightdata; }
-		inline TESMaxHeightData* GetMaxHeightData(VOID) { return _maxheightdata; }
+		inline BOOL IsCellDataExt(VOID) const { return _maxheightdata != NULL; }
+		inline INT32 GetGridX(VOID) const { return _maxheightdata ? _maxheightdata->gridX : 0; }
+		inline INT32 GetGridY(VOID) const { return _maxheightdata ? _maxheightdata->gridY : 0; }
 		inline BOOL IsInterior(VOID) const { return _cell_flags == cfInterior; }
 		inline BOOL IsExterior(VOID) const { return _cell_flags == cfExterior; }
 		inline std::string GetFullName(VOID) const { return _fullName.c_str(); }
@@ -78,8 +78,8 @@ namespace api {
 		READ_PROPERTY(GetItemsCount) DWORD ItemsCount;
 		READ_PROPERTY(GetLandspaceConst) const TESForm* LandspaceConst;
 		READ_PROPERTY(GetLandspace) TESForm* Landspace;
-		READ_PROPERTY(GetMaxHeightDataConst) const TESMaxHeightData* MaxHeightDataConst;
-		READ_PROPERTY(GetMaxHeightData) TESMaxHeightData* MaxHeightData;
+		READ_PROPERTY(GetGridX) INT32 GridX;
+		READ_PROPERTY(GetGridY) INT32 GridY;
 	public:
 		virtual ~TESCell(VOID);
 	};

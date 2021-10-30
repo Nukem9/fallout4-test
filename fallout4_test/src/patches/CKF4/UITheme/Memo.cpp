@@ -47,6 +47,11 @@ namespace Core
 						InvalidateRect(hWnd, NULL, TRUE);
 						UpdateWindow(hWnd);
 					}
+					else if (uMsg == WM_SETFONT) {
+						// I noticed that the font does not change, so we will change it forcibly, without letting anyone change it.
+
+						wParam = (WPARAM)ThemeFont->Handle;
+					}
 					else if (uMsg == WM_NCPAINT)
 					{
 						// Paint border

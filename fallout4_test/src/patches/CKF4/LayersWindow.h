@@ -42,4 +42,5 @@ namespace LayersWindow
 	Classes::CUICustomWindow& FIXAPI GetWindowObj(VOID);
 
 	INT_PTR CALLBACK DlgProc(HWND DialogHwnd, UINT Message, WPARAM wParam, LPARAM lParam);
+	LRESULT WINAPI SendMessageAfterCreateTreeView(HWND TVHwnd, UINT Message, WPARAM wParam, LPARAM lParam);
 }

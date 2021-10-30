@@ -23,7 +23,10 @@
 #include "LayersWindow.h"
 #include "LogWindow.h"
 
+#include "Editor.h"
+
 #include <windowsx.h>
+#include <CommCtrl.h>
 
 namespace LayersWindow
 {
@@ -37,6 +40,15 @@ namespace LayersWindow
 		Classes::CUIBaseControl EdittextFilter;
 		Classes::CUIBaseControl PushbuttonPlus;
 	} LayersWindowParams;
+
+	LRESULT WINAPI SendMessageAfterCreateTreeView(HWND TVHwnd, UINT Message, WPARAM wParam, LPARAM lParam) {
+		auto iRes = hk_SendMessageA(TVHwnd, Message, wParam, lParam);
+
+		SetWindowLongPtrA(TVHwnd, GWL_STYLE, GetWindowLongPtrA(TVHwnd, GWL_STYLE) | WS_BORDER);
+		TreeView_SetExtendedStyle(TVHwnd, TVS_EX_DOUBLEBUFFER, TVS_EX_DOUBLEBUFFER);
+
+		return iRes;
+	}
 
 	BOOL WINAPI MoveWindowBody(HWND hWnd, INT X, INT Y, INT nWidth, INT nHeight, BOOL bRepaint) {
 		auto cRect = LayersWindow.ClientRect();
@@ -71,7 +83,7 @@ namespace LayersWindow
 			break;
 		case WM_GETMINMAXINFO: {
 			LPMINMAXINFO lpMMI = (LPMINMAXINFO)lParam;
-			lpMMI->ptMinTrackSize.x = 350;
+			lpMMI->ptMinTrackSize.x = 320;
 			lpMMI->ptMinTrackSize.y = 250;
 			}
 			return S_OK;

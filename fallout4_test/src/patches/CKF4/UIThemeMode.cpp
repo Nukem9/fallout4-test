@@ -143,7 +143,7 @@ namespace UITheme
 
 			if ((grfFlags & BF_LEFT) == BF_LEFT) {
 				canvas.MoveTo(qrc->left, qrc->top);
-				canvas.LineTo(qrc->left, qrc->bottom);
+				canvas.LineTo(qrc->left, qrc->bottom - 1);
 
 				if ((grfFlags & BF_ADJUST) == BF_ADJUST)
 					qrc->left++;
@@ -159,15 +159,15 @@ namespace UITheme
 
 			if ((grfFlags & BF_RIGHT) == BF_RIGHT) {
 				canvas.MoveTo(qrc->right, qrc->top);
-				canvas.LineTo(qrc->right, qrc->bottom);
+				canvas.LineTo(qrc->right, qrc->bottom - 1);
 
 				if ((grfFlags & BF_ADJUST) == BF_ADJUST)
 					qrc->right--;
 			}
 
 			if ((grfFlags & BF_BOTTOM) == BF_BOTTOM) {
-				canvas.MoveTo(qrc->left, qrc->bottom);
-				canvas.LineTo(qrc->right, qrc->bottom);
+				canvas.MoveTo(qrc->left, qrc->bottom - 1);
+				canvas.LineTo(qrc->right, qrc->bottom - 1);
 
 				if ((grfFlags & BF_ADJUST) == BF_ADJUST)
 					qrc->bottom--;
@@ -175,21 +175,21 @@ namespace UITheme
 
 			if ((grfFlags & BF_DIAGONAL_ENDBOTTOMLEFT) == BF_DIAGONAL_ENDBOTTOMLEFT) {
 				canvas.MoveTo(qrc->right, qrc->top);
-				canvas.LineTo(qrc->left, qrc->bottom);
+				canvas.LineTo(qrc->left, qrc->bottom - 1);
 			}
 
 			if ((grfFlags & BF_DIAGONAL_ENDBOTTOMRIGHT) == BF_DIAGONAL_ENDBOTTOMRIGHT) {
 				canvas.MoveTo(qrc->left, qrc->top);
-				canvas.LineTo(qrc->right, qrc->bottom);
+				canvas.LineTo(qrc->right, qrc->bottom - 1);
 			}
 
 			if ((grfFlags & BF_DIAGONAL_ENDTOPLEFT) == BF_DIAGONAL_ENDTOPLEFT) {
-				canvas.MoveTo(qrc->right, qrc->bottom);
+				canvas.MoveTo(qrc->right, qrc->bottom - 1);
 				canvas.LineTo(qrc->left, qrc->top);
 			}
 
 			if ((grfFlags & BF_DIAGONAL_ENDTOPRIGHT) == BF_DIAGONAL_ENDTOPRIGHT) {
-				canvas.MoveTo(qrc->left, qrc->bottom);
+				canvas.MoveTo(qrc->left, qrc->bottom - 1);
 				canvas.LineTo(qrc->right, qrc->top);
 			}
 
