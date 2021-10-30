@@ -37,18 +37,42 @@
 #define OWNCOLUMNNAME "Filename"
 #define TWOCOLUMNNAME "Status"
 
+#define WINDOW_MIN_WIDTH 950
+#define WINDOW_MIN_HEIGHT 597
+
 namespace DataWindow
 {
 	// need static (so not crash)
-	NMITEMACTIVATE nmItemFake;
+	NMITEMACTIVATE nmItemFake = { 0 };
+	POINT pCurSize = { 0 };
 
 	Classes::CUICustomWindow DataWindow;
 
 	struct DataWindowControls_t {
+		Classes::CUIBaseControl LabelCreateOnPlugins;
+		Classes::CUIBaseControl LabelLastModifiedPlugins;
+		Classes::CUIBaseControl LabelCreateOnPluginsDate;
+		Classes::CUIBaseControl LabelLastModifiedPluginsDate;
+		Classes::CUIBaseControl LabelCreateOnPluginsTime;
+		Classes::CUIBaseControl LabelLastModifiedPluginsTime;
+		Classes::CUIBaseControl BtnSetAsActive;
+		Classes::CUIBaseControl BtnDetails;
+		Classes::CUIBaseControl BtnOk;
+		Classes::CUIBaseControl BtnCancel;
 		Classes::CUIBaseControl ListViewPlugins;
 		Classes::CUIBaseControl ListViewPluginsResult;
 		Classes::CUIBaseControl ListViewDependences;
+		Classes::CUIBaseControl EditAuthor;
+		Classes::CUIBaseControl EditDescription;
 		Classes::CUIBaseControl EditSearch;
+		Classes::CUIBaseControl LabelCreateBy;
+		Classes::CUIBaseControl LabelSummary;
+		Classes::CUIBaseControl LabelDependences;
+		Classes::CUIBaseControl LabelFileVersionPlugins;
+		Classes::CUIBaseControl LabelCurrentPlugins;
+		Classes::CUIBaseControl LabelFileVersionPluginsValue;
+		Classes::CUIBaseControl LabelCurrentPluginsValue;
+
 		Classes::CUIImageList ImageList;
 	} DataWindowControls;
 
@@ -192,10 +216,33 @@ namespace DataWindow
 		if (Message == WM_INITDIALOG) {
 			DataWindow = DialogHwnd;
 
+			auto rClient = DataWindow.ClientRect();
+			pCurSize.x = rClient.Width;
+			pCurSize.y = rClient.Height;
+
 			DataWindowControls.ListViewPlugins = DataWindow.GetControl(UI_LISTVIEW_PLUGINS);
 			DataWindowControls.ListViewPluginsResult = DataWindow.GetControl(UI_NEW_LISTVIEW_CONTROL_TO_RESULT);
 			DataWindowControls.ListViewDependences = DataWindow.GetControl(1057);
 			DataWindowControls.EditSearch = DataWindow.GetControl(UI_EDIT_SEARCH_PLUGIN_BY_NAME);
+			DataWindowControls.EditDescription = DataWindow.GetControl(1024);
+			DataWindowControls.EditAuthor = DataWindow.GetControl(1025);
+			DataWindowControls.BtnSetAsActive = DataWindow.GetControl(1121);
+			DataWindowControls.BtnDetails = DataWindow.GetControl(1185);
+			DataWindowControls.BtnOk = DataWindow.GetControl(1);
+			DataWindowControls.BtnCancel = DataWindow.GetControl(2);
+			DataWindowControls.LabelCreateBy = DataWindow.GetControl(52006);
+			DataWindowControls.LabelSummary = DataWindow.GetControl(52007);
+			DataWindowControls.LabelDependences = DataWindow.GetControl(52008);
+			DataWindowControls.LabelCreateOnPlugins = DataWindow.GetControl(52009);
+			DataWindowControls.LabelLastModifiedPlugins = DataWindow.GetControl(52010);
+			DataWindowControls.LabelFileVersionPlugins = DataWindow.GetControl(2406);
+			DataWindowControls.LabelCurrentPlugins = DataWindow.GetControl(2407);
+			DataWindowControls.LabelFileVersionPluginsValue = DataWindow.GetControl(1681);
+			DataWindowControls.LabelCurrentPluginsValue = DataWindow.GetControl(1682);
+			DataWindowControls.LabelCreateOnPluginsDate = DataWindow.GetControl(1026);
+			DataWindowControls.LabelLastModifiedPluginsDate = DataWindow.GetControl(1027);
+			DataWindowControls.LabelCreateOnPluginsTime = DataWindow.GetControl(1028);
+			DataWindowControls.LabelLastModifiedPluginsTime = DataWindow.GetControl(1029);
 
 			// Eliminate the flicker when changing cells
 			ListView_SetExtendedListViewStyleEx(DataWindowControls.ListViewPlugins.Handle, LVS_EX_DOUBLEBUFFER, LVS_EX_DOUBLEBUFFER);
@@ -231,7 +278,169 @@ namespace DataWindow
 			// fix no checked in list 
 			RedrawWindow(DataWindowControls.ListViewPlugins.Handle, NULL, NULL, RDW_UPDATENOW | RDW_NOCHILDREN);
 
+			MoveWindow(DialogHwnd,
+				g_INI_CK->GetInteger("General", "Data X", 100),
+				g_INI_CK->GetInteger("General", "Data Y", 100),
+				g_INI_CK->GetInteger("General", "Data W", WINDOW_MIN_WIDTH),
+				g_INI_CK->GetInteger("General", "Data H", WINDOW_MIN_HEIGHT),
+				TRUE);
+
+			ListView_SetColumnWidth(
+				DataWindowControls.ListViewPlugins.Handle,
+				0,
+				g_INI_CK->GetInteger("General", "Data Column 0 width", 300));
+
 			return nRes;
+		}
+
+		// Don't let us reduce the window too much
+		else if (Message == WM_GETMINMAXINFO)
+		{
+			LPMINMAXINFO lpMMI = (LPMINMAXINFO)lParam;
+			lpMMI->ptMinTrackSize.x = WINDOW_MIN_WIDTH;
+			lpMMI->ptMinTrackSize.y = WINDOW_MIN_HEIGHT;
+
+			return S_OK;
+		}
+		else if (Message == WM_SIZE) {
+			POINT p_offset = {
+				LOWORD(lParam) - pCurSize.x,
+				HIWORD(lParam) - pCurSize.y
+			};
+
+			pCurSize = POINT{ LOWORD(lParam), HIWORD(lParam) };
+
+			DataWindowControls.BtnSetAsActive.LockUpdate();
+			DataWindowControls.BtnDetails.LockUpdate();
+			DataWindowControls.BtnOk.LockUpdate();
+			DataWindowControls.BtnCancel.LockUpdate();
+			DataWindowControls.LabelCreateBy.LockUpdate();
+			DataWindowControls.LabelSummary.LockUpdate();
+			DataWindowControls.LabelDependences.LockUpdate();
+			DataWindowControls.EditAuthor.LockUpdate();
+			DataWindowControls.ListViewDependences.LockUpdate();
+			DataWindowControls.EditDescription.LockUpdate();
+			DataWindowControls.LabelFileVersionPlugins.LockUpdate();
+			DataWindowControls.LabelCurrentPlugins.LockUpdate();
+			DataWindowControls.LabelFileVersionPluginsValue.LockUpdate();
+			DataWindowControls.LabelCurrentPluginsValue.LockUpdate();
+			DataWindowControls.LabelCreateOnPluginsDate.LockUpdate();
+			DataWindowControls.LabelLastModifiedPluginsDate.LockUpdate();
+			DataWindowControls.LabelCreateOnPluginsTime.LockUpdate();
+			DataWindowControls.LabelLastModifiedPluginsTime.LockUpdate();
+			DataWindowControls.LabelCreateOnPlugins.LockUpdate();
+			DataWindowControls.LabelLastModifiedPlugins.LockUpdate();
+			DataWindowControls.ListViewPlugins.LockUpdate();
+			DataWindowControls.ListViewPluginsResult.LockUpdate();
+			DataWindowControls.EditSearch.LockUpdate();
+
+			DataWindowControls.BtnSetAsActive.Top += p_offset.y;
+			DataWindowControls.BtnDetails.Top += p_offset.y;
+			DataWindowControls.BtnDetails.Left += p_offset.x;
+			DataWindowControls.BtnOk.Top += p_offset.y;
+			DataWindowControls.BtnCancel.Top += p_offset.y;
+			DataWindowControls.BtnOk.Left += p_offset.x;
+			DataWindowControls.BtnCancel.Left += p_offset.x;
+			DataWindowControls.LabelCreateBy.Left += p_offset.x;
+			DataWindowControls.LabelSummary.Left += p_offset.x;
+			DataWindowControls.LabelDependences.Left += p_offset.x;
+			DataWindowControls.EditAuthor.Left += p_offset.x;
+			DataWindowControls.ListViewDependences.Left += p_offset.x;
+			DataWindowControls.EditDescription.Left += p_offset.x;
+			DataWindowControls.ListViewDependences.Height += p_offset.y;
+			DataWindowControls.EditDescription.Height += p_offset.y;
+			DataWindowControls.LabelFileVersionPlugins.Left += p_offset.x;
+			DataWindowControls.LabelFileVersionPlugins.Top += p_offset.y;
+			DataWindowControls.LabelCurrentPlugins.Left += p_offset.x;
+			DataWindowControls.LabelCurrentPlugins.Top += p_offset.y;
+			DataWindowControls.LabelFileVersionPluginsValue.Left += p_offset.x;
+			DataWindowControls.LabelFileVersionPluginsValue.Top += p_offset.y;
+			DataWindowControls.LabelCurrentPluginsValue.Left += p_offset.x;
+			DataWindowControls.LabelCurrentPluginsValue.Top += p_offset.y;
+			DataWindowControls.LabelCreateOnPluginsDate.Left += p_offset.x;
+			DataWindowControls.LabelCreateOnPluginsDate.Top += p_offset.y;
+			DataWindowControls.LabelLastModifiedPluginsDate.Left += p_offset.x;
+			DataWindowControls.LabelLastModifiedPluginsDate.Top += p_offset.y;
+			DataWindowControls.LabelCreateOnPluginsTime.Left += p_offset.x;
+			DataWindowControls.LabelCreateOnPluginsTime.Top += p_offset.y;
+			DataWindowControls.LabelLastModifiedPluginsTime.Left += p_offset.x;
+			DataWindowControls.LabelLastModifiedPluginsTime.Top += p_offset.y;
+			DataWindowControls.LabelCreateOnPlugins.Left += p_offset.x;
+			DataWindowControls.LabelCreateOnPlugins.Top += p_offset.y;
+			DataWindowControls.LabelLastModifiedPlugins.Left += p_offset.x;
+			DataWindowControls.LabelLastModifiedPlugins.Top += p_offset.y;
+			DataWindowControls.ListViewPlugins.Width += p_offset.x;
+			DataWindowControls.ListViewPlugins.Height += p_offset.y;
+			DataWindowControls.ListViewPluginsResult.Width += p_offset.x;
+			DataWindowControls.ListViewPluginsResult.Height += p_offset.y;
+			DataWindowControls.EditSearch.Width += p_offset.x;
+			
+			DataWindowControls.BtnSetAsActive.UnlockUpdate();
+			DataWindowControls.BtnDetails.UnlockUpdate();
+			DataWindowControls.BtnOk.UnlockUpdate();
+			DataWindowControls.BtnCancel.UnlockUpdate();
+			DataWindowControls.LabelCreateBy.UnlockUpdate();
+			DataWindowControls.LabelSummary.UnlockUpdate();
+			DataWindowControls.LabelDependences.UnlockUpdate();
+			DataWindowControls.EditAuthor.UnlockUpdate();
+			DataWindowControls.ListViewDependences.UnlockUpdate();
+			DataWindowControls.EditDescription.UnlockUpdate();
+			DataWindowControls.LabelFileVersionPlugins.UnlockUpdate();
+			DataWindowControls.LabelCurrentPlugins.UnlockUpdate();
+			DataWindowControls.LabelFileVersionPluginsValue.UnlockUpdate();
+			DataWindowControls.LabelCurrentPluginsValue.UnlockUpdate();
+			DataWindowControls.LabelCreateOnPluginsDate.UnlockUpdate();
+			DataWindowControls.LabelLastModifiedPluginsDate.UnlockUpdate();
+			DataWindowControls.LabelCreateOnPluginsTime.UnlockUpdate();
+			DataWindowControls.LabelLastModifiedPluginsTime.UnlockUpdate();
+			DataWindowControls.LabelCreateOnPlugins.UnlockUpdate();
+			DataWindowControls.LabelLastModifiedPlugins.UnlockUpdate();
+			DataWindowControls.ListViewPlugins.UnlockUpdate();
+			DataWindowControls.ListViewPluginsResult.UnlockUpdate();
+			DataWindowControls.EditSearch.UnlockUpdate();
+			
+			DataWindowControls.BtnSetAsActive.Repaint();
+			DataWindowControls.BtnDetails.Repaint();
+			DataWindowControls.BtnOk.Repaint();
+			DataWindowControls.BtnCancel.Repaint();
+			DataWindowControls.LabelCreateBy.Repaint();
+			DataWindowControls.LabelSummary.Repaint();
+			DataWindowControls.LabelDependences.Repaint();
+			DataWindowControls.EditAuthor.Repaint();
+			DataWindowControls.ListViewDependences.Repaint();
+			DataWindowControls.EditDescription.Repaint();
+			DataWindowControls.LabelFileVersionPlugins.Repaint();
+			DataWindowControls.LabelCurrentPlugins.Repaint();
+			DataWindowControls.LabelFileVersionPluginsValue.Repaint();
+			DataWindowControls.LabelCurrentPluginsValue.Repaint();
+			DataWindowControls.LabelCreateOnPluginsDate.Repaint();
+			DataWindowControls.LabelLastModifiedPluginsDate.Repaint();
+			DataWindowControls.LabelCreateOnPluginsTime.Repaint();
+			DataWindowControls.LabelLastModifiedPluginsTime.Repaint();
+			DataWindowControls.LabelCreateOnPlugins.Repaint();
+			DataWindowControls.LabelLastModifiedPlugins.Repaint();
+			DataWindowControls.ListViewPlugins.Repaint();
+			DataWindowControls.ListViewPluginsResult.Repaint();
+			DataWindowControls.EditSearch.Repaint();
+			
+			InvalidateRect(DialogHwnd, NULL, TRUE);
+			UpdateWindow(DialogHwnd);
+
+			auto rWnd = DataWindow.WindowRect();
+
+			g_INI_CK->SetInteger("General", "Data X", rWnd.Left);
+			g_INI_CK->SetInteger("General", "Data Y", rWnd.Top);
+			g_INI_CK->SetInteger("General", "Data W", rWnd.Width);
+			g_INI_CK->SetInteger("General", "Data H", rWnd.Height);	
+
+			return S_OK;
+		}
+		else if (Message == WM_DESTROY) {
+			g_INI_CK->SetInteger("General", 
+				"Data Column 0 width", 
+					ListView_GetColumnWidth(
+					DataWindowControls.ListViewPlugins.Handle,
+					0));
 		}
 		else if (Message == WM_COMMAND) {
 			switch (LOWORD(wParam)) {

@@ -88,7 +88,11 @@ namespace ObjectWindow
 		lpObjWnd->Controls.ItemList.Left = w_tree + 5;
 		lpObjWnd->Controls.ItemList.Width = lpObjWnd->ObjectWindow.ClientWidth() - (w_tree + 5);
 
-		RedrawWindow(lpObjWnd->ObjectWindow.Handle, NULL, NULL, RDW_INVALIDATE | RDW_FRAME | RDW_UPDATENOW | RDW_NOCHILDREN);
+		// fix bad pic
+		RECT r = { 0, 0, lpObjWnd->Controls.ItemList.Left, lpObjWnd->Controls.TreeList.Top };
+		InvalidateRect(lpObjWnd->ObjectWindow.Handle, &r, TRUE);
+		UpdateWindow(lpObjWnd->ObjectWindow.Handle);
+
 		lpObjWnd->Controls.BtnObjLayout.UnlockUpdate();
 		lpObjWnd->Controls.ToggleDecompose.UnlockUpdate();
 		lpObjWnd->Controls.EditFilter.UnlockUpdate();

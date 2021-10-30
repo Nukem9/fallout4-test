@@ -1,6 +1,6 @@
 {
   "ExStyle": [ "WS_EX_TOPMOST" ],
-  "Style": [ "DS_SYSMODAL", "DS_CENTER", "WS_SYSMENU", "WS_DLGFRAME", "DS_MODALFRAME", "WS_CAPTION" ],
+  "Style": [ "DS_SYSMODAL", "DS_CENTER", "WS_SYSMENU", "WS_THICKFRAME", "DS_MODALFRAME", "WS_CAPTION" ],
   "Title": "Data",
   "Width": 640,
   "Height": 600,
@@ -74,7 +74,7 @@
       "x": 288,
       "y": 72,
       "Width": 186,
-      "Height": 452
+      "Height": 453
     },
     {
       "ExStyle": [ "WS_EX_CLIENTEDGE" ],
@@ -98,6 +98,7 @@
     {
       "Type": "LTEXT",
       "Title": "Created By",
+      "Id": 52006,
       "x": 298,
       "y": 4,
       "Width": 60,
@@ -106,6 +107,7 @@
     {
       "Type": "LTEXT",
       "Title": "Summary",
+      "Id": 52007,
       "x": 298,
       "y": 52,
       "Width": 60,
@@ -114,6 +116,7 @@
     {
       "Type": "LTEXT",
       "Title": "Parent Masters",
+      "Id": 52008,
       "x": 488,
       "y": 4,
       "Width": 80,
@@ -122,6 +125,7 @@
     {
       "Type": "LTEXT",
       "Title": "Created On:",
+      "Id": 52009,
       "x": 288,
       "y": 528,
       "Width": 75,
@@ -130,6 +134,7 @@
     {
       "Type": "LTEXT",
       "Title": "Last Modified:",
+      "Id": 52010,
       "x": 288,
       "y": 548,
       "Width": 75,

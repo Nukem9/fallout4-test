@@ -103,6 +103,9 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>false</GenerateDebugInformation>
     </Link>
+    <PostBuildEvent>
+      <Command>powershell Copy-Item -Path "$(SolutionDir)$(Platform)\$(Configuration)\f4ck_loader.exe" -Destination "$(SolutionDir)Resources\f4ck_loader.bin"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

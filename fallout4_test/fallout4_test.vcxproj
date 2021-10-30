@@ -132,8 +132,7 @@
       <StackCommitSize>32768</StackCommitSize>
     </Link>
     <PreBuildEvent>
-      <Command>powershell -ExecutionPolicy Bypass -File "$(SolutionDir)release.ps1" 4
-powershell Copy-Item -Path "$(SolutionDir)$(Platform)\$(Configuration)\f4ck_loader.exe" -Destination "$(SolutionDir)Resources\f4ck_loader.bin"</Command>
+      <Command>powershell -ExecutionPolicy Bypass -File "$(SolutionDir)release.ps1" 4</Command>
     </PreBuildEvent>
     <PreBuildEvent>
       <Message>Update version_info.h</Message>
