@@ -257,10 +257,11 @@ namespace DataWindow
 			// They have created icons that mimic pictorially for the user.
 			// I completely take everything from there, although I'm not happy about it, but this is a ready-made mechanism, and I'm just trying to make a search in it.
 			HIMAGELIST hImageList = ListView_GetImageList(DataWindowControls.ListViewPlugins.Handle, LVSIL_SMALL);
-			
-        	DataWindowControls.ImageList.ReCreate(16, 16, TRUE, Core::Classes::UI::ilct24Bit);
+			ImageList_Destroy(hImageList);
 
-			if (UITheme::IsEnabledMode() && ((UITheme::Theme::GetTheme() == UITheme::Theme::Theme_Dark) || 
+			DataWindowControls.ImageList.ReCreate(16, 16, TRUE, Core::Classes::UI::ilct24Bit);
+
+			if (UITheme::IsEnabledMode() && ((UITheme::Theme::GetTheme() == UITheme::Theme::Theme_Dark) ||
 				(UITheme::Theme::GetTheme() == UITheme::Theme::Theme_DarkGray))) {
 				DataWindowControls.ImageList.AddFromResource(g_hModule, MAKEINTRESOURCEA(IDB_BITMAP4), RGB(32, 32, 32));
 				DataWindowControls.ImageList.AddFromResource(g_hModule, MAKEINTRESOURCEA(IDB_BITMAP2), RGB(32, 32, 32));
@@ -269,11 +270,9 @@ namespace DataWindow
 				DataWindowControls.ImageList.AddFromResource(g_hModule, MAKEINTRESOURCEA(IDB_BITMAP3), RGB(255, 255, 255));
 				DataWindowControls.ImageList.AddFromResource(g_hModule, MAKEINTRESOURCEA(IDB_BITMAP1), RGB(255, 255, 255));
 			}
-			
+
 			ListView_SetImageList(DataWindowControls.ListViewPluginsResult.Handle, DataWindowControls.ImageList.Handle, LVSIL_SMALL);
 			ListView_SetImageList(DataWindowControls.ListViewPlugins.Handle, DataWindowControls.ImageList.Handle, LVSIL_SMALL);
-
-			ImageList_Destroy(hImageList);
 
 			// fix no checked in list 
 			RedrawWindow(DataWindowControls.ListViewPlugins.Handle, NULL, NULL, RDW_UPDATENOW | RDW_NOCHILDREN);
@@ -301,6 +300,12 @@ namespace DataWindow
 			lpMMI->ptMinTrackSize.y = WINDOW_MIN_HEIGHT;
 
 			return S_OK;
+		}
+		else if (Message == WM_MOVE) {
+			auto rWnd = DataWindow.WindowRect();
+
+			g_INI_CK->SetInteger("General", "Data X", rWnd.Left);
+			g_INI_CK->SetInteger("General", "Data Y", rWnd.Top);
 		}
 		else if (Message == WM_SIZE) {
 			POINT p_offset = {
