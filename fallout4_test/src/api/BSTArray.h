@@ -22,123 +22,228 @@
 
 #pragma once
 
+#define BSTARRAY_GROW_SIZE		10
+#define BSTARRAY_SHRINK_SIZE	10
+
+#include "NiMain/GameAPI.h"
 #include <stdint.h>
-
-class BSTArrayHeapAllocator
-{
+ 
+template <class _Ty>
+class BSTArray {
 	friend class __BSTArrayCheckOffsets;
-
-private:
-	void *m_Buffer;
-	uint32_t m_AllocSize;
-
-public:
-	BSTArrayHeapAllocator() : m_Buffer(nullptr), m_AllocSize(0) {}
-
-	void *QBuffer() const {
-		return m_Buffer;
-	}
-
-	uint32_t QAllocSize() const {
-		return m_AllocSize;
-	}
-};
-
-class BSTArrayBase
-{
-	friend class __BSTArrayCheckOffsets;
-
-private:
-	uint32_t m_Size;
-
-public:
-	BSTArrayBase() : m_Size(0) {}
-
-	uint32_t QSize() const {
-		return m_Size;
-	}
-
-	bool QEmpty() const {
-		return m_Size == 0;
-	}
-};
-
-template <class _Ty, class _Alloc = BSTArrayHeapAllocator>
-class BSTArray : public _Alloc, public BSTArrayBase
-{
-	friend class __BSTArrayCheckOffsets;
-
 public:
 	using value_type = _Ty;
-	using allocator_type = _Alloc;
 	using reference = _Ty&;
 	using const_reference = const _Ty&;
 	using size_type = uint32_t;
-
-	BSTArray(void) {
+private:
+	_Ty* _Myfirst(VOID) { return (_Ty*)QBuffer(); }
+	_Ty* _Mylast(VOID) { return ((_Ty*)QBuffer()) + QSize(); }
+	const _Ty* _const_Myfirst(VOID) const { return (_Ty*)QBuffer(); }
+	const _Ty* _const_Mylast(VOID) const { return ((_Ty*)QBuffer()) + QSize(); }
+private:
+	_Ty* m_Buffer;
+	size_type m_AllocSize;
+	size_type pad0C;
+	size_type m_Size;
+	size_type pad14;
+private:
+	VOID Deallocate(VOID) {
+		Heap_Free((LPVOID)m_Buffer);
+		m_Buffer = NULL;
+		m_AllocSize = 0;
+		m_Size = 0;
 	}
 
-	reference operator[](const size_type Pos) {
-		return (this->_Myfirst()[Pos]);
+	BOOL Allocate(size_type numEntries) {
+		m_Buffer = (_Ty*)Heap_Allocate(sizeof(_Ty) * numEntries);
+		if (!m_Buffer) return FALSE;
+
+		for (size_type i = 0; i < numEntries; i++)
+			new (&m_Buffer[i]) _Ty;
+
+		m_AllocSize = numEntries;
+		m_Size = numEntries;
+
+		return TRUE;
+	}
+protected:
+	BOOL Shrink(VOID) {
+		if (!m_Buffer || m_Size == m_AllocSize)
+			return FALSE;
+
+		try {
+			size_type newSize = m_Size;
+			_Ty* oldArray = m_Buffer;
+			_Ty* newArray = (_Ty*)Heap_Allocate(sizeof(_Ty) * newSize);							// Allocate new block
+			memmove_s(newArray, sizeof(_Ty) * newSize, m_Buffer, sizeof(_Ty) * newSize);		// Move the old block
+			m_Buffer = newArray;
+			m_AllocSize = m_Size;
+			Heap_Free((LPVOID)oldArray);														// Free the old block
+			return TRUE;
+		}
+		catch (...) {
+			return FALSE;
+		}
+
+		return FALSE;
 	}
 
-	const_reference operator[](const size_type Pos) const {
-		return (this->_const_Myfirst()[Pos]);
-	}
+	BOOL Grow(DWORD64 numEntries) {
+		if (!m_Buffer) {
+			m_Buffer = (_Ty*)Heap_Allocate(sizeof(_Ty) * numEntries);
+			m_Size = 0;
+			m_AllocSize = numEntries;
+			return TRUE;
+		}
 
+		try {
+			size_type oldSize = m_AllocSize;
+			size_type newSize = oldSize + numEntries;
+			_Ty* oldArray = m_Buffer;
+			_Ty* newArray = (_Ty*)Heap_Allocate(sizeof(_Ty) * newSize);								// Allocate new block
+			if (oldArray)
+				memmove_s(newArray, sizeof(_Ty) * newSize, m_Buffer, sizeof(_Ty) * m_AllocSize);	// Move the old block
+			m_Buffer = newArray;
+			m_AllocSize = newSize;
+
+			if (oldArray)
+				Heap_Free((LPVOID)oldArray);														// Free the old block
+
+			for (size_type i = oldSize; i < newSize; i++)											// Allocate the rest of the free blocks
+				new (&m_Buffer[i]) _Ty;
+
+			return TRUE;
+		}
+		catch (...) {
+			return FALSE;
+		}
+
+		return FALSE;
+	}
+public:
+	BSTArray(VOID) : m_Buffer(NULL), m_AllocSize(0), m_Size(0) {}
+public:
+	inline _Ty* QBuffer(VOID) const { return m_Buffer; }
+	inline size_type QAllocSize(VOID) const { return m_AllocSize; }
+	inline size_type QSize(VOID) const { return m_Size; }
+	inline BOOL QEmpty(VOID) const { return m_Size == 0; }
+public:
 	reference at(const size_type Pos) {
 		AssertMsg(Pos >= 0 && Pos < QSize(), "Exceeded array bounds");
-
 		return (this->_Myfirst()[Pos]);
 	}
-
 	const_reference at(const size_type Pos) const {
 		AssertMsg(Pos >= 0 && Pos < QSize(), "Exceeded array bounds");
-
 		return (this->_Myfirst()[Pos]);
 	}
-	
-	reference front(void) {
-		return (*this->_Myfirst());
+public:
+	inline reference operator[](const size_type Pos) { return (this->_Myfirst()[Pos]); }
+	inline const_reference operator[](const size_type Pos) const { return (this->_const_Myfirst()[Pos]); }
+public:
+	inline reference front(VOID) { return (*this->_Myfirst()); }
+	inline const_reference const_front(VOID) const { return (*this->_const_Myfirst()); }
+	inline reference back(VOID) { return (this->_Mylast()[-1]); }
+	inline const_reference const_back(VOID) const { return (this->_const_Mylast()[-1]); }
+public:
+	inline VOID Clear(VOID) { Deallocate(); }
+
+	BOOL Resize(size_type numEntries) {
+		if (numEntries == m_AllocSize)
+			return FALSE;
+
+		if (!entries) {
+			Allocate(numEntries);
+			return TRUE;
+		}
+		if (numEntries < m_AllocSize) {
+			// Delete the truncated entries
+			for (size_type i = numEntries; i < m_AllocSize; i++)
+				delete& m_Buffer[i];
+		}
+
+		_Ty* newBlock = (_Ty*)Heap_Allocate(sizeof(_Ty) * numEntries);						// Create a new block
+		memmove_s(newBlock, sizeof(_Ty) * numEntries, m_Buffer, sizeof(_Ty) * numEntries);	// Move the old memory to the new block
+		if (numEntries > m_AllocSize) {														// Fill in new remaining entries
+			for (size_type i = m_AllocSize; i < numEntries; i++)
+				new (&m_Buffer[i]) _Ty;
+		}
+		Heap_Free(entries);																	// Free the old block
+		m_Buffer = newBlock;																// Assign the new block
+		m_AllocSize = numEntries;															// Capacity is now the number of total entries in the block
+		m_Size = std::min(m_AllocSize, m_Size);												// Count stays the same, or is truncated to capacity
+		return TRUE;
 	}
 
-	const_reference const_front(void) const {
-		return (*this->_const_Myfirst());
+	BOOL Push(const _Ty& entry) {
+		if (!m_Buffer || m_Size + 1 > m_AllocSize) {
+			if (!Grow(BSTARRAY_GROW_SIZE))
+				return FALSE;
+		}
+
+		m_Buffer[m_Size] = entry;
+		m_Size++;
+		return TRUE;
+	};
+
+	BOOL Insert(size_type index, const _Ty& entry) {
+		if (!m_Buffer)
+			return FALSE;
+
+		size_type lastSize = m_Size;
+		if (m_Size + 1 > m_AllocSize) {																				// Not enough space, grow
+			if (!Grow(BSTARRAY_GROW_SIZE))
+				return FALSE;
+		}
+
+		if (index != lastSize) {																					// Not inserting onto the end, need to move everything down
+			size_type remaining = m_Size - index;
+			memmove_s(&m_Buffer[index + 1], sizeof(_Ty) * remaining, &m_Buffer[index], sizeof(_Ty) * remaining);	// Move the rest up
+		}
+
+		m_Buffer[index] = entry;
+		m_Size++;
+		return TRUE;
+	};
+
+	BOOL Remove(size_type index) {
+		if (!m_Buffer || index >= m_Size)
+			return FALSE;
+
+		// This might not be right for pointer types...
+		(&m_Buffer[index])->~_Ty();
+
+		if (index + 1 < m_Size) {
+			size_type remaining = m_Size - index;
+			memmove_s(&m_Buffer[index], sizeof(_Ty) * remaining, &m_Buffer[index + 1], sizeof(_Ty) * remaining);	// Move the rest up
+		}
+		m_Size--;
+
+		if (m_AllocSize > m_Size + BSTARRAY_SHRINK_SIZE)
+			Shrink();
+
+		return TRUE;
 	}
 
-	reference back(void) {
-		return (this->_Mylast()[-1]);
+	BOOL GetNthItem(size_type index, _Ty& pT) const {
+		if (index < m_Size) {
+			pT = m_Buffer[index];
+			return TRUE;
+		}
+		return FALSE;
 	}
 
-	const_reference const_back(void) const {
-		return (this->_const_Mylast()[-1]);
-	}
-
-private:
-	_Ty *_Myfirst(void) {
-		return (_Ty *)QBuffer();
-	}
-
-	_Ty *_Mylast(void) {
-		return ((_Ty *)QBuffer()) + QSize();
-	}
-
-	const _Ty* _const_Myfirst(void) const {
-		return (_Ty*)QBuffer();
-	}
-
-	const _Ty* _const_Mylast(void) const {
-		return ((_Ty*)QBuffer()) + QSize();
+	DWORD64 GetItemIndex(_Ty& pFind) const {
+		for (DWORD64 n = 0; n < m_Size; n++) {
+			_Ty& pT = m_Buffer[n];
+			if (pT == pFind)
+				return n;
+		}
+		return MAXDWORD;
 	}
 };
 
-class __BSTArrayCheckOffsets
-{
-	static_assert_offset(BSTArrayHeapAllocator, m_Buffer, 0x0);
-	static_assert_offset(BSTArrayHeapAllocator, m_AllocSize, 0x8);
-
-	static_assert_offset(BSTArrayBase, m_Size, 0x0);
-
+class __BSTArrayCheckOffsets {
 	static_assert_offset(BSTArray<int>, m_Buffer, 0x0);
 	static_assert_offset(BSTArray<int>, m_AllocSize, 0x8);
 	static_assert_offset(BSTArray<int>, m_Size, 0x10);

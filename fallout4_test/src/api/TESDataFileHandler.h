@@ -33,16 +33,14 @@
 
 namespace api {
 
-	struct ModList
-	{
+	struct ModList {
 		BSSimpleList<TESFile> modInfoList;		// 00
 		BSTArray<TESFile*> loadedMods;			// 10
 	};
 
-	class TESDataFileHandler
-	{
+	class TESDataFileHandler {
 	public:
-		using UnkArray = BSTArray<void*>;
+		using UnkArray = BSTArray<LPVOID>;
 		using UnkFormArray = BSTArray<TESForm*>;
 		using TESFileList = BSSimpleList<TESFile>;
 		using TESFileArray = BSTArray<TESFile*>;
