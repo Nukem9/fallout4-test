@@ -316,6 +316,60 @@ VOID FIXAPI F_RequiredPatches(VOID) {
 		XUtil::DetourJump(OFFSET(0x193D20, 0), &Experimental::QSIMDFastSearchArrayItemDWORD);
 		XUtil::DetourJump(OFFSET(0x409AB0, 0), &Experimental::QSIMDFastSearchArrayItemDWORD);
 
+		class Search_IA128 : public Xbyak::CodeGenerator {
+		public:
+			Search_IA128(VOID) : Xbyak::CodeGenerator() {
+				mov(ptr[rsp + 0x10], rbx);
+				mov(ptr[rsp + 0x18], rsi);
+				push(rdi);
+				push(r14);
+				push(r15);
+				sub(rsp, 0x30);
+				mov(r14d, dword[rcx + 0x10]);
+				or (ebx, 0xFFFFFFFF);
+				xor (edi, edi);
+				mov(r15, rdx);
+				mov(rsi, rcx);
+				test(r14d, r14d);
+				je(".quit_no");
+				push(rbp);
+				mov(ebp, edi);
+				mov(rcx, qword[r15]);
+				mov(rdx, qword[rsi]);
+				L(".c1");
+				cmp(ebx, -1);
+				jne(".quit_yes");
+				cmp(qword[rdx + rbp], rcx);
+				cmove(ebx, edi);
+				inc(edi);
+				lea(rbp, qword[rbp + 0x10]);
+				cmp(edi, r14d);
+				jb(".c1");
+				L(".quit_yes");
+				pop(rbp);
+				L(".quit_no");
+				mov(eax, ebx);
+				mov(rbx, qword[rsp + 0x58]);
+				mov(rsi, qword[rsp + 0x60]);
+				add(rsp, 0x30);
+				pop(r15);
+				pop(r14);
+				pop(rdi);
+				ret();
+			}
+
+			static VOID Generate(uintptr_t Target) {
+				auto hook = new Search_IA128();
+				XUtil::DetourJump(Target, (uintptr_t)hook->getCode());
+			}
+
+		};
+
+		Search_IA128::Generate(OFFSET(0xB21130, 0));
+		Search_IA128::Generate(OFFSET(0x131790, 0));
+		Search_IA128::Generate(OFFSET(0x576540, 0));
+		Search_IA128::Generate(OFFSET(0xAAEDD0, 0));
+
 		count += 3;
 
 		_MESSAGE_FMT("Replaced function with SIMD function: %d.", count);
