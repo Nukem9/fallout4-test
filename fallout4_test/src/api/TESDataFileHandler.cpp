@@ -30,16 +30,85 @@
 #include <filesystem>
 
 namespace api {
-	bool Loaded = false;
+	BOOL Loaded = FALSE;
 	TESDataFileHandler* FileHandler;
-	TESDataFileHandler::TESFileArray g_SelectedFilesArray;
+	std::vector<TESFile*> g_SelectedFilesArray;
 	static std::list<std::string> g_ba2_list;
+
+	/////////////////////
+
+	VOID FIXAPI AttachBA2File(LPCSTR _filename, LPCSTR _folder) {
+		std::string sname2 = _filename;
+		for each (auto sname1 in g_ba2_list) {
+			if (!sname1.compare(XUtil::Str::LowerCase(sname2)))
+				goto attach_ba2;
+		}
+
+		return;
+
+	attach_ba2:
+		LPVOID lpUnknownClass = (LPVOID)OFFSET(0x38559E8, 0);
+
+		if (_folder) {
+			if (std::filesystem::exists(std::string(_folder) + _filename)) {
+				_MESSAGE_FMT("Load archive %s...", _filename);
+				((VOID(__fastcall*)(LPCSTR, int32_t, LPVOID*))OFFSET(0x24CC100, 0))(_filename, 0, &lpUnknownClass);
+			}
+		}
+		else {
+			if (std::filesystem::exists(std::string("Data\\") + _filename)) {
+				_MESSAGE_FMT("Load archive %s...", _filename);
+				((VOID(__fastcall*)(LPCSTR, int32_t, LPVOID*))OFFSET(0x24CC100, 0))(_filename, 0, &lpUnknownClass);
+			}
+		}
+	}
+
+	VOID FIXAPI DetectSelectFile(TESFile* File) {
+		// Sometimes duplicated
+		if (std::find(g_SelectedFilesArray.begin(), g_SelectedFilesArray.end(), File) == g_SelectedFilesArray.end())
+		{
+			if (File->IsActive())
+				_MESSAGE_FMT("Load active file %s...", File->FileName.c_str());
+			else if (File->IsMaster() || File->IsSmallMaster())
+				_MESSAGE_FMT("Load master file %s...", File->FileName.c_str());
+			else
+				_MESSAGE_FMT("Load file %s...", File->FileName.c_str());
+
+			g_SelectedFilesArray.push_back(File);
+		}
+
+		// Added .ba2 files
+
+		CHAR szBuf[MAX_PATH + 1];
+		if (!GetModuleFileNameA(GetModuleHandleA(NULL), szBuf, MAX_PATH))
+			_MESSAGE("ERROR: An error occurred while retrieving the root folder.");
+		else {
+			auto path = XUtil::Str::dirnameOf(szBuf) + "\\Data\\";
+
+			std::string sname = File->FileName.c_str();
+			sname = sname.substr(0, sname.find_last_of('.'));
+
+			AttachBA2File((sname + " - Main.ba2").c_str(), path.c_str());
+			AttachBA2File((sname + " - Textures.ba2").c_str(), path.c_str());
+			AttachBA2File((sname + " - Materials.ba2").c_str(), path.c_str());
+		}
+
+		((VOID(__fastcall*)(TESFile*))OFFSET(0x7FFF10, 0))(File);
+	}
+
+	VOID FIXAPI EndLoadEvent_SendDone(INT index, LPCSTR message) {
+		((VOID(__fastcall*)(INT, LPCSTR))OFFSET(0x5FDFE0, 0))(index, message);
+		Loaded = TRUE;
+		g_SelectedFilesArray.clear();
+	}
+
+	/////////////////////
 
 	bool TESDataFileHandler::IsLoaded(void) const {
 		return Loaded;
 	}
 
-	void TESDataFileHandler::Initialize(void) {
+	VOID TESDataFileHandler::Initialize(VOID) {
 		FileHandler = (TESDataFileHandler*)OFFSET(0x6D67960, 0);
 
 		CHAR szBuf[MAX_PATH + 1];
@@ -95,19 +164,15 @@ namespace api {
 		}
 
 		// Recognition of loaded files
-		XUtil::DetourClassCall(OFFSET(0x801AA7, 0), &TESDataFileHandler::DetectSelectFile);
+		XUtil::DetourCall(OFFSET(0x801AA7, 0), &DetectSelectFile);
 		// End loaded files
-		XUtil::DetourClassJump(OFFSET(0x5FBF71, 0), &TESDataFileHandler::EndLoadEvent_SendDone);
-	}
-
-	void TESDataFileHandler::EndLoadEvent_SendDone(int32_t index, LPCSTR message) {
-		((void(__fastcall*)(int32_t, LPCSTR))OFFSET(0x5FDFE0, 0))(index, message);
-		Loaded = true;
+		XUtil::DetourJump(OFFSET(0x5FBF71, 0), &EndLoadEvent_SendDone);
 	}
 
 	bool TESDataFileHandler::Load(int Unknown) {
 		Loaded = false;
 		g_SelectedFilesArray.clear();
+
 		// loads, checks.
 		return ((bool(__fastcall*)(TESDataFileHandler*, int))OFFSET(0x7D9D80, 0))(this, Unknown);
 	}
@@ -125,80 +190,5 @@ namespace api {
 
 		// Unknown. Initializes something.
 		return ((bool(__fastcall*)(TESDataFileHandler*))OFFSET(0x7D66A0, 0))(this);
-	}
-
-	void TESDataFileHandler::DetectSelectFile(TESFile* File) {
-		// Sometimes duplicated
-		if (std::find(g_SelectedFilesArray.begin(), g_SelectedFilesArray.end(), File) == g_SelectedFilesArray.end())
-		{
-			if (File->IsActive())
-				_MESSAGE_FMT("Load active file %s...", File->FileName.c_str());
-			else if (File->IsMaster() || File->IsSmallMaster())
-				_MESSAGE_FMT("Load master file %s...", File->FileName.c_str());
-			else
-				_MESSAGE_FMT("Load file %s...", File->FileName.c_str());
-
-			g_SelectedFilesArray.push_back(File);
-		}
-
-		// Added .ba2 files
-
-		CHAR szBuf[MAX_PATH + 1];
-		if (!GetModuleFileNameA(GetModuleHandleA(NULL), szBuf, MAX_PATH))
-			_MESSAGE("ERROR: An error occurred while retrieving the root folder.");
-		else {
-			auto path = XUtil::Str::dirnameOf(szBuf) + "\\Data\\";
-
-			std::string sname = File->FileName.c_str();
-			sname = sname.substr(0, sname.find_last_of('.'));
-
-			AttachBA2File((sname + " - Main.ba2").c_str(), path.c_str());
-			AttachBA2File((sname + " - Textures.ba2").c_str(), path.c_str());
-			AttachBA2File((sname + " - Materials.ba2").c_str(), path.c_str());
-		}
-
-		((void(__fastcall*)(TESFile*))OFFSET(0x7FFF10, 0))(File);
-	}
-
-	TESDataFileHandler::TESFileListPtr TESDataFileHandler::GetArchiveFiles(void) {
-		return (TESDataFileHandler::TESFileListPtr)OFFSET(0x6D68910, 0);
-	}
-
-	TESDataFileHandler::TESFileArray* TESDataFileHandler::GetSelectedFiles(void) {
-		return &g_SelectedFilesArray;
-	}
-
-	TESFile* TESDataFileHandler::GetActiveFile(void) const {
-		return *(TESFile**)(((char*)this) + 0xFA8);
-	}
-
-	bool TESDataFileHandler::IsActiveFile(void) const {
-		return GetActiveFile() != nullptr;
-	}
-
-	void TESDataFileHandler::AttachBA2File(LPCSTR _filename, LPCSTR _folder) {
-		std::string sname2 = _filename;
-		for each (auto sname1 in g_ba2_list) {
-			if (!sname1.compare(XUtil::Str::LowerCase(sname2)))
-				goto attach_ba2;
-		}
-
-		return;
-
-	attach_ba2:
-		LPVOID lpUnknownClass = (LPVOID)OFFSET(0x38559E8, 0);
-
-		if (_folder) {
-			if (std::filesystem::exists(std::string(_folder) + _filename)) {
-				_MESSAGE_FMT("Load archive %s...", _filename);
-				((void(__fastcall*)(LPCSTR, int32_t, LPVOID*))OFFSET(0x24CC100, 0))(_filename, 0, &lpUnknownClass);
-			}
-		}
-		else {
-			if (std::filesystem::exists(std::string("Data\\") + _filename)) {
-				_MESSAGE_FMT("Load archive %s...", _filename);
-				((void(__fastcall*)(LPCSTR, int32_t, LPVOID*))OFFSET(0x24CC100, 0))(_filename, 0, &lpUnknownClass);
-			}
-		}
 	}
 }

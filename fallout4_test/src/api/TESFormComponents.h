@@ -24,8 +24,6 @@
 
 #include "../common.h"
 #include "NiMain/GameTypes.h"
-#include "BSTArray.h"
-#include "BSTList.h"
 
 #pragma pack(push, 1)
 

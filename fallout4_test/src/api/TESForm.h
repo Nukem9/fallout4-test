@@ -117,10 +117,12 @@ namespace api {
 		inline BOOL IsNoRespawns(VOID) const { return (_FormFlags & fsNoRespawns) != 0; }
 		inline BOOL IsNoHavok(VOID) const { return (_FormFlags & fsNoHavok) != 0; }
 		inline BOOL IsTemporary(VOID) const { return (_FormFlags & fsTemporary) != 0; }
+		inline DWORD GetFormFlags(VOID) const { return _FormFlags; }
 		inline DWORD GetFormID(VOID) const { return _FormID; }
 	public:
 		READ_PROPERTY(IsActive) BOOL Active;
 		READ_PROPERTY(GetFormID) DWORD FormID;
+		READ_PROPERTY(GetFormFlags) DWORD FormFlag;
 		READ_PROPERTY(GetID) std::string EditID;
 		READ_PROPERTY(GetType) CHAR TypeID;
 	};

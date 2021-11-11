@@ -338,6 +338,15 @@
     <ClInclude Include="src\common\MemoryManager.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>
+    <ClInclude Include="src\api\NiMain\GameEvents.h">
+      <Filter>Header Files\api\NiMain</Filter>
+    </ClInclude>
+    <ClInclude Include="src\api\NiMain\NiRefObject.h">
+      <Filter>Header Files\api\NiMain</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\CKF4\DMDebugInfoFormWindow.h">
+      <Filter>Header Files\UI\Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\dllmain.cpp">
@@ -582,6 +591,9 @@
     </ClCompile>
     <ClCompile Include="src\common\MemoryManager.cpp">
       <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\CKF4\DMDebugInfoFormWindow.cpp">
+      <Filter>Source Files\UI\Windows</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

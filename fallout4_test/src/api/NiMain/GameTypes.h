@@ -50,6 +50,9 @@
 #include "GameAPI.h"
 #include <string>
 
+#include "../BSTList.h"
+#include "../BSTArray.h"
+
 #pragma pack(push, 1)
 
 // 04 or 08 depending alignment

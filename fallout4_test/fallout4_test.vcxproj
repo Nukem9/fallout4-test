@@ -177,7 +177,9 @@
     <ClInclude Include="src\api\ComClasses.h" />
     <ClInclude Include="src\api\CommIncAPI.h" />
     <ClInclude Include="src\api\NiMain\GameAPI.h" />
+    <ClInclude Include="src\api\NiMain\GameEvents.h" />
     <ClInclude Include="src\api\NiMain\GameTypes.h" />
+    <ClInclude Include="src\api\NiMain\NiRefObject.h" />
     <ClInclude Include="src\api\NiMain\NiTypes.h" />
     <ClInclude Include="src\api\TESFormComponents.h" />
     <ClInclude Include="src\api\TESCell.h" />
@@ -194,6 +196,7 @@
     <ClInclude Include="src\patches\CKF4\ActorWindow.h" />
     <ClInclude Include="src\patches\CKF4\CellViewWindow.h" />
     <ClInclude Include="src\patches\CKF4\DataWindow.h" />
+    <ClInclude Include="src\patches\CKF4\DMDebugInfoFormWindow.h" />
     <ClInclude Include="src\patches\CKF4\Editor.h" />
     <ClInclude Include="src\patches\CKF4\EditorUI.h" />
     <ClInclude Include="src\patches\CKF4\LayersWindow.h" />
@@ -268,6 +271,7 @@
     <ClCompile Include="src\patches\CKF4\ActorWindow.cpp" />
     <ClCompile Include="src\patches\CKF4\CellViewWindow.cpp" />
     <ClCompile Include="src\patches\CKF4\DataWindow.cpp" />
+    <ClCompile Include="src\patches\CKF4\DMDebugInfoFormWindow.cpp" />
     <ClCompile Include="src\patches\CKF4\Editor.cpp" />
     <ClCompile Include="src\patches\CKF4\ENBSeriesFixableRun.cpp" />
     <ClCompile Include="src\patches\CKF4\LayersWindow.cpp" />

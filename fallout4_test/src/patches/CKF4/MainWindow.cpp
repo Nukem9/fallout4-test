@@ -26,6 +26,7 @@
 #include "CellViewWindow.h"
 #include "ObjectWindow.h"
 #include "RenderWindow.h"
+#include "DMDebugInfoFormWindow.h"
 #include "Editor.h"
 #include "EditorUI.h"
 
@@ -88,14 +89,26 @@ namespace MainWindow
 		result = result && ExtensionSubMenu->Append("Save Hardcoded Forms", UI_EXTMENU_HARDCODEDFORMS);
 		result = result && MainWindow.MainMenu.Append("Extensions", *ExtensionSubMenu);
 
-		result = result && LinksSubMenu->Append("Cascadia Wiki", UI_EXTMENU_LINKS_WIKI);
+		result = result && LinksSubMenu->Append("Creation Kit Wiki official page", UI_EXTMENU_LINKS_WIKI);
+		result = result && LinksSubMenu->Append("F4 Creation Kit Fixes official page", UI_EXTMENU_LINKS_HOME);
 		result = result && LinksSubMenu->Append("Material Editor official page", UI_EXTMENU_LINKS_MATERIALEDITOR);
 		result = result && MainWindow.MainMenu.Append("Links", *LinksSubMenu);
+
+#if FALLOUT4_DEVELOPER_MODE
+		Classes::CUIMenu* DeveloperSubMenu = new Classes::CUIMenu(Classes::CUIMenu::CreateSubMenu());
+
+		result = result && DeveloperSubMenu->Append("Debug Info Form", UI_EXTMENU_DEVMODE_DEBUGINFOFORM);
+		result = result && MainWindow.MainMenu.Append("Debug Fixes", *DeveloperSubMenu);
+#endif
 
 		// I don't use DeleteMenu when destroying, I don't need to store a pointer and all that.
 
 		delete LinksSubMenu;
 		delete ExtensionSubMenu;
+
+#if FALLOUT4_DEVELOPER_MODE
+		delete DeveloperSubMenu;
+#endif
 
 		AssertMsg(result, "Failed to create extension submenus");
 		return result;
@@ -215,7 +228,7 @@ namespace MainWindow
 			case UI_EXTMENU_LOADEDESPINFO:
 			{
 				char filePath[MAX_PATH] = {};
-				OPENFILENAME ofnData = { 0 };
+				OPENFILENAMEA ofnData = { 0 };
 				ofnData.lStructSize = sizeof(OPENFILENAME);
 				ofnData.lpstrFilter = "Text Files (*.txt)\0*.txt\0\0";
 				ofnData.lpstrFile = filePath;
@@ -223,7 +236,7 @@ namespace MainWindow
 				ofnData.Flags = OFN_OVERWRITEPROMPT | OFN_NOCHANGEDIR;
 				ofnData.lpstrDefExt = "txt";
 
-				if (FILE* f; GetSaveFileName(&ofnData) && fopen_s(&f, filePath, "w") == 0)
+				if (FILE* f; GetSaveFileNameA(&ofnData) && fopen_s(&f, filePath, "w") == 0)
 				{
 					struct VersionControlListItem
 					{
@@ -304,13 +317,11 @@ namespace MainWindow
 
 			case UI_EXTMENU_HARDCODEDFORMS:
 			{
-				for (uint32_t i = 0; i < 2048; i++)
-				{
+				for (uint32_t i = 0; i < 2048; i++) {
 					auto form = GetFormByNumericID(i);
 
-					if (form)
-					{
-						(*(void(__fastcall **)(TESForm*, __int64))(*(__int64*)form + 0x1A0))(form, 1);
+					if (form) {
+						form->MarkChanged(TRUE);
 						LogWindow::Log("SetFormModified(%08X)", i);
 					}
 				}
@@ -320,20 +331,27 @@ namespace MainWindow
 			}
 			return S_OK;
 
-			case UI_EXTMENU_LINKS_WIKI:
-			{
-				ShellExecuteA(NULL, "open", "https://wiki.falloutcascadia.com/index.php?title=Main_Page", "", "", SW_SHOW);
+			case UI_EXTMENU_DEVMODE_DEBUGINFOFORM: {
+				DMDebugInfoFormWindow::ShowModal();
 			}
 			return S_OK;
 
-			case UI_EXTMENU_LINKS_MATERIALEDITOR:
-			{
+			case UI_EXTMENU_LINKS_WIKI: {
+				ShellExecuteA(NULL, "open", "https://www.creationkit.com/fallout4/index.php?title=Main_Page", "", "", SW_SHOW);
+			}
+			return S_OK;
+
+			case UI_EXTMENU_LINKS_HOME: {
+				ShellExecuteA(NULL, "open", "https://www.nexusmods.com/fallout4/mods/51165?tab=description", "", "", SW_SHOW);
+			}
+			return S_OK;
+
+			case UI_EXTMENU_LINKS_MATERIALEDITOR: {
 				ShellExecuteA(NULL, "open", "https://www.nexusmods.com/fallout4/mods/3635", "", "", SW_SHOW);
 			}
 			return S_OK;
 
-			case UI_SHOW_MATERIALEDITOR:
-			{
+			case UI_SHOW_MATERIALEDITOR: {
 				constexpr LPSTR lpMaterialEditorPath = ".\\Tools\\MaterialEditor\\Material Editor.exe";
 				if (std::filesystem::exists(lpMaterialEditorPath))
 					ShellExecuteA(NULL, "open", lpMaterialEditorPath, "", "", SW_SHOW);

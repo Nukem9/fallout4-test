@@ -25,23 +25,42 @@
 #include "TESForm.h"
 #include "TESCell.h"
 
-#include "NiMain/NiTypes.h"
+#include "NiMain/NiRefObject.h"
+#include "NiMain/GameEvents.h"
 
 #pragma pack(push, 1)
 
 namespace api {
+
+	// 10
+	class BSHandleRefObject : public NiRefObject {
+	public:
+		enum { mask_RefCount = 0x3FF };
+
+		inline DWORD GetRefCount(VOID) const { return m_ll64RefCount & mask_RefCount; }
+		inline VOID DecRefHandle(VOID) {
+			if ((InterlockedDecrement64(&m_ll64RefCount) & mask_RefCount) == 0)
+				DeleteThis();
+		}
+	};
+
 	class TESObjectREFR : public TESForm {
 	private:
 		enum { eTypeID = ftReference };
 	private:
-		CHAR _pad1[0xA0];			// 0x28
-		TESCell* _parentCell;		// 0xC8
-		NiPoint3 _rotate;			// C0, C4, C8
-		FLOAT _unkCC;
-		NiPoint3 _position;			// D0, D4, D8
-		FLOAT _unkDC;
-		TESForm* _baseForm;			// E0
-		LPVOID _unkE8;				// E8
+		BSTEventSink<LPVOID> _unkEventSink01;	// 0x28
+		BSHandleRefObject _handleRefObject;		// 0x30
+		BSTEventSink<LPVOID> _unkEventSink02;	// 0x40
+		BSTEventSink<LPVOID> _unkEventSink03;	// 0x48
+		BSTEventSink<LPVOID> _unkEventSink04;	// 0x50
+		CHAR _pad0[0x70];						// 0x40
+		TESCell* _parentCell;					// 0xC8
+		NiPoint3 _rotate;						// 0xD0, 0xD4, 0xD8
+		FLOAT _unkDC;							// 0xDC
+		NiPoint3 _position;						// 0xE0, 0xE4, 0xE8
+		FLOAT _unkEC;							// 0xEC
+		TESForm* _baseForm;						// 0xF0
+		LPVOID _unkE8;							// 0xF8
 	public:
 		virtual ~TESObjectREFR(VOID) = 0;
 	public:
@@ -49,11 +68,23 @@ namespace api {
 		inline const TESForm* GetParentConst(VOID) const { return _baseForm; }
 		inline TESCell* GetParentCell(VOID) { return _parentCell; }
 		inline TESForm* GetParent(VOID) { return _baseForm; }
+		inline BSHandleRefObject* GetRefHandler(VOID) { return &_handleRefObject; }
+		inline const BSHandleRefObject* GetRefHandlerConst(VOID) const { return &_handleRefObject; }
+		inline NiPoint3* GetPosition(VOID) { return &_position; }
+		inline const NiPoint3* GetPositionConst(VOID) const { return &_position; }
+		inline NiPoint3* GetRotate(VOID) { return &_rotate; }
+		inline const NiPoint3* GetRotateConst(VOID) const { return &_rotate; }
 	public:
 		READ_PROPERTY(GetParentCell) TESCell* ParentCell;
 		READ_PROPERTY(GetParent) TESForm* Parent;
 		READ_PROPERTY(GetParentCellConst) const TESCell* ParentCellConst;
 		READ_PROPERTY(GetParentConst) const TESForm* ParentConst;
+		READ_PROPERTY(GetRefHandler) BSHandleRefObject* RefHandler;
+		READ_PROPERTY(GetRefHandlerConst) const BSHandleRefObject* RefHandlerConst;
+		READ_PROPERTY(GetPosition) NiPoint3* Position;
+		READ_PROPERTY(GetPositionConst) const NiPoint3* PositionConst;
+		READ_PROPERTY(GetRotate) NiPoint3* Rotate;
+		READ_PROPERTY(GetRotateConst) const NiPoint3* RotateConst;
 	};
 }
 

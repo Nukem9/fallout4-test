@@ -414,8 +414,8 @@ VOID FIXAPI hk_vsprintf_autosave(LPSTR lpBuffer, UINT uBufferSize, LPCSTR lpForm
 	XUtil::Str::replaceAll(stime, " ", "_");
 	XUtil::Str::replaceAll(stime, ":", "_");
 
-	if (api::FileHandler && api::FileHandler->ActiveFile) {
-		auto name = api::FileHandler->ActiveFile->FileName;
+	if (api::FileHandler && api::FileHandler->ActiveMod) {
+		auto name = api::FileHandler->ActiveMod->FileName;
 
 		if (!name.length())
 			goto l_default;
