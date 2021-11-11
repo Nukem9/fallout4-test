@@ -214,6 +214,10 @@ VOID FIXAPI ENBSeriesFixableRunHandler(VOID) {
 		goto l_installed_loader;
 	}
 	else if (ENBFix::GetCRC32File(F4CK_LOADER_FILENAME) != ENBFix::image_crc32) {
+
+		// I'm already sick of this message, I'm afraid to imagine how it will get users, 
+		// of course, who are frequently updated, I'll cut out
+		/*
 		MessageBoxW(
 			0,
 			L"Are you using an outdated \""
@@ -221,6 +225,7 @@ VOID FIXAPI ENBSeriesFixableRunHandler(VOID) {
 			"\" and the Creation Kit will make an update.",
 			L"Information",
 			MB_OK | MB_ICONINFORMATION);
+		*/
 
 		goto l_no_installed_loader;
 	}
