@@ -442,6 +442,10 @@ VOID FIXAPI F_UIPatches(VOID) {
 	*(uintptr_t*)&DataWindow::OldDlgProc = Detours::X64::DetourFunctionClass(OFFSET(0x5A8250, 0), &DataWindow::DlgProc);
 	*(uintptr_t*)&LayersWindow::OldDlgProc = Detours::X64::DetourFunctionClass(OFFSET(0x3C7A80, 0), &LayersWindow::DlgProc);
 
+	// RENDER: Clinging to have a list of selected forms
+	XUtil::DetourJump(OFFSET(0x563BF0, 0), RenderWindow::IPicker::hk_Add);
+	XUtil::DetourJump(OFFSET(0x563C90, 0), RenderWindow::IPicker::hk_Remove);
+
 	if (UITheme::IsEnabledMode()) {
 		*(uintptr_t*)&PreferencesWindow::OldDlgProc = OFFSET(0x1335AF0, 0);
 		XUtil::DetourCall(OFFSET(0x1336521, 0), &PreferencesWindow::CreateDialogParamA);

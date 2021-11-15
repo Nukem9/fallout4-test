@@ -30,15 +30,30 @@
 
 namespace RenderWindow
 {
-	extern DLGPROC OldDlgProc;
-
 	using namespace api;
 
-	HWND GetWindow(void);
-	Core::Classes::UI::CUICustomWindow& GetWindowObj(void);
+	class IPicker {
+	private:
+		BSTArray<TESObjectREFR*> forms;
+	public:
+		BOOL QAdd(TESObjectREFR* form);
+		BOOL QRemove(TESObjectREFR* form);
+		VOID QDump(VOID);
+	public:
+		static VOID hk_Add(HWND hCtlWnd, INT index, BOOL no_unselect);
+		static VOID hk_Remove(HWND hCtlWnd, TESObjectREFR* form);
+	public:
+		IPicker(VOID) = default;
+	};
 
-	BOOL IsCollisionView(void);
-	void SetCollisionView(const BOOL Value);
+	extern IPicker Picker;
+	extern DLGPROC OldDlgProc;
+
+	HWND FIXAPI GetWindow(VOID);
+	Core::Classes::UI::CUICustomWindow& FIXAPI GetWindowObj(VOID);
+
+	BOOL FIXAPI IsCollisionView(VOID);
+	VOID FIXAPI SetCollisionView(const BOOL Value);
 
 	INT_PTR CALLBACK DlgProc(HWND DialogHwnd, UINT Message, WPARAM wParam, LPARAM lParam);
 }

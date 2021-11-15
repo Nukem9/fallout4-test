@@ -49,7 +49,7 @@
 #include "GameAPI.h"
 
 LPVOID FIXAPI Heap_Allocate(DWORD64 size) {
-	((Heap*)OFFSET(0x9EE7E88, 0))->Allocate(size, 0);
+	return ((Heap*)OFFSET(0x9EE7E88, 0))->Allocate(size, 0);
 }
 
 VOID FIXAPI Heap_Free(LPVOID ptr) {

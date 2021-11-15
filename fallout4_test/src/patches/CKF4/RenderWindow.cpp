@@ -21,17 +21,90 @@
 //////////////////////////////////////////
 
 #include "RenderWindow.h"
+#include "CellViewWindow.h"
 #include "MainWindow.h"
 #include "LogWindow.h"
 
+#include "../../api/BSTArray.h"
+
 #include <windowsx.h>
+#include <CommCtrl.h>
 
 namespace RenderWindow
 {
+	IPicker Picker;
+	DLGPROC OldDlgProc;
 	Core::Classes::UI::CUICustomWindow RenderViewWindow;
 
-	struct RenderWindowParams_t
-	{
+	BOOL IPicker::QAdd(TESObjectREFR* form) {
+		return forms.Push(form);
+	}
+
+	BOOL IPicker::QRemove(TESObjectREFR* form) {
+		return forms.Remove(forms.GetItemIndex(form));
+	}
+
+	VOID IPicker::QDump(VOID) {
+		auto count = forms.QSize();
+		CHAR szBuf[2048];
+
+		for (auto i = 0; i < count; i++) {
+			forms[i]->DebugInfo(szBuf, 2048);
+			LogWindow::Log("%i: %s", i, szBuf);
+		}
+	}
+
+	VOID IPicker::hk_Add(HWND hCtlWnd, INT index, BOOL no_unselect) {
+		if (CellViewWindow::CellViewWindowControls.Lst2.Handle == hCtlWnd) {
+			TESObjectREFR* form = NULL;
+
+			LVITEMA item = { 0 };
+			item.mask = LVIF_PARAM | LVFIF_TEXT;
+			item.iItem = index;
+
+			if (ListView_GetItem(hCtlWnd, &item))
+				form = (TESObjectREFR*)item.lParam;
+			
+			if (!no_unselect)
+				ListView_SetItemState(hCtlWnd, index, 0, LVIS_SELECTED);
+
+			if (index > -1) {
+				if (form && Picker.QAdd(form)) {
+					ListView_EnsureVisible(hCtlWnd, index, FALSE);
+					ListView_SetItemState(hCtlWnd, index, LVIS_SELECTED, LVIS_SELECTED);
+				}
+			}
+		}
+		else {
+			if (!no_unselect)
+				ListView_SetItemState(hCtlWnd, index, 0, LVIS_SELECTED);
+			
+			if (index > -1) {
+				ListView_EnsureVisible(hCtlWnd, index, FALSE);
+				ListView_SetItemState(hCtlWnd, index, LVIS_SELECTED, LVIS_SELECTED);
+			}
+		}			
+	}
+
+	VOID IPicker::hk_Remove(HWND hCtlWnd, TESObjectREFR* form) {
+		if (CellViewWindow::CellViewWindowControls.Lst2.Handle == hCtlWnd) {
+			if (Picker.QRemove(form))
+				goto l_find_form;
+		}
+		else {
+l_find_form:
+			LV_FINDINFOA find = { 0 };
+			find.flags = LVFI_PARAM;
+			find.lParam = (LPARAM)form;
+
+			auto ind = ListView_FindItem(hCtlWnd, -1, &find);
+			if (ind != -1)
+				ListView_SetItemState(hCtlWnd, ind, 0, LVIS_SELECTED);
+		}
+		
+	}
+
+	struct RenderWindowParams_t {
 		BOOL IsCollisionView;
 
 		// Some important variables for determining the size of the drawing area
@@ -41,77 +114,54 @@ namespace RenderWindow
 		DWORD dw_A5B7B04;
 	} RenderWindowParams;
 
-	DLGPROC OldDlgProc;
-
-	HWND GetWindow(void)
-	{
+	HWND GetWindow(VOID) {
 		return RenderViewWindow.Handle;
 	}
 
-	Core::Classes::UI::CUICustomWindow& GetWindowObj(void)
-	{
+	Core::Classes::UI::CUICustomWindow& GetWindowObj(VOID) {
 		return RenderViewWindow;
 	}
 
-	BOOL IsCollisionView(void)
-	{
+	BOOL IsCollisionView(VOID) {
 		return RenderWindowParams.IsCollisionView;
 	}
 
-	void SetCollisionView(const BOOL Value)
-	{
+	VOID SetCollisionView(const BOOL Value) {
 		RenderWindowParams.IsCollisionView = Value;
 	}
 
-	INT_PTR CALLBACK DlgProc(HWND DialogHwnd, UINT Message, WPARAM wParam, LPARAM lParam)
-	{
-		if (Message == WM_INITDIALOG)
-		{
+	INT_PTR CALLBACK DlgProc(HWND DialogHwnd, UINT Message, WPARAM wParam, LPARAM lParam) {
+		if (Message == WM_INITDIALOG) {
 			RenderViewWindow = DialogHwnd;
 			RenderWindowParams.IsCollisionView = FALSE;
 		}
-		else if (Message == WM_KEYUP)
-		{
+		else if (Message == WM_KEYUP) {
 			auto ctrl = HIBYTE(GetKeyState(VK_CONTROL)) & 0x80;
 
-			if (ctrl)
-			{
+			if (ctrl) {
 				if (wParam == '5')
-				{
 					// Fake click fog
-
 					MainWindow::GetMainMenuObj().GetSubMenuItem(2).GetItemByPos(23).Click();
-				}
 			}
-			else
-			{
+			else {
 				if (wParam == 'M')
-				{
 					// If you click on M, the menu will still have the previous state, we will fix this. 
 					// However, in fact, there should be two requests to show or hide, but the second one is ignored and this is good.
-
 					MainWindow::GetMainMenuObj().GetSubMenuItem(2).GetItemByPos(15).Click();
-				}
 				else if (wParam == 'S')
-				{
 					// Fix that only worked with the menu
-
 					MainWindow::GetMainMenuObj().GetSubMenuItem(2).GetItemByPos(17).Click();
-				}
 			}
 		}
-		else if (Message == WM_ACTIVATE)
-		{
+		else if (Message == WM_ACTIVATE) {
 			WORD fActive = (WORD)LOWORD(wParam);
-			if (fActive == WA_INACTIVE)
-			{
+			if (fActive == WA_INACTIVE) {
 				RenderWindowParams.dw_A5B7AF8 = *(PDWORD)(OFFSET(0xA5B7AF8, 0));
 				RenderWindowParams.dw_A5B7AFC = *(PDWORD)(OFFSET(0xA5B7AFC, 0));
 				RenderWindowParams.dw_A5B7B00 = *(PDWORD)(OFFSET(0xA5B7B00, 0));
 				RenderWindowParams.dw_A5B7B04 = *(PDWORD)(OFFSET(0xA5B7B04, 0));
 			}
-			else
-			{
+			else {
 				*(PDWORD)(OFFSET(0xA5B7AF8, 0)) = RenderWindowParams.dw_A5B7AF8;
 				*(PDWORD)(OFFSET(0xA5B7AFC, 0)) = RenderWindowParams.dw_A5B7AFC;
 				*(PDWORD)(OFFSET(0xA5B7B00, 0)) = RenderWindowParams.dw_A5B7B00;

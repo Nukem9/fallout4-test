@@ -54,6 +54,13 @@
 #pragma warning(disable : 26451)
 
 // 8
+template <class _Ty>
+struct NiPoint2T {
+	_Ty x;
+	_Ty y;
+};
+
+// 8
 template <class T>
 class NiPointer {
 public:
