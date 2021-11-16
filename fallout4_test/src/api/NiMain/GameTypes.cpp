@@ -51,7 +51,44 @@ BSString::BSString(VOID) :
 	m_data(NULL), m_dataLen(0), m_bufLen(0) 
 {}
 
+BSString::BSString(LPCSTR string, WORD size) : BSString() {
+	Set(string, size);
+}
+
+BSString::BSString(const BSString& string) : BSString() {
+	Set(*string, string.m_bufLen);
+}
+
 BSString::~BSString(VOID) {
+	Clear();
+}
+
+BOOL BSString::Set(LPCSTR string, WORD size) {
+	if (!string)
+		return FALSE;
+
+	Clear();
+
+	m_bufLen = !size ? strlen(string) + 1 : size;
+	if (!m_bufLen)
+		return FALSE;
+
+	m_dataLen = m_bufLen - 1;
+	m_data = (LPSTR)Heap_Allocate(m_bufLen);
+	if (!m_data) {
+		m_dataLen = 0;
+		m_bufLen = 0;
+
+		return FALSE;
+	}
+
+	strncpy(m_data, string, m_dataLen);
+	m_data[m_dataLen] = 0;
+
+	return TRUE;
+}
+
+VOID BSString::Clear(VOID) {
 	if (m_data) {
 		Heap_Free((LPVOID)m_data);
 		m_data = NULL;
@@ -60,8 +97,35 @@ BSString::~BSString(VOID) {
 	}
 }
 
-LPCSTR BSString::Get(VOID) const {
-	return m_data ? m_data : "";
+BSString& BSString::Format(LPCSTR format, ...) {
+	Clear();
+
+	va_list va;
+	va_start(va, format);
+	auto size = _vsnprintf(NULL, 0, format, va);
+	if (size) {
+		m_bufLen = size + 1;
+		m_dataLen = m_bufLen;
+		m_data = (LPSTR)Heap_Allocate(m_bufLen);
+		if (!m_data) {
+			m_bufLen = 0;
+			m_dataLen = 0;
+		}
+		else {
+			vsprintf(m_data, format, va);
+			m_data[m_dataLen] = 0;
+		}
+	}
+	va_end(va);
+
+	return *this;
+}
+
+INT BSString::Compare(LPCSTR string, BOOL ignoreCase) const {
+	if (ignoreCase)
+		return _stricmp(m_data, string);
+	else
+		return strcmp(m_data, string);
 }
 
 VOID BSReadWriteLock::LockForRead(VOID) {

@@ -128,7 +128,7 @@
       "Id": 52009,
       "x": 288,
       "y": 528,
-      "Width": 75,
+      "Width": 60,
       "Height": 16
     },
     {
@@ -137,14 +137,14 @@
       "Id": 52010,
       "x": 288,
       "y": 548,
-      "Width": 75,
+      "Width": 60,
       "Height": 16
     },
     {
       "Type": "LTEXT",
       "Title": "(Unknown)",
       "Id": 1026,
-      "x": 542,
+      "x": 384,
       "y": 528,
       "Width": 45,
       "Height": 16
@@ -153,7 +153,25 @@
       "Type": "LTEXT",
       "Title": "(Unknown)",
       "Id": 1027,
-      "x": 542,
+      "x": 384,
+      "y": 548,
+      "Width": 45,
+      "Height": 16
+    },
+    {
+      "Type": "RTEXT",
+      "Title": "(Unknown)",
+      "Id": 1028,
+      "x": 429,
+      "y": 528,
+      "Width": 45,
+      "Height": 16
+    },
+    {
+      "Type": "RTEXT",
+      "Title": "(Unknown)",
+      "Id": 1029,
+      "x": 429,
       "y": 548,
       "Width": 45,
       "Height": 16
@@ -163,9 +181,9 @@
       "Title": "File Version:",
       "Style": [ "NOT WS_VISIBLE" ],
       "Id": 2406,
-      "x": 512,
+      "x": 540,
       "y": 528,
-      "Width": 75,
+      "Width": 50,
       "Height": 16
     },
     {
@@ -173,45 +191,27 @@
       "Title": "Current:",
       "Style": [ "NOT WS_VISIBLE" ],
       "Id": 2407,
-      "x": 512,
+      "x": 540,
       "y": 548,
-      "Width": 75,
+      "Width": 50,
       "Height": 16
     },
     {
-      "Type": "LTEXT",
+      "Type": "RTEXT",
       "Title": "(Unknown)",
       "Style": [ "NOT WS_VISIBLE" ],
       "Id": 1681,
-      "x": 591,
+      "x": 590,
       "y": 528,
       "Width": 45,
       "Height": 16
     },
     {
-      "Type": "LTEXT",
+      "Type": "RTEXT",
       "Title": "(Unknown)",
       "Style": [ "NOT WS_VISIBLE" ],
       "Id": 1682,
-      "x": 591,
-      "y": 548,
-      "Width": 45,
-      "Height": 16
-    },
-    {
-      "Type": "RTEXT",
-      "Title": "(Unknown)",
-      "Id": 1028,
-      "x": 591,
-      "y": 528,
-      "Width": 45,
-      "Height": 16
-    },
-    {
-      "Type": "RTEXT",
-      "Title": "(Unknown)",
-      "Id": 1029,
-      "x": 591,
+      "x": 590,
       "y": 548,
       "Width": 45,
       "Height": 16

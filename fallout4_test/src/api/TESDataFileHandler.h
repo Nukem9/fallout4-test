@@ -234,6 +234,9 @@ namespace api {
 		inline BOOL IsActiveMod(VOID) const { return activePlugin != NULL; }
 		bool IsLoaded(void) const;
 	public:
+		inline static BOOL(*SaveTESFile)(TESDataFileHandler*, LPCSTR);
+		BOOL hk_SaveTESFile(LPCSTR filename);
+	public:
 		static VOID Initialize(VOID);
 	public:
 		READ_PROPERTY(GetMods) TESFileList* Mods;

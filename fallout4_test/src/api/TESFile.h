@@ -24,18 +24,18 @@
 #pragma once
 
 #include "ComClasses.h"
+#include "NiMain/GameTypes.h"
+#include "BSTList.h"
 
 #pragma pack(push, 1)
 
 namespace api {
-	class TESFile
-	{
+	class TESFile {
 	private:
 		TESFile(VOID);
 		~TESFile(VOID);
 	public:
-		enum : DWORD
-		{
+		enum : DWORD {
 			FILE_RECORD_ESM = 0x1,			// Master plugin
 			FILE_RECORD_CHECKED = 0x4,		// Pending load/loaded
 			FILE_RECORD_ACTIVE = 0x8,		// Save target
@@ -43,15 +43,69 @@ namespace api {
 			FILE_RECORD_ESL = 0x200,		// Small file
 		};
 	private:
-		CHAR _pad0[0x78];
-		CHAR m_FileName[MAX_PATH];
-		CHAR m_FilePath[MAX_PATH];
-		CHAR _pad1[0xBC];
-		DWORD m_Flags;
+		/* 000 */ CHAR _pad0[0x78];
+		/* 078 */ CHAR m_FileName[MAX_PATH];
+		/* 17C */ CHAR m_FilePath[MAX_PATH];
+		/* 280 */ LPVOID m_UnkPtr280;
+		/* 288 */ DWORD m_bufferSize;					// buffer size used when opening BSFile. init to 0x800
+		/* 28C */ CHAR _pad1[0x38];
+		/* 2C4 */ DWORD m_fileSize;						// same as FileSizeLow in find data
+		/* 2C8 */ DWORD m_currentRecordOffset;			// offset of current record in file
+		/* 2CC */ DWORD m_currentChunkOffset;			// offset of current chunk in record
+		/* 2D0 */ DWORD m_fetchedChunkDataSize;			// number of bytes read in last GetChunkData() call
+		/* 2D4 */ CHAR _pad2[0x34];
+		/* 308 */ BOOL m_headerRead;					// set after header has been successfully parsed
+		
+		struct WIN32_FIND_DATA_UNKNOWN {
+			CHAR _pad0[0xC];
+			FILETIME ftCreationTime;
+			FILETIME ftLastWriteTime;
+			DWORD nFileSizeHigh;
+			DWORD nFileSizeLow;
+		};
+		
+		/* 30C */ WIN32_FIND_DATA_UNKNOWN m_findData;
+
+		struct FileHeaderInfo {
+			/*00*/ FLOAT fileVersion;
+			/*04*/ DWORD numRecords;		// number of record blocks in file
+			/*08*/ DWORD nextFormID;		// including file index in highest byte
+		};
+
+		/* 330 */ FileHeaderInfo m_fileHeader;
+		/* 33C */ DWORD m_Flags;
+
+		// Data for Depend files - compared against size in findData of masters to check if they have changed since last edit
+		// 08
+		struct DependFileData {
+			/*00*/ DWORD nFileSizeHigh;
+			/*04*/ DWORD nFileSizeLow;
+		};
+		typedef BSSimpleList<DependFileData*> DependDataList;
+		typedef BSSimpleList<LPCSTR> DependNameList;
+
+		/* 340 */ DependNameList m_dependNames;
+		/* 350 */ DependDataList m_dependData;
+		/* 360 */ DWORD m_dependCount;
+		/* 364 */ CHAR _pad3[0x4];
+		/* 368 */ TESFile** m_dependArray;
+		/* 370 */ CHAR _pad4[0x8];
+		/* 378 */ CHAR m_fileIndex;						// index of this file in load order (or 0xFF if not loaded)
+		/* 379 */ CHAR _pad5[0x7];
+		/* 380 */ BSString m_authorName;
+		/* 390 */ BSString m_description;
+		/* 3A0 */ CHAR _pad6[0x6E0];
 	public:
-		inline std::string GetFileName(VOID) const { return m_FileName ? m_FileName : ""; }
-		inline std::string GetFilePath(VOID) const { return m_FilePath ? m_FilePath : ""; }
+		BSString GetAuthorName(VOID) const;
+		inline BSString GetDescription(VOID) const { return *m_description ? m_description : ""; }
+		inline BSString GetFileName(VOID) const { return m_FileName ? m_FileName : ""; }
+		inline BSString GetFilePath(VOID) const { return m_FilePath ? m_FilePath : ""; }
+		inline CHAR GetFileLoadIndex(VOID) const { return m_fileIndex; }
+		inline TESFile** GetDependArray(VOID) const { return m_dependArray; }
+		inline DWORD GetDependCount(VOID) const { return m_dependCount; }
+		inline DWORD GetFileSize(VOID) const { return m_fileSize; }
 		inline DWORD GetFlags(VOID) const { return m_Flags; }
+		inline BOOL IsLoaded(VOID) const { return m_fileIndex != 0xFF; }
 		inline BOOL IsMaster(VOID) const { return m_Flags & FILE_RECORD_ESM; }
 		inline BOOL IsSelected(VOID) const { return m_Flags & FILE_RECORD_CHECKED; }
 		inline BOOL IsActive(VOID) const { return m_Flags & FILE_RECORD_ACTIVE; }
@@ -62,15 +116,24 @@ namespace api {
 		inline static INT64(*WriteTESInfo)(TESFile*);
 		INT32 hk_LoadTESInfo(VOID);
 		INT64 hk_WriteTESInfo(VOID);
-		BOOL IsActiveFileBlacklist(VOID);
+		BOOL IsMasterFileToBlacklist(VOID);
+		VOID Dump(VOID);
 	public:
 		inline static BOOL AllowSaveESM;
 		inline static BOOL AllowMasterESP;
 	public:
-		READ_PROPERTY(GetFileName) std::string FileName;
-		READ_PROPERTY(GetFilePath) std::string FilePath;
+		READ_PROPERTY(GetAuthorName) BSString AuthorName;
+		READ_PROPERTY(GetDescription) BSString Description;
+		READ_PROPERTY(GetFileName) BSString FileName;
+		READ_PROPERTY(GetFilePath) BSString FilePath;
 		READ_PROPERTY(GetFlags) DWORD Flags;
+		READ_PROPERTY(GetFileLoadIndex) CHAR FileLoadIndex;
+		READ_PROPERTY(GetDependArray) TESFile** DependArray;
+		READ_PROPERTY(GetDependCount) DWORD DependCount;
+		READ_PROPERTY(GetFileSize) DWORD FileSize;
 	};
+
+	static_assert(sizeof(TESFile) == 0xA80, "TESFile class should be the size of 0xA80");
 }
 
 #pragma pack(pop)

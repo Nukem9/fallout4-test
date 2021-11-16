@@ -350,9 +350,6 @@
     <ClInclude Include="src\api\BGSRenderWindow.h">
       <Filter>Header Files\api</Filter>
     </ClInclude>
-    <ClInclude Include="src\common\KeyManager.h">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\dllmain.cpp">
@@ -600,9 +597,6 @@
     </ClCompile>
     <ClCompile Include="src\patches\CKF4\DMDebugInfoFormWindow.cpp">
       <Filter>Source Files\UI\Windows</Filter>
-    </ClCompile>
-    <ClCompile Include="src\common\KeyManager.cpp">
-      <Filter>Source Files\common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

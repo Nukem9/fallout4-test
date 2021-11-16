@@ -26,7 +26,9 @@
 #include "../patches/CKF4/LogWindow.h"
 #include "TESFile.h"
 
-INT32 api::TESFile::hk_LoadTESInfo(VOID)
+using namespace api;
+
+INT32 TESFile::hk_LoadTESInfo(VOID)
 {
 	int error = LoadTESInfo(this);
 
@@ -38,7 +40,7 @@ INT32 api::TESFile::hk_LoadTESInfo(VOID)
 	{
 		if (IsMaster() && IsActive())
 		{
-			LogWindow::Log("Loading master file '%s' as a plugin\n", m_FileName);
+			_MESSAGE_FMT("Loading master file '%s' as a plugin\n", m_FileName);
 
 			// Strip ESM flag, clear loaded ONAM data
 			m_Flags &= ~FILE_RECORD_ESM;
@@ -51,7 +53,7 @@ INT32 api::TESFile::hk_LoadTESInfo(VOID)
 	{
 		if (!IsMaster() && !IsActive() && IsSelected())
 		{
-			LogWindow::Log("Loading plugin file '%s' as a master\n", m_FileName);
+			_MESSAGE_FMT("Loading plugin file '%s' as a master\n", m_FileName);
 			m_Flags |= FILE_RECORD_ESM;
 		}
 	}
@@ -59,7 +61,7 @@ INT32 api::TESFile::hk_LoadTESInfo(VOID)
 	return 0;
 }
 
-INT64 api::TESFile::hk_WriteTESInfo(VOID)
+INT64 TESFile::hk_WriteTESInfo(VOID)
 {
 	bool resetEsmFlag = false;
 
@@ -71,7 +73,7 @@ INT64 api::TESFile::hk_WriteTESInfo(VOID)
 
 			if (extension && !_stricmp(extension, ".esm"))
 			{
-				LogWindow::Log("Regenerating ONAM data for master file '%s'...\n", m_FileName);
+				_MESSAGE_FMT("Regenerating ONAM data for master file '%s'...\n", m_FileName);
 
 				((void(__fastcall*)(TESFile*))OFFSET(0x805F90, 0))(this);
 				resetEsmFlag = true;
@@ -83,25 +85,21 @@ INT64 api::TESFile::hk_WriteTESInfo(VOID)
 
 	if (resetEsmFlag)
 		m_Flags &= ~FILE_RECORD_ESM;
-
+	
 	return form;
 }
 
-BOOL api::TESFile::IsActiveFileBlacklist(VOID)
-{
-	if (IsMaster())
-	{
-		std::string str = FileName;
-		XUtil::Str::LowerCase(str);
+BOOL TESFile::IsMasterFileToBlacklist(VOID) {
+	if (IsMaster()) {
+		auto str = FileName;
 
-		if (!str.compare("fallout4.esm") ||
-			!str.compare("dlcrobot.esm") ||
-			!str.compare("dlcnukaworld.esm") ||
-			!str.compare("dlccoast.esm") ||
-			!str.compare("dlcworkshop01.esm") ||
-			!str.compare("dlcworkshop02.esm") ||
-			!str.compare("dlcworkshop03.esm"))
-		{
+		if (!str.Compare("fallout4.esm") ||
+			!str.Compare("dlcrobot.esm") ||
+			!str.Compare("dlcnukaworld.esm") ||
+			!str.Compare("dlccoast.esm") ||
+			!str.Compare("dlcworkshop01.esm") ||
+			!str.Compare("dlcworkshop02.esm") ||
+			!str.Compare("dlcworkshop03.esm")) {
 			Core::Classes::UI::CUIMainWindow::MessageWarningDlg("Base game master files cannot be set as the active file.");
 			return TRUE;
 		}
@@ -110,4 +108,34 @@ BOOL api::TESFile::IsActiveFileBlacklist(VOID)
 	}
 
 	return FALSE;
+}
+
+BSString TESFile::GetAuthorName(VOID) const { 
+	if (IsMaster())
+		return (LPCSTR)OFFSET(0x3853908, 0);
+
+	return *m_authorName ? m_authorName : ""; 
+}
+
+VOID TESFile::Dump(VOID) {
+	_MESSAGE_FMT("Address: %p", this);
+	_MESSAGE_FMT("FileName: %s", *FileName);
+	_MESSAGE_FMT("FilePath: %s", *FilePath);
+	_MESSAGE_FMT("AuthorName: %s", *AuthorName);
+	_MESSAGE_FMT("Description: %s", *Description);
+	_MESSAGE_FMT("FileSize: %u", FileSize);
+	
+	_MESSAGE_FMT(" ");
+	_MESSAGE_FMT("DependCount: %u", DependCount);
+	auto count = DependCount;
+	for (auto i = 0; i < count; i++) {
+		auto file = DependArray[i];
+
+		_MESSAGE_FMT("Address: %p", file);
+		_MESSAGE_FMT("FileName: %s", *(file->FileName));
+		_MESSAGE_FMT("FilePath: %s", *(file->FilePath));
+		_MESSAGE_FMT("AuthorName: %s", *(file->AuthorName));
+		_MESSAGE_FMT("Description: %s", *(file->Description));
+		_MESSAGE_FMT("FileSize: %u", file->FileSize);
+	}
 }

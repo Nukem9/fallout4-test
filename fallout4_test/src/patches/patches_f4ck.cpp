@@ -272,6 +272,12 @@ VOID FIXAPI F_RequiredPatches(VOID) {
 	XUtil::DetourJump(OFFSET(0x27DAF60, 0), &BNetConvertUnicodeString);
 
 	//
+	// Fix file corruption
+	// I saw that Elianora had a crash and damaged the file .esp, let's complicate the save by creating a backup.
+	//
+	*(uintptr_t*)&api::TESDataFileHandler::SaveTESFile = Detours::X64::DetourFunctionClass(OFFSET(0x7DD740, 0), &api::TESDataFileHandler::hk_SaveTESFile);
+
+	//
 	// Change the default " 64-bit"
 	//
 	const char* newTitlePart = " Fallout 4 64-bit";
@@ -846,7 +852,7 @@ VOID FIXAPI MainFix_PatchFallout4CreationKit(VOID)
 		if (api::TESFile::AllowSaveESM)
 		{
 			// Also allow non-game ESMs to be set as "Active File"
-			XUtil::DetourCall(OFFSET(0x5A569F, 0), &api::TESFile::IsActiveFileBlacklist);
+			XUtil::DetourCall(OFFSET(0x5A569F, 0), &api::TESFile::IsMasterFileToBlacklist);
 			XUtil::PatchMemoryNop(OFFSET(0x7D9CD8, 0), 2);
 
 			// Disable: "File '%s' is a master file or is in use.\n\nPlease select another file to save to."

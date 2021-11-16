@@ -374,7 +374,7 @@ namespace LogWindow
 					break;
 
 				CHAR lineData[4096];
-				*(uint16_t *)&lineData[0] = ARRAYSIZE(lineData);
+				*(uint16_t*)&lineData[0] = ARRAYSIZE(lineData);
 
 				// Get the line number & text from the selected range
 				LRESULT lineIndex = SendMessageA(richEditHwnd, EM_LINEFROMCHAR, selChange->chrg.cpMin, 0);
@@ -464,9 +464,11 @@ namespace LogWindow
 
 	VOID FIXAPI LogVa(LPCSTR Format, va_list Va)
 	{
+		auto len = _vsnprintf(NULL, 0, Format, Va);
+		
 		std::string message;
-		message.resize(2048);
-		message.resize(_vsnprintf(&message[0], _TRUNCATE, Format, Va));
+		message.resize(len);
+		_vsnprintf(&message[0], _TRUNCATE, Format, Va);
 
 		// Un-escape newline and carriage return characters
 		std::erase_if(message, [](auto const& x) { return x == '\n' || x == '\r'; });
@@ -494,9 +496,11 @@ namespace LogWindow
 
 	VOID FIXAPI LogWcVa(LPCWSTR Format, va_list Va)
 	{
+		auto len = _vsnwprintf(NULL, 0, Format, Va);
+
 		std::wstring message;
-		message.resize(2048);
-		message.resize(_vsnwprintf(&message[0], _TRUNCATE, Format, Va));
+		message.resize(len);
+		_vsnwprintf(&message[0], _TRUNCATE, Format, Va);
 
 		std::string conv_message = XUtil::Conversion::WideToAnsi(message);
 
@@ -599,14 +603,17 @@ namespace LogWindow
 		if (!Message)
 			Message = "<No message>";
 
-		CHAR buffer[2048];
 		va_list va;
-
 		va_start(va, Message);
-		_vsnprintf_s(buffer, _TRUNCATE, Message, va);
+
+		auto len = _vsnprintf(NULL, 0, Message, va);
+		std::string message;
+		message.resize(len);
+		_vsnprintf(&message[0], _TRUNCATE, Message, va);
+
 		va_end(va);
 
-		Log("ASSERTION: %s (%s line %d)", buffer, File, Line);
+		Log("ASSERTION: %s (%s line %d)", &message[0], File, Line);
 	}
 
 	VOID FIXAPI LogInsteadOfMsgBox(HWND hWnd, LPCSTR lpText, LPCSTR lpCaption, UINT uType) {

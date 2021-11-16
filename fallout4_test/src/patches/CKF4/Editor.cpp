@@ -417,10 +417,10 @@ VOID FIXAPI hk_vsprintf_autosave(LPSTR lpBuffer, UINT uBufferSize, LPCSTR lpForm
 	if (api::FileHandler && api::FileHandler->ActiveMod) {
 		auto name = api::FileHandler->ActiveMod->FileName;
 
-		if (!name.length())
+		if (!name.Length())
 			goto l_default;
 
-		sprintf_s(lpBuffer, uBufferSize, format, name.c_str(), stime.c_str());
+		sprintf_s(lpBuffer, uBufferSize, format, *name, stime.c_str());
 		return;
 	}
 

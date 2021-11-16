@@ -45,6 +45,7 @@ namespace DataWindow
 	// need static (so not crash)
 	NMITEMACTIVATE nmItemFake = { 0 };
 	POINT pCurSize = { 0 };
+	BOOL fileVerVis;
 
 	Classes::CUICustomWindow DataWindow;
 
@@ -253,6 +254,8 @@ namespace DataWindow
 
 			INT_PTR nRes = OldDlgProc(DialogHwnd, Message, wParam, lParam);
 
+			fileVerVis = DataWindowControls.LabelFileVersionPlugins.Visible;
+
 			// Bethesda probably doesn't know about the existence of Check. 
 			// They have created icons that mimic pictorially for the user.
 			// I completely take everything from there, although I'm not happy about it, but this is a ready-made mechanism, and I'm just trying to make a search in it.
@@ -325,10 +328,6 @@ namespace DataWindow
 			DataWindowControls.EditAuthor.LockUpdate();
 			DataWindowControls.ListViewDependences.LockUpdate();
 			DataWindowControls.EditDescription.LockUpdate();
-			DataWindowControls.LabelFileVersionPlugins.LockUpdate();
-			DataWindowControls.LabelCurrentPlugins.LockUpdate();
-			DataWindowControls.LabelFileVersionPluginsValue.LockUpdate();
-			DataWindowControls.LabelCurrentPluginsValue.LockUpdate();
 			DataWindowControls.LabelCreateOnPluginsDate.LockUpdate();
 			DataWindowControls.LabelLastModifiedPluginsDate.LockUpdate();
 			DataWindowControls.LabelCreateOnPluginsTime.LockUpdate();
@@ -338,6 +337,13 @@ namespace DataWindow
 			DataWindowControls.ListViewPlugins.LockUpdate();
 			DataWindowControls.ListViewPluginsResult.LockUpdate();
 			DataWindowControls.EditSearch.LockUpdate();
+
+			if (fileVerVis) {
+				DataWindowControls.LabelFileVersionPlugins.LockUpdate();
+				DataWindowControls.LabelCurrentPlugins.LockUpdate();
+				DataWindowControls.LabelFileVersionPluginsValue.LockUpdate();
+				DataWindowControls.LabelCurrentPluginsValue.LockUpdate();
+			}
 
 			DataWindowControls.BtnSetAsActive.Top += p_offset.y;
 			DataWindowControls.BtnDetails.Top += p_offset.y;
@@ -354,14 +360,6 @@ namespace DataWindow
 			DataWindowControls.EditDescription.Left += p_offset.x;
 			DataWindowControls.ListViewDependences.Height += p_offset.y;
 			DataWindowControls.EditDescription.Height += p_offset.y;
-			DataWindowControls.LabelFileVersionPlugins.Left += p_offset.x;
-			DataWindowControls.LabelFileVersionPlugins.Top += p_offset.y;
-			DataWindowControls.LabelCurrentPlugins.Left += p_offset.x;
-			DataWindowControls.LabelCurrentPlugins.Top += p_offset.y;
-			DataWindowControls.LabelFileVersionPluginsValue.Left += p_offset.x;
-			DataWindowControls.LabelFileVersionPluginsValue.Top += p_offset.y;
-			DataWindowControls.LabelCurrentPluginsValue.Left += p_offset.x;
-			DataWindowControls.LabelCurrentPluginsValue.Top += p_offset.y;
 			DataWindowControls.LabelCreateOnPluginsDate.Left += p_offset.x;
 			DataWindowControls.LabelCreateOnPluginsDate.Top += p_offset.y;
 			DataWindowControls.LabelLastModifiedPluginsDate.Left += p_offset.x;
@@ -379,6 +377,17 @@ namespace DataWindow
 			DataWindowControls.ListViewPluginsResult.Width += p_offset.x;
 			DataWindowControls.ListViewPluginsResult.Height += p_offset.y;
 			DataWindowControls.EditSearch.Width += p_offset.x;
+
+			if (fileVerVis) {
+				DataWindowControls.LabelFileVersionPlugins.Left += p_offset.x;
+				DataWindowControls.LabelFileVersionPlugins.Top += p_offset.y;
+				DataWindowControls.LabelCurrentPlugins.Left += p_offset.x;
+				DataWindowControls.LabelCurrentPlugins.Top += p_offset.y;
+				DataWindowControls.LabelFileVersionPluginsValue.Left += p_offset.x;
+				DataWindowControls.LabelFileVersionPluginsValue.Top += p_offset.y;
+				DataWindowControls.LabelCurrentPluginsValue.Left += p_offset.x;
+				DataWindowControls.LabelCurrentPluginsValue.Top += p_offset.y;
+			}
 			
 			DataWindowControls.BtnSetAsActive.UnlockUpdate();
 			DataWindowControls.BtnDetails.UnlockUpdate();
@@ -390,10 +399,6 @@ namespace DataWindow
 			DataWindowControls.EditAuthor.UnlockUpdate();
 			DataWindowControls.ListViewDependences.UnlockUpdate();
 			DataWindowControls.EditDescription.UnlockUpdate();
-			DataWindowControls.LabelFileVersionPlugins.UnlockUpdate();
-			DataWindowControls.LabelCurrentPlugins.UnlockUpdate();
-			DataWindowControls.LabelFileVersionPluginsValue.UnlockUpdate();
-			DataWindowControls.LabelCurrentPluginsValue.UnlockUpdate();
 			DataWindowControls.LabelCreateOnPluginsDate.UnlockUpdate();
 			DataWindowControls.LabelLastModifiedPluginsDate.UnlockUpdate();
 			DataWindowControls.LabelCreateOnPluginsTime.UnlockUpdate();
@@ -403,6 +408,13 @@ namespace DataWindow
 			DataWindowControls.ListViewPlugins.UnlockUpdate();
 			DataWindowControls.ListViewPluginsResult.UnlockUpdate();
 			DataWindowControls.EditSearch.UnlockUpdate();
+
+			if (fileVerVis) {
+				DataWindowControls.LabelFileVersionPlugins.UnlockUpdate();
+				DataWindowControls.LabelCurrentPlugins.UnlockUpdate();
+				DataWindowControls.LabelFileVersionPluginsValue.UnlockUpdate();
+				DataWindowControls.LabelCurrentPluginsValue.UnlockUpdate();
+			}
 			
 			DataWindowControls.BtnSetAsActive.Repaint();
 			DataWindowControls.BtnDetails.Repaint();
@@ -414,10 +426,6 @@ namespace DataWindow
 			DataWindowControls.EditAuthor.Repaint();
 			DataWindowControls.ListViewDependences.Repaint();
 			DataWindowControls.EditDescription.Repaint();
-			DataWindowControls.LabelFileVersionPlugins.Repaint();
-			DataWindowControls.LabelCurrentPlugins.Repaint();
-			DataWindowControls.LabelFileVersionPluginsValue.Repaint();
-			DataWindowControls.LabelCurrentPluginsValue.Repaint();
 			DataWindowControls.LabelCreateOnPluginsDate.Repaint();
 			DataWindowControls.LabelLastModifiedPluginsDate.Repaint();
 			DataWindowControls.LabelCreateOnPluginsTime.Repaint();
@@ -427,6 +435,13 @@ namespace DataWindow
 			DataWindowControls.ListViewPlugins.Repaint();
 			DataWindowControls.ListViewPluginsResult.Repaint();
 			DataWindowControls.EditSearch.Repaint();
+
+			if (fileVerVis) {
+				DataWindowControls.LabelFileVersionPlugins.Repaint();
+				DataWindowControls.LabelCurrentPlugins.Repaint();
+				DataWindowControls.LabelFileVersionPluginsValue.Repaint();
+				DataWindowControls.LabelCurrentPluginsValue.Repaint();
+			}
 			
 			InvalidateRect(DialogHwnd, NULL, TRUE);
 			UpdateWindow(DialogHwnd);

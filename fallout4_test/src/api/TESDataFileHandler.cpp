@@ -67,12 +67,16 @@ namespace api {
 		// Sometimes duplicated
 		if (std::find(g_SelectedFilesArray.begin(), g_SelectedFilesArray.end(), File) == g_SelectedFilesArray.end())
 		{
-			if (File->IsActive())
-				_MESSAGE_FMT("Load active file %s...", File->FileName.c_str());
+			if (File->IsActive()) {
+				_MESSAGE_FMT("Load active file %s...", *File->FileName);
+#if FALLOUT4_DEVELOPER_MODE
+				File->Dump();
+#endif // !FALLOUT4_DEVELOPER_MODE
+			}
 			else if (File->IsMaster() || File->IsSmallMaster())
-				_MESSAGE_FMT("Load master file %s...", File->FileName.c_str());
+				_MESSAGE_FMT("Load master file %s...", *File->FileName);
 			else
-				_MESSAGE_FMT("Load file %s...", File->FileName.c_str());
+				_MESSAGE_FMT("Load file %s...", *File->FileName);
 
 			g_SelectedFilesArray.push_back(File);
 		}
@@ -85,7 +89,7 @@ namespace api {
 		else {
 			auto path = XUtil::Str::dirnameOf(szBuf) + "\\Data\\";
 
-			std::string sname = File->FileName.c_str();
+			std::string sname = *File->FileName;
 			sname = sname.substr(0, sname.find_last_of('.'));
 
 			AttachBA2File((sname + " - Main.ba2").c_str(), path.c_str());
@@ -190,5 +194,35 @@ namespace api {
 
 		// Unknown. Initializes something.
 		return ((bool(__fastcall*)(TESDataFileHandler*))OFFSET(0x7D66A0, 0))(this);
+	}
+
+	BOOL TESDataFileHandler::hk_SaveTESFile(LPCSTR filename) {
+		CHAR szBuf[MAX_PATH + 1];
+		if (!GetModuleFileNameA(GetModuleHandleA(NULL), szBuf, MAX_PATH))
+			_MESSAGE("ERROR: An error occurred while retrieving the root folder.");
+		else {
+			auto fname = XUtil::Str::dirnameOf(szBuf) + "\\Data\\" + filename;
+			
+			if (std::filesystem::exists(fname)) {
+				auto to = XUtil::Str::ChangeFileExt(fname, ".bak");
+
+				_MESSAGE_FMT("Beginning backup file: %s", to.c_str());
+				std::filesystem::copy_file(fname, to);
+				_MESSAGE_FMT("End backup file: %s", to.c_str());
+
+				BOOL bResult = SaveTESFile(this, filename);
+				if (bResult) {
+					_MESSAGE("Successfully saving, deleting a backup copy.");
+					std::filesystem::remove(to);
+				}
+
+				return bResult;
+			}
+			else
+				return SaveTESFile(this, filename);
+
+		}
+
+		return FALSE;
 	}
 }

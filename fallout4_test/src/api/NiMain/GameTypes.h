@@ -212,14 +212,38 @@ public:
 typedef StringCache::Entry BSEntryString;
 typedef StringCache::Ref BSFixedString;
 
+/*
+	BSString class.
+	Basic dynamically-sizeable string class.
+	High level string manipulation - comparison, replacement, etc. seems to be done 'manually'
+	using stdlib functions rather than through member functions.  That doesn't mean that
+	member functions for comparison, etc. don't exist, but if they do they are very hard to find.
+	The exception so far is 'sprintf', which has a member function wrapper.
+
+	10
+*/
 class BSString {
 public:
 	BSString(VOID);
+	BSString(LPCSTR string, WORD size = 0);
+	BSString(const BSString& string);
 	~BSString(VOID);
 public:
-	LPCSTR Get(VOID) const;
+	BOOL Set(LPCSTR string, WORD size = 0);   // 0 to allocate automatically
+	inline LPCSTR Get(VOID) const { return m_data ? m_data : ""; }
+	inline WORD	Length(VOID) const { return m_dataLen; }
+	inline WORD	Size(VOID) const { return m_bufLen; }
+	INT Compare(LPCSTR string, BOOL ignoreCase = TRUE) const;
+	inline INT Compare(const BSString& string, BOOL ignoreCase = TRUE) const { return Compare(*string, ignoreCase); }
+	VOID Clear(VOID);
+	BSString& Format(LPCSTR format, ...);
+public:
+	inline LPSTR operator*(VOID) { return m_data; }
+	inline LPCSTR operator*(VOID) const { return m_data; }
+	inline BOOL operator==(LPCSTR string) { return !Compare(string); }
+	inline BOOL operator!=(LPCSTR string) { return Compare(string); }
 private:
-	LPCSTR	m_data;		// 00
+	LPSTR	m_data;		// 00
 	WORD	m_dataLen;	// 08
 	WORD	m_bufLen;	// 0A
 	DWORD	pad0C;		// 0C

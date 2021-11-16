@@ -189,7 +189,6 @@
     <ClInclude Include="src\api\TESFile.h" />
     <ClInclude Include="src\api\TESForm.h" />
     <ClInclude Include="src\api\TESObjectREFR.h" />
-    <ClInclude Include="src\common\KeyManager.h" />
     <ClInclude Include="src\common\MemoryManager.h" />
     <ClInclude Include="src\config.h" />
     <ClInclude Include="src\erase_if.h" />
@@ -266,7 +265,6 @@
     <ClCompile Include="src\api\TESDataFileHandler.cpp" />
     <ClCompile Include="src\api\TESFile.cpp" />
     <ClCompile Include="src\api\TESForm.cpp" />
-    <ClCompile Include="src\common\KeyManager.cpp" />
     <ClCompile Include="src\common\MemoryManager.cpp" />
     <ClCompile Include="src\INIReader.cpp" />
     <ClCompile Include="src\patches\bnet.cpp" />
