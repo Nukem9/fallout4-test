@@ -15,8 +15,8 @@ A collection of modifications, enhancements, and reverse engineered resources fo
 
 # ENB
 **CK** does not work well with **ENB**. 
-I wrote **f4ck_loader 0.2**, download from tag [0.9](https://github.com/Perchik71/Fallout4Test/releases/tag/0.9) or compile branch *"master"* yourself. 
-The program is console and simple, for *15 seconds* removes from the known to me *.dll* files that harm the work of **CK** this time is enough to load the **CK** itself. 
+I wrote **f4ck_loader 0.2**, download from tag [0.9](https://github.com/Perchik71/Fallout4Test/releases/tag/0.9) or compile branch *"master"* yourself.
+The program is console and simple, for *15 seconds* removes from the known to me *.dll* files that harm the work of **CK** this time is enough to load the **CK** itself.
 All deleted *.dll* files will be restored after this time. **(Added: now hide work)**
 
 # Additional
@@ -52,13 +52,7 @@ WinCP is the current encoding in your operating system.
 # Compilation
 At the moment, the project is built on **MS Visual Studio 2019 version 16.11.2**.  
 I rebuilt it in a new studio, however, I also stick to **C++17**, there are so many things errors with **C++20**.... Well, him!.
-(Optional *CreationKitUnicodePlugin.dll* to compile, use **Lazarus 1.8.2 and higher**)  
-
-# Important 
-CK does not work well with ENB.
-I wrote f4ck_loader, download from tag 0.9 or compile master yourself. 
-The program is console and simple, for 15 seconds removes from the known to me .dll files that harm the work of CK this time is enough to load the CK itself.
-All deleted .dll files will be restored after this time.
+(Optional *CreationKitUnicodePlugin.dll* to compile, use **Lazarus 1.8.2 and higher**)
 
 # License
 ![MIT License](https://camo.githubusercontent.com/20666e1b72ed1ea8f0a7c1d1e0ea35769a7c24f879ecc27ac16641b46f225a01/68747470733a2f2f6f70656e736f757263652e6f72672f74726164656d61726b732f6f70656e736f757263652f4f53492d417070726f7665642d4c6963656e73652d313030783133372e706e67)
