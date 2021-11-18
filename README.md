@@ -1,4 +1,4 @@
-![Image of Fallout4Test](https://staticdelivery.nexusmods.com/mods/1151/images/headers/51165_1624891066.jpg)
+![Image of Fallout4Test](https://staticdelivery.nexusmods.com/mods/1151/images/headers/51165_1635577265.jpg)
 
 # Fallout4Test
 A collection of modifications, enhancements, and reverse engineered resources for Fallout 4 and CK Fallout 4
@@ -12,6 +12,12 @@ A collection of modifications, enhancements, and reverse engineered resources fo
 * Filtering by active forms
 * Filtering mods in the Data dialog
 * Many other fixes are also from the author of "@Nukem9"
+
+# ENB
+**CK** does not work well with **ENB**. 
+I wrote **f4ck_loader 0.2**, download from tag [0.9](https://github.com/Perchik71/Fallout4Test/releases/tag/0.9) or compile branch *"master"* yourself. 
+The program is console and simple, for *15 seconds* removes from the known to me *.dll* files that harm the work of **CK** this time is enough to load the **CK** itself. 
+All deleted *.dll* files will be restored after this time. **(Added: now hide work)**
 
 # Additional
 In version 0.7, I redefined the HTML redactor material, because I don't know how to use it, to the redactor material from the author **ousnius**.
