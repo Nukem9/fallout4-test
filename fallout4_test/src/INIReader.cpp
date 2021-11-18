@@ -24,7 +24,7 @@
 
 #if FALLOUT4_MINI_PROJECT
 
-#include "common.h"
+#include "StdAfx.h"
 
 mINIReader::mINIReader(const std::string& fname): m_INIFile(mINI::INIFile(fname)), bChanged(false)
 {

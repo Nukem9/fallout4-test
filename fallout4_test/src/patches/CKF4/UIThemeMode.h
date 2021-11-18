@@ -23,10 +23,8 @@
 
 #pragma once
 
-#include "../../common.h"
+#include "../../StdAfx.h"
 #include "UITheme/VarCommon.h"
-
-#include <Uxtheme.h>
 
 namespace UITheme
 {

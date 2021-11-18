@@ -22,9 +22,7 @@
 
 #pragma once
 
-#include "../../api/ComClasses.h"
-
-#include <CommCtrl.h>
+#include "..\..\StdAfx.h"
 
 namespace Core
 {

@@ -21,6 +21,7 @@
 //////////////////////////////////////////
 
 #include "ActorWindow.h"
+#include "../../StdAfx.h"
 
 namespace ActorWindow
 {

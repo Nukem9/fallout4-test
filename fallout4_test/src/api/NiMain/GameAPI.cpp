@@ -45,7 +45,6 @@
 */
 //////////////////////////////////////////
 
-#include "../../patches/CKF4/LogWindow.h"
 #include "GameAPI.h"
 
 LPVOID FIXAPI Heap_Allocate(DWORD64 size) {

@@ -23,12 +23,8 @@
 
 #include "boost_search_array.h"
 
-#include <smmintrin.h>
-#include <functional>
-
 #if FALLOUT4_CK64_BSTARRAY_DBG
 #include "CKF4/LogWindow.h"
-#include <chrono>
 #define F64_NOW std::chrono::steady_clock::now()
 #endif
 

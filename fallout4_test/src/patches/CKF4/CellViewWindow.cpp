@@ -22,8 +22,7 @@
 //////////////////////////////////////////
 
 #include "CellViewWindow.h"
-
-#include "LogWindow.h"
+#include "../../StdAfx.h"
 
 namespace CellViewWindow
 {

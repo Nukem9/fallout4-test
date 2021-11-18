@@ -20,14 +20,7 @@
 */
 //////////////////////////////////////////
 
-#include "../../api/ComClasses.h"
-#include "../../common/MemoryManager.h"
-#include "../../profiler_internal.h"
-
-#include <shellapi.h>
-#include <filesystem>
-
-#pragma warning(disable : 26451; disable : 6053)
+#include "../../StdAfx.h"
 
 #define F4CK_LOADER_FILENAME L"f4ck_loader.exe"
 
@@ -247,5 +240,3 @@ VOID FIXAPI ENBSeriesFixableRunHandler(VOID) {
 		}
 	}
 }
-
-#pragma warning(default : 26451; default : 6053)

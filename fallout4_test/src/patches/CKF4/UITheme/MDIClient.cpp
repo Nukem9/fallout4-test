@@ -24,8 +24,6 @@
 #include "VarCommon.h"
 #include "MDIClient.h"
 
-#include <Uxtheme.h>
-
 namespace Core
 {
 	namespace UI

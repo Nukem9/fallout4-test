@@ -23,11 +23,9 @@
 
 #pragma once
 
-#include "../../common.h"
-#include "../../api/CommIncAPI.h"
-
 #include "UIMenus.h"
 #include "UIBaseWindow.h"
+#include "../../api/EditorAPI.h"
 
 #define UI_EDITOR_TOOLBAR					1
 #define UI_LOG_CMD_ADDTEXT					(WM_APP + 1)

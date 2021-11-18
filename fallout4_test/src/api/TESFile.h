@@ -23,9 +23,8 @@
 
 #pragma once
 
-#include "ComClasses.h"
+#include "../StdAfx.h"
 #include "NiMain/GameTypes.h"
-#include "BSTList.h"
 
 #pragma pack(push, 1)
 
@@ -111,6 +110,8 @@ namespace api {
 		inline BOOL IsActive(VOID) const { return m_Flags & FILE_RECORD_ACTIVE; }
 		inline BOOL IsLocalized(VOID) const { return m_Flags & FILE_RECORD_LOCALIZED; }
 		inline BOOL IsSmallMaster(VOID) const { return m_Flags & FILE_RECORD_ESL; }
+		SYSTEMTIME GetCreationTime(VOID) const;
+		SYSTEMTIME GetLastWriteTime(VOID) const;
 	public:
 		inline static INT32(*LoadTESInfo)(TESFile*);
 		inline static INT64(*WriteTESInfo)(TESFile*);
@@ -131,6 +132,8 @@ namespace api {
 		READ_PROPERTY(GetDependArray) TESFile** DependArray;
 		READ_PROPERTY(GetDependCount) DWORD DependCount;
 		READ_PROPERTY(GetFileSize) DWORD FileSize;
+		READ_PROPERTY(GetCreationTime) SYSTEMTIME CreationTime;
+		READ_PROPERTY(GetLastWriteTime) SYSTEMTIME LastWriteTime;
 	};
 
 	static_assert(sizeof(TESFile) == 0xA80, "TESFile class should be the size of 0xA80");

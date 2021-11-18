@@ -25,7 +25,7 @@
 #include "EditorUI.h"
 #include "MainWindow.h"
 
-#include <unordered_map>
+#include "../../StdAfx.h"
 
 #define UI_CMD_CHANGE_SPLITTER_OBJECTWINDOW		(UI_CUSTOM_MESSAGE + 4)
 

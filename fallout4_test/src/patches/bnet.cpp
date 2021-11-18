@@ -20,7 +20,7 @@
 */
 //////////////////////////////////////////
 
-#include "../common.h"
+#include "../StdAfx.h"
 
 size_t FIXAPI BNetConvertUnicodeString(char *Destination, size_t DestSize, const wchar_t *Source, size_t SourceSize)
 {

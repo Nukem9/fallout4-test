@@ -23,14 +23,10 @@
 
 #pragma once
 
-#include "../../common.h"
-#include "../../api/CommIncAPI.h"
-
 #include "UIMenus.h"
 #include "UIBaseWindow.h"
 #include "UICheckboxControl.h"
-
-#include <CommCtrl.h>
+#include "../../api/EditorAPI.h"
 
 #define UI_OBJECT_WINDOW_ADD_ITEM		2579
 #define UI_OBJECT_WINDOW_CHECKBOX		2580	// See: resource.rc

@@ -20,15 +20,11 @@
 */
 //////////////////////////////////////////
 
-#include "../common.h"
+#include "../StdAfx.h"
 #include "deflate.h"
 #include "boost_search_array.h"
-#include "../common/MemoryManager.h"
-#include "TES/bhkThreadMemorySource.h"
+#include "bhkThreadMemorySource.h"
 #include "../api/BSTArray.h"
-
-#include <string>	
-#include <intrin.h>
 
 /*
 

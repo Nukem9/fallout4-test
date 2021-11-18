@@ -29,7 +29,7 @@ This file is part of Fallout 4 Fixes source code.
 
 */
 
-#include "../common.h"
+#include "..\StdAfx.h"
 
 struct z_stream_s
 {

@@ -22,10 +22,7 @@
 
 #pragma once
 
-#include <set>
-#include "../../api/ComClasses.h"
-
-#pragma warning (disable : 26812)
+#include "..\..\StdAfx.h"
 
 namespace Core
 {
@@ -416,5 +413,3 @@ namespace Core
 		}
 	}
 }
-
-#pragma warning (default : 26812)

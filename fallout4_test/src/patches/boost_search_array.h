@@ -23,8 +23,8 @@
 
 #pragma once
 
-#include "..\common.h"
-#include "../api/BSTArray.h"
+#include "..\StdAfx.h"
+#include "..\api\BSTArray.h"
 
 namespace Experimental {
 	DWORD FIXAPI QSIMDFastSearchArrayItemOffsetDWORD(BSTArray<DWORD>& _array, DWORD& _target, DWORD _start_index);

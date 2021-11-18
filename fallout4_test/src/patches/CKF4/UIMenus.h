@@ -22,11 +22,7 @@
 
 #pragma once
 
-#define VC_EXTRALEAN
-#define WIN32_LEAN_AND_MEAN
-
-#include <Windows.h>
-#include <string>
+#include "..\..\StdAfx.h"
 
 namespace Core
 {

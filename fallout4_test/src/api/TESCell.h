@@ -30,7 +30,7 @@ namespace api {
 	class TESObjectREFR;
 	class TESCell : public TESForm {
 	private:
-		enum { eTypeID = ftCell };
+		enum { eTypeID = FormType::ftCell };
 	public:
 		struct TESCellDataExt {
 			INT32 gridX;		// 00

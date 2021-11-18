@@ -22,7 +22,6 @@
 
 #pragma once
 
-#include "../common.h"
 #include "TESForm.h"
 
 #pragma pack(push, 1)
@@ -32,7 +31,7 @@ namespace api {
 	class TESObjectREFR;
 	class BGLayer : public TESForm {
 	private:
-		enum { eTypeID = ftLayer };
+		enum { eTypeID = FormType::ftLayer };
 	private:
 		BGLayer* _parent;
 		BSTArray<TESObjectREFR*> _items;

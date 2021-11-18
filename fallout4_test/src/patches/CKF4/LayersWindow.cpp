@@ -21,12 +21,8 @@
 //////////////////////////////////////////
 
 #include "LayersWindow.h"
-#include "LogWindow.h"
-
 #include "Editor.h"
-
-#include <windowsx.h>
-#include <CommCtrl.h>
+#include "../../StdAfx.h"
 
 namespace LayersWindow
 {

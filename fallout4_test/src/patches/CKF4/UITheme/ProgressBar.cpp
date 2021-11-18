@@ -24,10 +24,6 @@
 #include "VarCommon.h"
 #include "ProgressBar.h"
 
-#include <algorithm>
-#include <Uxtheme.h>
-#include <vsstyle.h>
-
 #define INTERNAL 5
 #define MARQUEE_TIMER_ID (WM_USER + 0x1000)
 

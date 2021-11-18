@@ -49,7 +49,6 @@
 #pragma pack(push, 1)
 
 #include "GameTypes.h"
-#include "BSTArray.h"
 
 enum EventResult
 {

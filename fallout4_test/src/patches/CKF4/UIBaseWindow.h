@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "../../api/ComClasses.h"
+#include "..\..\StdAfx.h"
 #include "UIMenus.h"
 #include "UIGraphics.h"
 

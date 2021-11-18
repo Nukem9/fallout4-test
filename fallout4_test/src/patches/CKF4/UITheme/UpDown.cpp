@@ -24,9 +24,6 @@
 #include "VarCommon.h"
 #include "UpDown.h"
 
-#include <Uxtheme.h>
-#include <vsstyle.h>
-
 namespace Core
 {
 	namespace UI

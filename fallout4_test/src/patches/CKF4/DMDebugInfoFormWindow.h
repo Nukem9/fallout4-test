@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "../../common.h"
+#include "..\..\StdAfx.h"
+#include "../../api/EditorAPI.h"
 
 namespace DMDebugInfoFormWindow {
 	INT_PTR FIXAPI ShowModal(VOID);

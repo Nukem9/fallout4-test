@@ -20,10 +20,7 @@
 */
 //////////////////////////////////////////
 
-#include "..\..\Common.h"
 #include "UIGraphics.h"
-
-#pragma warning (disable: 4334)
 
 namespace Core
 {

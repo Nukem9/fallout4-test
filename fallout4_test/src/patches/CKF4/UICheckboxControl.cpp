@@ -20,7 +20,6 @@
 */
 //////////////////////////////////////////
 
-#include "..\..\Common.h"
 #include "UICheckboxControl.h"
 
 #pragma warning(disable: 4312)

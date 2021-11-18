@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "../../common.h"
+#include "../../StdAfx.h"
 
 namespace EditorUI
 {

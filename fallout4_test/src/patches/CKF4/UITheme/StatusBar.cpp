@@ -26,8 +26,6 @@
 
 #include "..\MainWindow.h"
 
-#include <CommCtrl.h>
-
 namespace Core
 {
 	namespace UI

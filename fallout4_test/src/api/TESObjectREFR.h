@@ -22,11 +22,11 @@
 
 #pragma once
 
-#include "TESForm.h"
-#include "TESCell.h"
-
 #include "NiMain/NiRefObject.h"
 #include "NiMain/GameEvents.h"
+
+#include "TESForm.h"
+#include "TESCell.h"
 
 #pragma pack(push, 1)
 
@@ -46,7 +46,7 @@ namespace api {
 
 	class TESObjectREFR : public TESForm {
 	private:
-		enum { eTypeID = ftReference };
+		enum { eTypeID = FormType::ftReference };
 	private:
 		BSTEventSink<LPVOID> _unkEventSink01;	// 0x28
 		BSHandleRefObject _handleRefObject;		// 0x30

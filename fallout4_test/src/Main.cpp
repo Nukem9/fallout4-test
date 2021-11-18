@@ -21,12 +21,8 @@
 */
 //////////////////////////////////////////
 
-#include "common.h"
+#include "StdAfx.h"
 #include "version_info.h"
-#include "profiler_internal.h"
-
-#include <filesystem>
-#include <shellapi.h>
 
 VOID FIXAPI Sys_DumpDisableBreakpoint(VOID);
 VOID FIXAPI Sys_DumpEnableBreakpoint(VOID);

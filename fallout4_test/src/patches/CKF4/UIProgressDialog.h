@@ -22,7 +22,6 @@
 
 #pragma once
 
-#include "../../Common.h"
 #include "UIBaseWindow.h"
 
 #define UI_PROGRESS_CMD_STEPIT	(UI_CUSTOM_MESSAGE + 5)

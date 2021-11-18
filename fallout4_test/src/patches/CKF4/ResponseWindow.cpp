@@ -22,11 +22,10 @@
 //////////////////////////////////////////
 
 #include "ResponseWindow.h"
-#include "LogWindow.h"
 #include "CellViewWindow.h"
 #include "EditorUI.h"
 
-#include <filesystem>
+#include "../../StdAfx.h"
 
 namespace fs = std::filesystem;
 

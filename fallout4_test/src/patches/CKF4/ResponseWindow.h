@@ -23,11 +23,9 @@
 
 #pragma once
 
-#include "../../common.h"
-#include "../../api/CommIncAPI.h"
-
 #include "UIMenus.h"
 #include "UIBaseWindow.h"
+#include "../../api/EditorAPI.h"
 
 #define UI_BUTTON_GENERATE_LIP_FILE 1016
 #define UI_CHECKBUTTON_WAV_FILE		2379

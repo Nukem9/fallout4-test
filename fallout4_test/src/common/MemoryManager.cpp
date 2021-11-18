@@ -21,7 +21,7 @@
 */
 //////////////////////////////////////////
 
-#include "MemoryManager.h"
+#include "..\StdAfx.h"
 
 /*
 Uses oneTBB (oneAPI Threading Building Blocks (oneTBB))
@@ -37,22 +37,12 @@ To increase the performance of the application, the functions are replaced with 
 MemAlloc
 ==================
 */
-LPVOID MemAlloc(UINT64 Size, UINT32 Alignment = 0, BOOL Aligned = FALSE, BOOL Zeroed = FALSE)
-{
-	ProfileCounterInc("Alloc Count");
-	ProfileCounterAdd("Byte Count", Size);
-	ProfileTimer("Time Spent Allocating");
-
-#if FALLOUT4_USE_VTUNE
-	__itt_heap_allocate_begin(ITT_AllocateCallback, Size, Zeroed ? 1 : 0);
-#endif
-
+LPVOID MemAlloc(UINT64 Size, UINT32 Alignment, BOOL Aligned, BOOL Zeroed) {
 	// If the caller doesn't care, force 4 byte aligns as a minimum
 	if (!Aligned)
 		Alignment = 4;
 
-	if (Size <= 0)
-	{
+	if (Size <= 0) {
 		Size = 1;
 		Alignment = 2;
 	}
@@ -60,8 +50,7 @@ LPVOID MemAlloc(UINT64 Size, UINT32 Alignment = 0, BOOL Aligned = FALSE, BOOL Ze
 	AssertMsg(Alignment != 0 && Alignment % 2 == 0, "Alignment is fucked");
 
 	// Must be a power of 2, round it up if needed
-	if ((Alignment & (Alignment - 1)) != 0)
-	{
+	if ((Alignment & (Alignment - 1)) != 0) {
 		Alignment--;
 		Alignment |= Alignment >> 1;
 		Alignment |= Alignment >> 2;
@@ -75,18 +64,10 @@ LPVOID MemAlloc(UINT64 Size, UINT32 Alignment = 0, BOOL Aligned = FALSE, BOOL Ze
 	if ((Size % Alignment) != 0)
 		Size = ((Size + Alignment - 1) / Alignment) * Alignment;
 
-#if FALLOUT4_USE_PAGE_HEAP
-	LPVOID ptr = VirtualAlloc(NULL, Size, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
-#else
 	LPVOID ptr = scalable_aligned_malloc(Size, Alignment);
 
 	if (ptr && Zeroed)
 		memset(ptr, 0, Size);
-#endif
-
-#if FALLOUT4_USE_VTUNE
-	__itt_heap_allocate_end(ITT_AllocateCallback, &ptr, Size, Zeroed ? 1 : 0);
-#endif
 
 	return ptr;
 }
@@ -96,27 +77,11 @@ LPVOID MemAlloc(UINT64 Size, UINT32 Alignment = 0, BOOL Aligned = FALSE, BOOL Ze
 MemFree
 ==================
 */
-VOID MemFree(LPVOID Memory, BOOL Aligned = FALSE)
-{
-	ProfileCounterInc("Free Count");
-	ProfileTimer("Time Spent Freeing");
-
+VOID MemFree(LPVOID Memory, BOOL Aligned) {
 	if (!Memory)
 		return;
 
-#if FALLOUT4_USE_VTUNE
-	__itt_heap_free_begin(ITT_FreeCallback, Memory);
-#endif
-
-#if FALLOUT4_USE_PAGE_HEAP
-	VirtualFree(Memory, 0, MEM_RELEASE);
-#else
 	scalable_aligned_free(Memory);
-#endif
-
-#if FALLOUT4_USE_VTUNE
-	__itt_heap_free_end(ITT_FreeCallback, Memory);
-#endif
 }
 
 /*
@@ -124,26 +89,8 @@ VOID MemFree(LPVOID Memory, BOOL Aligned = FALSE)
 MemSize
 ==================
 */
-UINT64 MemSize(LPVOID Memory)
-{
-#if FALLOUT4_USE_VTUNE
-	__itt_heap_internal_access_begin();
-#endif
-
-#if FALLOUT4_USE_PAGE_HEAP
-	MEMORY_BASIC_INFORMATION info;
-	VirtualQuery(Memory, &info, sizeof(MEMORY_BASIC_INFORMATION));
-
-	UINT64 result = (UINT64)info.RegionSize;
-#else
-	UINT64 result = (UINT64)scalable_msize(Memory);
-#endif
-
-#if FALLOUT4_USE_VTUNE
-	__itt_heap_internal_access_end();
-#endif
-
-	return result;
+UINT64 MemSize(LPVOID Memory) {
+	return (UINT64)scalable_msize(Memory);
 }
 
 /*
@@ -153,8 +100,7 @@ hk_calloc
 Replacement calloc
 ==================
 */
-LPVOID hk_calloc(size_t Count, size_t Size)
-{
+LPVOID hk_calloc(size_t Count, size_t Size) {
 	// The allocated memory is always zeroed
 	return MemAlloc(Count * Size, 0, FALSE, TRUE);
 }
@@ -166,8 +112,7 @@ hk_malloc
 Replacement malloc
 ==================
 */
-LPVOID hk_malloc(size_t Size)
-{
+LPVOID hk_malloc(size_t Size) {
 	return MemAlloc(Size);
 }
 
@@ -178,8 +123,7 @@ hk_aligned_malloc
 Replacement _aligned_malloc
 ==================
 */
-LPVOID hk_aligned_malloc(size_t Size, size_t Alignment)
-{
+LPVOID hk_aligned_malloc(size_t Size, size_t Alignment) {
 	return MemAlloc(Size, Alignment, TRUE);
 }
 
@@ -190,12 +134,10 @@ hk_realloc
 Replacement realloc
 ==================
 */
-LPVOID hk_realloc(LPVOID Memory, size_t Size)
-{
+LPVOID hk_realloc(LPVOID Memory, size_t Size) {
 	LPVOID newMemory = NULL;
 
-	if (Size > 0)
-	{
+	if (Size > 0) {
 		// Recalloc behaves like calloc if there's no existing allocation. Realloc doesn't. Zero it anyway.
 		newMemory = MemAlloc(Size, 0, FALSE, TRUE);
 
@@ -214,8 +156,7 @@ hk_realloc
 Replacement recalloc
 ==================
 */
-LPVOID hk_recalloc(LPVOID Memory, size_t Count, size_t Size)
-{
+LPVOID hk_recalloc(LPVOID Memory, size_t Count, size_t Size) {
 	return hk_realloc(Memory, Count * Size);
 }
 
@@ -226,8 +167,7 @@ hk_free
 Replacement free
 ==================
 */
-VOID hk_free(LPVOID Block)
-{
+VOID hk_free(LPVOID Block) {
 	MemFree(Block);
 }
 
@@ -238,8 +178,7 @@ hk_aligned_free
 Replacement _aligned_free
 ==================
 */
-VOID hk_aligned_free(LPVOID Block)
-{
+VOID hk_aligned_free(LPVOID Block) {
 	MemFree(Block, TRUE);
 }
 
@@ -250,8 +189,7 @@ hk_msize
 Replacement _msize
 ==================
 */
-UINT64 hk_msize(LPVOID Block)
-{
+UINT64 hk_msize(LPVOID Block) {
 	return MemSize(Block);
 }
 
@@ -262,8 +200,7 @@ hk_Sleep
 Replacement WINAPI Sleep
 ==================
 */
-LPSTR hk_strdup(LPCSTR str1)
-{
+LPSTR hk_strdup(LPCSTR str1) {
 	size_t len = (strlen(str1) + 1);
 	return (LPSTR)memcpy(hk_malloc(len), str1, len);
 }
@@ -271,31 +208,26 @@ LPSTR hk_strdup(LPCSTR str1)
 //
 // Internal engine heap allocators backed by VirtualAlloc()
 //
-LPVOID MemoryManager::Allocate(MemoryManager *Manager, UINT64 Size, UINT32 Alignment, BOOL Aligned)
-{
+LPVOID MemoryManager::Allocate(MemoryManager *Manager, UINT64 Size, UINT32 Alignment, BOOL Aligned) {
 	return MemAlloc(Size, Alignment, Aligned, TRUE);
 }
 
-VOID MemoryManager::Deallocate(MemoryManager *Manager, LPVOID Memory, BOOL Aligned)
-{
+VOID MemoryManager::Deallocate(MemoryManager *Manager, LPVOID Memory, BOOL Aligned) {
 	MemFree(Memory, Aligned);
 }
 
-UINT64 MemoryManager::Size(MemoryManager *Manager, LPVOID Memory)
-{
+UINT64 MemoryManager::Size(MemoryManager *Manager, LPVOID Memory) {
 	return MemSize(Memory);
 }
 
-LPVOID ScrapHeap::Allocate(UINT64 Size, UINT32 Alignment)
-{
+LPVOID ScrapHeap::Allocate(UINT64 Size, UINT32 Alignment) {
 	if (Size > g_ScrapSize)
 		return NULL; 
 
 	return MemAlloc(Size, Alignment, Alignment != 0);
 }
 
-VOID ScrapHeap::Deallocate(LPVOID Memory)
-{
+VOID ScrapHeap::Deallocate(LPVOID Memory) {
 	MemFree(Memory);
 }
 
@@ -304,8 +236,7 @@ VOID ScrapHeap::Deallocate(LPVOID Memory)
 Sys_LowPhysicalMemory
 ==================
 */
-DWORD64 FIXAPI Sys_GetPhysicalMemory(VOID)
-{
+DWORD64 FIXAPI Sys_GetPhysicalMemory(VOID) {
 	MEMORYSTATUSEX statex;
 	if (!GlobalMemoryStatusEx(&statex))
 		return 0;
@@ -317,8 +248,7 @@ DWORD64 FIXAPI Sys_GetPhysicalMemory(VOID)
 Sys_LowPhysicalMemory
 ==================
 */
-BOOL FIXAPI Sys_LowPhysicalMemory(VOID) 
-{
+BOOL FIXAPI Sys_LowPhysicalMemory(VOID)  {
 	return (Sys_GetPhysicalMemory() < MEM_THRESHOLD) ? TRUE : FALSE;
 }
 
@@ -330,8 +260,7 @@ Implements the code in the process
 Changes memory allocation functions, but not all of them
 ==================
 */
-VOID FIXAPI Fix_PatchMemory(VOID)
-{
+VOID FIXAPI Fix_PatchMemory(VOID) {
 	AssertMsg(Sys_LowPhysicalMemory(), "Not enough memory to run the program")
 
 	auto GB = Sys_GetPhysicalMemory() / (1024 * 1024 * 1024);

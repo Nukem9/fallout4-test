@@ -20,10 +20,7 @@
 */
 //////////////////////////////////////////
 
-#include "..\..\Common.h"
 #include "UIImageList.h"
-
-#pragma warning(disable:4334)
 
 namespace Core
 {

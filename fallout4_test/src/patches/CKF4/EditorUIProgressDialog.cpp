@@ -20,7 +20,6 @@
 */
 //////////////////////////////////////////
 
-#include "../../common.h"
 #include "UIBaseWindow.h"
 #include "UIProgressDialog.h"
 #include "EditorUI.h"
@@ -29,9 +28,6 @@
 #include "ObjectWindow.h"
 #include "RenderWindow.h"
 #include "MainWindow.h"
-#include "LogWindow.h"
-
-#include <ShObjIdl_core.h>
 
 namespace EditorUI
 {
@@ -113,7 +109,7 @@ namespace EditorUI
 
 	static ProgressOnTaskBar* g_pProgressOnTaskBar = NULL;
 
-	BOOL FIXAPI hk_CallLoadFile(TESDataFileHandler* io_handler, INT32 _zero_only)
+	BOOL FIXAPI hk_CallLoadFile(TESDataHandler* io_handler, INT32 _zero_only)
 	{
 		// get and save F4FileDataHandler from CK
 		// FileHandler = io_handler; 0x6D67960 and doesn't change

@@ -28,14 +28,11 @@
 //////////////////////////////////////////
 // optional
 #define FALLOUT4_CREATIONKIT_ONLY	0	// Only build code related to the Creation Kit hooks
-#define FALLOUT4_USE_VTUNE			0	// Enable VTune instrumentation API
-#define FALLOUT4_USE_PROFILER		0	// Enable built-in profiler macros / "profiler.h"
-#define FALLOUT4_USE_PAGE_HEAP		0	// Treat every memory allocation as a separate page (4096 bytes) for debugging
 #define FALLOUT4_LAZ_UNICODE_PLUGIN 1	// Support unicode string (utf-8) convert to ansi and back
 #define FALLOUT4_STUDY_CK64_INIFILE 0	// Output of variables from the ini file and their values to the log
 #define FALLOUT4_CK64_BSTARRAY_DBG  0   // Debugging SIMD instructions to speed up the search
 #define FALLOUT4_CK64_ENB_FIXABLE   1   // Enabling the loader implementation in .dll and installation f4ck_loader.exe
-#define FALLOUT4_DEVELOPER_MODE		0   // Enabling developer mode
+#define FALLOUT4_DEVELOPER_MODE		1   // Enabling developer mode
 //////////////////////////////////////////
 // required value set 1
 #define FALLOUT4_MINI_PROJECT		1	// uses https://github.com/pulzed/mINI

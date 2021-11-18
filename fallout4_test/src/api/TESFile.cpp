@@ -21,9 +21,7 @@
 */
 //////////////////////////////////////////
 
-#include "../common.h"
 #include "../patches/CKF4/UIBaseWindow.h"
-#include "../patches/CKF4/LogWindow.h"
 #include "TESFile.h"
 
 using namespace api;
@@ -115,6 +113,24 @@ BSString TESFile::GetAuthorName(VOID) const {
 		return (LPCSTR)OFFSET(0x3853908, 0);
 
 	return *m_authorName ? m_authorName : ""; 
+}
+
+SYSTEMTIME FileTimeToSystemTimeEx(const FILETIME& Time) {
+	SYSTEMTIME T;
+	FILETIME Local_File_Time;
+
+	FileTimeToLocalFileTime(&Time, &Local_File_Time);
+	FileTimeToSystemTime(&Local_File_Time, &T);
+
+	return T;
+}
+
+SYSTEMTIME TESFile::GetCreationTime(VOID) const {
+	return FileTimeToSystemTimeEx(m_findData.ftCreationTime);
+}
+
+SYSTEMTIME TESFile::GetLastWriteTime(VOID) const {
+	return FileTimeToSystemTimeEx(m_findData.ftLastWriteTime);
 }
 
 VOID TESFile::Dump(VOID) {

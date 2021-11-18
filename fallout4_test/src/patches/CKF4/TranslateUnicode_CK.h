@@ -25,13 +25,7 @@
 //#define __DBG_TRAN_UNICODE_READ
 //#define __DBG_TRAN_UNICODE_WRITE
 
-#define VC_EXTRALEAN
-#define WIN32_LEAN_AND_MEAN
-
-#include "..\..\Common.h"
-
-#include <list>
-#include <string>
+#include "..\..\StdAfx.h"
 
 namespace Core
 {

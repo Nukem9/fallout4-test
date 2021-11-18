@@ -48,7 +48,6 @@
 #pragma once
 
 #include "GameAPI.h"
-#include <string>
 
 #include "../BSTList.h"
 #include "../BSTArray.h"
@@ -231,6 +230,7 @@ public:
 public:
 	BOOL Set(LPCSTR string, WORD size = 0);   // 0 to allocate automatically
 	inline LPCSTR Get(VOID) const { return m_data ? m_data : ""; }
+	inline LPCSTR c_str(VOID) const { return m_data ? m_data : ""; }
 	inline WORD	Length(VOID) const { return m_dataLen; }
 	inline WORD	Size(VOID) const { return m_bufLen; }
 	INT Compare(LPCSTR string, BOOL ignoreCase = TRUE) const;

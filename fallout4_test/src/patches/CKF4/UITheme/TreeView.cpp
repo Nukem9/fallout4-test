@@ -24,8 +24,6 @@
 #include "VarCommon.h"
 #include "TreeView.h"
 
-#include <vsstyle.h>
-
 namespace Core
 {
 	namespace UI

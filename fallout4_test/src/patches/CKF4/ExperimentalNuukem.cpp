@@ -21,15 +21,8 @@
 */
 //////////////////////////////////////////
 
-#include "..\..\Common.h"
+#include "../../StdAfx.h"
 #include "ExperimentalNuukem.h"
-#include "LogWindow.h"
-
-#include <zydis\Zydis.h>
-
-#include <chrono>
-#include <intrin.h>
-#include <tbb/concurrent_vector.h>
 
 namespace Experimental
 {

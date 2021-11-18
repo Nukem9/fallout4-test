@@ -23,7 +23,15 @@
 
 #pragma once
 
-#include "../common.h"
+#include <minwindef.h>
+
+#ifndef FIXAPI
+#define FIXAPI __stdcall
+#endif
+
+LPVOID	FIXAPI MemAlloc(UINT64 Size, UINT32 Alignment = 0, BOOL Aligned = FALSE, BOOL Zeroed = FALSE);
+VOID	FIXAPI MemFree(LPVOID Memory, BOOL Aligned = FALSE);
+UINT64	FIXAPI MemSize(LPVOID Memory);
 
 /*
 ==================

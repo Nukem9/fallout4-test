@@ -21,8 +21,6 @@
 */
 //////////////////////////////////////////
 
-#include <libdeflate/libdeflate.h>
-
 #include "deflate.h"
 
 INT32 FIXAPI hk_inflateInit(z_stream_s* Stream, LPCSTR Version, INT32 Mode)

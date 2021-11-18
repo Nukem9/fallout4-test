@@ -22,9 +22,7 @@
 
 #pragma once
 
-#include <Uxtheme.h>
-
-#include "..\..\..\common.h"
+#include "..\..\..\StdAfx.h"
 #include "..\UIGraphics.h"
 
 namespace Core

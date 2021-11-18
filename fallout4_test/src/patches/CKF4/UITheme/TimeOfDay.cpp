@@ -20,13 +20,10 @@
 */
 //////////////////////////////////////////
 
-#include "..\..\..\common.h"
 #include "..\UIBaseWindow.h"
 #include "..\MainWindow.h"
 #include "VarCommon.h"
 #include "TimeOfDay.h"
-
-#include <CommCtrl.h>
 
 namespace Core
 {

@@ -20,8 +20,7 @@
 */
 //////////////////////////////////////////
 
-#include "../common.h"
-#include <future>
+#include "../../StdAfx.h"
 
 #define WM_APP_UPDATE_CURSOR (WM_APP + 0x9A36)
 

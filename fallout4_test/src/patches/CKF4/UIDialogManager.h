@@ -6,14 +6,7 @@ I came up with the idea of using simple languages to generate dialogs.
 This should solve the problem of bad dialogs in the future and support 10pt and 12pt text in dialogs.
 */
 
-#include "..\..\common.h"
-
-#define TBB_PREVIEW_CONCURRENT_ORDERED_CONTAINERS 1
-#include <tbb/concurrent_map.h>
-
-#define JDIALOG_NO_FUNCTIONS_CREATE_CONTROLS
-#define JDIALOG_NO_MANIFEST_LINKER_COMMCTRL
-#include "..\..\..\..\Dependencies\jDialogs\include\jdialogs.h"
+#include "..\..\StdAfx.h"
 
 namespace Core
 {

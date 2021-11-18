@@ -24,10 +24,6 @@
 #include "PopupMenu.h"
 #include "VarCommon.h"
 
-#include <algorithm>
-#include <Uxtheme.h>
-#include <unordered_map>
-
 namespace Core
 {
 	namespace UI

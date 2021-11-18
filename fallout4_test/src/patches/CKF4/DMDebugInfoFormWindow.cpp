@@ -20,10 +20,9 @@
 */
 //////////////////////////////////////////
 
-#include "..\..\api\TESForm.h"
+#include "../../StdAfx.h"
 #include "DMDebugInfoFormWindow.h"
 #include "MainWindow.h"
-#include "LogWindow.h"
 #include "Editor.h"
 
 namespace DMDebugInfoFormWindow
@@ -58,7 +57,7 @@ namespace DMDebugInfoFormWindow
 								_MESSAGE_FMT("\t\t Address 0x%p", form);
 								_MESSAGE_FMT("\t\t Flags %08X", form->FormFlag);
 
-								if (form->TypeID == ftReference) {
+								if (form->TypeID == TESForm::FormType::ftReference) {
 									_MESSAGE_FMT("\t\t REFR parent cell: %s", ((TESObjectREFR*)form)->ParentCell->GetFullName().c_str());
 									_MESSAGE_FMT("\t\t REFR count ref: %d", ((TESObjectREFR*)form)->RefHandler->GetRefCount());
 								}

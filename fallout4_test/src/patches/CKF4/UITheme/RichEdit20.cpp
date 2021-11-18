@@ -24,9 +24,6 @@
 #include "VarCommon.h"
 #include "RichEdit20.h"
 
-#include <Richedit.h>
-#include <vsstyle.h>
-
 namespace Core
 {
 	namespace UI

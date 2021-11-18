@@ -22,7 +22,6 @@
 //////////////////////////////////////////
 
 #include "MainWindow.h"
-#include "LogWindow.h"
 #include "CellViewWindow.h"
 #include "ObjectWindow.h"
 #include "RenderWindow.h"
@@ -30,11 +29,7 @@
 #include "Editor.h"
 #include "EditorUI.h"
 
-#include <commdlg.h>
-#include <shellapi.h>
-#include <filesystem>
-
-#include <Uxtheme.h>
+#include "../../StdAfx.h"
 
 #pragma warning (disable : 6387)
 
@@ -321,7 +316,7 @@ namespace MainWindow
 					auto form = GetFormByNumericID(i);
 
 					if (form) {
-						form->MarkChanged(TRUE);
+						form->MarkAsChanged(TRUE);
 						LogWindow::Log("SetFormModified(%08X)", i);
 					}
 				}
@@ -407,12 +402,12 @@ namespace MainWindow
 				MenuItem.Checked = !MenuItem.Checked;
 				bFogToggle = MenuItem.Checked;
 
-				if (TESCellViewScene* view = TESCellViewScene::GetCellViewScene(); view)
+				if (TESScene* scene = TESScene::GetScene(); scene)
 				{
-					if (TESForm* form = view->Interios; form)
+					if (TESForm* form = scene->Interios; form)
 					{
 						// Fake update scene
-						((VOID(__stdcall*)(TESCellViewScene*, TESForm*))OFFSET(0x7B1E80, 0))(view, form);
+						((VOID(__stdcall*)(TESScene*, TESForm*))OFFSET(0x7B1E80, 0))(scene, form);
 					}
 				}
 			}

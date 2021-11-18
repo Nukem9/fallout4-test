@@ -24,8 +24,6 @@
 #include "VarCommon.h"
 #include "Memo.h"
 
-#include <vsstyle.h>
-
 namespace Core
 {
 	namespace UI

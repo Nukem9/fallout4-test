@@ -25,7 +25,7 @@
 #include "UITheme/TimeOfDay.h"
 #include "Editor.h"
 
-#include <CommCtrl.h>
+#include "../../StdAfx.h"
 
 namespace PreferencesWindow
 {

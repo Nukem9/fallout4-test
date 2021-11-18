@@ -23,14 +23,10 @@
 
 #pragma once
 
-#include "../../common.h"
-#include "../../api/CommIncAPI.h"
-
 #include "UIMenus.h"
 #include "UIBaseWindow.h"
 #include "UICheckboxControl.h"
-
-#include <CommCtrl.h>
+#include "../../api/EditorAPI.h"
 
 #define UI_LISTVIEW_PLUGINS					1056						// See: resource.rc
 #define UI_EDIT_SEARCH_PLUGIN_BY_NAME		(UI_CUSTOM_MESSAGE + 4)	

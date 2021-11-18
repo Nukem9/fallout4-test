@@ -21,17 +21,11 @@
 */
 //////////////////////////////////////////
 
-#include "../../common.h"
-#include <tbb/concurrent_vector.h>
-#include <Richedit.h>
-#include <unordered_set>
+#include "..\..\StdAfx.h"
+
 #include "EditorUI.h"
 #include "UIThemeMode.h"
-#include "LogWindow.h"
 #include "MainWindow.h"
-
-#include <fstream>
-#include <filesystem>
 
 namespace fs = std::filesystem;
 

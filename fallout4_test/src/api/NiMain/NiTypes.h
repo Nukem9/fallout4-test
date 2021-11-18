@@ -48,10 +48,8 @@
 #pragma once
 
 #include "GameAPI.h"
-#include <cmath>
 
 #pragma pack(push, 1)
-#pragma warning(disable : 26451)
 
 // 8
 template <class _Ty>
@@ -375,7 +373,7 @@ public:
 	};
 
 	T_data Get(T_key key) {
-		UInt32	bucket = GetBucket(key);
+		uint32_t	bucket = GetBucket(key);
 
 		for(NiTMapItem * iter = buckets[bucket]; iter; iter = iter->next) {
 			if(Compare(iter->key, key))

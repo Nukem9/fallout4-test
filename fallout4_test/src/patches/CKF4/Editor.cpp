@@ -21,20 +21,17 @@
 */
 //////////////////////////////////////////
 
-#include <libdeflate/libdeflate.h>
-#include <xbyak/xbyak.h>
-#include <CommCtrl.h>
-#include <filesystem>
+#include "../../StdAfx.h"
 
 #include "Editor.h"
 #include "EditorUI.h"
-#include "LogWindow.h"
 #include "MainWindow.h"
 #include "ActorWindow.h"
 #include "UIDialogManager.h"
 
 BOOL bFogToggle = TRUE;
 BOOL bAllowPoolMessage = FALSE;
+BOOL bExtremelyMode = FALSE;
 
 #pragma warning(disable : 26819; disable : 26451; disable : 6387; disable : 6001)
 
@@ -44,68 +41,69 @@ struct
 	LPCSTR Section;
 	LPCSTR Key;
 	std::string Value;
+	std::string ExtremelyValue;
 } CK_Settings[] = {
 	// CreationKit.ini or CreationKitCustom.ini
-	{ "General",		"bAllowMultipleEditors",				"1"	},
-	{ "General",		"bAllowMultipleMasterLoads",			"1"	},
-	{ "General",		"bSkipValidateInfos",					"1"	},
-	{ "General",		"bSkipValidateForms",					"1"	},
-	{ "General",		"bDisableDuplicateReferenceCheck",		"1"	},
-	{ "General",		"bCheckForMultiFileForms",				"0"	},
-	{ "General",		"bCheckForRefCellChanges",				"0"	},
-	{ "General",		"iCheckCellRegionsOnInit",				"0"	},
-	{ "General",		"bCheckOutWorldspacesOnInit",			"0"	},
-	{ "General",		"bCheckDoorCollisionOnInit",			"0"	},
-	{ "General",		"bFixBadLocRefsOnInit",					"0"	},
-	{ "General",		"bFixBadBorderRegionDataOnInit",		"0"	},
-	{ "General",		"bFixPersistenceOnRefInit",				"0"	},
-	{ "General",		"bForceCheckOutOnRefFix",				"0"	},
-	{ "General",		"bCheckLevActorsOnInit",				"0"	},
-	{ "General",		"bUseToolTips",							"0"	},
-	{ "General",		"bOnlyActiveFileForRefFix",				"0"	},
-	{ "General",		"bFixAIPackagesOnLoad",					"0"	},
-	{ "General",		"bCheckInventoryItemNameLength",		"0"	},
-	{ "General",		"bWarnOnGameSettingLoad",				"0"	},
-	{ "General",		"bCheckHairOnInit",						"0"	},
-	{ "General",		"bCheckEyesOnInit",						"0"	},
-	{ "General",		"bForbidNifErrorMarkers",				"1"	},
-	{ "General",		"bEditorHotLoading",					"1"	},
-	{ "General",		"bHideImportantWarnings",				"1"	},
-	{ "General",		"bAllowResourceReloading",				"1"	},
-	{ "General",		"bDoMultithreadedVisQuery",				"1"	},
-	{ "General",		"bUpdateCellViewToMatchRenderWindow",	"0"	},
-	{ "General",		"bUseMenuLoadCellPreload",				"0"	},
-	{ "Archive",		"bUseArchives",							"1"	},
-	{ "Archive",		"bAutoloadTESFileArchives",				"1"	},
-	{ "Archive",		"bInvalidateOlderFiles",				"1"	},
-	{ "Animation",		"bUseVariableCache",					"0"	},
-	{ "Animation",		"bIgnoreNIFFlags",						"1"	},
-	{ "Animation",		"bDisplayMarkWarning",					"0"	},
-	{ "Animation",		"bSkipAnimationTextExport",				"1"	},
-	{ "Bethesda.net",	"bEnablePlatformSelection",				"1"	},
-	{ "Bethesda.net",	"bEnableXB1",							"1"	},
-	{ "Bethesda.net",	"bEnablePS4",							"1"	},
-	{ "Display",		"bDeferredCommands",					"1"	},
-	{ "Display",		"bDynamicObjectQueryManager",			"0"	},
-	{ "Display",		"bMultiThreadedAccumulation",			"1"	},
-	{ "Display",		"bMultiThreadedRenderingUNP",			"1"	},
-	{ "Display",		"iTexMipMapMinimum",					"0"	},
-	{ "Display",		"bUsePreCulledObjects",					"0"	},
-	{ "Weather",		"bFogEnabled",							"1"	},
-	{ "Messages",		"bBlockMessageBoxes",					"1"	},
-	{ "Messages",		"bShowErrorMessages",					"0"	},
-	{ "Messages",		"bUseWindowsMessageBox",				"1"	},
-	{ "Messages",		"bSkipInitializationFlows",				"1"	},
-	{ "Messages",		"bSkipProgramFlows",					"1"	},
-	{ "Messages",		"bAllowYesToAll",						"1"	},
-	{ "Messages",		"bAllowFileWrite",						"0"	},
-	{ "Messages",		"bDisableWarning",						"1"	},
-	{ "Messages",		"bEnableAudio",							"0"	},
-	{ "Messages",		"bFaceGenWarnings",						"0"	},
-	{ "Messages",		"bDisableAssertQueuing",				"1"	},
-	{ "Messages",		"bShowMissingLipWarnings",				"0"	},
-	{ "Messages",		"bShowMissingAudioWarnings",			"0"	},
-	{ "Messages",		"bTopMostWarnings",						"0"	},
+	{ "General",		"bAllowMultipleEditors",				"1", "1" },
+	{ "General",		"bAllowMultipleMasterLoads",			"1", "1" },
+	{ "General",		"bSkipValidateInfos",					"1", "0" },
+	{ "General",		"bSkipValidateForms",					"1", "0" },
+	{ "General",		"bDisableDuplicateReferenceCheck",		"1", "0" },
+	{ "General",		"bCheckForMultiFileForms",				"0", "1" },
+	{ "General",		"bCheckForRefCellChanges",				"0", "1" },
+	{ "General",		"iCheckCellRegionsOnInit",				"0", "0" },
+	{ "General",		"bCheckOutWorldspacesOnInit",			"0", "1" },
+	{ "General",		"bCheckDoorCollisionOnInit",			"0", "1" },
+	{ "General",		"bFixBadLocRefsOnInit",					"0", "1" },
+	{ "General",		"bFixBadBorderRegionDataOnInit",		"0", "1" },
+	{ "General",		"bFixPersistenceOnRefInit",				"0", "1" },
+	{ "General",		"bForceCheckOutOnRefFix",				"0", "0" },
+	{ "General",		"bCheckLevActorsOnInit",				"0", "0" },
+	{ "General",		"bUseToolTips",							"0", "0" },
+	{ "General",		"bOnlyActiveFileForRefFix",				"0", "0" },
+	{ "General",		"bFixAIPackagesOnLoad",					"0", "1" },
+	{ "General",		"bCheckInventoryItemNameLength",		"0", "0" },
+	{ "General",		"bWarnOnGameSettingLoad",				"0", "0" },
+	{ "General",		"bCheckHairOnInit",						"0", "0" },
+	{ "General",		"bCheckEyesOnInit",						"0", "0" },
+	{ "General",		"bForbidNifErrorMarkers",				"1", "0" },
+	{ "General",		"bEditorHotLoading",					"1", "1" },
+	{ "General",		"bHideImportantWarnings",				"1", "0" },
+	{ "General",		"bAllowResourceReloading",				"1", "1" },
+	{ "General",		"bDoMultithreadedVisQuery",				"1", "1" },
+	{ "General",		"bUpdateCellViewToMatchRenderWindow",	"0", "0" },
+	{ "General",		"bUseMenuLoadCellPreload",				"0", "0" },
+	{ "Archive",		"bUseArchives",							"1", "1" },
+	{ "Archive",		"bAutoloadTESFileArchives",				"1", "1" },
+	{ "Archive",		"bInvalidateOlderFiles",				"1", "1" },
+	{ "Animation",		"bUseVariableCache",					"0", "0" },
+	{ "Animation",		"bIgnoreNIFFlags",						"1", "1" },
+	{ "Animation",		"bDisplayMarkWarning",					"0", "0" },
+	{ "Animation",		"bSkipAnimationTextExport",				"1", "0" },
+	{ "Bethesda.net",	"bEnablePlatformSelection",				"1", "1" },
+	{ "Bethesda.net",	"bEnableXB1",							"1", "1" },
+	{ "Bethesda.net",	"bEnablePS4",							"1", "1" },
+	{ "Display",		"bDeferredCommands",					"1", "1" },
+	{ "Display",		"bDynamicObjectQueryManager",			"0", "0" },
+	{ "Display",		"bMultiThreadedAccumulation",			"1", "1" },
+	{ "Display",		"bMultiThreadedRenderingUNP",			"1", "1" },
+	{ "Display",		"iTexMipMapMinimum",					"0", "0" },
+	{ "Display",		"bUsePreCulledObjects",					"0", "0" },
+	{ "Weather",		"bFogEnabled",							"1", "1" },
+	{ "Messages",		"bBlockMessageBoxes",					"1", "1" },
+	{ "Messages",		"bShowErrorMessages",					"0", "0" },
+	{ "Messages",		"bUseWindowsMessageBox",				"1", "1" },
+	{ "Messages",		"bSkipInitializationFlows",				"1", "1" },
+	{ "Messages",		"bSkipProgramFlows",					"1", "1" },
+	{ "Messages",		"bAllowYesToAll",						"1", "1" },
+	{ "Messages",		"bAllowFileWrite",						"0", "0" },
+	{ "Messages",		"bDisableWarning",						"1", "1" },
+	{ "Messages",		"bEnableAudio",							"0", "0" },
+	{ "Messages",		"bFaceGenWarnings",						"0", "0" },
+	{ "Messages",		"bDisableAssertQueuing",				"1", "1" },
+	{ "Messages",		"bShowMissingLipWarnings",				"0", "0" },
+	{ "Messages",		"bShowMissingAudioWarnings",			"0", "0" },
+	{ "Messages",		"bTopMostWarnings",						"0", "0" },
 };
 
 struct DialogOverrideData {
@@ -219,9 +217,6 @@ HWND WINAPI hk_CreateDialogParamA(HINSTANCE hInstance, LPCSTR lpTemplateName, HW
 	// The compiler messed up the type, now I'm strictly without checking the type, I bring it to another type.
 	DWORD m_lpTemplateName = reinterpret_cast<DWORD>(lpTemplateName);
 
-	if (!g_UIEnabled)
-		goto skip_hk_CreateDialogParamA;
-
 	switch (m_lpTemplateName) {
 	// Override certain default dialogs to use this DLL's resources
 	case 100:
@@ -268,7 +263,6 @@ HWND WINAPI hk_CreateDialogParamA(HINSTANCE hInstance, LPCSTR lpTemplateName, HW
 			return dialog->Show(hWndParent, DialogFuncOverride, dwInitParam, hInstance);
 	}
 
-skip_hk_CreateDialogParamA:
 	return CreateDialogParamA(hInstance, (LPCSTR)m_lpTemplateName, hWndParent, DialogFuncOverride, dwInitParam);
 }
 
@@ -282,9 +276,6 @@ INT_PTR WINAPI hk_DialogBoxParamA(HINSTANCE hInstance, LPCSTR lpTemplateName, HW
 	// Bug report "pra": Cannot use CK to preview NIFs
 	// The compiler messed up the type, now I'm strictly without checking the type, I bring it to another type.
 	DWORD m_lpTemplateName = reinterpret_cast<DWORD>(lpTemplateName);
-
-	if (!g_UIEnabled)
-		goto skip_hk_DialogBoxParamA;
 
 	switch (m_lpTemplateName) {
 		// Override certain default dialogs to use this DLL's resources
@@ -332,7 +323,6 @@ INT_PTR WINAPI hk_DialogBoxParamA(HINSTANCE hInstance, LPCSTR lpTemplateName, HW
 			return dialog->ShowModal(hWndParent, DialogFuncOverride, dwInitParam, hInstance);
 	}
 
-skip_hk_DialogBoxParamA:
 	return DialogBoxParamA(hInstance, (LPCSTR)m_lpTemplateName, hWndParent, DialogFuncOverride, dwInitParam);
 }
 
@@ -640,13 +630,13 @@ hk_call_F8CAF3
 ==================
 */
 BOOL FIXAPI hk_call_F8CAF3(VOID) {
-	api::TESCellViewScene* ViewScene = api::TESCellViewScene::GetCellViewScene();
+	api::TESScene* scene = api::TESScene::GetScene();
 
 	/*
 	Don't draw fog without a scene...
 	*/
 
-	if (!ViewScene || !ViewScene->RenderInfo)
+	if (!scene || !scene->RenderInfo)
 		return FALSE;
 
 	/*
@@ -655,7 +645,7 @@ BOOL FIXAPI hk_call_F8CAF3(VOID) {
 	The world draws the fog itself, depending on TimeOfDay.
 	*/
 
-	if (ViewScene->IsInteriorsCell())
+	if (scene->IsInteriorsCell())
 		return bFogToggle;
 
 	/*
@@ -663,7 +653,7 @@ BOOL FIXAPI hk_call_F8CAF3(VOID) {
 	It does not have its own fog and its parameters, and the pointer to the parameters itself is NULL.
 	*/
 	
-	return ViewScene->RenderInfo->IsSky();
+	return scene->RenderInfo->IsSky();
 }
 
 
@@ -672,14 +662,14 @@ BOOL FIXAPI hk_call_F8CAF3(VOID) {
 hk_call_F8AF16
 ==================
 */
-VOID FIXAPI hk_call_F8AF16(const api::TESCellViewScene::TESRenderInfo* RenderInfo) {
-	if (api::TESCellViewScene* ViewScene = api::TESCellViewScene::GetCellViewScene(); ViewScene->IsInteriorsCell()) {
+VOID FIXAPI hk_call_F8AF16(const api::TESScene::TESRenderInfo* RenderInfo) {
+	if (api::TESScene* scene = api::TESScene::GetScene(); scene->IsInteriorsCell()) {
 		if (bFogToggle)
 			return;
 	}
 
 	//This function resets the fog parameters and resets them again...
-	((VOID(__fastcall*)(const api::TESCellViewScene::TESRenderInfo*))OFFSET(0xF8B6A0, 0))(RenderInfo);
+	((VOID(__fastcall*)(const api::TESScene::TESRenderInfo*))OFFSET(0xF8B6A0, 0))(RenderInfo);
 }
 
 
@@ -984,7 +974,7 @@ DWORD FIXAPI GetCountItemInLayer(LPVOID unknown, api::BGLayer* layer) {
 	if (!unknown || !layer)
 		return dwRet;
 
-	auto scene = api::TESCellViewScene::GetCellViewScene();
+	auto scene = api::TESScene::GetScene();
 
 	if (scene->IsInteriorsCell())
 		return layer->GetItemsCountInCell(scene->Interios);
@@ -997,7 +987,7 @@ DWORD WINAPI hk_modGetPrivateProfileIntA(LPCSTR lpAppName, LPCSTR lpKeyName, INT
 	// Check for overrides first
 	for (auto& setting : CK_Settings) {
 		if (!_stricmp(lpAppName, setting.Section) && !_stricmp(lpKeyName, setting.Key)) {
-			LPCSTR start = setting.Value.c_str();
+			LPCSTR start = bExtremelyMode ? setting.ExtremelyValue.c_str() : setting.Value.c_str();
 			return (DWORD)strtoul(start, NULL, 10);
 		}
 	}
@@ -1005,6 +995,9 @@ DWORD WINAPI hk_modGetPrivateProfileIntA(LPCSTR lpAppName, LPCSTR lpKeyName, INT
 	return GetPrivateProfileIntA(lpAppName, lpKeyName, nDefault, lpFileName);
 }
 
+VOID FIXAPI EnabledExtremelyMode(VOID) {
+	bExtremelyMode = TRUE;
+}
 
 VOID FIXAPI PatchCmdLineWithQuote(VOID) {
 	//	Add support quote to command line with -GeneratePreCombined

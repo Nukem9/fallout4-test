@@ -1,6 +1,6 @@
 //////////////////////////////////////////
 /*
-* Copyright (c) 2020-2021 Perchik71 <email:perchik71@outlook.com>
+* Copyright (c) 2020 Nukem9 <email:Nukem@outlook.com>
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy of this
 * software and associated documentation files (the "Software"), to deal in the Software
@@ -20,25 +20,33 @@
 */
 //////////////////////////////////////////
 
-#include "TESCellViewScene.h"
+#pragma once
 
-BOOL api::TESCellViewScene::TESRenderInfo::IsSky(VOID) const
+#include "../StdAfx.h"
+
+class bhkThreadMemorySource
 {
-	BYTE flag = *(BYTE*)(((uintptr_t)this) + 0x37C);
-	// 
-	// 37C == 1 or 3
-	return (flag == 1) || (flag == 3);
-}
+public:
+	CHAR _pad0[0x8];
+	CRITICAL_SECTION m_CritSec;
 
+public:
+	DECLARE_CONSTRUCTOR_HOOK(bhkThreadMemorySource);
 
-api::TESCellViewScene* api::TESCellViewScene::GetCellViewScene(VOID)
-{
-	return *(TESCellViewScene**)(OFFSET(0x6D54CF8, 0));
-}
-
-
-BOOL api::TESCellViewScene::IsEmpty(VOID) const
-{
-	return (*(PDWORD)(_pad1 + 0x48) == 0x7FFFFFFF) && (*(PDWORD)(_pad1 + 0x4C) == 0x7FFFFFFF) &&
-		(*(PDWORD)(_pad1 + 0x50) == 0x7FFFFFFF) && (*(PDWORD)(_pad1 + 0x54) == 0x7FFFFFFF);
-}
+	bhkThreadMemorySource(VOID);
+	virtual ~bhkThreadMemorySource(VOID);
+	virtual LPVOID blockAlloc(UINT64 numBytes);
+	virtual VOID   blockFree(LPVOID p, UINT64 numBytes);
+	virtual LPVOID bufAlloc(UINT64& reqNumBytesInOut);
+	virtual VOID   bufFree(LPVOID p, UINT64 numBytes);
+	virtual LPVOID bufRealloc(LPVOID pold, UINT64 oldNumBytes, UINT64& reqNumBytesInOut);
+	virtual VOID   blockAllocBatch(LPVOID *ptrsOut, UINT64 numPtrs, UINT64 blockSize);
+	virtual VOID   blockFreeBatch(LPVOID *ptrsIn, UINT64 numPtrs, UINT64 blockSize);
+	virtual VOID   getMemoryStatistics(class MemoryStatistics& u);
+	virtual UINT64 getAllocatedSize(const LPVOID obj, UINT64 nbytes);
+	virtual VOID   resetPeakMemoryStatistics(VOID);
+#if FALLOUT4
+	virtual LPVOID getExtendedInterface(VOID);
+#endif
+};
+static_assert_offset(bhkThreadMemorySource, m_CritSec, 0x10);

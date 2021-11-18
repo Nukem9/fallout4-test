@@ -20,9 +20,7 @@
 */
 //////////////////////////////////////////
 
-#include "../../common.h"
 #include "UIMenus.h"
-#include "LogWindow.h"
 #include "MainWindow.h"
 
 namespace Core

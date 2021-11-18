@@ -20,9 +20,7 @@
 */
 //////////////////////////////////////////
 
-#include "../common.h"
-
-#include <map>
+#include "StdAfx.h"
 
 std::unordered_map<uint64_t, uintptr_t> AddressMap;
 
@@ -41,10 +39,6 @@ namespace Offsets
 	void BuildTableForCKF4Version(uint32_t Version)
 	{
 		Assert(false);
-	}
-
-	void BuildTableForCKSSEVersion(uint32_t Version)
-	{
 	}
 
 	void BuildTableForGameVersion(uint32_t Version)

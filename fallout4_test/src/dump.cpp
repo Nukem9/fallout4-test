@@ -21,10 +21,7 @@
 */
 //////////////////////////////////////////
 
-#include "common.h"
-#include <DbgHelp.h>
-#include <atomic>
-
+#include "StdAfx.h"
 #include "patches/CKF4/LogWindow.h"
 
 CHAR TempNTSIT[16];

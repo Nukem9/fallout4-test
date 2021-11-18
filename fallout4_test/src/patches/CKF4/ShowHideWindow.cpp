@@ -25,6 +25,8 @@
 #include "UICheckboxControl.h"
 #include "Editor.h"
 
+#include "../../StdAfx.h"
+
 namespace ShowHideWindow
 {
 	namespace Classes = Core::Classes::UI;

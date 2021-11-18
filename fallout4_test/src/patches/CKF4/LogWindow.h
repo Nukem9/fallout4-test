@@ -23,7 +23,7 @@
 
 #pragma once
 
-#include "../../common.h"
+#include <minwindef.h>
 
 namespace LogWindow
 {

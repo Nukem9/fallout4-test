@@ -24,8 +24,6 @@
 #include "VarCommon.h"
 #include "ListView.h"
 
-#include <vsstyle.h>
-
 #define UI_CONTROL_CONDITION_ID 0xFA0
 
 namespace Core {

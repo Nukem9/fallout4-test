@@ -21,19 +21,7 @@
 */
 //////////////////////////////////////////
 
-#include "../../common.h"
-
 #define THEME_DEBUG 0
-
-#include <tbb/concurrent_unordered_map.h>
-#include <tbb/concurrent_vector.h>
-#include <unordered_set>
-#include <vssym32.h>
-#include <Richedit.h>
-
-#include "LogWindow.h"
-
-#include <stdlib.h>
 
 #include "UIThemeMode.h"
 #include "UIBaseWindow.h"
@@ -75,10 +63,6 @@ This file is part of Fallout 4 Fixes source code.
 
 namespace Theme = Core::UI::Theme;
 namespace Classes = Core::Classes::UI;
-
-#if THEME_DEBUG
-#include <fstream>
-#endif
 
 #pragma warning (disable : 26819; disable : 26812; disable : 26454)
 

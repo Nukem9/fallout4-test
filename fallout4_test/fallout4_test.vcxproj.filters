@@ -33,12 +33,6 @@
     <Filter Include="Source Files\Patches\CK">
       <UniqueIdentifier>{9a61be2f-a22e-47e3-a8dc-97bb27863811}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Tools">
-      <UniqueIdentifier>{729a6042-ea7b-4b04-9748-e89acfd10058}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Tools">
-      <UniqueIdentifier>{57f76dce-f933-4e6f-9acd-ab0971e93f8c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\UI\Windows">
       <UniqueIdentifier>{81dacff4-51da-4b50-87a1-a91f7fe41ed4}</UniqueIdentifier>
     </Filter>
@@ -92,28 +86,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\profiler.h">
+    <ClInclude Include="src\ProfilerInternal.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\profiler_internal.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\common.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\patches\TES\Setting.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\config.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\patches\TES\bhkThreadMemorySource.h">
+    <ClInclude Include="src\Config.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\patches\offsets.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\patches\CKF4\EditorUI.h">
@@ -128,9 +107,6 @@
     <ClInclude Include="src\patches\CKF4\UICheckboxControl.h">
       <Filter>Header Files\UI\Classes</Filter>
     </ClInclude>
-    <ClInclude Include="src\xutil.h">
-      <Filter>Header Files\Utils</Filter>
-    </ClInclude>
     <ClInclude Include="src\INIReader.h">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
@@ -142,9 +118,6 @@
     </ClInclude>
     <ClInclude Include="src\patches\CKF4\UIProgressDialog.h">
       <Filter>Header Files\UI\Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="src\tools\INIHookInputToFile.h">
-      <Filter>Header Files\Tools</Filter>
     </ClInclude>
     <ClInclude Include="src\patches\CKF4\EditorUIProgressDialog.h">
       <Filter>Header Files\UI</Filter>
@@ -284,7 +257,7 @@
     <ClInclude Include="src\patches\CKF4\TranslateUnicode_CK.h">
       <Filter>Header Files\Patches\CK</Filter>
     </ClInclude>
-    <ClInclude Include="src\erase_if.h">
+    <ClInclude Include="src\EraseIf.h">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
     <ClInclude Include="src\patches\CKF4\LayersWindow.h">
@@ -296,22 +269,13 @@
     <ClInclude Include="src\api\TESForm.h">
       <Filter>Header Files\api</Filter>
     </ClInclude>
-    <ClInclude Include="src\api\CommIncAPI.h">
-      <Filter>Header Files\api</Filter>
-    </ClInclude>
-    <ClInclude Include="src\api\ComClasses.h">
+    <ClInclude Include="src\api\EditorAPI.h">
       <Filter>Header Files\api</Filter>
     </ClInclude>
     <ClInclude Include="src\api\BSTList.h">
       <Filter>Header Files\api</Filter>
     </ClInclude>
     <ClInclude Include="src\api\BSTArray.h">
-      <Filter>Header Files\api</Filter>
-    </ClInclude>
-    <ClInclude Include="src\api\TESDataFileHandler.h">
-      <Filter>Header Files\api</Filter>
-    </ClInclude>
-    <ClInclude Include="src\api\TESCellViewScene.h">
       <Filter>Header Files\api</Filter>
     </ClInclude>
     <ClInclude Include="src\api\TESCell.h">
@@ -350,33 +314,27 @@
     <ClInclude Include="src\api\BGSRenderWindow.h">
       <Filter>Header Files\api</Filter>
     </ClInclude>
+    <ClInclude Include="src\Utilities.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\StdAfx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Offsets.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\patches\bhkThreadMemorySource.h">
+      <Filter>Header Files\Patches</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\dllmain.cpp">
+    <ClCompile Include="src\Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\profiler.cpp">
+    <ClCompile Include="src\StdAfx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\patches\TES\Setting.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\common.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\patches\TES\bhkThreadMemorySource.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\winhttp_exports.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\patches\bnet.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\patches\offsets.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\patches\patches_f4ck.cpp">
+    <ClCompile Include="src\Exports.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\patches\CKF4\UIMenus.cpp">
@@ -391,9 +349,6 @@
     <ClCompile Include="src\UtfStr.cpp">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="src\xutil.cpp">
-      <Filter>Source Files\Utils</Filter>
-    </ClCompile>
     <ClCompile Include="src\patches\CKF4\ExperimentalNuukem.cpp">
       <Filter>Source Files\Patches\CK</Filter>
     </ClCompile>
@@ -402,9 +357,6 @@
     </ClCompile>
     <ClCompile Include="src\patches\threading.cpp">
       <Filter>Source Files\Patches</Filter>
-    </ClCompile>
-    <ClCompile Include="src\tools\INIHookInputToFile.cpp">
-      <Filter>Source Files\Tools</Filter>
     </ClCompile>
     <ClCompile Include="src\patches\CKF4\EditorUIProgressDialog.cpp">
       <Filter>Source Files\UI</Filter>
@@ -431,15 +383,6 @@
       <Filter>Source Files\UI\Windows</Filter>
     </ClCompile>
     <ClCompile Include="src\patches\TES\Achievements.cpp">
-      <Filter>Source Files\Patches\TES</Filter>
-    </ClCompile>
-    <ClCompile Include="src\patches\patches_f4tes.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\patches\window.cpp">
-      <Filter>Source Files\Patches\TES</Filter>
-    </ClCompile>
-    <ClCompile Include="src\patches\settings.cpp">
       <Filter>Source Files\Patches\TES</Filter>
     </ClCompile>
     <ClCompile Include="src\patches\CKF4\UIImageList.cpp">
@@ -529,7 +472,7 @@
     <ClCompile Include="src\patches\CKF4\Editor.cpp">
       <Filter>Source Files\Patches\CK</Filter>
     </ClCompile>
-    <ClCompile Include="src\dump.cpp">
+    <ClCompile Include="src\Dump.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\patches\CKF4\UIThemeMode.cpp">
@@ -571,10 +514,7 @@
     <ClCompile Include="src\api\TESForm.cpp">
       <Filter>Source Files\api</Filter>
     </ClCompile>
-    <ClCompile Include="src\api\TESDataFileHandler.cpp">
-      <Filter>Source Files\api</Filter>
-    </ClCompile>
-    <ClCompile Include="src\api\TESCellViewScene.cpp">
+    <ClCompile Include="src\api\EditorAPI.cpp">
       <Filter>Source Files\api</Filter>
     </ClCompile>
     <ClCompile Include="src\api\TESFile.cpp">
@@ -597,6 +537,30 @@
     </ClCompile>
     <ClCompile Include="src\patches\CKF4\DMDebugInfoFormWindow.cpp">
       <Filter>Source Files\UI\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utilities.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Offsets.cpp">
+      <Filter>Source Files\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\BNet.cpp">
+      <Filter>Source Files\Patches</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\patches_f4tes.cpp">
+      <Filter>Source Files\Patches</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\patches_f4ck.cpp">
+      <Filter>Source Files\Patches</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\TES\GameSettings.cpp">
+      <Filter>Source Files\Patches\TES</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\TES\GameWindow.cpp">
+      <Filter>Source Files\Patches\TES</Filter>
+    </ClCompile>
+    <ClCompile Include="src\patches\bhkThreadMemorySource.cpp">
+      <Filter>Source Files\Patches</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

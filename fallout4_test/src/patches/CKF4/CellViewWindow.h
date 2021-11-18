@@ -23,14 +23,10 @@
 
 #pragma once
 
-#include "../../common.h"
-#include "../../api/CommIncAPI.h"
-
 #include "UIMenus.h"
 #include "UIBaseWindow.h"
 #include "UICheckboxControl.h"
-
-#include <CommCtrl.h>
+#include "../../api/EditorAPI.h"
 
 #define UI_CELL_VIEW_FILTER_LABEL				1165	// See: resource.rc
 #define UI_CELL_VIEW_ADD_CELL_ITEM				2579

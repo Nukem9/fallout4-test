@@ -22,7 +22,6 @@
 
 #pragma once
 
-#include "../common.h"
 #include "NiMain/GameTypes.h"
 
 #pragma pack(push, 1)

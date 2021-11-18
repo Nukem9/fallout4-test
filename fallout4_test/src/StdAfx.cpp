@@ -1,6 +1,5 @@
 //////////////////////////////////////////
 /*
-* Copyright (c) 2020 Nukem9 <email:Nukem@outlook.com>
 * Copyright (c) 2020-2021 Perchik71 <email:perchik71@outlook.com>
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy of this
@@ -21,9 +20,8 @@
 */
 //////////////////////////////////////////
 
-#include "common.h"
+#include "StdAfx.h"
 #include "version_info.h"
-
 #include "..\resource.h"
 
 #pragma comment(lib, "msimg32.lib")
@@ -35,21 +33,11 @@
 #pragma comment(lib, "ws2_32.lib")
 #pragma comment(lib, "uxtheme.lib")
 #pragma comment(lib, "Version.lib")
-
 #pragma comment(lib, "libdeflate.lib")			// Boost deflate
 #pragma comment(lib, "tbb.lib")					// Thread Building Blocks
 #pragma comment(lib, "libzydis.lib")			// Zydis
 #pragma comment(lib, "libmeshoptimizer.lib")	// Meshoptimizer
 #pragma comment(lib, "detours.lib")				// Detours
-
-#if SKYRIM64_USE_VTUNE
-#pragma comment(lib, "libittnotify.lib")		// Intel Threading Tools
-
-__itt_heap_function ITT_AllocateCallback;
-__itt_heap_function ITT_ReallocateCallback;
-__itt_heap_function ITT_FreeCallback;
-#endif
-
 #pragma comment(lib, "tbbmalloc.lib")			// TBB Allocator
 
 HINSTANCE g_hModule;
@@ -78,7 +66,6 @@ uintptr_t g_RdataEnd;
 uintptr_t g_DataBase;	// .data
 uintptr_t g_DataEnd;
 
-bool g_UIEnabled = false;
 int8_t g_i8DialogMode = 0;
 
 GAME_EXECUTABLE_TYPE g_LoadType;

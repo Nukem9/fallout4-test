@@ -20,18 +20,39 @@
 */
 //////////////////////////////////////////
 
-#include "../common.h"
-#include "../patches/CKF4/UIProgressDialog.h"
-#include "../patches/CKF4/LogWindow.h"
+#include "../StdAfx.h"
+#include "EditorAPI.h"
+
 #include "../patches/CKF4/EditorUI.h"
 #include "../patches/CKF4/EditorUIProgressDialog.h"
-#include "TESDataFileHandler.h"
+#include "../patches/CKF4/UIProgressDialog.h"
 
-#include <filesystem>
+using namespace api;
+
+BOOL TESScene::TESRenderInfo::IsSky(VOID) const
+{
+	BYTE flag = *(BYTE*)(((uintptr_t)this) + 0x37C);
+	// 
+	// 37C == 1 or 3
+	return (flag == 1) || (flag == 3);
+}
+
+
+TESScene* TESScene::GetScene(VOID)
+{
+	return *(TESScene**)(OFFSET(0x6D54CF8, 0));
+}
+
+
+BOOL TESScene::IsEmpty(VOID) const
+{
+	return (*(PDWORD)(_pad1 + 0x48) == 0x7FFFFFFF) && (*(PDWORD)(_pad1 + 0x4C) == 0x7FFFFFFF) &&
+		(*(PDWORD)(_pad1 + 0x50) == 0x7FFFFFFF) && (*(PDWORD)(_pad1 + 0x54) == 0x7FFFFFFF);
+}
 
 namespace api {
 	BOOL Loaded = FALSE;
-	TESDataFileHandler* FileHandler;
+	TESDataHandler* FileHandler;
 	std::vector<TESFile*> g_SelectedFilesArray;
 	static std::list<std::string> g_ba2_list;
 
@@ -108,12 +129,12 @@ namespace api {
 
 	/////////////////////
 
-	bool TESDataFileHandler::IsLoaded(void) const {
+	bool TESDataHandler::IsLoaded(void) const {
 		return Loaded;
 	}
 
-	VOID TESDataFileHandler::Initialize(VOID) {
-		FileHandler = (TESDataFileHandler*)OFFSET(0x6D67960, 0);
+	VOID TESDataHandler::Initialize(VOID) {
+		FileHandler = (TESDataHandler*)OFFSET(0x6D67960, 0);
 
 		CHAR szBuf[MAX_PATH + 1];
 		if (!GetModuleFileNameA(GetModuleHandleA(NULL), szBuf, MAX_PATH))
@@ -173,17 +194,17 @@ namespace api {
 		XUtil::DetourJump(OFFSET(0x5FBF71, 0), &EndLoadEvent_SendDone);
 	}
 
-	bool TESDataFileHandler::Load(int Unknown) {
+	bool TESDataHandler::Load(int Unknown) {
 		Loaded = false;
 		g_SelectedFilesArray.clear();
 
 		// loads, checks.
-		return ((bool(__fastcall*)(TESDataFileHandler*, int))OFFSET(0x7D9D80, 0))(this, Unknown);
+		return ((bool(__fastcall*)(TESDataHandler*, int))OFFSET(0x7D9D80, 0))(this, Unknown);
 	}
 
-	bool TESDataFileHandler::InitUnknownDataSetTextStatusBar(void) {
+	bool TESDataHandler::InitUnknownDataSetTextStatusBar(void) {
 		// Replacing Tips with a progress Bar
-		if (g_UIEnabled && EditorUI::bReplaceTips)
+		if (EditorUI::bReplaceTips)
 		{
 			// set to progressbar
 			Core::Classes::UI::ProgressDialog->MessageText = "Loading Files... Initializing...";
@@ -193,16 +214,16 @@ namespace api {
 		}
 
 		// Unknown. Initializes something.
-		return ((bool(__fastcall*)(TESDataFileHandler*))OFFSET(0x7D66A0, 0))(this);
+		return ((bool(__fastcall*)(TESDataHandler*))OFFSET(0x7D66A0, 0))(this);
 	}
 
-	BOOL TESDataFileHandler::hk_SaveTESFile(LPCSTR filename) {
+	BOOL TESDataHandler::hk_SaveTESFile(LPCSTR filename) {
 		CHAR szBuf[MAX_PATH + 1];
 		if (!GetModuleFileNameA(GetModuleHandleA(NULL), szBuf, MAX_PATH))
 			_MESSAGE("ERROR: An error occurred while retrieving the root folder.");
 		else {
 			auto fname = XUtil::Str::dirnameOf(szBuf) + "\\Data\\" + filename;
-			
+
 			if (std::filesystem::exists(fname)) {
 				auto to = XUtil::Str::ChangeFileExt(fname, ".bak");
 

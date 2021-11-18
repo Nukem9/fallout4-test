@@ -21,9 +21,7 @@
 */
 //////////////////////////////////////////
 
-#include "../common.h"
-
-#include <string>
+#include "../../StdAfx.h"
 
 // clang-format off
 struct

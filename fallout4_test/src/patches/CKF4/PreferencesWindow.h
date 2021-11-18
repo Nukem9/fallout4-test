@@ -23,7 +23,6 @@
 
 #pragma once
 
-#include "../../common.h"
 #include "UIBaseWindow.h"
 
 namespace PreferencesWindow

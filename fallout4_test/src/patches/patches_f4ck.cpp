@@ -21,12 +21,8 @@
 */
 //////////////////////////////////////////
 
-#include "../common.h"
-#include <libdeflate/libdeflate.h>
-#include <intrin.h>
-#include "../tools/INIHookInputToFile.h"
-#include "../common/MemoryManager.h"
-#include "TES/bhkThreadMemorySource.h"
+#include "../StdAfx.h"
+#include "bhkThreadMemorySource.h"
 
 #include "CKF4/ExperimentalNuukem.h"
 #include "CKF4/TranslateUnicode_CK.h"
@@ -51,8 +47,6 @@
 
 // include json generator dialogs
 #include "CKF4/UIDialogManager.h"
-
-#include <xbyak/xbyak.h>
 
 /*
 
@@ -115,7 +109,7 @@ VOID FIXAPI F_RequiredPatches(VOID) {
 	XUtil::PatchMemory(OFFSET(0x2881FB4, 0), { 0x74, 0x26, 0x90, 0x90, 0x90, 0x90 });
 	XUtil::PatchMemory(OFFSET(0x2881FF4, 0), { 0x74, 0x1D, 0x90, 0x90, 0x90, 0x90 });
 
-	api::TESDataFileHandler::Initialize();
+	api::TESDataHandler::Initialize();
 
 	// Getting a pointer to TESDataFileHandler_CK. (no actual)
 	// And when the ReplacingTipsWithProgressBar option is enabled, the dialog starts.
@@ -275,7 +269,7 @@ VOID FIXAPI F_RequiredPatches(VOID) {
 	// Fix file corruption
 	// I saw that Elianora had a crash and damaged the file .esp, let's complicate the save by creating a backup.
 	//
-	*(uintptr_t*)&api::TESDataFileHandler::SaveTESFile = Detours::X64::DetourFunctionClass(OFFSET(0x7DD740, 0), &api::TESDataFileHandler::hk_SaveTESFile);
+	*(uintptr_t*)&api::TESDataHandler::SaveTESFile = Detours::X64::DetourFunctionClass(OFFSET(0x7DD740, 0), &api::TESDataHandler::hk_SaveTESFile);
 
 	//
 	// Change the default " 64-bit"
@@ -405,9 +399,6 @@ Patches for the UI
 ==================
 */
 VOID FIXAPI F_UIPatches(VOID) {
-	if (!g_UIEnabled)
-		return;
-
 	auto comDll = (uintptr_t)GetModuleHandleA("comctl32.dll");
 	Assert(comDll);
 	
@@ -563,7 +554,7 @@ VOID FIXAPI F_UIPatches(VOID) {
 			XUtil::PatchMemory(OFFSET(0x7DEA5B, 0), { 0xEB, 0x05 });
 
 			// Load Files... Initializing...
-			XUtil::DetourClassCall(OFFSET(0x7E2FF6, 0), &api::TESDataFileHandler::InitUnknownDataSetTextStatusBar);
+			XUtil::DetourClassCall(OFFSET(0x7E2FF6, 0), &api::TESDataHandler::InitUnknownDataSetTextStatusBar);
 			// During the entire process, the update is only 95 times for each percentage.... very little, get in here for an update
 			XUtil::DetourCall(OFFSET(0x7DEA67, 0), &EditorUI::hk_UpdateProgress);
 			// Load Files... Done... etc.
@@ -782,7 +773,6 @@ VOID FIXAPI MainFix_PatchFallout4CreationKit(VOID)
 	ENBSeriesFixableRunHandler();
 #endif // FALLOUT4_CK64_ENB_FIXABLE
 
-	g_UIEnabled = (bool)g_INI->GetBoolean("CreationKit", "UI", false);
 	g_i8DialogMode = (int8_t)g_INI->GetInteger("CreationKit", "DialogMode", 0);
 
 	//
@@ -800,6 +790,9 @@ VOID FIXAPI MainFix_PatchFallout4CreationKit(VOID)
 
 	F_RequiredPatches();
 
+	if (g_INI->GetBoolean("CreationKit", "LoadingExtremelyUnreliableFiles", FALSE))
+		EnabledExtremelyMode();
+	
 	if (g_INI->GetBoolean("CreationKit", "SkipChangeWorldSpace", FALSE))
 		XUtil::PatchMemoryNop(OFFSET(0x5FBE14, 0), 0x13);
 

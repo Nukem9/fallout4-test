@@ -22,14 +22,14 @@
 
 #pragma once
 
-#include "../../common.h"
-#include "../../api/CommIncAPI.h"
+#include "../../StdAfx.h"
+#include "../../api/EditorAPI.h"
 
 namespace EditorUI
 {
 	using namespace api;
 
-	BOOL FIXAPI hk_CallLoadFile(TESDataFileHandler* io_handler, INT32 _zero_only);
+	BOOL FIXAPI hk_CallLoadFile(TESDataHandler* io_handler, INT32 _zero_only);
 	VOID FIXAPI hk_EndLoadFile(VOID);
 	VOID FIXAPI hk_StepItProgress(LPCSTR* str);
 	BOOL FIXAPI hk_UpdateProgress(LPVOID __this, INT32 __1);

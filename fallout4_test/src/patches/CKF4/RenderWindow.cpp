@@ -23,12 +23,8 @@
 #include "RenderWindow.h"
 #include "CellViewWindow.h"
 #include "MainWindow.h"
-#include "LogWindow.h"
 
-#include "../../api/BSTArray.h"
-
-#include <windowsx.h>
-#include <CommCtrl.h>
+#include "../../StdAfx.h"
 
 namespace RenderWindow
 {
@@ -45,10 +41,10 @@ namespace RenderWindow
 	}
 
 	VOID IPicker::QDump(VOID) {
-		auto count = forms.QSize();
+		DWORD count = forms.QSize();
 		CHAR szBuf[2048];
 
-		for (auto i = 0; i < count; i++) {
+		for (DWORD i = 0; i < count; i++) {
 			forms[i]->DebugInfo(szBuf, 2048);
 			LogWindow::Log("%i: %s", i, szBuf);
 		}

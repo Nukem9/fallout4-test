@@ -23,7 +23,6 @@
 
 #pragma once
 
-#include "../../common.h"
 #include "UIBaseWindow.h"
 
 #define UI_VISIBLE_CHECKBUTTON_MOVABLESTATICS 4033  // see resource.rc

@@ -21,10 +21,6 @@
 */
 //////////////////////////////////////////
 
-#include "../../common.h"
-#include <CommCtrl.h>
-#include <math.h>
-
 #include "EditorUI.h"
 #include "UIThemeMode.h"
 #include "LogWindow.h"

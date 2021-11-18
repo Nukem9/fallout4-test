@@ -20,7 +20,7 @@
 */
 //////////////////////////////////////////
 
-#include "..\..\common.h"
+#include "../../StdAfx.h"
 
 // clang-format off
 struct

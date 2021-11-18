@@ -20,9 +20,7 @@
 */
 //////////////////////////////////////////
 
-#include "Common.h"
-#include "UtfStr.h"
-#include "xutil.h"
+#include "StdAfx.h"
 
 #define __deprecated_utf8
 

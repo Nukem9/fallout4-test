@@ -26,7 +26,7 @@
 
 #pragma once
 
-#include "config.h"
+#include "Config.h"
 
 #if FALLOUT4_MINI_PROJECT
 

@@ -21,7 +21,7 @@
 */
 //////////////////////////////////////////
 
-#include "..\common.h"
+#include "..\StdAfx.h"
 #include "CKF4\LogWindow.h"
 
 #define FALLOUT4_THREADPATCH_DEBUG 0

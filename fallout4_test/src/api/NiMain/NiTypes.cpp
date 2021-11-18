@@ -1,3 +1,4 @@
+#include "../../StdAfx.h"
 #include "NiTypes.h"
 
 #pragma warning(disable : 4305)

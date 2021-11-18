@@ -23,8 +23,6 @@
 #include "Editor.h"
 #include "EditorUI.h"
 #include "UIProgressDialog.h"
-#include "LogWindow.h"
-#include <CommCtrl.h>
 
 #define MIN_STATUSBAR_VALUE 0
 #define MAX_STATUSBAR_VALUE 94						// to 95%

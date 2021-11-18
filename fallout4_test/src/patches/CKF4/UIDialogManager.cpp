@@ -20,20 +20,12 @@
 */
 //////////////////////////////////////////
 
-#include "LogWindow.h"
 #include "UIGraphics.h"
 #include "UIDialogManager.h"
-
-#include "..\..\profiler_internal.h"
-#include "..\..\..\..\Dependencies\zipper\src\zip.h"
-
-#include <filesystem>
-#include <fstream>
 
 #define PATH_DIALOGS_SYSTEM "data/f4ckfixes"
 #define PATH_DIALOGS "dia"
 #define FONTNAME "Microsoft Sans Serif"
-
 
 Core::Classes::UI::LPDialogManager g_DialogManager = NULL;
 

@@ -24,9 +24,6 @@
 #include "VarCommon.h"
 #include "CustomBox.h"
 
-#include <Uxtheme.h>
-#include <fstream>
-
 namespace Core
 {
 	namespace UI

@@ -26,7 +26,6 @@
 #define BSTARRAY_SHRINK_SIZE	10
 
 #include "NiMain/GameAPI.h"
-#include <stdint.h>
  
 template <class _Ty>
 class BSTArray {
@@ -135,7 +134,7 @@ public:
 	}
 	const_reference at(const size_type Pos) const {
 		AssertMsg(Pos >= 0 && Pos < QSize(), "Exceeded array bounds");
-		return (this->_Myfirst()[Pos]);
+		return (this->_const_Myfirst()[Pos]);
 	}
 public:
 	inline reference operator[](const size_type Pos) { return (this->_Myfirst()[Pos]); }

@@ -25,12 +25,10 @@
 #include "EditorUI.h"
 #include "UIThemeMode.h"
 #include "UIImageList.h"
-#include "../../../resource.h"
+#include "../../StdAfx.h"
 
 #include "CellViewWindow.h"
 #include "ObjectWindow.h"
-
-#include <windowsx.h>
 
 #define SIZEBUF 1024
 

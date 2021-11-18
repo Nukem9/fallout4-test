@@ -20,15 +20,50 @@
 */
 //////////////////////////////////////////
 
+#include "../StdAfx.h"
 #include "TESForm.h"
 
-std::string api::TESForm::GetID(VOID) const {
+using namespace api;
+
+VOID TESForm::LoadForm(TESFile* file) {
+	thisVirtualCall<VOID>(0xD0, this, file);
+}
+
+VOID TESForm::SaveForm(TESFile* file) {
+	thisVirtualCall<VOID>(0xD8, this, file);
+}
+
+TESForm::FormType TESForm::GetType(VOID) const {
+	return thisVirtualCall<TESForm::FormType>(0x120, this);
+}
+
+VOID TESForm::DebugInfo(LPSTR buffer, DWORD dwSize) const {
+	thisVirtualCall<VOID>(0x128, this, buffer, dwSize);
+}
+
+VOID TESForm::MarkAsDeleted(BOOL state) {
+	thisVirtualCall<VOID>(0x198, this, state);
+}
+
+VOID TESForm::MarkAsChanged(BOOL state) {
+	thisVirtualCall<VOID>(0x1A0, this, state);
+}
+
+DWORD TESForm::GetEditIDLength(VOID) const {
+	return thisVirtualCall<DWORD>(0x230, this);
+}
+
+LPCSTR TESForm::GetEditID(VOID) const {
+	return thisVirtualCall<LPCSTR>(0x238, this);
+}
+
+BSString TESForm::GetID(VOID) const {
 	if (!GetEditIDLength())
 		return "";
 	else
 		return GetEditID();
 }
 
-api::TESForm* api::GetFormByNumericID(const DWORD SearchID) {
+TESForm* api::GetFormByNumericID(const DWORD SearchID) {
 	return ((TESForm*(__fastcall*)(DWORD))OFFSET(0x853220, 0))(SearchID);
 }

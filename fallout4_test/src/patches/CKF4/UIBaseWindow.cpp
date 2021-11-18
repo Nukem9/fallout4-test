@@ -20,12 +20,8 @@
 */
 //////////////////////////////////////////
 
-#include "..\..\Common.h"
 #include "UIBaseWindow.h"
 #include "Editor.h"
-
-#include <commctrl.h>
-#include <map>
 
 namespace Core
 {
