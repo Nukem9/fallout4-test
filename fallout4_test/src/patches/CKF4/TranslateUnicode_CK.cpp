@@ -169,7 +169,7 @@ namespace Experimental
 
 	LPVOID FIXAPI EndPluginSave(LPVOID __arg1)
 	{
-		LPVOID ret = ((LPVOID(__cdecl*)(LPVOID))OFFSET(0x2A81F, 0))(__arg1);
+		LPVOID ret = fastCall<LPVOID>(0x2A81F, __arg1);
 		Core::Patch::CreationKit::Translator.SetMode(FALSE);
 
 		// return HCURSOR

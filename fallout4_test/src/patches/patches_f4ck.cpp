@@ -796,7 +796,7 @@ VOID FIXAPI MainFix_PatchFallout4CreationKit(VOID)
 	if (g_INI->GetBoolean("CreationKit", "SkipChangeWorldSpace", FALSE))
 		XUtil::PatchMemoryNop(OFFSET(0x5FBE14, 0), 0x13);
 
-	if (g_INI->GetBoolean("CreationKit", "SkipAnimationBuildProcessData", FALSE)) {
+	if (nCountArgCmdLine == 1 && g_INI->GetBoolean("CreationKit", "SkipAnimationBuildProcessData", FALSE)) {
 		//
 		// Loading Files... Done! and continue
 		//

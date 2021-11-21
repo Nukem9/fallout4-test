@@ -82,6 +82,61 @@ BEGIN
     END
 END
 
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_PLEASEWAIT DIALOGEX 0, 0, 120, 38
+STYLE DS_SYSMODAL | DS_SETFONT | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_SYSMENU
+EXSTYLE WS_EX_NOACTIVATE
+FONT 12, "Microsoft Sans Serif", 400, 0, 0xCC
+BEGIN
+    LTEXT           "",IDC_STATIC,7,7,106,24,WS_BORDER
+    CTEXT           "Please wait...",IDC_STATIC,14,16,92,8
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_PLEASEWAIT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 113
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 31
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_PLEASEWAIT AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_ICONAPP             ICON                    "D:\\Developers\\Projects\\Fallout4Test\\Resources\\0409\\11_2Tu_icon.ico"
+
 #endif    // Русский (Россия) resources
 /////////////////////////////////////////////////////////////////////////////
 

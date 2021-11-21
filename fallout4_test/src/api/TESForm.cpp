@@ -65,5 +65,5 @@ BSString TESForm::GetID(VOID) const {
 }
 
 TESForm* api::GetFormByNumericID(const DWORD SearchID) {
-	return ((TESForm*(__fastcall*)(DWORD))OFFSET(0x853220, 0))(SearchID);
+	return fastCall<TESForm*>(0x853220, SearchID);
 }

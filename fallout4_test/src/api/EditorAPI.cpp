@@ -29,8 +29,7 @@
 
 using namespace api;
 
-BOOL TESScene::TESRenderInfo::IsSky(VOID) const
-{
+BOOL TESScene::TESRenderInfo::IsSky(VOID) const {
 	BYTE flag = *(BYTE*)(((uintptr_t)this) + 0x37C);
 	// 
 	// 37C == 1 or 3
@@ -38,14 +37,12 @@ BOOL TESScene::TESRenderInfo::IsSky(VOID) const
 }
 
 
-TESScene* TESScene::GetScene(VOID)
-{
+TESScene* TESScene::GetScene(VOID) {
 	return *(TESScene**)(OFFSET(0x6D54CF8, 0));
 }
 
 
-BOOL TESScene::IsEmpty(VOID) const
-{
+BOOL TESScene::IsEmpty(VOID) const {
 	return (*(PDWORD)(_pad1 + 0x48) == 0x7FFFFFFF) && (*(PDWORD)(_pad1 + 0x4C) == 0x7FFFFFFF) &&
 		(*(PDWORD)(_pad1 + 0x50) == 0x7FFFFFFF) && (*(PDWORD)(_pad1 + 0x54) == 0x7FFFFFFF);
 }
@@ -73,21 +70,20 @@ namespace api {
 		if (_folder) {
 			if (std::filesystem::exists(std::string(_folder) + _filename)) {
 				_MESSAGE_FMT("Load archive %s...", _filename);
-				((VOID(__fastcall*)(LPCSTR, int32_t, LPVOID*))OFFSET(0x24CC100, 0))(_filename, 0, &lpUnknownClass);
+				fastCall<VOID>(0x24CC100, _filename, 0, &lpUnknownClass);
 			}
 		}
 		else {
 			if (std::filesystem::exists(std::string("Data\\") + _filename)) {
 				_MESSAGE_FMT("Load archive %s...", _filename);
-				((VOID(__fastcall*)(LPCSTR, int32_t, LPVOID*))OFFSET(0x24CC100, 0))(_filename, 0, &lpUnknownClass);
+				fastCall<VOID>(0x24CC100, _filename, 0, &lpUnknownClass);
 			}
 		}
 	}
 
 	VOID FIXAPI DetectSelectFile(TESFile* File) {
 		// Sometimes duplicated
-		if (std::find(g_SelectedFilesArray.begin(), g_SelectedFilesArray.end(), File) == g_SelectedFilesArray.end())
-		{
+		if (std::find(g_SelectedFilesArray.begin(), g_SelectedFilesArray.end(), File) == g_SelectedFilesArray.end()) {
 			if (File->IsActive()) {
 				_MESSAGE_FMT("Load active file %s...", *File->FileName);
 #if FALLOUT4_DEVELOPER_MODE
@@ -118,11 +114,11 @@ namespace api {
 			AttachBA2File((sname + " - Materials.ba2").c_str(), path.c_str());
 		}
 
-		((VOID(__fastcall*)(TESFile*))OFFSET(0x7FFF10, 0))(File);
+		fastCall<VOID>(0x7FFF10, File);
 	}
 
 	VOID FIXAPI EndLoadEvent_SendDone(INT index, LPCSTR message) {
-		((VOID(__fastcall*)(INT, LPCSTR))OFFSET(0x5FDFE0, 0))(index, message);
+		fastCall<VOID>(0x5FDFE0, index, message);
 		Loaded = TRUE;
 		g_SelectedFilesArray.clear();
 	}
@@ -199,13 +195,12 @@ namespace api {
 		g_SelectedFilesArray.clear();
 
 		// loads, checks.
-		return ((bool(__fastcall*)(TESDataHandler*, int))OFFSET(0x7D9D80, 0))(this, Unknown);
+		return thisCall<BOOL>(0x7D9D80, this, Unknown);
 	}
 
 	bool TESDataHandler::InitUnknownDataSetTextStatusBar(void) {
 		// Replacing Tips with a progress Bar
-		if (EditorUI::bReplaceTips)
-		{
+		if (EditorUI::bReplaceTips) {
 			// set to progressbar
 			Core::Classes::UI::ProgressDialog->MessageText = "Loading Files... Initializing...";
 			Core::Classes::UI::ProgressDialog->Marquee = TRUE;
@@ -214,7 +209,7 @@ namespace api {
 		}
 
 		// Unknown. Initializes something.
-		return ((bool(__fastcall*)(TESDataHandler*))OFFSET(0x7D66A0, 0))(this);
+		return thisCall<BOOL>(0x7D66A0, this);
 	}
 
 	BOOL TESDataHandler::hk_SaveTESFile(LPCSTR filename) {

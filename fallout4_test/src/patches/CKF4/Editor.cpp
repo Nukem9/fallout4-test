@@ -584,7 +584,7 @@ VOID FIXAPI QuitHandler(VOID) {
 
 VOID FIXAPI hk_call_140906407(INT64 a1, INT64 a2, INT64 a3) {
 	if (a2)
-		((VOID(__fastcall*)(INT64, INT64, INT64))OFFSET(0x2A6B230, 0))(a1, a2, a3);
+		fastCall<VOID>(0x2A6B230, a1, a2, a3);
 }
 
 BOOL FIXAPI hk_call_12E852C(HWND RichEditControl, LPCSTR Text) {
@@ -618,7 +618,7 @@ VOID FIXAPI hk_call_2511176(LPVOID a1, LPVOID a2, LPVOID a3) {
 	if (a1) {
 		uintptr_t f = (uintptr_t)(*(PINT64)a1);
 		if ((g_ModuleBase & 0xffffffff00000000) == (*((uintptr_t*)(f + 0x190)) & 0xffffffff00000000))
-			(*(VOID(__fastcall**)(LPVOID a1, LPVOID a2, LPVOID a3))(f + 0x190))(a1, a2, 0);
+			thisVirtualCall<VOID>(0x190, a1, a2, 0);
 	}
 }
 
@@ -764,7 +764,7 @@ ExportFaceGenForSelectedNPCs
 */
 VOID FIXAPI ExportFaceGenForSelectedNPCs(int64_t a1, int64_t a2) {
 	// Display confirmation message box first
-	if (!((BOOL(*)())OFFSET(0xAC2590, 0))())
+	if (!fastCall<BOOL>(0xAC2590))
 		return;
 
 	// In this memory area, the list handle is
@@ -786,10 +786,10 @@ VOID FIXAPI ExportFaceGenForSelectedNPCs(int64_t a1, int64_t a2) {
 
 	// Reload loose file paths manually since it's patched out
 	_MESSAGE_FMT("Exported FaceGen for %d NPCs. Reloading loose file paths...", itemCount);
-	((VOID(*)(int64_t))OFFSET(0x7B9E70, 0))(*(int64_t*)OFFSET(0x6D54CF8, 0));
+	fastCall<VOID>(0x7B9E70, *(int64_t*)OFFSET(0x6D54CF8, 0));
 
 	// Done
-	((VOID(*)())OFFSET(0xAC2670, 0))();
+	fastCall<VOID>(0xAC2670);
 }
 
 /*

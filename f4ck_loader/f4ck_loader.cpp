@@ -4,8 +4,11 @@
 
 #pragma warning(disable : 26451)
 
+#include "resource1.h"
+
 #include <Windows.h>
 #include <shellapi.h>
+#include <tlhelp32.h>
 #include <filesystem>
 #include <iostream>
 #include <fstream>
@@ -135,11 +138,54 @@ VOID F4CKLAPI WriteFileToFolder(VOID)
 	}
 }
 
+INT_PTR CALLBACK DlgPleaseWaitProc(HWND DialogHwnd, UINT Message, WPARAM wParam, LPARAM lParam) {
+	return FALSE;
+}
+
+VOID WaitCloseF4CKLoader(VOID) {
+	DWORD dwCount = 0;
+	PROCESSENTRY32 entry;
+	entry.dwSize = sizeof(PROCESSENTRY32);
+
+	HANDLE hProcess = INVALID_HANDLE_VALUE;
+	HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, NULL);
+	DWORD dwCurrentProcessID = GetCurrentProcessId();
+
+	if (Process32First(snapshot, &entry) == TRUE) {
+		while (Process32Next(snapshot, &entry) == TRUE) {
+			if (entry.th32ProcessID != dwCurrentProcessID && !_wcsicmp(entry.szExeFile, L"f4ck_loader.exe")) {
+				dwCount++;
+				if (dwCount >= 2)
+					// user spam run
+					TerminateProcess(GetCurrentProcess(), 0);
+
+				hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, entry.th32ProcessID);
+			}
+		}
+	}
+
+	CloseHandle(snapshot);
+
+	if (hProcess != INVALID_HANDLE_VALUE) {
+	
+		HWND hDlg = CreateDialog(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_PLEASEWAIT), NULL, &DlgPleaseWaitProc);
+			
+		WaitForSingleObject(hProcess, INFINITE);
+
+		EndDialog(hDlg, 0);
+		DestroyWindow(hDlg);
+	}
+}
+
 INT32 WINAPI main(INT32 argc, LPSTR argv[])
 {
 #ifdef HIDEWINDOW
 	HideConsole();
 #endif
+
+	WaitCloseF4CKLoader();
+
+	std::wstring StrCmdLine;
 	BOOL bSafeRun = TRUE;
 	CHAR basePath[2048] = "";
 	GetFullPathNameA(argv[0], 2048, basePath, NULL);
@@ -185,6 +231,24 @@ INT32 WINAPI main(INT32 argc, LPSTR argv[])
 				return 1;
 			}
 		}
+		else {
+			bSafeRun = TRUE;
+
+			size_t istart = std::wstring::npos;
+			StrCmdLine = GetCommandLineW();
+			if (StrCmdLine.c_str()[0] == '"') {
+				istart = StrCmdLine.find_first_of('"', 1);
+				if (std::wstring::npos != istart)
+					istart++;
+			}
+			else
+				istart = StrCmdLine.find_first_of(' ');
+
+			if (std::wstring::npos != istart)
+				StrCmdLine = StrCmdLine.substr(istart + 1);
+			else
+				StrCmdLine.clear();
+		}
 	}
 l_skip:
 #ifndef HIDEWINDOW
@@ -196,7 +260,7 @@ l_skip:
 	std::wcout << L"Open Creation Kit.\n";
 #endif
 	if (bSafeRun)
-		ShellExecuteW(NULL, L"open", L"CreationKit.exe", NULL, app_path.c_str(), SW_SHOW);
+		ShellExecuteW(NULL, L"open", L"CreationKit.exe", StrCmdLine.c_str(), app_path.c_str(), SW_SHOW);
 #ifndef HIDEWINDOW
 	std::wcout << L"Wait 15 sec.\n";
 #endif

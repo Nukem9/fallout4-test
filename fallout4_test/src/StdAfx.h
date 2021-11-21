@@ -208,3 +208,4 @@ enum class GAME_EXECUTABLE_TYPE {
 
 extern GAME_EXECUTABLE_TYPE g_LoadType;
 extern char g_GitVersion[64];
+extern char g_GitDataVersion[64];

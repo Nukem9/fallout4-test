@@ -40,6 +40,8 @@ VOID FIXAPI Sys_ApplyPatches(VOID)
 {
 	// The EXE has been unpacked at this point
 	strcpy_s(g_GitVersion, VER_CURRENT_COMMIT_ID);
+	strcpy_s(g_GitDataVersion, VER_CURRENT_DATE);
+
 	XUtil::SetThreadName(GetCurrentThreadId(), "Main Thread");
 
 #if FALLOUT4_USE_VTUNE

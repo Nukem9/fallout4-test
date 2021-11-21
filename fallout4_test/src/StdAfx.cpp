@@ -70,3 +70,4 @@ int8_t g_i8DialogMode = 0;
 
 GAME_EXECUTABLE_TYPE g_LoadType;
 char g_GitVersion[64] = VER_CURRENT_COMMIT_ID;
+char g_GitDataVersion[64] = VER_CURRENT_DATE;

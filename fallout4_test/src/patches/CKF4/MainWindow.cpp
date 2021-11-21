@@ -423,7 +423,7 @@ namespace MainWindow
 		{
 			// Continue normal execution but with a custom string
 			char customTitle[1024];
-			sprintf_s(customTitle, "%s [CK64Fixes Rev. F4-%s]", (LPCSTR)lParam, g_GitVersion);
+			sprintf_s(customTitle, "%s [CK64Fixes Rev. F4-%s: %s]", (LPCSTR)lParam, g_GitVersion, g_GitDataVersion);
 
 			return CallWindowProcA(OldWndProc, Hwnd, Message, wParam, (LPARAM)customTitle);
 		}

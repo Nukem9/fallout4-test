@@ -50,7 +50,7 @@ namespace ENBFix {
 				return 0;
 
 			DWORD file_size = GetFileSize(file, NULL);
-			LPBYTE file_data = (LPBYTE)scalable_aligned_malloc(file_size, 16);
+			LPBYTE file_data = (LPBYTE)MemAlloc(file_size, 16);
 			if (!file_data) {
 				CloseHandle(file);
 				return 0;
@@ -58,16 +58,16 @@ namespace ENBFix {
 
 			DWORD m;
 			if (!ReadFile(file, file_data, file_size, &m, NULL)) {
-				scalable_aligned_free(file_data);
+				MemFree(file_data);
 				CloseHandle(file);
 				return 0;
 			}
 
 			CloseHandle(file);
 
-			DWORD crc32 = (DWORD)CRC32Buffer((void*)file_data, file_size);
+			DWORD crc32 = (DWORD)CRC32Buffer((LPVOID)file_data, file_size);
 
-			scalable_aligned_free(file_data);
+			MemFree(file_data);
 			return crc32;
 		}
 
@@ -112,7 +112,7 @@ namespace ENBFix {
 
 	VOID FIXAPI ReleaseFix(VOID) {
 		if (image_base) {
-			scalable_aligned_free(image_base);
+			MemFree(image_base);
 
 			image_base = NULL;
 			image_size = 0;
@@ -137,7 +137,7 @@ namespace ENBFix {
 		if (dwResult || !image_size)
 			return FALSE;
 
-		image_base = (LPBYTE)scalable_aligned_malloc(image_size, 16);
+		image_base = (LPBYTE)MemAlloc(image_size, 16);
 		if (!image_base)
 			return FALSE;
 
@@ -146,7 +146,7 @@ namespace ENBFix {
 			return FALSE;
 		}
 
-		image_crc32 = (DWORD)CRC32Buffer((void*)image_base, image_size);
+		image_crc32 = (DWORD)CRC32Buffer((LPVOID)image_base, image_size);
 
 		return TRUE;
 	}

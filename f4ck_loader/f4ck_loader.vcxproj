@@ -165,6 +165,9 @@
   <ItemGroup>
     <ResourceCompile Include="f4ck_loader.rc" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\Resources\0409\11_2Tu_icon.ico" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
