@@ -710,7 +710,9 @@ namespace Core
 
 			CUIBrush WINAPI CreateGradientBrush(const COLORREF start_color, const COLORREF end_color, const INT size, const CUIGradientDirect direct)
 			{
-				Assert(size > 0);
+				// I'm just surprised at people who like to reduce everything in the world......
+				//Assert(size > 0);
+				auto nsize = std::max(size, 5);
 
 				HWND hWnd = GetDesktopWindow();
 				HDC hDC = GetDC(hWnd);
@@ -719,17 +721,15 @@ namespace Core
 				RECT rc;
 				CUIBitmap* pBitmap;
 
-				if (direct == gdHorz)
-				{
-					rc = { 0, 0, size, 1 };
+				if (direct == gdHorz){
+					rc = { 0, 0, nsize, 1 };
 					pBitmap = new CUIBitmap(CreateCompatibleBitmap(hDC, rc.right, rc.bottom));
 					SelectObject(hDCMem, (HBITMAP)pBitmap->Handle);
 
 					__imGradientFill_H(hDCMem, start_color, end_color, (LPRECT)&rc);
 				}
-				else
-				{
-					rc = { 0, 0, 1, size };
+				else {
+					rc = { 0, 0, 1, nsize };
 					pBitmap = new CUIBitmap(CreateCompatibleBitmap(hDC, rc.right, rc.bottom));
 					SelectObject(hDCMem, (HBITMAP)pBitmap->Handle);
 

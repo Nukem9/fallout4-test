@@ -20,6 +20,7 @@
 */
 //////////////////////////////////////////
 
+#include "Editor.h"
 #include "ActorWindow.h"
 #include "../../StdAfx.h"
 
@@ -39,14 +40,20 @@ namespace ActorWindow
 		return ActorWindow;
 	}
 
-	INT_PTR CALLBACK DlgProc(HWND DialogHwnd, UINT Message, WPARAM wParam, LPARAM lParam)
-	{
-		if (Message == WM_INITDIALOG)
-		{
+	INT_PTR CALLBACK DlgProc(HWND DialogHwnd, UINT Message, WPARAM wParam, LPARAM lParam) {
+		if (Message == WM_INITDIALOG) {
 			ActorWindow = DialogHwnd;
+			
+			// no resize window
+			LONG lStyle = GetWindowLongPtrA(DialogHwnd, GWL_STYLE) | WS_BORDER | WS_SYSMENU;
+			if ((lStyle & WS_THICKFRAME) == WS_THICKFRAME)
+				SetWindowLongPtrA(DialogHwnd, GWL_STYLE, lStyle & ~WS_THICKFRAME);
 		}
-		else if (Message == WM_MOVE)
-		{
+		else if (Message == WM_CLOSE) {
+			hk_SendMessageA(DialogHwnd, WM_COMMAND, MAKEWPARAM(IDCANCEL, 0), 0);
+			return S_OK;
+		}
+		else if (Message == WM_MOVE) {
 			// fix flick
 			return S_OK;
 		}

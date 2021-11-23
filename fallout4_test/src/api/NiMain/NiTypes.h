@@ -51,6 +51,14 @@
 
 #pragma pack(push, 1)
 
+// 4
+struct NiRGBA {
+	BYTE r;
+	BYTE g;
+	BYTE b;
+	BYTE a;
+};
+
 // 8
 template <class _Ty>
 struct NiPoint2T {

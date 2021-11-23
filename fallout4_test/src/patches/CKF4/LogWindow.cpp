@@ -327,6 +327,16 @@ namespace LogWindow
 			DestroyWindow(richEditHwnd);
 			return S_OK;
 
+
+		// Don't let us reduce the window too much
+		case WM_GETMINMAXINFO: {
+			LPMINMAXINFO lpMMI = (LPMINMAXINFO)lParam;
+			lpMMI->ptMinTrackSize.x = 300;
+			lpMMI->ptMinTrackSize.y = 200;
+
+			return S_OK;
+		}
+
 		case WM_SIZE:
 		{
 			int w = LOWORD(lParam);

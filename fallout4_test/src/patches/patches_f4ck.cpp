@@ -458,6 +458,14 @@ VOID FIXAPI F_UIPatches(VOID) {
 	// Layers no dec
 	XUtil::PatchMemoryNop(OFFSET(0x3C6ED0, 0), 2);
 
+	// ret skip Warnings window
+	XUtil::PatchMemory(OFFSET(0x551C30, 0), { 0xC3, 0xCC, 0xCC, 0xCC, 0xCC });
+	// ACTOR: Wrong InvalidateRect
+	XUtil::PatchMemoryNop(OFFSET(0x717FF1, 0), 6);
+	XUtil::PatchMemoryNop(OFFSET(0x565FFA, 0), 6);
+	XUtil::PatchMemoryNop(OFFSET(0xAC7875, 0), 0xF);
+	XUtil::PatchMemoryNop(OFFSET(0x645048, 0), 0x1D);
+
 	//
 	// Fix: "Layer Window harmless bug" by woodfuzzy
 	// The essence of the bug: there are markers with a "primitive" flag. 
