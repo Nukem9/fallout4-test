@@ -32,7 +32,7 @@
 #define FALLOUT4_STUDY_CK64_INIFILE 0	// Output of variables from the ini file and their values to the log
 #define FALLOUT4_CK64_BSTARRAY_DBG  0   // Debugging SIMD instructions to speed up the search
 #define FALLOUT4_CK64_ENB_FIXABLE   1   // Enabling the loader implementation in .dll and installation f4ck_loader.exe
-#define FALLOUT4_DEVELOPER_MODE		1   // Enabling developer mode
+#define FALLOUT4_DEVELOPER_MODE		0   // Enabling developer mode
 //////////////////////////////////////////
 // required value set 1
 #define FALLOUT4_MINI_PROJECT		1	// uses https://github.com/pulzed/mINI
