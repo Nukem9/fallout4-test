@@ -49,19 +49,19 @@ struct
 	{ "General",		"bSkipValidateInfos",					"1", "0" },
 	{ "General",		"bSkipValidateForms",					"1", "0" },
 	{ "General",		"bDisableDuplicateReferenceCheck",		"1", "0" },
-	{ "General",		"bCheckForMultiFileForms",				"0", "1" },
-	{ "General",		"bCheckForRefCellChanges",				"0", "1" },
+	{ "General",		"bCheckForMultiFileForms",				"0", "0" },
+	{ "General",		"bCheckForRefCellChanges",				"0", "0" },
 	{ "General",		"iCheckCellRegionsOnInit",				"0", "0" },
-	{ "General",		"bCheckOutWorldspacesOnInit",			"0", "1" },
-	{ "General",		"bCheckDoorCollisionOnInit",			"0", "1" },
-	{ "General",		"bFixBadLocRefsOnInit",					"0", "1" },
-	{ "General",		"bFixBadBorderRegionDataOnInit",		"0", "1" },
-	{ "General",		"bFixPersistenceOnRefInit",				"0", "1" },
+	{ "General",		"bCheckOutWorldspacesOnInit",			"0", "0" },
+	{ "General",		"bCheckDoorCollisionOnInit",			"0", "0" },
+	{ "General",		"bFixBadLocRefsOnInit",					"0", "0" },
+	{ "General",		"bFixBadBorderRegionDataOnInit",		"0", "0" },
+	{ "General",		"bFixPersistenceOnRefInit",				"0", "0" },
 	{ "General",		"bForceCheckOutOnRefFix",				"0", "0" },
 	{ "General",		"bCheckLevActorsOnInit",				"0", "0" },
 	{ "General",		"bUseToolTips",							"0", "0" },
 	{ "General",		"bOnlyActiveFileForRefFix",				"0", "0" },
-	{ "General",		"bFixAIPackagesOnLoad",					"0", "1" },
+	{ "General",		"bFixAIPackagesOnLoad",					"0", "0" },
 	{ "General",		"bCheckInventoryItemNameLength",		"0", "0" },
 	{ "General",		"bWarnOnGameSettingLoad",				"0", "0" },
 	{ "General",		"bCheckHairOnInit",						"0", "0" },
@@ -79,7 +79,7 @@ struct
 	{ "Animation",		"bUseVariableCache",					"0", "0" },
 	{ "Animation",		"bIgnoreNIFFlags",						"1", "1" },
 	{ "Animation",		"bDisplayMarkWarning",					"0", "0" },
-	{ "Animation",		"bSkipAnimationTextExport",				"1", "0" },
+	{ "Animation",		"bSkipAnimationTextExport",				"0", "0" },
 	{ "Bethesda.net",	"bEnablePlatformSelection",				"1", "1" },
 	{ "Bethesda.net",	"bEnableXB1",							"1", "1" },
 	{ "Bethesda.net",	"bEnablePS4",							"1", "1" },
@@ -380,7 +380,7 @@ HWND g_DeferredListView;
 HWND g_DeferredComboBox;
 uintptr_t g_DeferredStringLength;
 BOOL g_AllowResize;
-std::vector<std::pair<LPCSTR, LPVOID>> g_DeferredMenuItems;
+tbb::concurrent_vector<std::pair<LPCSTR, LPVOID>> g_DeferredMenuItems;
 
 VOID FIXAPI ResetUIDefer(VOID) {
 	g_UseDeferredDialogInsert = FALSE;
@@ -418,25 +418,6 @@ VOID FIXAPI hk_vsprintf_autosave(LPSTR lpBuffer, UINT uBufferSize, LPCSTR lpForm
 	sprintf_s(lpBuffer, uBufferSize, format, lpDefaultName, stime.c_str());
 }
 
-VOID FIXAPI SuspendComboBoxUpdates(HWND ComboHandle, BOOL Suspend){
-	COMBOBOXINFO info = { 0 };
-	info.cbSize = sizeof(COMBOBOXINFO);
-
-	if (!GetComboBoxInfo(ComboHandle, &info))
-		return;
-
-	if (!Suspend) {
-		SendMessageA(info.hwndList, WM_SETREDRAW, TRUE, 0);
-		SendMessageA(ComboHandle, CB_SETMINVISIBLE, 30, 0);
-		SendMessageA(ComboHandle, WM_SETREDRAW, TRUE, 0);
-	}
-	else {
-		SendMessageA(ComboHandle, WM_SETREDRAW, FALSE, 0);// Prevent repainting until finished
-		SendMessageA(ComboHandle, CB_SETMINVISIBLE, 1, 0);// Possible optimization for older libraries (source: MSDN forums)
-		SendMessageA(info.hwndList, WM_SETREDRAW, FALSE, 0);
-	}
-}
-
 VOID FIXAPI EndUIDefer(VOID) {
 	if (!g_UseDeferredDialogInsert)
 		return;
@@ -450,21 +431,25 @@ VOID FIXAPI EndUIDefer(VOID) {
 		const HWND control = g_DeferredComboBox;
 
 		// Sort alphabetically if requested to try and speed up inserts
-		INT32 finalWidth = 0;
-		LONG_PTR style = GetWindowLongPtr(control, GWL_STYLE);
-
-		if ((style & CBS_SORT) == CBS_SORT) {
+		LONG style = GetWindowLongPtrA(control, GWL_STYLE);
+		BOOL sortedEnabled = (style & CBS_SORT) == CBS_SORT;
+		if (sortedEnabled) {
 			std::sort(g_DeferredMenuItems.begin(), g_DeferredMenuItems.end(),
 				[](const std::pair<LPCSTR, LPVOID>& a, const std::pair<LPCSTR, LPVOID>& b) -> BOOL
 			{
 				return _stricmp(a.first, b.first) > 0;
 			});
+
+			// Disable sort
+			SetWindowLongPtrA(control, GWL_STYLE, style & ~CBS_SORT);
 		}
 
-		SendMessage(control, CB_INITSTORAGE, g_DeferredMenuItems.size(), g_DeferredStringLength * sizeof(CHAR));
+		INT32 finalWidth = 0;
+
+		SendMessageA(control, CB_INITSTORAGE, g_DeferredMenuItems.size(), g_DeferredStringLength * sizeof(CHAR) + (g_DeferredMenuItems.size() * 8));
 
 		if (HDC hdc = GetDC(control); hdc) {
-			SuspendComboBoxUpdates(control, TRUE);
+			EditorUI::ComboBox_Redraw(control, FALSE);
 
 			// Pre-calculate font widths for resizing, starting with TrueType
 			INT32 fontWidths[UCHAR_MAX + 1];
@@ -478,14 +463,16 @@ VOID FIXAPI EndUIDefer(VOID) {
 				for (INT32 i = 0; i < ARRAYSIZE(fontWidths); i++)
 					fontWidths[i] = trueTypeFontWidths[i].abcB;
 			}
+			
+			//_TIMING_START;
 
 			// Insert everything all at once
 			for (auto [display, value] : g_DeferredMenuItems) {
-				LRESULT index = SendMessageA(control, CB_ADDSTRING, 0, (LPARAM)display);
+				LRESULT index = ComboBox_AddString(control, display);
 				INT32 lineSize = 0;
 
 				if (index != CB_ERR && index != CB_ERRSPACE)
-					SendMessageA(control, CB_SETITEMDATA, index, (LPARAM)value);
+					ComboBox_SetItemData(control, index, value);
 
 				for (LPCSTR c = display; *c != '\0'; c++)
 					lineSize += fontWidths[*c];
@@ -495,9 +482,15 @@ VOID FIXAPI EndUIDefer(VOID) {
 				free((LPVOID)display);
 			}
 
-			SuspendComboBoxUpdates(control, FALSE);
+			//_TIMING_END_FMT("The count of elements analyzed: %d for control: %d", g_DeferredMenuItems.size(), (INT)control);
+
+			EditorUI::ComboBox_Redraw(control, TRUE);
 			ReleaseDC(control, hdc);
 		}
+		
+		if (sortedEnabled)
+			// Enable sort (if it was exists)
+			SetWindowLongPtrA(control, GWL_STYLE, style);
 
 		// Resize to fit
 		if (g_AllowResize) {
@@ -862,7 +855,6 @@ VOID FIXAPI PatchTemplatedFormIterator(VOID) {
 			mov(rax, (uintptr_t)&EndUIDefer);// EndUIDefer (0 params)
 			call(rax);
 			mov(rax, rbx);
-
 			add(rsp, 0x50);
 			pop(rdi);
 			mov(rsi, ptr[rsp + 0x18]);
@@ -997,6 +989,11 @@ DWORD WINAPI hk_modGetPrivateProfileIntA(LPCSTR lpAppName, LPCSTR lpKeyName, INT
 
 VOID FIXAPI EnabledExtremelyMode(VOID) {
 	bExtremelyMode = TRUE;
+}
+
+VOID FIXAPI SkipAnimationTextExport(VOID) {
+	Assert(!_stricmp(CK_Settings[35].Key, "bSkipAnimationTextExport"));
+	CK_Settings[35].Value = "1";
 }
 
 VOID FIXAPI PatchCmdLineWithQuote(VOID) {

@@ -30,16 +30,17 @@ namespace EditorUI
 
 	VOID FIXAPI Initialize(VOID);
 
-	BOOL   FIXAPI ListViewCustomSetItemState(HWND ListViewHandle, WPARAM Index, UINT Data, UINT Mask);
-	VOID   FIXAPI ListViewSelectItem(HWND ListViewHandle, INT32 ItemIndex, bool KeepOtherSelections);
-	VOID   FIXAPI ListViewFindAndSelectItem(HWND ListViewHandle, LPVOID Parameter, bool KeepOtherSelections);
+	BOOL FIXAPI ListViewCustomSetItemState(HWND ListViewHandle, WPARAM Index, UINT Data, UINT Mask);
+	VOID FIXAPI ListViewSelectItem(HWND ListViewHandle, INT32 ItemIndex, bool KeepOtherSelections);
+	VOID FIXAPI ListViewFindAndSelectItem(HWND ListViewHandle, LPVOID Parameter, bool KeepOtherSelections);
 	LPVOID FIXAPI ListViewGetSelectedItem(HWND ListViewHandle);
-	VOID   FIXAPI ListViewDeselectItem(HWND ListViewHandle, LPVOID Parameter);
-	VOID   FIXAPI TabControlDeleteItem(HWND TabControlHandle, uint32_t TabIndex);
-
+	VOID FIXAPI ListViewDeselectItem(HWND ListViewHandle, LPVOID Parameter);
+	VOID FIXAPI TabControlDeleteItem(HWND TabControlHandle, uint32_t TabIndex);
 	VOID FIXAPI ListView_SetSelectItem(HWND hLV, INT idx);
 	INT FIXAPI ListView_GetSelectedItemIndex(HWND hLV);
 	INT FIXAPI ListView_FindItemByString(HWND hLV, const std::string str, INT start_idx = 0);
+	
+	VOID FIXAPI ComboBox_Redraw(HWND hCB, BOOL redraw);
 
 	LRESULT FIXAPI hk_SetSettingsPartStatusBar(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 

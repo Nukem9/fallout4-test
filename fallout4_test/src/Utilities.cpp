@@ -24,6 +24,32 @@
 #include "StdAfx.h"
 #include "Utilities.h"
 
+XUtil::ITiming XUtil::Timing;
+
+XUtil::ITiming::msecond_t XUtil::ITiming::getTime(void) {
+	return std::chrono::duration_cast<msecond_t>(clock_t::now() - time);
+}
+
+void XUtil::ITiming::Begin(void) {
+	time = clock_t::now();
+}
+
+void XUtil::ITiming::End(const char* funcname) {
+	_MESSAGE_FMT("The function \"%s\" is completed in %f seconds", funcname, getTime().count());
+}
+
+void XUtil::ITiming::End(const char* funcname, const char* format, ...) {
+	va_list va;
+	char message[2048];
+
+	va_start(va, format);
+	_vsnprintf(&message[0], _TRUNCATE, format, va);
+	va_end(va);
+
+	_MESSAGE(message);
+	_MESSAGE_FMT("The function \"%s\" is completed in %f seconds", funcname, getTime().count());
+}
+
 void XUtil::Trim(char* Buffer, char C) {
 	size_t len = strlen(Buffer);
 

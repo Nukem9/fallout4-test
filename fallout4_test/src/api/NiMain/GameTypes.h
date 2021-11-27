@@ -228,6 +228,7 @@ public:
 	BSString(const BSString& string);
 	~BSString(VOID);
 public:
+	BOOL Reserved(WORD size);
 	BOOL Set(LPCSTR string, WORD size = 0);   // 0 to allocate automatically
 	inline LPCSTR Get(VOID) const { return m_data ? m_data : ""; }
 	inline LPCSTR c_str(VOID) const { return m_data ? m_data : ""; }

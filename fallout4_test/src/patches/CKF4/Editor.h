@@ -56,6 +56,7 @@ VOID FIXAPI hk_call_140906407(INT64 a1, INT64 a2, INT64 a3);
 BOOL FIXAPI hk_call_12E852C(HWND RichEditControl, LPCSTR Text);
 VOID FIXAPI PatchTemplatedFormIterator(VOID);
 VOID FIXAPI EnabledExtremelyMode(VOID);
+VOID FIXAPI SkipAnimationTextExport(VOID);
 
 /*
 ==================

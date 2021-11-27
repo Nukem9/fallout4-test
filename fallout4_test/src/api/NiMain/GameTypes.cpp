@@ -63,27 +63,60 @@ BSString::~BSString(VOID) {
 	Clear();
 }
 
+BOOL BSString::Reserved(WORD size) {
+	WORD newLen = size;
+	WORD newSize = newLen + 1;
+	auto newData = (LPSTR)Heap_Allocate(newSize);
+	if (!newData)
+			return FALSE;
+
+	if (m_bufLen) {
+		strncpy(newData, m_data, newLen);
+		Heap_Free((LPVOID)m_data);
+		newData[newLen] = 0;
+	}
+	else
+		newData[0] = 0;
+
+	m_data = newData;
+	m_bufLen = newSize;
+	m_dataLen = newLen;
+
+	return TRUE;
+}
+
 BOOL BSString::Set(LPCSTR string, WORD size) {
+	//_TIMING_START;
+
 	if (!string)
-		return FALSE;
+		return Reserved(size);
 
-	Clear();
+	DWORD dwMaxLen = size;
+	DWORD dwNeedBuf = size + 1;
 
-	m_bufLen = !size ? strlen(string) + 1 : size;
-	if (!m_bufLen)
-		return FALSE;
-
-	m_dataLen = m_bufLen - 1;
-	m_data = (LPSTR)Heap_Allocate(m_bufLen);
-	if (!m_data) {
-		m_dataLen = 0;
-		m_bufLen = 0;
-
-		return FALSE;
+	if (!size) {
+		dwMaxLen = strlen(string);
+		dwNeedBuf = dwMaxLen + 1;
 	}
 
-	strncpy(m_data, string, m_dataLen);
-	m_data[m_dataLen] = 0;
+	if (dwNeedBuf > m_bufLen) {
+		auto newData = (LPSTR)Heap_Allocate(dwNeedBuf);
+		if (!newData)
+			return FALSE;
+
+		strcpy(newData, string);
+		Heap_Free((LPVOID)m_data);
+
+		m_bufLen = dwNeedBuf;
+		m_dataLen = dwMaxLen;
+		m_data = newData;
+	}
+	else {
+		strcpy(m_data, string);
+		m_dataLen = dwMaxLen;
+	}
+
+	//_TIMING_END;
 
 	return TRUE;
 }

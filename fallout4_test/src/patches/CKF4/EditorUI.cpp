@@ -185,6 +185,27 @@ namespace EditorUI
 			ListViewCustomSetItemState(ListViewHandle, index, 0, LVIS_SELECTED);
 	}
 
+	VOID FIXAPI ComboBox_Redraw(HWND hCB, BOOL redraw) {
+		COMBOBOXINFO info = { 0 };
+		info.cbSize = sizeof(COMBOBOXINFO);
+
+		if (!GetComboBoxInfo(hCB, &info))
+			return;
+
+		if (redraw) {
+			SendMessageA(info.hwndList, WM_SETREDRAW, TRUE, 0);
+			SendMessageA(hCB, CB_SETMINVISIBLE, 30, 0);
+			SendMessageA(hCB, WM_SETREDRAW, TRUE, 0);
+		}
+		else {
+			// Prevent repainting until finished
+			SendMessageA(hCB, WM_SETREDRAW, FALSE, 0);
+			// Possible optimization for older libraries (source: MSDN forums)
+			SendMessageA(hCB, CB_SETMINVISIBLE, 1, 0);
+			SendMessageA(info.hwndList, WM_SETREDRAW, FALSE, 0);
+		}
+	}
+
 	VOID FIXAPI TabControlDeleteItem(HWND TabControlHandle, uint32_t TabIndex)
 	{
 		TCITEMA itemInfo = {};

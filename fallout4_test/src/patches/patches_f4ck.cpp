@@ -131,6 +131,9 @@ VOID FIXAPI F_RequiredPatches(VOID) {
 	// Fixes sky and fog
 	PatchSky();
 
+	// BSString::Set replace
+	XUtil::DetourJump(OFFSET(0x117C90, 0), &BSString::Set);
+
 	// no support cmd line
 	if (nCountArgCmdLine == 1) {
 		//
@@ -808,6 +811,7 @@ VOID FIXAPI MainFix_PatchFallout4CreationKit(VOID)
 		//
 		// Loading Files... Done! and continue
 		//
+		SkipAnimationTextExport();
 
 		// Skip all
 		XUtil::PatchMemory(OFFSET(0xB22C0, 0), { 0xC3 });

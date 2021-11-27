@@ -32,6 +32,7 @@
 #include <string>
 #include <future>
 #include <locale>
+#include <chrono>
 
 #include <strsafe.h>
 
@@ -43,6 +44,10 @@
 
 #define _MESSAGE(x)						LogWindow::Log(x)
 #define _MESSAGE_FMT(x, ...)			LogWindow::Log(x, ##__VA_ARGS__)
+
+#define _TIMING_START					XUtil::Timing.Begin()
+#define _TIMING_END						XUtil::Timing.End(__FUNCTION__)
+#define _TIMING_END_FMT(x, ...)			XUtil::Timing.End(__FUNCTION__, x, ##__VA_ARGS__)
 
 #define PatchIAT(detour, module, procname) Detours::IATHook(g_ModuleBase, (module), (procname), (uintptr_t)(detour));
 
@@ -147,6 +152,25 @@ __forceinline TR thisVirtualCall(size_t reloff, const void* ths, T1 a1, T2 a2, T
 }
 
 namespace XUtil {
+
+	class ITiming {
+	public:
+		typedef std::chrono::high_resolution_clock clock_t;
+		typedef std::chrono::duration<double> msecond_t;
+	private:
+		clock_t::time_point time;
+	private:
+		msecond_t getTime(void);
+	public:
+		ITiming(void) = default;
+	public:
+		void Begin(void);
+		void End(const char* funcname);
+		void End(const char* funcname, const char* format, ...);
+	};
+
+	extern ITiming Timing;
+
 	void SetThreadName(uint32_t ThreadID, const char* ThreadName);
 	void Trim(char* Buffer, char C);
 	void XAssert(const char* File, int Line, const char* Format, ...);
