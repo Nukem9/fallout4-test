@@ -132,7 +132,7 @@ VOID FIXAPI F_RequiredPatches(VOID) {
 	PatchSky();
 
 	// BSString::Set replace
-	//XUtil::DetourJump(OFFSET(0x117C90, 0), &BSString::Set);
+	XUtil::DetourJump(OFFSET(0x117C90, 0), &BSString::Set);
 
 	// no support cmd line
 	if (nCountArgCmdLine == 1) {
