@@ -32,6 +32,7 @@
 LPVOID	FIXAPI MemAlloc(UINT64 Size, UINT32 Alignment = 0, BOOL Aligned = FALSE, BOOL Zeroed = FALSE);
 VOID	FIXAPI MemFree(LPVOID Memory, BOOL Aligned = FALSE);
 UINT64	FIXAPI MemSize(LPVOID Memory);
+LPSTR	FIXAPI StrDup(LPCSTR string);
 
 /*
 ==================

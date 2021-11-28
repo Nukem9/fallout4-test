@@ -86,8 +86,6 @@ BOOL BSString::Reserved(WORD size) {
 }
 
 BOOL BSString::Set(LPCSTR string, WORD size) {
-	//_TIMING_START;
-
 	pad0C = 0;
 
 	WORD wNeedLen = (string) ? strlen(string) : 0;
@@ -95,7 +93,7 @@ BOOL BSString::Set(LPCSTR string, WORD size) {
 
 	if (wNeedBuf > m_bufLen) {
 		LPSTR newData = (LPSTR)Heap_Allocate(wNeedBuf);
-		memcpy(newData, string, wNeedLen);
+		XUtil::MemCopySSE3(newData, string, wNeedLen);
 		newData[wNeedLen] = 0;
 
 		if (m_data)
@@ -118,13 +116,11 @@ BOOL BSString::Set(LPCSTR string, WORD size) {
 			}
 		}
 		else {
-			memcpy(m_data, string, wNeedLen);
+			XUtil::MemCopySSE3(m_data, string, wNeedLen);
 			m_dataLen = wNeedLen;
 			m_data[wNeedLen] = 0;
 		}
 	}
-
-	//_TIMING_END;
 
 	return TRUE;
 }

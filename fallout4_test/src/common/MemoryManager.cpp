@@ -195,14 +195,14 @@ UINT64 hk_msize(LPVOID Block) {
 
 /*
 ==================
-hk_Sleep
+StrDup
 
-Replacement WINAPI Sleep
+Replacement WINAPI strdup
 ==================
 */
-LPSTR hk_strdup(LPCSTR str1) {
-	size_t len = (strlen(str1) + 1);
-	return (LPSTR)memcpy(hk_malloc(len), str1, len);
+LPSTR FIXAPI StrDup(LPCSTR string) {
+	size_t len = (strlen(string) + 1);
+	return (LPSTR)memcpy(MemAlloc(len), string, len);
 }
 
 //
@@ -277,7 +277,7 @@ VOID FIXAPI Fix_PatchMemory(VOID) {
 	PatchIAT(hk_free, "API-MS-WIN-CRT-HEAP-L1-1-0.DLL", "free");
 	PatchIAT(hk_aligned_free, "API-MS-WIN-CRT-HEAP-L1-1-0.DLL", "_aligned_free");
 	PatchIAT(hk_msize, "API-MS-WIN-CRT-HEAP-L1-1-0.DLL", "_msize");
-	PatchIAT(hk_strdup, "API-MS-WIN-CRT-STRING-L1-1-0.DLL", "_strdup");
+	PatchIAT(StrDup, "API-MS-WIN-CRT-STRING-L1-1-0.DLL", "_strdup");
 
 	PatchIAT(hk_calloc, "MSVCR110.dll", "calloc");
 	PatchIAT(hk_malloc, "MSVCR110.dll", "malloc");
@@ -286,5 +286,22 @@ VOID FIXAPI Fix_PatchMemory(VOID) {
 	PatchIAT(hk_free, "MSVCR110.dll", "free");
 	PatchIAT(hk_aligned_free, "MSVCR110.dll", "_aligned_free");
 	PatchIAT(hk_msize, "MSVCR110.dll", "_msize");
-	PatchIAT(hk_strdup, "MSVCR110.dll", "_strdup");
+	PatchIAT(StrDup, "MSVCR110.dll", "_strdup");
+
+	INT32 cpuinfo[4];
+	__cpuid(cpuinfo, 1);
+	if ((cpuinfo[2] & (1 << 19)) != 0) {
+		PatchIAT(XUtil::MemCopySSE3, "API-MS-WIN-CRT-HEAP-L1-1-0.DLL", "memcpy");
+		PatchIAT(XUtil::MemCopySSE3, "API-MS-WIN-CRT-HEAP-L1-1-0.DLL", "memmove");
+		PatchIAT(XUtil::MemCopySSE3, "MSVCR110.dll", "memcpy");
+		PatchIAT(XUtil::MemCopySSE3, "MSVCR110.dll", "memmove");
+		PatchIAT(memcpy_s, "API-MS-WIN-CRT-HEAP-L1-1-0.DLL", "memcpy_s");
+		PatchIAT(memcpy_s, "API-MS-WIN-CRT-HEAP-L1-1-0.DLL", "memmove_s");
+		PatchIAT(memcpy_s, "MSVCR110.dll", "memcpy_s");
+		PatchIAT(memcpy_s, "MSVCR110.dll", "memmove_s");
+		PatchIAT(memcmp, "API-MS-WIN-CRT-HEAP-L1-1-0.DLL", "memcmp");
+		PatchIAT(memset, "API-MS-WIN-CRT-HEAP-L1-1-0.DLL", "memset");
+		PatchIAT(memcmp, "MSVCR110.dll", "memcmp");
+		PatchIAT(memset, "MSVCR110.dll", "memset");
+	}
 }

@@ -479,7 +479,7 @@ VOID FIXAPI EndUIDefer(VOID) {
 
 				finalWidth = std::max<INT32>(finalWidth, lineSize);
 
-				free((LPVOID)display);
+				Heap_Free((LPVOID)display);
 			}
 
 			//_TIMING_END_FMT("The count of elements analyzed: %d for control: %d", g_DeferredMenuItems.size(), (INT)control);
@@ -519,7 +519,7 @@ VOID FIXAPI InsertComboBoxItem(HWND ComboBoxHandle, LPCSTR DisplayText, LPVOID V
 		g_AllowResize |= AllowResize;
 
 		// A copy must be created since lifetime isn't guaranteed after this function returns
-		g_DeferredMenuItems.emplace_back(_strdup(DisplayText), Value);
+		g_DeferredMenuItems.emplace_back(StrDup(DisplayText), Value);
 	}
 	else {
 		if (AllowResize) {

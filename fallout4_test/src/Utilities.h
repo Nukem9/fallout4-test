@@ -185,6 +185,8 @@ namespace XUtil {
 	void DetourJump(uintptr_t Target, uintptr_t Destination);
 	void DetourCall(uintptr_t Target, uintptr_t Destination);
 
+	void* MemCopySSE3(void* dest, const void* src, const size_t size);
+
 	template<typename T>
 	__forceinline void DetourJump(uintptr_t Target, T Destination) {
 		static_assert(std::is_member_function_pointer_v<T> || (std::is_pointer_v<T> && std::is_function_v<typename std::remove_pointer<T>::type>));
