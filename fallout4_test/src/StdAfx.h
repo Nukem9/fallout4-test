@@ -29,7 +29,9 @@
 // 4288 - disable warning for crap Microsoft extension screwing up the scope of variables defined in for loops
 // 4311 - pointer truncation
 // 4312 - pointer extension
+
 #pragma warning(disable: 4018)
+#pragma warning(disable: 4229)
 #pragma warning(disable: 4244)
 #pragma warning(disable: 4267)
 #pragma warning(disable: 4305)

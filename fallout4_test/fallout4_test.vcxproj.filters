@@ -562,6 +562,9 @@
     <ClCompile Include="src\patches\bhkThreadMemorySource.cpp">
       <Filter>Source Files\Patches</Filter>
     </ClCompile>
+    <ClCompile Include="src\patches\CKF4\PreCombinedSeargeDP.cpp">
+      <Filter>Source Files\Patches\CK</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Resources\f4ck_loader.bin">

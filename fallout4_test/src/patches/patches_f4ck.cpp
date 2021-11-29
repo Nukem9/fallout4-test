@@ -58,10 +58,12 @@ VOID FIXAPI ENBSeriesFixableRunHandler(VOID);
 VOID FIXAPI Fix_PatchMemory(VOID);
 VOID FIXAPI Fix_PatchThreading(VOID);
 VOID FIXAPI Fix_GenerateCrashdumps(VOID);
+VOID FIXAPI Fix_PatchSeargeDPPreCombined(VOID);
 size_t FIXAPI BNetConvertUnicodeString(char* Destination, size_t DestSize, const wchar_t* Source, size_t SourceSize);
 
 namespace Classes = Core::Classes::UI;
 
+static BSString sCommandRun;
 static INT32 nCountArgCmdLine = 0;
 
 /*
@@ -733,6 +735,7 @@ VOID FIXAPI MainFix_PatchFallout4CreationKit(VOID)
 				nCountArgCmdLine = 1;
 			else
 			{
+				sCommandRun = lpStartArgs;
 				nCountArgCmdLine++;
 				lpStartArgs++;
 
@@ -841,6 +844,9 @@ VOID FIXAPI MainFix_PatchFallout4CreationKit(VOID)
 
 	if (g_INI->GetBoolean("CreationKit", "DisableWindowGhosting", FALSE))
 		DisableProcessWindowsGhosting();
+
+	if (g_INI->GetBoolean("CreationKit", "PreCombinedPatchBySeargeDP", FALSE))
+		Fix_PatchSeargeDPPreCombined();
 
 	//
 	// AllowSaveESM   - Allow saving ESMs directly without version control
