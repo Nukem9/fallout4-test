@@ -239,6 +239,7 @@ public:
 	VOID Clear(VOID);
 	BSString& Format(LPCSTR format, ...);
 public:
+	inline BSString& operator=(LPCSTR string) { Set(string, strlen(string)); return *this; }
 	inline LPSTR operator*(VOID) { return m_data; }
 	inline LPCSTR operator*(VOID) const { return m_data; }
 	inline BOOL operator==(LPCSTR string) { return !Compare(string); }

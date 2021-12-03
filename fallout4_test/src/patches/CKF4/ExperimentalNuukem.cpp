@@ -26,18 +26,6 @@
 
 namespace Experimental
 {
-	struct __addr_t
-	{
-		uintptr_t Based;
-		uintptr_t End;
-	};
-
-	struct range_t
-	{
-		__addr_t addr;
-		DWORD protection;
-	};
-
 	namespace Nuukem
 	{
 		struct NullsubPatch

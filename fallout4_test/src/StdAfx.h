@@ -76,6 +76,7 @@
 #include <ShObjIdl_core.h>
 #include <Uxtheme.h>
 #include <vssym32.h>
+#include <processthreadsapi.h>
 
 // CRT
 #include <time.h>
@@ -206,6 +207,19 @@ enum class GAME_EXECUTABLE_TYPE {
 	LAUNCHER_FALLOUT4,
 	GAME_FALLOUT4,
 	CREATIONKIT_FALLOUT4,
+	CREATIONKIT_FALLOUT4_PATCHED_PREVIS,
+};
+
+struct __addr_t
+{
+	uintptr_t Based;
+	uintptr_t End;
+};
+
+struct range_t
+{
+	__addr_t addr;
+	DWORD protection;
 };
 
 extern GAME_EXECUTABLE_TYPE g_LoadType;

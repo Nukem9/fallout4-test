@@ -422,8 +422,12 @@ namespace MainWindow
 		else if (Message == WM_SETTEXT && Hwnd == GetWindow())
 		{
 			// Continue normal execution but with a custom string
-			char customTitle[1024];
-			sprintf_s(customTitle, "%s [CK64Fixes Rev. F4-%s: %s]", (LPCSTR)lParam, g_GitVersion, g_GitDataVersion);
+
+			CHAR customTitle[1024];
+			if (g_LoadType != GAME_EXECUTABLE_TYPE::CREATIONKIT_FALLOUT4_PATCHED_PREVIS) 
+				sprintf_s(customTitle, "%s [CK64Fixes Rev. F4-%s: %s]", (LPCSTR)lParam, g_GitVersion, g_GitDataVersion);
+			else
+				sprintf_s(customTitle, "%s <-- PATCHED SeargeDP --> [CK64Fixes Rev. F4-%s: %s]", (LPCSTR)lParam, g_GitVersion, g_GitDataVersion);
 
 			return CallWindowProcA(OldWndProc, Hwnd, Message, wParam, (LPARAM)customTitle);
 		}

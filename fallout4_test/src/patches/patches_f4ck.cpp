@@ -58,7 +58,7 @@ VOID FIXAPI ENBSeriesFixableRunHandler(VOID);
 VOID FIXAPI Fix_PatchMemory(VOID);
 VOID FIXAPI Fix_PatchThreading(VOID);
 VOID FIXAPI Fix_GenerateCrashdumps(VOID);
-VOID FIXAPI Fix_PatchSeargeDPPreCombined(VOID);
+BOOL FIXAPI Fix_CheckPatchPreCombined(VOID);
 size_t FIXAPI BNetConvertUnicodeString(char* Destination, size_t DestSize, const wchar_t* Source, size_t SourceSize);
 
 namespace Classes = Core::Classes::UI;
@@ -715,27 +715,26 @@ Implements the code in the process CK64
 */
 VOID FIXAPI MainFix_PatchFallout4CreationKit(VOID)
 {
-	if (!_stricmp((LPCSTR)(g_ModuleBase + 0x3896168), "1.10.162.0"))
-	{
+	BOOL versionSupportedCK = !_stricmp((LPCSTR)(g_ModuleBase + 0x3896168), "1.10.162.0");
+	if (versionSupportedCK) {
 		std::string sCmdLineStr = GetCommandLineA();
 
 		LPSTR lpCmdLineStr = const_cast<LPSTR>(sCmdLineStr.c_str());
 		LPSTR lpStartArgs = NULL;
 		
 		// if the path has spaces, then you should meet quotes at the beginning
-		if (*lpCmdLineStr == '\"')
-		{
+		if (*lpCmdLineStr == '\"') {
 			lpStartArgs = strchr(lpCmdLineStr + 1, '\"') + 1;
 			AssertMsg(lpStartArgs, "Incorrect command line");
-	
+			
 		ParserCommandLine:
+			std::string sDataCmdLineStr = lpStartArgs;
 			lpStartArgs = strchr(lpStartArgs, ':');
 			if (!lpStartArgs)
 				// need for normally run fixes
 				nCountArgCmdLine = 1;
-			else
-			{
-				sCommandRun = lpStartArgs;
+			else {
+				sCommandRun = XUtil::Str::trim(sDataCmdLineStr.substr(0, sDataCmdLineStr.find_first_of(':')).c_str()).c_str();
 				nCountArgCmdLine++;
 				lpStartArgs++;
 
@@ -750,8 +749,7 @@ VOID FIXAPI MainFix_PatchFallout4CreationKit(VOID)
 				}
 			}
 		}
-		else
-		{
+		else {
 			lpStartArgs = strchr(lpCmdLineStr, ' ');
 			if (!lpStartArgs)
 				// need for normally run fixes
@@ -760,10 +758,34 @@ VOID FIXAPI MainFix_PatchFallout4CreationKit(VOID)
 				goto ParserCommandLine;
 		}
 
+		if (*sCommandRun)
+			_MESSAGE_FMT("Command: %s", *sCommandRun);
+
 		_MESSAGE_FMT("CommandLine: %d (Args) %s", nCountArgCmdLine, GetCommandLineA());
+
+		if (g_LoadType == GAME_EXECUTABLE_TYPE::CREATIONKIT_FALLOUT4_PATCHED_PREVIS) {
+			if (Fix_CheckPatchPreCombined()) {
+				_MESSAGE("Detected patch SeargeDP");
+
+				if (nCountArgCmdLine == 1 || (sCommandRun.Compare("-GeneratePreCombined") && sCommandRun.Compare("-GeneratePreVisData"))) {
+					MessageBoxA(NULL,
+						"Patched SeargeDP Creation Kit version detected.\nCalling an unsupported command.\n\n"
+						"Close Creation Kit.\n"
+						"Support command:\n"
+						"-GeneratePreCombined or -GeneratePreVisData",
+						"Incorrect user actions",
+						MB_ICONERROR);
+
+					QuitHandler();
+					return;
+				}
+			}
+			else
+				goto UnknownVersionCK;
+		}
 	}
-	else
-	{
+	else {
+		UnknownVersionCK:
 		CHAR modulePath[MAX_PATH];
 		GetModuleFileNameA(GetModuleHandleA(NULL), modulePath, ARRAYSIZE(modulePath));
 
@@ -810,6 +832,13 @@ VOID FIXAPI MainFix_PatchFallout4CreationKit(VOID)
 	if (g_INI->GetBoolean("CreationKit", "SkipChangeWorldSpace", FALSE))
 		XUtil::PatchMemoryNop(OFFSET(0x5FBE14, 0), 0x13);
 
+	if (g_LoadType == GAME_EXECUTABLE_TYPE::CREATIONKIT_FALLOUT4_PATCHED_PREVIS) {
+		// 00 PC; 01 360; 02 PS4 ? 
+		auto genFormatFiles = (BYTE)g_INI->GetInteger("CreationKit_PreCombined", "GenerateFormatFiles", 1);
+		XUtil::PatchMemory(OFFSET(0x347E6E, 0), { genFormatFiles });
+		XUtil::PatchMemory(OFFSET(0xDCB677, 0), { genFormatFiles });
+	}
+
 	if (nCountArgCmdLine == 1 && g_INI->GetBoolean("CreationKit", "SkipAnimationBuildProcessData", FALSE)) {
 		//
 		// Loading Files... Done! and continue
@@ -844,9 +873,6 @@ VOID FIXAPI MainFix_PatchFallout4CreationKit(VOID)
 
 	if (g_INI->GetBoolean("CreationKit", "DisableWindowGhosting", FALSE))
 		DisableProcessWindowsGhosting();
-
-	if (g_INI->GetBoolean("CreationKit", "PreCombinedPatchBySeargeDP", FALSE))
-		Fix_PatchSeargeDPPreCombined();
 
 	//
 	// AllowSaveESM   - Allow saving ESMs directly without version control

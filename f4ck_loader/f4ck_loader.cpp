@@ -16,6 +16,9 @@
 #include <memory>
 #include <map>
 
+#define CREATIONKIT L"CreationKit.exe"
+#define CREATIONKIT_PATCHED L"CreationKit.patched.exe"
+
 struct membuf : public std::streambuf {
 	membuf(DWORD len)
 		: std::streambuf()
@@ -187,6 +190,7 @@ INT32 WINAPI main(INT32 argc, LPSTR argv[])
 
 	std::wstring StrCmdLine;
 	BOOL bSafeRun = TRUE;
+	BOOL bPatchedPreVis = FALSE;
 	CHAR basePath[2048] = "";
 	GetFullPathNameA(argv[0], 2048, basePath, NULL);
 	std::filesystem::path p(basePath);
@@ -244,8 +248,21 @@ INT32 WINAPI main(INT32 argc, LPSTR argv[])
 			else
 				istart = StrCmdLine.find_first_of(' ');
 
-			if (std::wstring::npos != istart)
+			if (std::wstring::npos != istart) {
 				StrCmdLine = StrCmdLine.substr(istart + 1);
+
+				istart = StrCmdLine.find_first_of('-');
+				if (std::wstring::npos != istart) {
+					auto iend = StrCmdLine.find_first_of(':', istart);
+					if (std::wstring::npos != iend) {
+						auto sCmd = StrCmdLine.substr(istart, iend - 1);
+
+						if (!_wcsicmp(sCmd.c_str(), L"-GeneratePreCombined") ||
+							!_wcsicmp(sCmd.c_str(), L"-GeneratePreVisData"))
+							bPatchedPreVis = std::filesystem::exists(app_path + CREATIONKIT_PATCHED);
+					}
+				}
+			}
 			else
 				StrCmdLine.clear();
 		}
@@ -260,11 +277,11 @@ l_skip:
 	std::wcout << L"Open Creation Kit.\n";
 #endif
 	if (bSafeRun)
-		ShellExecuteW(NULL, L"open", L"CreationKit.exe", StrCmdLine.c_str(), app_path.c_str(), SW_SHOW);
+		ShellExecuteW(NULL, L"open", bPatchedPreVis ? CREATIONKIT_PATCHED : CREATIONKIT, StrCmdLine.c_str(), app_path.c_str(), SW_SHOW);
 #ifndef HIDEWINDOW
 	std::wcout << L"Wait 15 sec.\n";
 #endif
-	Sleep(15000);
+	Sleep(bPatchedPreVis ? 25000 : 15000);
 #ifndef HIDEWINDOW
 	std::wcout << L"Return files.\n";
 #endif

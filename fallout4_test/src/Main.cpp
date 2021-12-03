@@ -62,6 +62,7 @@ VOID FIXAPI Sys_ApplyPatches(VOID)
 	switch (g_LoadType)
 	{
 	case GAME_EXECUTABLE_TYPE::CREATIONKIT_FALLOUT4:
+	case GAME_EXECUTABLE_TYPE::CREATIONKIT_FALLOUT4_PATCHED_PREVIS:
 		MainFix_PatchFallout4CreationKit();
 		break;
 	case GAME_EXECUTABLE_TYPE::GAME_FALLOUT4:
@@ -109,6 +110,9 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD fdwReason, LPVOID lpReserved)
 		case CRC32("creationkit"):
 			g_LoadType = GAME_EXECUTABLE_TYPE::CREATIONKIT_FALLOUT4;
 			break;
+		case CRC32("creationkit.patched"):
+			g_LoadType = GAME_EXECUTABLE_TYPE::CREATIONKIT_FALLOUT4_PATCHED_PREVIS;
+			break;
 		}
 
 		// For now, skip everything except the game and CK
@@ -116,6 +120,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD fdwReason, LPVOID lpReserved)
 		{
 		case GAME_EXECUTABLE_TYPE::GAME_FALLOUT4:
 		case GAME_EXECUTABLE_TYPE::CREATIONKIT_FALLOUT4:
+		case GAME_EXECUTABLE_TYPE::CREATIONKIT_FALLOUT4_PATCHED_PREVIS:
 		{
 			// FIX: 
 			// Bug report "pra": Cannot use CK to preview NIFs
@@ -157,13 +162,14 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD fdwReason, LPVOID lpReserved)
 			g_INI_CK_CfgCustom = new INIReader("CreationKitCustom.ini");
 #endif
 #if FALLOUT4_CREATIONKIT_ONLY
-			if (g_LoadType != GAME_EXECUTABLE_TYPE::CREATIONKIT_FALLOUT4)
+			if ((g_LoadType != GAME_EXECUTABLE_TYPE::CREATIONKIT_FALLOUT4) && 
+				(g_LoadType != GAME_EXECUTABLE_TYPE::CREATIONKIT_FALLOUT4_PATCHED_PREVIS))
 				return TRUE;
 #else
-			if (!g_INI->GetBoolean("Mode", "Extended", FALSE) && (g_LoadType != GAME_EXECUTABLE_TYPE::CREATIONKIT_FALLOUT4))
-			{
+			if (!g_INI->GetBoolean("Mode", "Extended", FALSE) && 
+				((g_LoadType != GAME_EXECUTABLE_TYPE::CREATIONKIT_FALLOUT4) &&
+				 (g_LoadType != GAME_EXECUTABLE_TYPE::CREATIONKIT_FALLOUT4_PATCHED_PREVIS)))
 				return TRUE;
-			}
 #endif
 
 			Sys_DumpEnableBreakpoint();
