@@ -217,10 +217,10 @@ VOID FIXAPI F_RequiredPatches(VOID) {
 	//
 	XUtil::DetourCall(OFFSET(0x0906407, 0), &hk_call_140906407);
 
-	//
-	// Fix for the -GeneratePreCombined command line option creating files for the PS4 (2) format. It should be WIN64 (0).
-	//
-	XUtil::PatchMemory(OFFSET(0x0DCB7DB, 0), { 0x00, 0x00, 0x00, 0x00 });
+	
+
+
+	//24EDC40
 
 	//
 	// Fix for crash when tab control buttons are deleted. Uninitialized TCITEMA structure variables.
@@ -836,12 +836,13 @@ VOID FIXAPI MainFix_PatchFallout4CreationKit(VOID)
 	if (g_INI->GetBoolean("CreationKit", "SkipChangeWorldSpace", FALSE))
 		XUtil::PatchMemoryNop(OFFSET(0x5FBE14, 0), 0x13);
 
-	if (g_LoadType == GAME_EXECUTABLE_TYPE::CREATIONKIT_FALLOUT4_PATCHED_PREVIS) {
-		// 00 PC; 01 360; 02 PS4 ? 
-		auto genFormatFiles = (BYTE)g_INI->GetInteger("CreationKit_PreCombined", "GenerateFormatFiles", 1);
-		XUtil::PatchMemory(OFFSET(0x347E6E, 0), { genFormatFiles });
-		XUtil::PatchMemory(OFFSET(0xDCB677, 0), { genFormatFiles });
-	}
+	//
+	// Fix for the -GeneratePreCombined command line option creating files for the PS4 (2) format. It should be WIN64 (0).
+	//
+	auto genFormatFiles = (BYTE)g_INI->GetInteger("CreationKit_PreCombined", "GenerateFormatFiles", 0);
+	XUtil::PatchMemory(OFFSET(0xDCB7DB, 0), { genFormatFiles });
+	XUtil::PatchMemory(OFFSET(0x347E6E, 0), { genFormatFiles });
+	XUtil::PatchMemory(OFFSET(0xDCB677, 0), { genFormatFiles });
 
 	if (nCountArgCmdLine == 1 && g_INI->GetBoolean("CreationKit", "SkipAnimationBuildProcessData", FALSE)) {
 		//
