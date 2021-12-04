@@ -54,7 +54,6 @@ fallout4_test/VTune Amplifier Results/
 fallout4_test/resource.aps
 
 *.lnk
-*.vcxproj
 *.vcxproj.user
 
 # other
