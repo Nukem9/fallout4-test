@@ -767,8 +767,11 @@ VOID FIXAPI MainFix_PatchFallout4CreationKit(VOID)
 			if (Fix_CheckPatchPreCombined()) {
 				_MESSAGE("Detected patch SeargeDP");
 
-				if (nCountArgCmdLine == 1 || (sCommandRun.Compare("-GeneratePreCombined") && sCommandRun.Compare("-GeneratePreVisData")) ||
-					(sCommandRun.Compare("-BuildCDX") && sCommandRun.Compare("-CompressPSG"))) {
+				if (nCountArgCmdLine == 1 || 
+					(sCommandRun.Compare("-GeneratePreCombined") && 
+					 sCommandRun.Compare("-GeneratePreVisData") &&
+					 sCommandRun.Compare("-BuildCDX") && 
+					 sCommandRun.Compare("-CompressPSG"))) {
 					MessageBoxA(NULL,
 						"Patched SeargeDP Creation Kit version detected.\nCalling an unsupported command.\n\n"
 						"Close Creation Kit.\n"
