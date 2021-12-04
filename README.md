@@ -15,9 +15,10 @@ A collection of modifications, enhancements, and reverse engineered resources fo
 
 # ENB
 **CK** does not work well with **ENB**. 
-I wrote **f4ck_loader 0.2**, download from tag [0.9](https://github.com/Perchik71/Fallout4Test/releases/tag/0.9) or compile branch *"master"* yourself.
+I wrote **f4ck_loader 0.3**, download from tag [1.6](https://github.com/Perchik71/Fallout4Test/releases/tag/1.6) or compile branch *"master"* yourself.
+So also it is embedded in itself .dll and can be extracted if necessary.
 The program is console and simple, for *15 seconds* removes from the known to me *.dll* files that harm the work of **CK** this time is enough to load the **CK** itself.
-All deleted *.dll* files will be restored after this time. **(Added: now hide work)**
+All deleted *.dll* files will be restored after this time.
 
 # Additional
 In version 0.7, I redefined the HTML redactor material, because I don't know how to use it, to the redactor material from the author **ousnius**.
