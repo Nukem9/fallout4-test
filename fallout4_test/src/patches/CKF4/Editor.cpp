@@ -785,6 +785,15 @@ VOID FIXAPI ExportFaceGenForSelectedNPCs(int64_t a1, int64_t a2) {
 	fastCall<VOID>(0xAC2670);
 }
 
+sub_24EDC40_t oldsub_24EDC40;
+
+BOOL FIXAPI sub_24EDC40(LPVOID a1, INT64 a2) {
+	if (a1)
+		return oldsub_24EDC40(a1, a2);
+
+	return FALSE;
+}
+
 /*
 ==================
 PatchLip

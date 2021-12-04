@@ -217,11 +217,6 @@ VOID FIXAPI F_RequiredPatches(VOID) {
 	//
 	XUtil::DetourCall(OFFSET(0x0906407, 0), &hk_call_140906407);
 
-	
-
-
-	//24EDC40
-
 	//
 	// Fix for crash when tab control buttons are deleted. Uninitialized TCITEMA structure variables.
 	//
@@ -698,12 +693,17 @@ VOID FIXAPI F_FaceGenPatches(VOID) {
 	XUtil::PatchMemory(OFFSET(0x2B77ACC, 0), (uint8_t*)&tintResolution, sizeof(uint32_t));
 	XUtil::PatchMemory(OFFSET(0x2B77AD3, 0), (uint8_t*)&tintResolution, sizeof(uint32_t));
 
+	// ignore ASSERT 
+	XUtil::PatchMemory(OFFSET(0x24FA942, 0), { 0xEB, 0x22, 0x90, 0x90, 0x90, 0x90, 0x90 });
+
 	// Prevent internal filesystem reloads when exporting FaceGen for many NPCs
 	XUtil::PatchMemory(OFFSET(0x3FD451, 0), { 0x95 });
 	XUtil::PatchMemory(OFFSET(0x3FD45A, 0), { 0x48, 0x89, 0xF9, 0xE8, 0x9E, 0xE4, 0x00, 0x00 });
 	XUtil::PatchMemoryNop(OFFSET(0x3FD462, 0), 0x1C);
 	XUtil::DetourJump(OFFSET(0x40B900, 0), &ExportFaceGenForSelectedNPCs);
 	XUtil::PatchMemoryNop(OFFSET(0xAC20BD, 0), 5);
+
+	*(uintptr_t*)&oldsub_24EDC40 = Detours::X64::DetourFunctionClass(OFFSET(0x24EDC40, 0), &sub_24EDC40);
 }
 
 /*
