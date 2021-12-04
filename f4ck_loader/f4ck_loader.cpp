@@ -258,7 +258,9 @@ INT32 WINAPI main(INT32 argc, LPSTR argv[])
 						auto sCmd = StrCmdLine.substr(istart, iend - 1);
 
 						if (!_wcsicmp(sCmd.c_str(), L"-GeneratePreCombined") ||
-							!_wcsicmp(sCmd.c_str(), L"-GeneratePreVisData"))
+							!_wcsicmp(sCmd.c_str(), L"-GeneratePreVisData") ||
+							!_wcsicmp(sCmd.c_str(), L"-BuildCDX") ||
+							!_wcsicmp(sCmd.c_str(), L"-CompressPSG"))
 							bPatchedPreVis = std::filesystem::exists(app_path + CREATIONKIT_PATCHED);
 					}
 				}

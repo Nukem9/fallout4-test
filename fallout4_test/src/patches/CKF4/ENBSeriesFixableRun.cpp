@@ -34,6 +34,8 @@ namespace ENBFix {
 	{ L"enbimgui.dll", FALSE }
 	};
 
+	std::vector<std::wstring> dllFound;
+
 	static BOOL is_enabled = FALSE;
 	static std::wstring app_path; 
 	static LPBYTE image_base = NULL;
@@ -127,10 +129,13 @@ namespace ENBFix {
 		app_path = p.parent_path();
 		app_path += L"\\";
 
+		auto existBool = FALSE;
 		for each (auto it in dllENBs) {
-			is_enabled = FileExists(it.first);
-			if (is_enabled)
-				break;
+			existBool = FileExists(it.first);
+			if (existBool) {
+				is_enabled = existBool;
+				dllFound.emplace_back(it.first);
+			}
 		}
 
 		DWORD dwResult = GetResource(g_hModule, MAKEINTRESOURCEA(IDR_BINARY_F4CKLOADER), "BINARY", image_base, image_size);
@@ -164,11 +169,23 @@ VOID FIXAPI ENBSeriesFixableRunHandler(VOID) {
 		return;
 	}
 
+	std::wstring wsMessage;
+
 	if (!ENBFix::FileExists(F4CK_LOADER_FILENAME)) {
+		wsMessage = 
+			L"Incompatible libraries found, and it will install the loader in the root directory of the game.\n\n"
+			L"Incompatible libraries:\n";
+
+		for each (auto it in ENBFix::dllFound) {
+			wsMessage += it;
+			wsMessage += L'\n';
+		}
+
+		wsMessage += L"Install the loader or close the Creation Kit?";
+
 		if (MessageBoxW(
 			0,
-			L"The ENBSeries mod is installed, Creation Kit cannot work with this mod, and it will install the loader in the root directory of the game.\n"
-			L"Install the loader or close the Creation Kit?.",
+			wsMessage.c_str(),
 			L"Question",
 			MB_YESNO | MB_ICONQUESTION) == IDNO) {
 			ENBFix::ReleaseFix();
@@ -177,11 +194,20 @@ VOID FIXAPI ENBSeriesFixableRunHandler(VOID) {
 
 	l_no_installed_loader:
 		if (!bResult) {
+			wsMessage = 
+				L"Failed to initialize ENB fixes, resource not found or failed to load.\n\n"
+				L"Delete the incompatible libraries yourself.\n";
+
+			for each (auto it in ENBFix::dllFound) {
+				wsMessage += it;
+				wsMessage += L'\n';
+			}
+
+			wsMessage += L"Contact the developer of \"F4 Creation Kit Fixes\".";
+
 			MessageBoxW(
 				0,
-				L"Failed to initialize ENB fixes, resource not found or failed to load.\n"
-				L"Delete the ENB files yourself.\n"
-				L"Contact the developer of \"F4 Creation Kit Fixes\".",
+				wsMessage.c_str(),
 				L"Error",
 				MB_OK | MB_ICONERROR);
 
@@ -190,13 +216,22 @@ VOID FIXAPI ENBSeriesFixableRunHandler(VOID) {
 		}
 
 		if (!ENBFix::InstallLoader(F4CK_LOADER_FILENAME)) {
-			MessageBoxW(
-				0,
+
+			wsMessage =
 				L"Couldn't save to the root game directory \""
 				F4CK_LOADER_FILENAME
 				L"\".\n"
-				L"Check if there are permissions for changes files in the root game directory.\n"
-				L"Or delete the ENB files yourself.",
+				L"Check if there are permissions for changes files in the root game directory.\n\n"
+				L"Or delete the ENB files yourself.\n";
+
+			for each (auto it in ENBFix::dllFound) {
+				wsMessage += it;
+				wsMessage += L'\n';
+			}
+
+			MessageBoxW(
+				0,
+				wsMessage.c_str(),
 				L"Error",
 				MB_OK | MB_ICONERROR);
 
@@ -229,11 +264,20 @@ VOID FIXAPI ENBSeriesFixableRunHandler(VOID) {
 		WCHAR szCommand[MAX_PATH + 1] = { 0 };
 		_snwprintf(szCommand, MAX_PATH, L"pid:%d", GetCurrentProcessId());
 		if ((INT_PTR)ShellExecuteW(NULL, L"open", F4CK_LOADER_FILENAME, szCommand, ENBFix::app_path.c_str(), SW_HIDE) <= 0x20) {
+			wsMessage =
+				L"Failed to start the loader.\n\n"
+				L"Delete the ENB files yourself.\n";
+
+			for each (auto it in ENBFix::dllFound) {
+				wsMessage += it;
+				wsMessage += L'\n';
+			}
+
+			wsMessage += L"Contact the developer of \"F4 Creation Kit Fixes\".";
+
 			MessageBoxW(
 				0,
-				L"Failed to start the loader.\n"
-				L"Delete the ENB files yourself.\n"
-				L"Contact the developer of \"F4 Creation Kit Fixes\".",
+				wsMessage.c_str(),
 				L"Error",
 				MB_OK | MB_ICONERROR);
 			ExitProcess(0);

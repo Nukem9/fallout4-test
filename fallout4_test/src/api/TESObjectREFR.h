@@ -37,9 +37,9 @@ namespace api {
 	public:
 		enum { mask_RefCount = 0x3FF };
 
-		inline DWORD GetRefCount(VOID) const { return m_ll64RefCount & mask_RefCount; }
+		inline DWORD GetRefCount(VOID) const { return ((DWORD)m_ll64RefCount) & mask_RefCount; }
 		inline VOID DecRefHandle(VOID) {
-			if ((InterlockedDecrement64(&m_ll64RefCount) & mask_RefCount) == 0)
+			if (((DWORD)(InterlockedDecrement64(&m_ll64RefCount)) & mask_RefCount) == 0)
 				DeleteThis();
 		}
 	};
