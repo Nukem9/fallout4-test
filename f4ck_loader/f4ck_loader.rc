@@ -135,7 +135,7 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDI_ICONAPP             ICON                    "D:\\Developers\\Projects\\Fallout4Test\\Resources\\0409\\11_2Tu_icon.ico"
+IDI_ICONAPP             ICON                    "..\\Resources\\0409\\11_2Tu_icon.ico"
 
 #endif    // Русский (Россия) resources
 /////////////////////////////////////////////////////////////////////////////
