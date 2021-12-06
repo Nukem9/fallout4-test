@@ -839,10 +839,12 @@ VOID FIXAPI MainFix_PatchFallout4CreationKit(VOID)
 	//
 	// Fix for the -GeneratePreCombined command line option creating files for the PS4 (2) format. It should be WIN64 (0).
 	//
-	auto genFormatFiles = (BYTE)g_INI->GetInteger("CreationKit_PreCombined", "GenerateFormatFiles", 0);
-	XUtil::PatchMemory(OFFSET(0xDCB7DB, 0), { genFormatFiles });
-	XUtil::PatchMemory(OFFSET(0x347E6E, 0), { genFormatFiles });
-	XUtil::PatchMemory(OFFSET(0xDCB677, 0), { genFormatFiles });
+	XUtil::PatchMemory(OFFSET(0xDCB7DB, 0), { 0x00, 0x00, 0x00, 0x00 });
+
+	if (nCountArgCmdLine != 1 && g_LoadType == GAME_EXECUTABLE_TYPE::CREATIONKIT_FALLOUT4 && !sCommandRun.Compare("-GeneratePreCombined")) {
+		XUtil::PatchMemory(OFFSET(0x347E6E, 0), { 0x00, 0x00, 0x00, 0x00 });
+		XUtil::PatchMemory(OFFSET(0xDCB677, 0), { 0x00, 0x00, 0x00, 0x00 });
+	}
 
 	if (nCountArgCmdLine == 1 && g_INI->GetBoolean("CreationKit", "SkipAnimationBuildProcessData", FALSE)) {
 		//
