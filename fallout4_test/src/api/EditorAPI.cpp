@@ -223,13 +223,19 @@ namespace api {
 				auto to = XUtil::Str::ChangeFileExt(fname, ".bak");
 
 				_MESSAGE_FMT("Beginning backup file: %s", to.c_str());
-				std::filesystem::copy_file(fname, to);
+				
+				if (!CopyFileA(fname.c_str(), to.c_str(), FALSE))
+					_MESSAGE_FMT("Failed CopyFileA return code %d", GetLastError());
+				// Crashes when copying a file some people, some crap, what's wrong with the world.
+				//std::filesystem::copy_file(fname, to);
+
 				_MESSAGE_FMT("End backup file: %s", to.c_str());
 
 				BOOL bResult = SaveTESFile(this, filename);
 				if (bResult) {
 					_MESSAGE("Successfully saving, deleting a backup copy.");
-					std::filesystem::remove(to);
+					DeleteFileA(to.c_str());
+					//std::filesystem::remove(to);
 				}
 
 				return bResult;
