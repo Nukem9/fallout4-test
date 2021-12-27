@@ -830,6 +830,9 @@ VOID FIXAPI MainFix_PatchFallout4CreationKit(VOID)
 	if (g_INI->GetBoolean("CreationKit", "SkipChangeWorldSpace", FALSE))
 		XUtil::PatchMemoryNop(OFFSET(0x5FBE14, 0), 0x13);
 
+	// Option for automatic load of archives
+	g_i8NeedLoadBA2 = g_INI->GetBoolean("CreationKit", "AutoloadBA2Files", FALSE);
+
 	//
 	// Fix for the -GeneratePreCombined command line option creating files for the PS4 (2) format. It should be WIN64 (0).
 	//

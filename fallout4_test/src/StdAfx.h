@@ -201,6 +201,7 @@ extern uintptr_t g_DataBase;	// .data
 extern uintptr_t g_DataEnd;
 
 extern int8_t g_i8DialogMode;
+extern int8_t g_i8NeedLoadBA2;
 
 enum class GAME_EXECUTABLE_TYPE {
 	UNKNOWN,

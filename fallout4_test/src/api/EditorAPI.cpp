@@ -98,21 +98,23 @@ namespace api {
 			g_SelectedFilesArray.push_back(File);
 		}
 
-		// Added .ba2 files
+		if (g_i8NeedLoadBA2) {
+			// Added .ba2 files
 
-		CHAR szBuf[MAX_PATH + 1];
-		if (!GetModuleFileNameA(GetModuleHandleA(NULL), szBuf, MAX_PATH))
-			_MESSAGE("ERROR: An error occurred while retrieving the root folder.");
-		else {
-			auto path = XUtil::Str::dirnameOf(szBuf) + "\\Data\\";
+			CHAR szBuf[MAX_PATH + 1];
+			if (!GetModuleFileNameA(GetModuleHandleA(NULL), szBuf, MAX_PATH))
+				_MESSAGE("ERROR: An error occurred while retrieving the root folder.");
+			else {
+				auto path = XUtil::Str::dirnameOf(szBuf) + "\\Data\\";
 
-			std::string sname = *File->FileName;
-			sname = sname.substr(0, sname.find_last_of('.'));
+				std::string sname = *File->FileName;
+				sname = sname.substr(0, sname.find_last_of('.'));
 
-			AttachBA2File((sname + " - Main.ba2").c_str(), path.c_str());
-			AttachBA2File((sname + " - Meshes.ba2").c_str(), path.c_str());
-			AttachBA2File((sname + " - Textures.ba2").c_str(), path.c_str());
-			AttachBA2File((sname + " - Materials.ba2").c_str(), path.c_str());
+				AttachBA2File((sname + " - Main.ba2").c_str(), path.c_str());
+				AttachBA2File((sname + " - Meshes.ba2").c_str(), path.c_str());
+				AttachBA2File((sname + " - Textures.ba2").c_str(), path.c_str());
+				AttachBA2File((sname + " - Materials.ba2").c_str(), path.c_str());
+			}
 		}
 
 		fastCall<VOID>(0x7FFF10, File);
@@ -132,57 +134,57 @@ namespace api {
 
 	VOID TESDataHandler::Initialize(VOID) {
 		FileHandler = (TESDataHandler*)OFFSET(0x6D67960, 0);
+		if (g_i8NeedLoadBA2) {
+			CHAR szBuf[MAX_PATH + 1];
+			if (!GetModuleFileNameA(GetModuleHandleA(NULL), szBuf, MAX_PATH))
+				_MESSAGE("ERROR: An error occurred while retrieving the root folder.");
+			else {
+				auto path = XUtil::Str::dirnameOf(szBuf);
+				//_MESSAGE_FMT("path: %s", path.c_str());
 
-		CHAR szBuf[MAX_PATH + 1];
-		if (!GetModuleFileNameA(GetModuleHandleA(NULL), szBuf, MAX_PATH))
-			_MESSAGE("ERROR: An error occurred while retrieving the root folder.");
-		else {
-			auto path = XUtil::Str::dirnameOf(szBuf);
-			//_MESSAGE_FMT("path: %s", path.c_str());
-
-			WIN32_FIND_DATA	FileFindData;
-			HANDLE hFindFile = FindFirstFileExA((path + "\\Data\\*.ba2").c_str(), FindExInfoStandard, &FileFindData, FindExSearchNameMatch, nullptr, FIND_FIRST_EX_LARGE_FETCH);
-			if (hFindFile != INVALID_HANDLE_VALUE) {
-				do {
-					std::string sname = FileFindData.cFileName;
-					g_ba2_list.emplace_back(XUtil::Str::LowerCase(sname));
-					//_MESSAGE_FMT("data: %s", FileFindData.cFileName);
-				} while (FindNextFile(hFindFile, &FileFindData));
-			}
-		}
-
-		// exclude .ba2 files
-
-		if (g_INI_CK_Cfg) {
-			auto func = [](const std::string& svalue) {
-				std::string sname;
-
-				if (svalue.length() > 0) {
-					LPSTR s_c = new CHAR[svalue.length() + 1];
-					strcpy(s_c, svalue.c_str());
-
-					LPSTR stoken = strtok(s_c, ",");
-					if (stoken) {
-						do {
-							sname = XUtil::Str::LowerCase(XUtil::Str::trim(stoken));
-							//_MESSAGE_FMT("data: %s", sname.c_str());
-
-							g_ba2_list.remove(sname);
-
-							stoken = strtok(NULL, ",");
-
-						} while (stoken);
-					}
-
-					delete[] s_c;
+				WIN32_FIND_DATA	FileFindData;
+				HANDLE hFindFile = FindFirstFileExA((path + "\\Data\\*.ba2").c_str(), FindExInfoStandard, &FileFindData, FindExSearchNameMatch, nullptr, FIND_FIRST_EX_LARGE_FETCH);
+				if (hFindFile != INVALID_HANDLE_VALUE) {
+					do {
+						std::string sname = FileFindData.cFileName;
+						g_ba2_list.emplace_back(XUtil::Str::LowerCase(sname));
+						//_MESSAGE_FMT("data: %s", FileFindData.cFileName);
+					} while (FindNextFile(hFindFile, &FileFindData));
 				}
-			};
+			}
+			// exclude .ba2 files
 
-			func(g_INI_CK_Cfg->Get("Archive", "sResourceArchiveList", ""));
-			func(g_INI_CK_Cfg->Get("Archive", "sResourceArchiveList2", ""));
-			func(g_INI_CK_Cfg->Get("Archive", "sResourceArchiveMemoryCacheList", ""));
-			func(g_INI_CK_Cfg->Get("Archive", "sResourceStartUpArchiveList", ""));
-			func(g_INI_CK_Cfg->Get("Archive", "sResourceIndexFileList", ""));
+			if (g_INI_CK_Cfg) {
+				auto func = [](const std::string& svalue) {
+					std::string sname;
+
+					if (svalue.length() > 0) {
+						LPSTR s_c = new CHAR[svalue.length() + 1];
+						strcpy(s_c, svalue.c_str());
+
+						LPSTR stoken = strtok(s_c, ",");
+						if (stoken) {
+							do {
+								sname = XUtil::Str::LowerCase(XUtil::Str::trim(stoken));
+								//_MESSAGE_FMT("data: %s", sname.c_str());
+
+								g_ba2_list.remove(sname);
+
+								stoken = strtok(NULL, ",");
+
+							} while (stoken);
+						}
+
+						delete[] s_c;
+					}
+				};
+
+				func(g_INI_CK_Cfg->Get("Archive", "sResourceArchiveList", ""));
+				func(g_INI_CK_Cfg->Get("Archive", "sResourceArchiveList2", ""));
+				func(g_INI_CK_Cfg->Get("Archive", "sResourceArchiveMemoryCacheList", ""));
+				func(g_INI_CK_Cfg->Get("Archive", "sResourceStartUpArchiveList", ""));
+				func(g_INI_CK_Cfg->Get("Archive", "sResourceIndexFileList", ""));
+			}
 		}
 
 		// Recognition of loaded files
