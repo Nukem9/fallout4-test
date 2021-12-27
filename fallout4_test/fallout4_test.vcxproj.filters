@@ -242,9 +242,6 @@
     <ClInclude Include="..\Dependencies\zipper\src\miniz.h">
       <Filter>__dependencies\zipper</Filter>
     </ClInclude>
-    <ClInclude Include="..\Dependencies\jDialogs\include\jdialogs.h">
-      <Filter>__dependencies\jDialogs</Filter>
-    </ClInclude>
     <ClInclude Include="src\patches\CKF4\UIDialogManager.h">
       <Filter>Header Files\UI\Classes</Filter>
     </ClInclude>
@@ -325,6 +322,9 @@
     </ClInclude>
     <ClInclude Include="src\patches\bhkThreadMemorySource.h">
       <Filter>Header Files\Patches</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Dependencies\jDialogs\include\jdialogs.h">
+      <Filter>__dependencies\jDialogs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -493,9 +493,6 @@
     <ClCompile Include="src\patches\CKF4\UIDialogManager.cpp">
       <Filter>Source Files\UI\Classes</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\jDialogs\jDialogs\include\jdialogs.cpp">
-      <Filter>__dependencies\jDialogs</Filter>
-    </ClCompile>
     <ClCompile Include="src\patches\deflate.cpp">
       <Filter>Source Files\Patches</Filter>
     </ClCompile>
@@ -564,6 +561,9 @@
     </ClCompile>
     <ClCompile Include="src\patches\CKF4\PreCombinedSeargeDP.cpp">
       <Filter>Source Files\Patches\CK</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Dependencies\jDialogs\include\jdialogs.cpp">
+      <Filter>__dependencies\jDialogs</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -266,12 +266,6 @@ VOID FIXAPI F_RequiredPatches(VOID) {
 	XUtil::DetourJump(OFFSET(0x27DAF60, 0), &BNetConvertUnicodeString);
 
 	//
-	// Fix file corruption
-	// I saw that Elianora had a crash and damaged the file .esp, let's complicate the save by creating a backup.
-	//
-	*(uintptr_t*)&api::TESDataHandler::SaveTESFile = Detours::X64::DetourFunctionClass(OFFSET(0x7DD740, 0), &api::TESDataHandler::hk_SaveTESFile);
-
-	//
 	// Change the default " 64-bit"
 	//
 	const char* newTitlePart = " Fallout 4 64-bit";
@@ -915,6 +909,14 @@ VOID FIXAPI MainFix_PatchFallout4CreationKit(VOID)
 		}
 	}
 	
+	//
+	// Fix file corruption
+	// I saw that Elianora had a crash and damaged the file .esp, let's complicate the save by creating a backup.
+	//
+	// There's not even anything to add, CK does it anyway
+	//if (g_INI->GetBoolean("CreationKit", "BackupPluginBySave", FALSE))
+	//	*(uintptr_t*)&api::TESDataHandler::SaveTESFile = Detours::X64::DetourFunctionClass(OFFSET(0x7DD740, 0), &api::TESDataHandler::hk_SaveTESFile);
+
 	//
 	// Force the render window to draw at 60fps while idle (SetTimer(1ms)). 
 	//

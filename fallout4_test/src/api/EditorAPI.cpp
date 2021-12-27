@@ -110,6 +110,7 @@ namespace api {
 			sname = sname.substr(0, sname.find_last_of('.'));
 
 			AttachBA2File((sname + " - Main.ba2").c_str(), path.c_str());
+			AttachBA2File((sname + " - Meshes.ba2").c_str(), path.c_str());
 			AttachBA2File((sname + " - Textures.ba2").c_str(), path.c_str());
 			AttachBA2File((sname + " - Materials.ba2").c_str(), path.c_str());
 		}
@@ -212,39 +213,39 @@ namespace api {
 		return thisCall<BOOL>(0x7D66A0, this);
 	}
 
-	BOOL TESDataHandler::hk_SaveTESFile(LPCSTR filename) {
-		CHAR szBuf[MAX_PATH + 1];
-		if (!GetModuleFileNameA(GetModuleHandleA(NULL), szBuf, MAX_PATH))
-			_MESSAGE("ERROR: An error occurred while retrieving the root folder.");
-		else {
-			auto fname = XUtil::Str::dirnameOf(szBuf) + "\\Data\\" + filename;
+	//BOOL TESDataHandler::hk_SaveTESFile(LPCSTR filename) {
+	//	CHAR szBuf[MAX_PATH + 1];
+	//	if (!GetModuleFileNameA(GetModuleHandleA(NULL), szBuf, MAX_PATH))
+	//		_MESSAGE("ERROR: An error occurred while retrieving the root folder.");
+	//	else {
+	//		auto fname = XUtil::Str::dirnameOf(szBuf) + "\\Data\\" + filename;
 
-			if (std::filesystem::exists(fname)) {
-				auto to = XUtil::Str::ChangeFileExt(fname, ".bak");
+	//		if (std::filesystem::exists(fname)) {
+	//			auto to = XUtil::Str::ChangeFileExt(fname, ".bak");
 
-				_MESSAGE_FMT("Beginning backup file: %s", to.c_str());
-				
-				if (!CopyFileA(fname.c_str(), to.c_str(), FALSE))
-					_MESSAGE_FMT("Failed CopyFileA return code %d", GetLastError());
-				// Crashes when copying a file some people, some crap, what's wrong with the world.
-				//std::filesystem::copy_file(fname, to);
+	//			_MESSAGE_FMT("Beginning backup file: %s", to.c_str());
+	//			
+	//			if (!CopyFileA(fname.c_str(), to.c_str(), FALSE))
+	//				_MESSAGE_FMT("Failed CopyFileA return code %d msg %s", GetLastError(), XUtil::Str::GetLastErrorToStr(__FUNCTION__).c_str());
+	//			// Crashes when copying a file some people, some crap, what's wrong with the world.
+	//			//std::filesystem::copy_file(fname, to);
 
-				_MESSAGE_FMT("End backup file: %s", to.c_str());
+	//			_MESSAGE_FMT("End backup file: %s", to.c_str());
 
-				BOOL bResult = SaveTESFile(this, filename);
-				if (bResult) {
-					_MESSAGE("Successfully saving, deleting a backup copy.");
-					DeleteFileA(to.c_str());
-					//std::filesystem::remove(to);
-				}
+	//			BOOL bResult = SaveTESFile(this, filename);
+	//			if (bResult) {
+	//				_MESSAGE("Successfully saving, deleting a backup copy.");
+	//				DeleteFileA(to.c_str());
+	//				//std::filesystem::remove(to);
+	//			}
 
-				return bResult;
-			}
-			else
-				return SaveTESFile(this, filename);
+	//			return bResult;
+	//		}
+	//		else
+	//			return SaveTESFile(this, filename);
 
-		}
+	//	}
 
-		return FALSE;
-	}
+	//	return FALSE;
+	//}
 }

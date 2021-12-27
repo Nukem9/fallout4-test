@@ -249,7 +249,7 @@
     <ClInclude Include="src\Utilities.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\jDialogs\jDialogs\include\jdialogs.cpp" />
+    <ClCompile Include="..\Dependencies\jDialogs\include\jdialogs.cpp" />
     <ClCompile Include="..\Dependencies\zipper\src\zip.c" />
     <ClCompile Include="src\api\BGLayer.cpp" />
     <ClCompile Include="src\api\NiMain\GameAPI.cpp" />
