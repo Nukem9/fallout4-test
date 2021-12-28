@@ -291,10 +291,10 @@ VOID FIXAPI Fix_PatchMemory(VOID) {
 	INT32 cpuinfo[4];
 	__cpuid(cpuinfo, 1);
 	if ((cpuinfo[2] & (1 << 19)) != 0) {
-		PatchIAT(XUtil::MemCopySSE3, "API-MS-WIN-CRT-HEAP-L1-1-0.DLL", "memcpy");
-		PatchIAT(XUtil::MemCopySSE3, "API-MS-WIN-CRT-HEAP-L1-1-0.DLL", "memmove");
-		PatchIAT(XUtil::MemCopySSE3, "MSVCR110.dll", "memcpy");
-		PatchIAT(XUtil::MemCopySSE3, "MSVCR110.dll", "memmove");
+		PatchIAT(memcpy, "API-MS-WIN-CRT-HEAP-L1-1-0.DLL", "memcpy");
+		PatchIAT(memcpy, "API-MS-WIN-CRT-HEAP-L1-1-0.DLL", "memmove");
+		PatchIAT(memcpy, "MSVCR110.dll", "memcpy");
+		PatchIAT(memcpy, "MSVCR110.dll", "memmove");
 		PatchIAT(memcpy_s, "API-MS-WIN-CRT-HEAP-L1-1-0.DLL", "memcpy_s");
 		PatchIAT(memcpy_s, "API-MS-WIN-CRT-HEAP-L1-1-0.DLL", "memmove_s");
 		PatchIAT(memcpy_s, "MSVCR110.dll", "memcpy_s");

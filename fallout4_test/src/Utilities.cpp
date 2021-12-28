@@ -78,46 +78,46 @@ void XUtil::XAssert(const char* File, int Line, const char* Format, ...) {
 	__assume(0);
 }
 
-void* XUtil::MemCopySSE3(void* dest, const void* src, const size_t size) {
-	if (size < 128)
-		return memcpy(dest, src, size);
-
-	__m128i* ptrDest = (__m128i*)dest;
-	__m128i* ptrSource = (__m128i*)src;
-
-	DWORD nCount = size >> 7;
-	DWORD nCountSafe = nCount;
-
-	do {
-		__m128i xmm0 = _mm_lddqu_si128(ptrSource);
-		__m128i xmm1 = _mm_lddqu_si128(ptrSource + 1);
-		__m128i xmm2 = _mm_lddqu_si128(ptrSource + 2);
-		__m128i xmm3 = _mm_lddqu_si128(ptrSource + 3);
-		__m128i xmm4 = _mm_lddqu_si128(ptrSource + 4);
-		__m128i xmm5 = _mm_lddqu_si128(ptrSource + 5);
-		__m128i xmm6 = _mm_lddqu_si128(ptrSource + 6);
-		__m128i xmm7 = _mm_lddqu_si128(ptrSource + 7);
-
-		_mm_storeu_si128(ptrDest, xmm0);
-		_mm_storeu_si128(ptrDest + 1, xmm1);
-		_mm_storeu_si128(ptrDest + 2, xmm2);
-		_mm_storeu_si128(ptrDest + 3, xmm3);
-		_mm_storeu_si128(ptrDest + 4, xmm4);
-		_mm_storeu_si128(ptrDest + 5, xmm5);
-		_mm_storeu_si128(ptrDest + 6, xmm6);
-		_mm_storeu_si128(ptrDest + 7, xmm7);
-
-		ptrDest += 8;
-		ptrSource += 8;
-		nCount--;
-	} while (nCount);
-
-	nCount = size % 128;
-	if (nCount)
-		return memcpy(ptrDest, ptrSource, nCount);
-
-	return dest;
-}
+//void* XUtil::MemCopySSE3(void* dest, const void* src, const size_t size) {
+//	if (size < 128)
+//		return memcpy(dest, src, size);
+//
+//	__m128i* ptrDest = (__m128i*)dest;
+//	__m128i* ptrSource = (__m128i*)src;
+//
+//	DWORD nCount = size >> 7;
+//	DWORD nCountSafe = nCount;
+//
+//	do {
+//		__m128i xmm0 = _mm_lddqu_si128(ptrSource);
+//		__m128i xmm1 = _mm_lddqu_si128(ptrSource + 1);
+//		__m128i xmm2 = _mm_lddqu_si128(ptrSource + 2);
+//		__m128i xmm3 = _mm_lddqu_si128(ptrSource + 3);
+//		__m128i xmm4 = _mm_lddqu_si128(ptrSource + 4);
+//		__m128i xmm5 = _mm_lddqu_si128(ptrSource + 5);
+//		__m128i xmm6 = _mm_lddqu_si128(ptrSource + 6);
+//		__m128i xmm7 = _mm_lddqu_si128(ptrSource + 7);
+//
+//		_mm_storeu_si128(ptrDest, xmm0);
+//		_mm_storeu_si128(ptrDest + 1, xmm1);
+//		_mm_storeu_si128(ptrDest + 2, xmm2);
+//		_mm_storeu_si128(ptrDest + 3, xmm3);
+//		_mm_storeu_si128(ptrDest + 4, xmm4);
+//		_mm_storeu_si128(ptrDest + 5, xmm5);
+//		_mm_storeu_si128(ptrDest + 6, xmm6);
+//		_mm_storeu_si128(ptrDest + 7, xmm7);
+//
+//		ptrDest += 8;
+//		ptrSource += 8;
+//		nCount--;
+//	} while (nCount);
+//
+//	nCount = size % 128;
+//	if (nCount)
+//		return memcpy(ptrDest, ptrSource, nCount);
+//
+//	return dest;
+//}
 
 uint64_t XUtil::MurmurHash64A(const void* Key, size_t Len, uint64_t Seed) {
 	/*-----------------------------------------------------------------------------
