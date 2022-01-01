@@ -38,6 +38,8 @@ namespace RenderWindow
 		BOOL QRemove(TESObjectREFR* form);
 		VOID QDump(VOID);
 	public:
+		__forceinline const BSTArray<TESObjectREFR*>* GetForms() const { return &forms; }
+	public:
 		static VOID hk_Add(HWND hCtlWnd, INT index, BOOL no_unselect);
 		static VOID hk_Remove(HWND hCtlWnd, TESObjectREFR* form);
 	public:

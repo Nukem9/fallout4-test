@@ -261,6 +261,11 @@ VOID FIXAPI F_RequiredPatches(VOID) {
 	XUtil::PatchMemory(OFFSET(0x5C180B, 0), { 0xEB, 0x10 });
 	
 	//
+	// Fix movable Ligth refr
+	//
+	*(uintptr_t*)&api::TESObjectREFR::SetNewPosition = Detours::X64::DetourFunctionClass(OFFSET(0xE24B10, 0), &api::TESObjectREFR::hk_SetNewPosition);
+	
+	//
 	// Fix crash when Unicode string conversion fails with bethesda.net http responses
 	//
 	XUtil::DetourJump(OFFSET(0x27DAF60, 0), &BNetConvertUnicodeString);

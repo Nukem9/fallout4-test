@@ -565,6 +565,9 @@
     <ClCompile Include="..\Dependencies\jDialogs\include\jdialogs.cpp">
       <Filter>__dependencies\jDialogs</Filter>
     </ClCompile>
+    <ClCompile Include="src\api\TESObjectREFR.cpp">
+      <Filter>Source Files\api</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Resources\f4ck_loader.bin">

@@ -28,8 +28,6 @@
 #include "TESForm.h"
 #include "TESCell.h"
 
-#pragma pack(push, 1)
-
 namespace api {
 
 	// 10
@@ -85,7 +83,8 @@ namespace api {
 		READ_PROPERTY(GetPositionConst) const NiPoint3* PositionConst;
 		READ_PROPERTY(GetRotate) NiPoint3* Rotate;
 		READ_PROPERTY(GetRotateConst) const NiPoint3* RotateConst;
+	public:
+		inline static VOID(*SetNewPosition)(TESObjectREFR*, NiPoint3*);
+		VOID hk_SetNewPosition(NiPoint3* newPos);
 	};
 }
-
-#pragma pack(pop)
