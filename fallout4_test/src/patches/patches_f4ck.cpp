@@ -261,11 +261,6 @@ VOID FIXAPI F_RequiredPatches(VOID) {
 	XUtil::PatchMemory(OFFSET(0x5C180B, 0), { 0xEB, 0x10 });
 	
 	//
-	// Fix movable Ligth refr
-	//
-	*(uintptr_t*)&api::TESObjectREFR::SetNewPosition = Detours::X64::DetourFunctionClass(OFFSET(0xE24B10, 0), &api::TESObjectREFR::hk_SetNewPosition);
-	
-	//
 	// Fix crash when Unicode string conversion fails with bethesda.net http responses
 	//
 	XUtil::DetourJump(OFFSET(0x27DAF60, 0), &BNetConvertUnicodeString);
@@ -441,6 +436,10 @@ VOID FIXAPI F_UIPatches(VOID) {
 	// RENDER: Clinging to have a list of selected forms
 	XUtil::DetourJump(OFFSET(0x563BF0, 0), RenderWindow::IPicker::hk_Add);
 	XUtil::DetourJump(OFFSET(0x563C90, 0), RenderWindow::IPicker::hk_Remove);
+	//
+	// Fix movable Ligth refr
+	//
+	*(uintptr_t*)&api::TESObjectREFR::SetNewPosition = Detours::X64::DetourFunctionClass(OFFSET(0xE24B10, 0), &api::TESObjectREFR::hk_SetNewPosition);
 
 	if (UITheme::IsEnabledMode()) {
 		*(uintptr_t*)&PreferencesWindow::OldDlgProc = OFFSET(0x1335AF0, 0);
@@ -518,6 +517,13 @@ VOID FIXAPI F_UIPatches(VOID) {
 
 	// Cancel resize World Space combo
 	XUtil::PatchMemoryNop(OFFSET(0x59DA1D, 0), 5);
+
+	//
+	// Fix for crash when editing a spell effect with a large (>= 1'000'000'000) duration. WARNING: Stack padding allows the buffer
+	// to be up to 12 bytes, 10 are originally reserved.
+	//
+	XUtil::PatchMemory(OFFSET(0xF4D344, 0), { 0xBA, 0x0C, 0x00, 0x00, 0x00 });
+	XUtil::PatchMemory(OFFSET(0xF4D45C, 0), { 0xBA, 0x0C, 0x00, 0x00, 0x00 });
 
 	//
 	// Version Control fixes
@@ -924,6 +930,43 @@ VOID FIXAPI MainFix_PatchFallout4CreationKit(VOID)
 	// There's not even anything to add, CK does it anyway
 	//if (g_INI->GetBoolean("CreationKit", "BackupPluginBySave", FALSE))
 	//	*(uintptr_t*)&api::TESDataHandler::SaveTESFile = Detours::X64::DetourFunctionClass(OFFSET(0x7DD740, 0), &api::TESDataHandler::hk_SaveTESFile);
+
+	//
+	// Remove assertion message boxes
+	//
+	if (g_INI->GetBoolean("CreationKit", "DisableAssertions", FALSE)) {
+		XUtil::PatchMemoryNop(OFFSET(0x2001B80, 0), 5);
+		XUtil::PatchMemoryNop(OFFSET(0x2001C06, 0), 5);
+		XUtil::PatchMemoryNop(OFFSET(0x2001C77, 0), 5);
+		XUtil::PatchMemoryNop(OFFSET(0x2001CF4, 0), 5);
+	}
+
+	//
+	// Workaround for ref links and enable state parent links (2D lines) causing the CK to hang indefinitely when too many objects
+	// are selected. This hack prevents said lines from being created or rendered.
+	//
+	if (g_INI->GetBoolean("CreationKit", "RefLinkGeometryHangWorkaround", FALSE)) {
+		XUtil::PatchMemoryNop(OFFSET(0xE7062E, 0), 5);
+		XUtil::PatchMemoryNop(OFFSET(0xE970DC, 0), 5);
+	}
+
+	//
+	// Workaround for version control not allowing merges when a plugin index is above 02. Bethesda's VC bitmap files determine
+	// check-in status along with user IDs for each specific form in the game. They're also hardcoded for 2 masters only. Using
+	// this hack for anything EXCEPT merging will break the bitmaps.
+	//
+	if (g_INI->GetBoolean("CreationKit", "VersionControlMergeWorkaround", FALSE)) {
+		XUtil::PatchMemory(OFFSET(0x61C86F, 0), { 0xEB });
+		XUtil::PatchMemory(OFFSET(0x61E667, 0), { 0xEB });
+		XUtil::PatchMemory(OFFSET(0x61EB57, 0), { 0xEB });
+		XUtil::PatchMemory(OFFSET(0x61EFB8, 0), { 0xEB });
+		XUtil::PatchMemory(OFFSET(0x6270DE, 0), { 0xEB });
+		XUtil::PatchMemory(OFFSET(0x61C892, 0), { 0xEB });
+		XUtil::PatchMemory(OFFSET(0x61E68A, 0), { 0xEB });
+		XUtil::PatchMemory(OFFSET(0x61EB7A, 0), { 0xEB });
+		XUtil::PatchMemory(OFFSET(0x61EFDB, 0), { 0xEB });
+		XUtil::PatchMemory(OFFSET(0x6270FF, 0), { 0xEB });
+	}
 
 	//
 	// Force the render window to draw at 60fps while idle (SetTimer(1ms)). 
