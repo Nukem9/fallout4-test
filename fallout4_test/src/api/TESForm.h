@@ -28,6 +28,11 @@
 #pragma pack(push, 1)
 
 namespace api {
+	class TESForm;
+
+	typedef BSTArray<TESForm*>	TESFormArray;
+	typedef BSTArray<DWORD>		TESFormIDArray;
+
 	class TESForm : public TESPersistent {
 	public:
 		// Form Type
@@ -243,6 +248,12 @@ namespace api {
 		inline DWORD GetFormFlags(VOID) const { return _FormFlags; }
 		inline DWORD GetFormID(VOID) const { return _FormID; }
 	public:
+		static LPVOID AlteredFormList_Create(TESFormArray* Array, uint32_t Unknown);
+		static VOID	AlteredFormList_RemoveAllEntries(TESFormArray* Array);
+		static VOID	AlteredFormList_Insert(TESFormArray* Array, TESForm*& Entry, uint64_t Unknow1, uint32_t Unknow2);
+		static VOID	AlteredFormList_RemoveEntry(TESFormArray* Array, uint32_t Index, uint32_t Unknown);
+		static BOOL	AlteredFormList_ElementExists(TESFormArray* Array, TESForm*& Entry);
+	public:
 		READ_PROPERTY(IsModified) BOOL Active;
 		READ_PROPERTY(GetFormID) DWORD FormID;
 		READ_PROPERTY(GetFormFlags) DWORD FormFlag;
@@ -252,9 +263,6 @@ namespace api {
 	static_assert(sizeof(TESForm) == 0x28, "TESForm class should be the size of 0x28");
 
 	TESForm* GetFormByNumericID(const DWORD SearchID);
-
-	typedef BSTArray<TESForm*>	TESFormArray;
-	typedef BSTArray<DWORD>		TESFormIDArray;
 }
 
 // 400 dublicate function (parent form, refr form, stack, bool)

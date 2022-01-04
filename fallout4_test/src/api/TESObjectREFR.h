@@ -87,4 +87,11 @@ namespace api {
 		inline static VOID(*SetNewPosition)(TESObjectREFR*, NiPoint3*);
 		VOID hk_SetNewPosition(NiPoint3* newPos);
 	};
+
+	/*namespace mapREFR {
+		VOID RemoveAllEntries(VOID);
+		TESObjectREFR* Find(uint64_t Key);
+		VOID RemoveEntry(uint64_t Key);
+		BOOL Get(uint64_t Unused, uint64_t Key, TESFormArray** Value);
+	}*/
 }

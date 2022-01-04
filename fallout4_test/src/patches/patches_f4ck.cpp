@@ -48,6 +48,9 @@
 // include json generator dialogs
 #include "CKF4/UIDialogManager.h"
 
+// API
+#include "../api/TESObjectREFR.h"
+
 /*
 
 This file is part of Fallout 4 Fixes source code.
@@ -124,6 +127,22 @@ VOID FIXAPI F_RequiredPatches(VOID) {
 	XUtil::PatchMemory(OFFSET(0x7D9F93, 0), { 0xEB, 0x40 });
 	// Ignore bAllowMultipleEditors
 	XUtil::PatchMemory(OFFSET(0x5B5A53, 0), { 0xEB });
+	
+	//
+	// TESForm
+	//
+	//XUtil::DetourJump(OFFSET(0xB3EE90, 0), &api::mapREFR::RemoveAllEntries);
+	//XUtil::DetourJump(OFFSET(0x853220, 0), &api::mapREFR::Find);
+	//XUtil::DetourJump(OFFSET(0x85B9D0, 0), &api::mapREFR::RemoveEntry);
+	//XUtil::DetourJump(OFFSET(0x146C130, 0), &api::mapREFR::Get);
+
+	XUtil::PatchMemory(OFFSET(0x85B331, 0), { 0xCC });
+	XUtil::DetourCall(OFFSET(0x85B6E8, 0), &api::TESForm::AlteredFormList_Create);
+	XUtil::DetourCall(OFFSET(0x7DA96C, 0), &api::TESForm::AlteredFormList_RemoveAllEntries);
+	XUtil::DetourCall(OFFSET(0x853E7B, 0), &api::TESForm::AlteredFormList_Insert);
+	XUtil::DetourCall(OFFSET(0x8539DE, 0), &api::TESForm::AlteredFormList_RemoveEntry);
+	XUtil::DetourCall(OFFSET(0x853F2B, 0), &api::TESForm::AlteredFormList_RemoveEntry);
+	XUtil::DetourCall(OFFSET(0x853E47, 0), &api::TESForm::AlteredFormList_ElementExists);
 
 	// Disable useless "Processing Topic X..." status bar updates
 	XUtil::PatchMemoryNop(OFFSET(0xB89897, 0), 5);
@@ -133,7 +152,9 @@ VOID FIXAPI F_RequiredPatches(VOID) {
 	// Fixes sky and fog
 	PatchSky();
 
-	// BSString::Set replace
+	//
+	// BSString
+	//
 	XUtil::DetourJump(OFFSET(0x117C90, 0), &BSString::Set);
 
 	// no support cmd line
@@ -232,6 +253,22 @@ VOID FIXAPI F_RequiredPatches(VOID) {
 	// Raise the papyrus script editor text limit to 500k characters from 64k
 	//
 	XUtil::DetourCall(OFFSET(0x12E852C, 0), &hk_call_12E852C);
+
+	//
+	// Fix for crash when plugins.txt is present in the game root folder. Buffer overflow in ArchiveManager::OpenMasterArchives when appending
+	// to a string. Skip the parsing code completely.
+	//
+	XUtil::PatchMemoryNop(OFFSET(0x249EFD7, 0), 6);
+
+	//
+	// Allow the "PlayerKnows" conditional function to accept enchantments as a function parameter
+	//
+	//XUtil::DetourJump(OFFSET(0x6450B0, 0), &hk_sub_6450B0);
+
+	//
+	// Assert if D3D11 FL11 features are not supported
+	//
+	XUtil::DetourCall(OFFSET(0x2A48B0B, 0), &hk_call_142D12196);
 
 	//
 	// Fix for crash (nullptr no test) when close CK with Sky enable 

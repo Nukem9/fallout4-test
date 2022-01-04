@@ -1006,6 +1006,17 @@ VOID FIXAPI SkipAnimationTextExport(VOID) {
 	CK_Settings[35].ExtremelyValue = "1";
 }
 
+VOID FIXAPI hk_call_142D12196(VOID) {
+	AssertMsg(FALSE, "Creation Kit renderer initialization failed because your graphics card doesn't support D3D11 Feature Level 11 (FL11_0). Updating your drivers may fix this.");
+}
+
+//VOID FIXAPI hk_sub_6450B0(HWND ControlHandle) {
+	//auto sub_644CC0 = (void(*)(HWND, uint8_t, bool, __int64, __int64, __int64, __int64, __int64))OFFSET(0x644CC0, 0);
+
+	//sub_644CC0(ControlHandle, 18, true, 0, 0, 0, 0, 0);	// MGEF Magic Effect
+	//sub_644CC0(ControlHandle, 21, false, 0, 0, 0, 0, 0);	// ENCH Enchantment
+//}
+
 VOID FIXAPI PatchCmdLineWithQuote(VOID) {
 	//	Add support quote to command line with -GeneratePreCombined
 	//	Should be: -GeneratePreCombined:"<ESMFilename>" [clean, filtered] [all, other, main, ints]

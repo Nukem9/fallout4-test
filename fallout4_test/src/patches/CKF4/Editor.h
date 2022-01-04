@@ -52,6 +52,8 @@ DWORD FIXAPI GetCountItemInLayer(LPVOID unknown, api::BGLayer* layer);
 
 VOID FIXAPI QuitHandler(VOID);
 
+VOID FIXAPI hk_call_142D12196(VOID);
+//VOID FIXAPI hk_sub_6450B0(HWND ControlHandle);
 VOID FIXAPI hk_call_140906407(INT64 a1, INT64 a2, INT64 a3);
 BOOL FIXAPI hk_call_12E852C(HWND RichEditControl, LPCSTR Text);
 VOID FIXAPI PatchTemplatedFormIterator(VOID);

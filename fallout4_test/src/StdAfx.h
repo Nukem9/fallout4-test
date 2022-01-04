@@ -126,11 +126,13 @@
 #include <d3d11_2.h>
 
 // TBBMalloc
-#include <tbb/scalable_allocator.h>
-#include <tbb/concurrent_unordered_map.h>
 #define TBB_PREVIEW_CONCURRENT_ORDERED_CONTAINERS 1
+#include <tbb/scalable_allocator.h>
 #include <tbb/concurrent_vector.h>
 #include <tbb/concurrent_map.h>
+#include <tbb/concurrent_set.h>
+#include <tbb/concurrent_unordered_map.h>
+#include <tbb/concurrent_unordered_set.h>
 
 // jDialogs
 #define JDIALOG_NO_FUNCTIONS_CREATE_CONTROLS
