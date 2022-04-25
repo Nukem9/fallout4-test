@@ -47,11 +47,6 @@ After compiling the code, dynamic libraries are created: *tbb.dll*, *tbbmalloc.d
 (Optional *CreationKitUnicodePlugin.dll* to compile, use **Lazarus 1.8.2 and higher**)  
 You should place all .dll *(Exception winhttp.dll)* this in the **/Data/F4CKFixes/bin folder** and *winhttp.dll* to root game folder.
 Place dialogs in the **/Data/F4CKFixes/dia** folder or pack it into a zip archive and place it in the **/Data/F4CKFixes** folder.  
-**ImGui** uses fonts that should be in the folder **/Data/F4CKFixes/fonts**.  
- 
-You can download it here *(actual 04/08/2022)*:
-* [Ruda Font](https://fonts.google.com/specimen/Ruda);
-* [MaterialIcons Font](https://github.com/google/material-design-icons/blob/master/font/MaterialIcons-Regular.ttf);
 
 # Mod Settings
 To hide errors, create a file *CreationKitWarnings.txt*.  
