@@ -43,11 +43,12 @@ $currDate = (Get-Date)
 $versionFileInfo = $versionFileInfo -Replace "<COMMITID>", $commitId
 $versionFileInfo = $versionFileInfo -Replace "<DATE>", $currDate
 
-$targetDir = "fallout4_test\src\"
+#$targetDir = "fallout4_test\src\"
 
-if (!(Test-Path -Path $targetDir)) {
-    $targetDir = "src\"
-}
+#if (!(Test-Path -Path $targetDir)) {
+#    $targetDir = "src\"
+#}
+$targetDir = ""
 
 $versionFileInfo | Out-File -FilePath ($targetDir + "version_info.h") -Encoding ASCII
 }

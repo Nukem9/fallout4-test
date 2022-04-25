@@ -1,0 +1,392 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Release-AVX|x64">
+      <Configuration>Release-AVX</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{BF4A1EFE-0BD9-49A1-BC02-2FA53027B0D7}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>fallout4_test</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+    <InterproceduralOptimization>true</InterproceduralOptimization>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-AVX|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+    <InterproceduralOptimization>true</InterproceduralOptimization>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.props" />
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release-AVX|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(WindowsSDK_IncludePath);$(VC_IncludePath);$(SolutionDir)[Depends]\detours;$(SolutionDir)[Depends]\zydis\msvc\zydis;$(SolutionDir)[Depends]\zydis\include;$(SolutionDir)[Depends]\tbb\include;$(SolutionDir)[Depends];$(SolutionDir);$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)x64\Release-MT\;$(OutDir);$(LibraryPath)</LibraryPath>
+    <TargetName>winhttp</TargetName>
+    <IntDir>$(SolutionDir)x64\$(ProjectName)\</IntDir>
+    <PreBuildEventUseInBuild>true</PreBuildEventUseInBuild>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-AVX|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(WindowsSDK_IncludePath);$(VC_IncludePath);$(SolutionDir)[Depends]\detours;$(SolutionDir)[Depends]\zydis\msvc\zydis;$(SolutionDir)[Depends]\zydis\include;$(SolutionDir)[Depends]\tbb\include;$(SolutionDir)[Depends];$(SolutionDir);$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)x64\Release-MT\;$(OutDir);$(LibraryPath)</LibraryPath>
+    <TargetName>winhttp</TargetName>
+    <IntDir>$(SolutionDir)x64\$(ProjectName)\</IntDir>
+    <PreBuildEventUseInBuild>true</PreBuildEventUseInBuild>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <PreprocessorDefinitions>JDIALOG_4x4_DIALOG_UINT;NOMINMAX;NDEBUG;_WINDOWS;_USRDLL;FALLOUT4=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <UseMSVC>false</UseMSVC>
+      <GenerateAlternateCodePaths>AVX2</GenerateAlternateCodePaths>
+      <UseProcessorExtensions>HOST</UseProcessorExtensions>
+      <Mtune>Broadwell</Mtune>
+      <CCppSupport>Cpp17Support</CCppSupport>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalOptions>/D "NOMINMAX" /D "ZYDIS_STATIC_DEFINE"  /D "TRACY_ON_DEMAND" /D "_REENTRANT" /D "JEMALLOC_EXPORT=" %(AdditionalOptions)</AdditionalOptions>
+      <OmitFramePointers>true</OmitFramePointers>
+      <DisableSpecificWarnings>4430;4267;4302;4311;4312;4996;4244;4477;26495;26451;26812</DisableSpecificWarnings>
+      <FloatingPointExceptions>true</FloatingPointExceptions>
+      <LanguageStandard_C>Default</LanguageStandard_C>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+      <StructMemberAlignment>Default</StructMemberAlignment>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <CallingConvention>FastCall</CallingConvention>
+      <ForcedIncludeFiles>
+      </ForcedIncludeFiles>
+      <AssemblerOutput>NoListing</AssemblerOutput>
+      <ExceptionHandling>Async</ExceptionHandling>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <AdditionalOptions>/ignore:4104 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalLibraryDirectories>..\x64\Release-MT;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <StackReserveSize>32768</StackReserveSize>
+      <AdditionalDependencies>delayimp.lib;comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <StackCommitSize>32768</StackCommitSize>
+      <MinimumRequiredVersion>6.1</MinimumRequiredVersion>
+      <DelayLoadDLLs>tbb.dll;tbbmalloc.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <SupportUnloadOfDelayLoadedDLL>true</SupportUnloadOfDelayLoadedDLL>
+      <SupportNobindOfDelayLoadedDLL>true</SupportNobindOfDelayLoadedDLL>
+    </Link>
+    <PreBuildEvent>
+      <Command>powershell -ExecutionPolicy Bypass -File "$(SolutionDir)release.ps1" 4</Command>
+    </PreBuildEvent>
+    <PreBuildEvent>
+      <Message>Update version_info.h</Message>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release-AVX|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <PreprocessorDefinitions>JDIALOG_4x4_DIALOG_UINT;NOMINMAX;NDEBUG;_WINDOWS;_USRDLL;FALLOUT4=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <UseMSVC>false</UseMSVC>
+      <GenerateAlternateCodePaths>AVX2</GenerateAlternateCodePaths>
+      <UseProcessorExtensions>HOST</UseProcessorExtensions>
+      <Mtune>Broadwell</Mtune>
+      <CCppSupport>Cpp17Support</CCppSupport>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalOptions>/D "NOMINMAX" /D "ZYDIS_STATIC_DEFINE"  /D "TRACY_ON_DEMAND" /D "_REENTRANT" /D "JEMALLOC_EXPORT=" %(AdditionalOptions)</AdditionalOptions>
+      <OmitFramePointers>true</OmitFramePointers>
+      <DisableSpecificWarnings>4430;4267;4302;4311;4312;4996;4244;4477;26495;26451;26812</DisableSpecificWarnings>
+      <FloatingPointExceptions>true</FloatingPointExceptions>
+      <LanguageStandard_C>Default</LanguageStandard_C>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
+      <StructMemberAlignment>Default</StructMemberAlignment>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <CallingConvention>FastCall</CallingConvention>
+      <ForcedIncludeFiles>
+      </ForcedIncludeFiles>
+      <AssemblerOutput>NoListing</AssemblerOutput>
+      <UseUnicodeForAssemblerListing>false</UseUnicodeForAssemblerListing>
+      <ModuleOutputFile>$(IntDir)</ModuleOutputFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <AdditionalOptions>/ignore:4104 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalLibraryDirectories>..\x64\Release-MT-AVX;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <StackReserveSize>32768</StackReserveSize>
+      <AdditionalDependencies>comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <StackCommitSize>32768</StackCommitSize>
+      <MinimumRequiredVersion>6.1</MinimumRequiredVersion>
+    </Link>
+    <PreBuildEvent>
+      <Command>powershell -ExecutionPolicy Bypass -File "$(SolutionDir)release.ps1" 4</Command>
+    </PreBuildEvent>
+    <PreBuildEvent>
+      <Message>Update version_info.h</Message>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="[Common]\CommInc.h" />
+    <ClInclude Include="[Common]\D3D11Proxy.h" />
+    <ClInclude Include="[Common]\EraseIf.h" />
+    <ClInclude Include="[Common]\IMemory.h" />
+    <ClInclude Include="[Common]\INIReader.h" />
+    <ClInclude Include="[Common]\IMemoryManager.h" />
+    <ClInclude Include="[Common]\IProcessMessage.h" />
+    <ClInclude Include="[Common]\IProgressTaskBar.h" />
+    <ClInclude Include="[Common]\MSRTTI.h" />
+    <ClInclude Include="[Common]\Offsets.h" />
+    <ClInclude Include="[Common]\ProfilerInternal.h" />
+    <ClInclude Include="[Common]\StdAfx.h" />
+    <ClInclude Include="[Common]\UtfStr.h" />
+    <ClInclude Include="[Common]\Utilities.h" />
+    <ClInclude Include="[Depends]\jDialogs\include\jdialogs.h" />
+    <ClInclude Include="[Depends]\zipper\src\miniz.h" />
+    <ClInclude Include="[Depends]\zipper\src\zip.h" />
+    <ClInclude Include="[EditorAPI]\BGSPrimitive.h" />
+    <ClInclude Include="[EditorAPI]\BSArchive.h" />
+    <ClInclude Include="[EditorAPI]\BSArchiveManager.h" />
+    <ClInclude Include="[EditorAPI]\BSEntryString.h" />
+    <ClInclude Include="[EditorAPI]\BSFile.h" />
+    <ClInclude Include="[EditorAPI]\BSFixedString.h" />
+    <ClInclude Include="[EditorAPI]\BSResourceLooseFiles.h" />
+    <ClInclude Include="[EditorAPI]\BSString.h" />
+    <ClInclude Include="[EditorAPI]\BSStringCache.h" />
+    <ClInclude Include="[EditorAPI]\BSTArray.h" />
+    <ClInclude Include="[EditorAPI]\BSTList.h" />
+    <ClInclude Include="[EditorAPI]\Core.h" />
+    <ClInclude Include="[EditorAPI]\NiClasses.h" />
+    <ClInclude Include="[EditorAPI]\NiEvents.h" />
+    <ClInclude Include="[EditorAPI]\NiMemoryManager.h" />
+    <ClInclude Include="[EditorAPI]\NiRefObject.h" />
+    <ClInclude Include="[EditorAPI]\NiTypes.h" />
+    <ClInclude Include="[EditorAPI]\Settings.h" />
+    <ClInclude Include="[EditorAPI]\TESActorValue.h" />
+    <ClInclude Include="[EditorAPI]\TESFile.h" />
+    <ClInclude Include="[EditorAPI]\TESForm.h" />
+    <ClInclude Include="[EditorAPI]\TESFormComponents.h" />
+    <ClInclude Include="[EditorAPI]\TESObject.h" />
+    <ClInclude Include="[EditorAPI]\TESObjectCELL.h" />
+    <ClInclude Include="[EditorAPI]\BGSLayer.h" />
+    <ClInclude Include="[EditorAPI]\TESObjectDOOR.h" />
+    <ClInclude Include="[EditorAPI]\TESObjectMSTT.h" />
+    <ClInclude Include="[EditorAPI]\TESObjectREFR.h" />
+    <ClInclude Include="[EditorAPI]\TESObjectSCOL.h" />
+    <ClInclude Include="[EditorAPI]\TESObjectSTAT.h" />
+    <ClInclude Include="[EditorAPI]\TESRender.h" />
+    <ClInclude Include="[Patches]\bhkThreadMemorySource.h" />
+    <ClInclude Include="[Patches]\boost_search_array.h" />
+    <ClInclude Include="[Patches]\CKF4\ActorWindow.h" />
+    <ClInclude Include="[Patches]\CKF4\CellViewWindow.h" />
+    <ClInclude Include="[Patches]\CKF4\DataWindow.h" />
+    <ClInclude Include="[Patches]\CKF4\DMDebugInfoFormWindow.h" />
+    <ClInclude Include="[Patches]\CKF4\Editor.h" />
+    <ClInclude Include="[Patches]\CKF4\EditorUI.h" />
+    <ClInclude Include="[Patches]\CKF4\EditorUIProgressDialog.h" />
+    <ClInclude Include="[Patches]\CKF4\ExperimentalNuukem.h" />
+    <ClInclude Include="[Patches]\CKF4\LayersWindow.h" />
+    <ClInclude Include="[Patches]\CKF4\LogWindow.h" />
+    <ClInclude Include="[Patches]\CKF4\MainWindow.h" />
+    <ClInclude Include="[Patches]\CKF4\ObjectWindow.h" />
+    <ClInclude Include="[Patches]\CKF4\PreferencesWindow.h" />
+    <ClInclude Include="[Patches]\CKF4\RenderWindow.h" />
+    <ClInclude Include="[Patches]\CKF4\ResponseWindow.h" />
+    <ClInclude Include="[Patches]\CKF4\TranslateUnicode_CK.h" />
+    <ClInclude Include="[Patches]\CKF4\UIBaseWindow.h" />
+    <ClInclude Include="[Patches]\CKF4\UICheckboxControl.h" />
+    <ClInclude Include="[Patches]\CKF4\UIDialogManager.h" />
+    <ClInclude Include="[Patches]\CKF4\UIGraphics.h" />
+    <ClInclude Include="[Patches]\CKF4\UIImageList.h" />
+    <ClInclude Include="[Patches]\CKF4\UIMenus.h" />
+    <ClInclude Include="[Patches]\CKF4\UIProgressDialog.h" />
+    <ClInclude Include="[Patches]\CKF4\UIThemeMode.h" />
+    <ClInclude Include="[Patches]\CKF4\UITheme\CheckBox.h" />
+    <ClInclude Include="[Patches]\CKF4\UITheme\ComboBox.h" />
+    <ClInclude Include="[Patches]\CKF4\UITheme\CustomBox.h" />
+    <ClInclude Include="[Patches]\CKF4\UITheme\EditText.h" />
+    <ClInclude Include="[Patches]\CKF4\UITheme\GroupBox.h" />
+    <ClInclude Include="[Patches]\CKF4\UITheme\Header.h" />
+    <ClInclude Include="[Patches]\CKF4\UITheme\ListBox.h" />
+    <ClInclude Include="[Patches]\CKF4\UITheme\ListView.h" />
+    <ClInclude Include="[Patches]\CKF4\UITheme\MDIClient.h" />
+    <ClInclude Include="[Patches]\CKF4\UITheme\Memo.h" />
+    <ClInclude Include="[Patches]\CKF4\UITheme\PageControl.h" />
+    <ClInclude Include="[Patches]\CKF4\UITheme\PopupMenu.h" />
+    <ClInclude Include="[Patches]\CKF4\UITheme\ProgressBar.h" />
+    <ClInclude Include="[Patches]\CKF4\UITheme\PushButton.h" />
+    <ClInclude Include="[Patches]\CKF4\UITheme\RadioButton.h" />
+    <ClInclude Include="[Patches]\CKF4\UITheme\RichEdit20.h" />
+    <ClInclude Include="[Patches]\CKF4\UITheme\ScrollBar.h" />
+    <ClInclude Include="[Patches]\CKF4\UITheme\StatusBar.h" />
+    <ClInclude Include="[Patches]\CKF4\UITheme\TimeOfDay.h" />
+    <ClInclude Include="[Patches]\CKF4\UITheme\ToolBar.h" />
+    <ClInclude Include="[Patches]\CKF4\UITheme\TrackBar.h" />
+    <ClInclude Include="[Patches]\CKF4\UITheme\TreeView.h" />
+    <ClInclude Include="[Patches]\CKF4\UITheme\UpDown.h" />
+    <ClInclude Include="[Patches]\CKF4\UITheme\VarCommon.h" />
+    <ClInclude Include="[Patches]\Defender.h" />
+    <ClInclude Include="[Patches]\deflate.h" />
+    <ClInclude Include="[Win64]\Config.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="[Common]\D3D11Proxy.cpp" />
+    <ClCompile Include="[Common]\Dump.cpp" />
+    <ClCompile Include="[Common]\IMemory.cpp" />
+    <ClCompile Include="[Common]\INIReader.cpp" />
+    <ClCompile Include="[Common]\IMemoryManager.cpp" />
+    <ClCompile Include="[Common]\IProcessMessage.cpp" />
+    <ClCompile Include="[Common]\IProgressTaskBar.cpp" />
+    <ClCompile Include="[Common]\MSRTTI.cpp" />
+    <ClCompile Include="[Common]\Offsets.cpp" />
+    <ClCompile Include="[Common]\StdAfx.cpp" />
+    <ClCompile Include="[Common]\UtfStr.cpp" />
+    <ClCompile Include="[Common]\Utilities.cpp" />
+    <ClCompile Include="[Depends]\jDialogs\include\jdialogs.cpp" />
+    <ClCompile Include="[Depends]\zipper\src\zip.c" />
+    <ClCompile Include="[EditorAPI]\BSArchive.cpp" />
+    <ClCompile Include="[EditorAPI]\BSArchiveManager.cpp" />
+    <ClCompile Include="[EditorAPI]\BSFile.cpp" />
+    <ClCompile Include="[EditorAPI]\BSString.cpp" />
+    <ClCompile Include="[EditorAPI]\Core.cpp" />
+    <ClCompile Include="[EditorAPI]\NiClasses.cpp" />
+    <ClCompile Include="[EditorAPI]\NiMemoryManager.cpp" />
+    <ClCompile Include="[EditorAPI]\NiTypes.cpp" />
+    <ClCompile Include="[EditorAPI]\Settings.cpp" />
+    <ClCompile Include="[EditorAPI]\TESFile.cpp" />
+    <ClCompile Include="[EditorAPI]\TESForm.cpp" />
+    <ClCompile Include="[EditorAPI]\BGSLayer.cpp" />
+    <ClCompile Include="[EditorAPI]\TESFormComponents.cpp" />
+    <ClCompile Include="[EditorAPI]\TESObjectREFR.cpp" />
+    <ClCompile Include="[EditorAPI]\TESRender.cpp" />
+    <ClCompile Include="[Patches]\bhkThreadMemorySource.cpp" />
+    <ClCompile Include="[Patches]\bnet.cpp" />
+    <ClCompile Include="[Patches]\boost_search_array.cpp" />
+    <ClCompile Include="[Patches]\CKF4\ActorWindow.cpp" />
+    <ClCompile Include="[Patches]\CKF4\CellViewWindow.cpp" />
+    <ClCompile Include="[Patches]\CKF4\D3D11Patch_CK.cpp" />
+    <ClCompile Include="[Patches]\CKF4\DataWindow.cpp" />
+    <ClCompile Include="[Patches]\CKF4\DMDebugInfoFormWindow.cpp" />
+    <ClCompile Include="[Patches]\CKF4\Editor.cpp" />
+    <ClCompile Include="[Patches]\CKF4\EditorUI.cpp" />
+    <ClCompile Include="[Patches]\CKF4\EditorUIProgressDialog.cpp" />
+    <ClCompile Include="[Patches]\CKF4\ENBSeriesFixableRun.cpp" />
+    <ClCompile Include="[Patches]\CKF4\ExperimentalNuukem.cpp" />
+    <ClCompile Include="[Patches]\CKF4\LayersWindow.cpp" />
+    <ClCompile Include="[Patches]\CKF4\LogWindow.cpp" />
+    <ClCompile Include="[Patches]\CKF4\MainWindow.cpp" />
+    <ClCompile Include="[Patches]\CKF4\ObjectWindow.cpp" />
+    <ClCompile Include="[Patches]\CKF4\PreCombinedSeargeDP.cpp" />
+    <ClCompile Include="[Patches]\CKF4\PreferencesWindow.cpp" />
+    <ClCompile Include="[Patches]\CKF4\RenderWindow.cpp" />
+    <ClCompile Include="[Patches]\CKF4\ResponseWindow.cpp" />
+    <ClCompile Include="[Patches]\CKF4\TranslateUnicode_CK.cpp" />
+    <ClCompile Include="[Patches]\CKF4\UIBaseWindow.cpp" />
+    <ClCompile Include="[Patches]\CKF4\UICheckboxControl.cpp" />
+    <ClCompile Include="[Patches]\CKF4\UIDialogManager.cpp" />
+    <ClCompile Include="[Patches]\CKF4\UIGraphics.cpp" />
+    <ClCompile Include="[Patches]\CKF4\UIImageList.cpp" />
+    <ClCompile Include="[Patches]\CKF4\UIMenus.cpp" />
+    <ClCompile Include="[Patches]\CKF4\UIProgressDialog.cpp" />
+    <ClCompile Include="[Patches]\CKF4\UIThemeMode.cpp" />
+    <ClCompile Include="[Patches]\CKF4\UITheme\CheckBox.cpp" />
+    <ClCompile Include="[Patches]\CKF4\UITheme\ComboBox.cpp" />
+    <ClCompile Include="[Patches]\CKF4\UITheme\CustomBox.cpp" />
+    <ClCompile Include="[Patches]\CKF4\UITheme\EditText.cpp" />
+    <ClCompile Include="[Patches]\CKF4\UITheme\GroupBox.cpp" />
+    <ClCompile Include="[Patches]\CKF4\UITheme\Header.cpp" />
+    <ClCompile Include="[Patches]\CKF4\UITheme\ListBox.cpp" />
+    <ClCompile Include="[Patches]\CKF4\UITheme\ListView.cpp" />
+    <ClCompile Include="[Patches]\CKF4\UITheme\MDIClient.cpp" />
+    <ClCompile Include="[Patches]\CKF4\UITheme\Memo.cpp" />
+    <ClCompile Include="[Patches]\CKF4\UITheme\PageControl.cpp" />
+    <ClCompile Include="[Patches]\CKF4\UITheme\PopupMenu.cpp" />
+    <ClCompile Include="[Patches]\CKF4\UITheme\ProgressBar.cpp" />
+    <ClCompile Include="[Patches]\CKF4\UITheme\PushButton.cpp" />
+    <ClCompile Include="[Patches]\CKF4\UITheme\RadioButton.cpp" />
+    <ClCompile Include="[Patches]\CKF4\UITheme\RichEdit20.cpp" />
+    <ClCompile Include="[Patches]\CKF4\UITheme\ScrollBar.cpp" />
+    <ClCompile Include="[Patches]\CKF4\UITheme\StatusBar.cpp" />
+    <ClCompile Include="[Patches]\CKF4\UITheme\TimeOfDay.cpp" />
+    <ClCompile Include="[Patches]\CKF4\UITheme\ToolBar.cpp" />
+    <ClCompile Include="[Patches]\CKF4\UITheme\TrackBar.cpp" />
+    <ClCompile Include="[Patches]\CKF4\UITheme\TreeView.cpp" />
+    <ClCompile Include="[Patches]\CKF4\UITheme\UpDown.cpp" />
+    <ClCompile Include="[Patches]\CKF4\UITheme\VarCommon.cpp" />
+    <ClCompile Include="[Patches]\Defender.cpp" />
+    <ClCompile Include="[Patches]\deflate.cpp" />
+    <ClCompile Include="[Patches]\memory.cpp" />
+    <ClCompile Include="[Patches]\patches_f4ck.cpp" />
+    <ClCompile Include="[Patches]\patches_f4tes.cpp" />
+    <ClCompile Include="[Patches]\TES\Achievements.cpp" />
+    <ClCompile Include="[Patches]\TES\GameSettings.cpp" />
+    <ClCompile Include="[Patches]\TES\GameWindow.cpp" />
+    <ClCompile Include="[Patches]\threading.cpp" />
+    <ClCompile Include="[Win64]\Exports.cpp" />
+    <ClCompile Include="[Win64]\Main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="resource.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
+    <None Include="[Resources]\f4ck_loader.bin" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="[Resources]\Bitmap_430_w.bmp" />
+    <Image Include="[Resources]\check.bmp" />
+    <Image Include="[Resources]\check_darktheme.bmp" />
+    <Image Include="[Resources]\logo.bmp" />
+    <Image Include="[Resources]\toolbar.bmp" />
+    <Image Include="[Resources]\toolbar_light.bmp" />
+    <Image Include="[Resources]\types.bmp" />
+    <Image Include="[Resources]\uncheck.bmp" />
+    <Image Include="[Resources]\uncheck_darktheme.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <MASM Include="[Patches]\asm_search_bstarray.asm" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.targets" />
+  </ImportGroup>
+</Project>

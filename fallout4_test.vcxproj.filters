@@ -1,0 +1,677 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="[Depends]">
+      <UniqueIdentifier>{81995caa-f5d0-49b7-965d-68c1333396e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[Depends]\zipper">
+      <UniqueIdentifier>{966ff70e-c235-430f-9b45-98e040be03f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[Depends]\jDialogs">
+      <UniqueIdentifier>{480afd49-7d48-4f91-a6cb-125fb4154eca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[Resources]">
+      <UniqueIdentifier>{c58ef404-38ca-4c41-b94f-f535f6add608}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[Win64]">
+      <UniqueIdentifier>{c40605ae-2c81-4528-ba5d-89def8a96996}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[Patches]">
+      <UniqueIdentifier>{f64a5b85-b33c-4401-9e35-d109538fed65}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[Patches]\CK">
+      <UniqueIdentifier>{53dc8473-1f2d-4be9-80d8-1dea6b6dbf73}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[Patches]\CK\UITheme">
+      <UniqueIdentifier>{7ff8fe10-9b24-4b80-ad43-f22df62c8c75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[Patches]\TES">
+      <UniqueIdentifier>{18c3b8a3-ffc6-4421-81e3-f5c63e7b9ab5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[EditorAPI]">
+      <UniqueIdentifier>{46ed3c7f-139a-45ea-acf4-f171a8741c8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[Common]">
+      <UniqueIdentifier>{2dd4ccc3-b22d-4615-be44-3a59859d087b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="resource.h">
+      <Filter>[Resources]</Filter>
+    </ClInclude>
+    <ClInclude Include="[Patches]\bhkThreadMemorySource.h">
+      <Filter>[Patches]</Filter>
+    </ClInclude>
+    <ClInclude Include="[Patches]\boost_search_array.h">
+      <Filter>[Patches]</Filter>
+    </ClInclude>
+    <ClInclude Include="[Patches]\deflate.h">
+      <Filter>[Patches]</Filter>
+    </ClInclude>
+    <ClInclude Include="[Patches]\CKF4\UIGraphics.h">
+      <Filter>[Patches]\CK</Filter>
+    </ClInclude>
+    <ClInclude Include="[Patches]\CKF4\UIImageList.h">
+      <Filter>[Patches]\CK</Filter>
+    </ClInclude>
+    <ClInclude Include="[Patches]\CKF4\UIMenus.h">
+      <Filter>[Patches]\CK</Filter>
+    </ClInclude>
+    <ClInclude Include="[Patches]\CKF4\UIProgressDialog.h">
+      <Filter>[Patches]\CK</Filter>
+    </ClInclude>
+    <ClInclude Include="[Patches]\CKF4\UIThemeMode.h">
+      <Filter>[Patches]\CK</Filter>
+    </ClInclude>
+    <ClInclude Include="[Patches]\CKF4\ActorWindow.h">
+      <Filter>[Patches]\CK</Filter>
+    </ClInclude>
+    <ClInclude Include="[Patches]\CKF4\CellViewWindow.h">
+      <Filter>[Patches]\CK</Filter>
+    </ClInclude>
+    <ClInclude Include="[Patches]\CKF4\DataWindow.h">
+      <Filter>[Patches]\CK</Filter>
+    </ClInclude>
+    <ClInclude Include="[Patches]\CKF4\DMDebugInfoFormWindow.h">
+      <Filter>[Patches]\CK</Filter>
+    </ClInclude>
+    <ClInclude Include="[Patches]\CKF4\Editor.h">
+      <Filter>[Patches]\CK</Filter>
+    </ClInclude>
+    <ClInclude Include="[Patches]\CKF4\EditorUI.h">
+      <Filter>[Patches]\CK</Filter>
+    </ClInclude>
+    <ClInclude Include="[Patches]\CKF4\EditorUIProgressDialog.h">
+      <Filter>[Patches]\CK</Filter>
+    </ClInclude>
+    <ClInclude Include="[Patches]\CKF4\ExperimentalNuukem.h">
+      <Filter>[Patches]\CK</Filter>
+    </ClInclude>
+    <ClInclude Include="[Patches]\CKF4\LayersWindow.h">
+      <Filter>[Patches]\CK</Filter>
+    </ClInclude>
+    <ClInclude Include="[Patches]\CKF4\LogWindow.h">
+      <Filter>[Patches]\CK</Filter>
+    </ClInclude>
+    <ClInclude Include="[Patches]\CKF4\MainWindow.h">
+      <Filter>[Patches]\CK</Filter>
+    </ClInclude>
+    <ClInclude Include="[Patches]\CKF4\ObjectWindow.h">
+      <Filter>[Patches]\CK</Filter>
+    </ClInclude>
+    <ClInclude Include="[Patches]\CKF4\PreferencesWindow.h">
+      <Filter>[Patches]\CK</Filter>
+    </ClInclude>
+    <ClInclude Include="[Patches]\CKF4\RenderWindow.h">
+      <Filter>[Patches]\CK</Filter>
+    </ClInclude>
+    <ClInclude Include="[Patches]\CKF4\ResponseWindow.h">
+      <Filter>[Patches]\CK</Filter>
+    </ClInclude>
+    <ClInclude Include="[Patches]\CKF4\TranslateUnicode_CK.h">
+      <Filter>[Patches]\CK</Filter>
+    </ClInclude>
+    <ClInclude Include="[Patches]\CKF4\UIBaseWindow.h">
+      <Filter>[Patches]\CK</Filter>
+    </ClInclude>
+    <ClInclude Include="[Patches]\CKF4\UICheckboxControl.h">
+      <Filter>[Patches]\CK</Filter>
+    </ClInclude>
+    <ClInclude Include="[Patches]\CKF4\UIDialogManager.h">
+      <Filter>[Patches]\CK</Filter>
+    </ClInclude>
+    <ClInclude Include="[Patches]\CKF4\UITheme\StatusBar.h">
+      <Filter>[Patches]\CK\UITheme</Filter>
+    </ClInclude>
+    <ClInclude Include="[Patches]\CKF4\UITheme\TimeOfDay.h">
+      <Filter>[Patches]\CK\UITheme</Filter>
+    </ClInclude>
+    <ClInclude Include="[Patches]\CKF4\UITheme\ToolBar.h">
+      <Filter>[Patches]\CK\UITheme</Filter>
+    </ClInclude>
+    <ClInclude Include="[Patches]\CKF4\UITheme\TrackBar.h">
+      <Filter>[Patches]\CK\UITheme</Filter>
+    </ClInclude>
+    <ClInclude Include="[Patches]\CKF4\UITheme\TreeView.h">
+      <Filter>[Patches]\CK\UITheme</Filter>
+    </ClInclude>
+    <ClInclude Include="[Patches]\CKF4\UITheme\UpDown.h">
+      <Filter>[Patches]\CK\UITheme</Filter>
+    </ClInclude>
+    <ClInclude Include="[Patches]\CKF4\UITheme\VarCommon.h">
+      <Filter>[Patches]\CK\UITheme</Filter>
+    </ClInclude>
+    <ClInclude Include="[Patches]\CKF4\UITheme\CheckBox.h">
+      <Filter>[Patches]\CK\UITheme</Filter>
+    </ClInclude>
+    <ClInclude Include="[Patches]\CKF4\UITheme\ComboBox.h">
+      <Filter>[Patches]\CK\UITheme</Filter>
+    </ClInclude>
+    <ClInclude Include="[Patches]\CKF4\UITheme\CustomBox.h">
+      <Filter>[Patches]\CK\UITheme</Filter>
+    </ClInclude>
+    <ClInclude Include="[Patches]\CKF4\UITheme\EditText.h">
+      <Filter>[Patches]\CK\UITheme</Filter>
+    </ClInclude>
+    <ClInclude Include="[Patches]\CKF4\UITheme\GroupBox.h">
+      <Filter>[Patches]\CK\UITheme</Filter>
+    </ClInclude>
+    <ClInclude Include="[Patches]\CKF4\UITheme\Header.h">
+      <Filter>[Patches]\CK\UITheme</Filter>
+    </ClInclude>
+    <ClInclude Include="[Patches]\CKF4\UITheme\ListBox.h">
+      <Filter>[Patches]\CK\UITheme</Filter>
+    </ClInclude>
+    <ClInclude Include="[Patches]\CKF4\UITheme\ListView.h">
+      <Filter>[Patches]\CK\UITheme</Filter>
+    </ClInclude>
+    <ClInclude Include="[Patches]\CKF4\UITheme\MDIClient.h">
+      <Filter>[Patches]\CK\UITheme</Filter>
+    </ClInclude>
+    <ClInclude Include="[Patches]\CKF4\UITheme\Memo.h">
+      <Filter>[Patches]\CK\UITheme</Filter>
+    </ClInclude>
+    <ClInclude Include="[Patches]\CKF4\UITheme\PageControl.h">
+      <Filter>[Patches]\CK\UITheme</Filter>
+    </ClInclude>
+    <ClInclude Include="[Patches]\CKF4\UITheme\PopupMenu.h">
+      <Filter>[Patches]\CK\UITheme</Filter>
+    </ClInclude>
+    <ClInclude Include="[Patches]\CKF4\UITheme\ProgressBar.h">
+      <Filter>[Patches]\CK\UITheme</Filter>
+    </ClInclude>
+    <ClInclude Include="[Patches]\CKF4\UITheme\PushButton.h">
+      <Filter>[Patches]\CK\UITheme</Filter>
+    </ClInclude>
+    <ClInclude Include="[Patches]\CKF4\UITheme\RadioButton.h">
+      <Filter>[Patches]\CK\UITheme</Filter>
+    </ClInclude>
+    <ClInclude Include="[Patches]\CKF4\UITheme\RichEdit20.h">
+      <Filter>[Patches]\CK\UITheme</Filter>
+    </ClInclude>
+    <ClInclude Include="[Patches]\CKF4\UITheme\ScrollBar.h">
+      <Filter>[Patches]\CK\UITheme</Filter>
+    </ClInclude>
+    <ClInclude Include="[EditorAPI]\NiTypes.h">
+      <Filter>[EditorAPI]</Filter>
+    </ClInclude>
+    <ClInclude Include="[EditorAPI]\TESFile.h">
+      <Filter>[EditorAPI]</Filter>
+    </ClInclude>
+    <ClInclude Include="[EditorAPI]\TESForm.h">
+      <Filter>[EditorAPI]</Filter>
+    </ClInclude>
+    <ClInclude Include="[EditorAPI]\TESFormComponents.h">
+      <Filter>[EditorAPI]</Filter>
+    </ClInclude>
+    <ClInclude Include="[EditorAPI]\TESObjectCELL.h">
+      <Filter>[EditorAPI]</Filter>
+    </ClInclude>
+    <ClInclude Include="[EditorAPI]\BGSLayer.h">
+      <Filter>[EditorAPI]</Filter>
+    </ClInclude>
+    <ClInclude Include="[EditorAPI]\TESObjectREFR.h">
+      <Filter>[EditorAPI]</Filter>
+    </ClInclude>
+    <ClInclude Include="[EditorAPI]\BSTArray.h">
+      <Filter>[EditorAPI]</Filter>
+    </ClInclude>
+    <ClInclude Include="[EditorAPI]\BSTList.h">
+      <Filter>[EditorAPI]</Filter>
+    </ClInclude>
+    <ClInclude Include="[EditorAPI]\Core.h">
+      <Filter>[EditorAPI]</Filter>
+    </ClInclude>
+    <ClInclude Include="[EditorAPI]\NiClasses.h">
+      <Filter>[EditorAPI]</Filter>
+    </ClInclude>
+    <ClInclude Include="[EditorAPI]\NiEvents.h">
+      <Filter>[EditorAPI]</Filter>
+    </ClInclude>
+    <ClInclude Include="[EditorAPI]\NiRefObject.h">
+      <Filter>[EditorAPI]</Filter>
+    </ClInclude>
+    <ClInclude Include="[Common]\MSRTTI.h">
+      <Filter>[Common]</Filter>
+    </ClInclude>
+    <ClInclude Include="[Common]\Offsets.h">
+      <Filter>[Common]</Filter>
+    </ClInclude>
+    <ClInclude Include="[Common]\ProfilerInternal.h">
+      <Filter>[Common]</Filter>
+    </ClInclude>
+    <ClInclude Include="[Common]\UtfStr.h">
+      <Filter>[Common]</Filter>
+    </ClInclude>
+    <ClInclude Include="[Common]\Utilities.h">
+      <Filter>[Common]</Filter>
+    </ClInclude>
+    <ClInclude Include="[Common]\D3D11Proxy.h">
+      <Filter>[Common]</Filter>
+    </ClInclude>
+    <ClInclude Include="[Common]\EraseIf.h">
+      <Filter>[Common]</Filter>
+    </ClInclude>
+    <ClInclude Include="[Common]\INIReader.h">
+      <Filter>[Common]</Filter>
+    </ClInclude>
+    <ClInclude Include="[Common]\IMemoryManager.h">
+      <Filter>[Common]</Filter>
+    </ClInclude>
+    <ClInclude Include="[Common]\CommInc.h">
+      <Filter>[Common]</Filter>
+    </ClInclude>
+    <ClInclude Include="[Common]\StdAfx.h">
+      <Filter>[Common]</Filter>
+    </ClInclude>
+    <ClInclude Include="[Common]\IMemory.h">
+      <Filter>[Common]</Filter>
+    </ClInclude>
+    <ClInclude Include="[EditorAPI]\BSString.h">
+      <Filter>[EditorAPI]</Filter>
+    </ClInclude>
+    <ClInclude Include="[EditorAPI]\NiMemoryManager.h">
+      <Filter>[EditorAPI]</Filter>
+    </ClInclude>
+    <ClInclude Include="[EditorAPI]\BSStringCache.h">
+      <Filter>[EditorAPI]</Filter>
+    </ClInclude>
+    <ClInclude Include="[EditorAPI]\BSFixedString.h">
+      <Filter>[EditorAPI]</Filter>
+    </ClInclude>
+    <ClInclude Include="[EditorAPI]\BSEntryString.h">
+      <Filter>[EditorAPI]</Filter>
+    </ClInclude>
+    <ClInclude Include="[Depends]\jDialogs\include\jdialogs.h">
+      <Filter>[Depends]\jDialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="[Depends]\zipper\src\zip.h">
+      <Filter>[Depends]\zipper</Filter>
+    </ClInclude>
+    <ClInclude Include="[Depends]\zipper\src\miniz.h">
+      <Filter>[Depends]\zipper</Filter>
+    </ClInclude>
+    <ClInclude Include="[EditorAPI]\BSFile.h">
+      <Filter>[EditorAPI]</Filter>
+    </ClInclude>
+    <ClInclude Include="[EditorAPI]\BSArchiveManager.h">
+      <Filter>[EditorAPI]</Filter>
+    </ClInclude>
+    <ClInclude Include="[EditorAPI]\BSArchive.h">
+      <Filter>[EditorAPI]</Filter>
+    </ClInclude>
+    <ClInclude Include="[EditorAPI]\BSResourceLooseFiles.h">
+      <Filter>[EditorAPI]</Filter>
+    </ClInclude>
+    <ClInclude Include="[EditorAPI]\Settings.h">
+      <Filter>[EditorAPI]</Filter>
+    </ClInclude>
+    <ClInclude Include="[Patches]\Defender.h">
+      <Filter>[Patches]</Filter>
+    </ClInclude>
+    <ClInclude Include="[Win64]\Config.h">
+      <Filter>[Win64]</Filter>
+    </ClInclude>
+    <ClInclude Include="[EditorAPI]\TESObjectSTAT.h">
+      <Filter>[EditorAPI]</Filter>
+    </ClInclude>
+    <ClInclude Include="[EditorAPI]\TESActorValue.h">
+      <Filter>[EditorAPI]</Filter>
+    </ClInclude>
+    <ClInclude Include="[EditorAPI]\TESObjectSCOL.h">
+      <Filter>[EditorAPI]</Filter>
+    </ClInclude>
+    <ClInclude Include="[EditorAPI]\TESObject.h">
+      <Filter>[EditorAPI]</Filter>
+    </ClInclude>
+    <ClInclude Include="[EditorAPI]\TESObjectMSTT.h">
+      <Filter>[EditorAPI]</Filter>
+    </ClInclude>
+    <ClInclude Include="[EditorAPI]\TESRender.h">
+      <Filter>[EditorAPI]</Filter>
+    </ClInclude>
+    <ClInclude Include="[EditorAPI]\TESObjectDOOR.h">
+      <Filter>[EditorAPI]</Filter>
+    </ClInclude>
+    <ClInclude Include="[Common]\IProcessMessage.h">
+      <Filter>[Common]</Filter>
+    </ClInclude>
+    <ClInclude Include="[Common]\IProgressTaskBar.h">
+      <Filter>[Common]</Filter>
+    </ClInclude>
+    <ClInclude Include="[EditorAPI]\BGSPrimitive.h">
+      <Filter>[EditorAPI]</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="[Win64]\Main.cpp">
+      <Filter>[Win64]</Filter>
+    </ClCompile>
+    <ClCompile Include="[Win64]\Exports.cpp">
+      <Filter>[Win64]</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\patches_f4ck.cpp">
+      <Filter>[Patches]</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\patches_f4tes.cpp">
+      <Filter>[Patches]</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\threading.cpp">
+      <Filter>[Patches]</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\bhkThreadMemorySource.cpp">
+      <Filter>[Patches]</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\bnet.cpp">
+      <Filter>[Patches]</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\boost_search_array.cpp">
+      <Filter>[Patches]</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\deflate.cpp">
+      <Filter>[Patches]</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\memory.cpp">
+      <Filter>[Patches]</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\CKF4\UIGraphics.cpp">
+      <Filter>[Patches]\CK</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\CKF4\UIImageList.cpp">
+      <Filter>[Patches]\CK</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\CKF4\UIMenus.cpp">
+      <Filter>[Patches]\CK</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\CKF4\UIProgressDialog.cpp">
+      <Filter>[Patches]\CK</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\CKF4\UIThemeMode.cpp">
+      <Filter>[Patches]\CK</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\CKF4\ActorWindow.cpp">
+      <Filter>[Patches]\CK</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\CKF4\CellViewWindow.cpp">
+      <Filter>[Patches]\CK</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\CKF4\D3D11Patch_CK.cpp">
+      <Filter>[Patches]\CK</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\CKF4\DataWindow.cpp">
+      <Filter>[Patches]\CK</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\CKF4\DMDebugInfoFormWindow.cpp">
+      <Filter>[Patches]\CK</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\CKF4\Editor.cpp">
+      <Filter>[Patches]\CK</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\CKF4\EditorUI.cpp">
+      <Filter>[Patches]\CK</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\CKF4\EditorUIProgressDialog.cpp">
+      <Filter>[Patches]\CK</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\CKF4\ENBSeriesFixableRun.cpp">
+      <Filter>[Patches]\CK</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\CKF4\ExperimentalNuukem.cpp">
+      <Filter>[Patches]\CK</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\CKF4\LayersWindow.cpp">
+      <Filter>[Patches]\CK</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\CKF4\LogWindow.cpp">
+      <Filter>[Patches]\CK</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\CKF4\MainWindow.cpp">
+      <Filter>[Patches]\CK</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\CKF4\ObjectWindow.cpp">
+      <Filter>[Patches]\CK</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\CKF4\PreCombinedSeargeDP.cpp">
+      <Filter>[Patches]\CK</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\CKF4\PreferencesWindow.cpp">
+      <Filter>[Patches]\CK</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\CKF4\RenderWindow.cpp">
+      <Filter>[Patches]\CK</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\CKF4\ResponseWindow.cpp">
+      <Filter>[Patches]\CK</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\CKF4\TranslateUnicode_CK.cpp">
+      <Filter>[Patches]\CK</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\CKF4\UIBaseWindow.cpp">
+      <Filter>[Patches]\CK</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\CKF4\UICheckboxControl.cpp">
+      <Filter>[Patches]\CK</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\CKF4\UIDialogManager.cpp">
+      <Filter>[Patches]\CK</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\CKF4\UITheme\TimeOfDay.cpp">
+      <Filter>[Patches]\CK\UITheme</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\CKF4\UITheme\ToolBar.cpp">
+      <Filter>[Patches]\CK\UITheme</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\CKF4\UITheme\TrackBar.cpp">
+      <Filter>[Patches]\CK\UITheme</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\CKF4\UITheme\TreeView.cpp">
+      <Filter>[Patches]\CK\UITheme</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\CKF4\UITheme\UpDown.cpp">
+      <Filter>[Patches]\CK\UITheme</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\CKF4\UITheme\VarCommon.cpp">
+      <Filter>[Patches]\CK\UITheme</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\CKF4\UITheme\CheckBox.cpp">
+      <Filter>[Patches]\CK\UITheme</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\CKF4\UITheme\ComboBox.cpp">
+      <Filter>[Patches]\CK\UITheme</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\CKF4\UITheme\CustomBox.cpp">
+      <Filter>[Patches]\CK\UITheme</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\CKF4\UITheme\EditText.cpp">
+      <Filter>[Patches]\CK\UITheme</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\CKF4\UITheme\GroupBox.cpp">
+      <Filter>[Patches]\CK\UITheme</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\CKF4\UITheme\Header.cpp">
+      <Filter>[Patches]\CK\UITheme</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\CKF4\UITheme\ListBox.cpp">
+      <Filter>[Patches]\CK\UITheme</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\CKF4\UITheme\ListView.cpp">
+      <Filter>[Patches]\CK\UITheme</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\CKF4\UITheme\MDIClient.cpp">
+      <Filter>[Patches]\CK\UITheme</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\CKF4\UITheme\Memo.cpp">
+      <Filter>[Patches]\CK\UITheme</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\CKF4\UITheme\PageControl.cpp">
+      <Filter>[Patches]\CK\UITheme</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\CKF4\UITheme\PopupMenu.cpp">
+      <Filter>[Patches]\CK\UITheme</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\CKF4\UITheme\ProgressBar.cpp">
+      <Filter>[Patches]\CK\UITheme</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\CKF4\UITheme\PushButton.cpp">
+      <Filter>[Patches]\CK\UITheme</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\CKF4\UITheme\RadioButton.cpp">
+      <Filter>[Patches]\CK\UITheme</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\CKF4\UITheme\RichEdit20.cpp">
+      <Filter>[Patches]\CK\UITheme</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\CKF4\UITheme\ScrollBar.cpp">
+      <Filter>[Patches]\CK\UITheme</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\CKF4\UITheme\StatusBar.cpp">
+      <Filter>[Patches]\CK\UITheme</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\TES\GameSettings.cpp">
+      <Filter>[Patches]\TES</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\TES\GameWindow.cpp">
+      <Filter>[Patches]\TES</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\TES\Achievements.cpp">
+      <Filter>[Patches]\TES</Filter>
+    </ClCompile>
+    <ClCompile Include="[EditorAPI]\NiTypes.cpp">
+      <Filter>[EditorAPI]</Filter>
+    </ClCompile>
+    <ClCompile Include="[EditorAPI]\TESFile.cpp">
+      <Filter>[EditorAPI]</Filter>
+    </ClCompile>
+    <ClCompile Include="[EditorAPI]\TESForm.cpp">
+      <Filter>[EditorAPI]</Filter>
+    </ClCompile>
+    <ClCompile Include="[EditorAPI]\BGSLayer.cpp">
+      <Filter>[EditorAPI]</Filter>
+    </ClCompile>
+    <ClCompile Include="[EditorAPI]\TESObjectREFR.cpp">
+      <Filter>[EditorAPI]</Filter>
+    </ClCompile>
+    <ClCompile Include="[EditorAPI]\Core.cpp">
+      <Filter>[EditorAPI]</Filter>
+    </ClCompile>
+    <ClCompile Include="[EditorAPI]\NiClasses.cpp">
+      <Filter>[EditorAPI]</Filter>
+    </ClCompile>
+    <ClCompile Include="[Common]\Offsets.cpp">
+      <Filter>[Common]</Filter>
+    </ClCompile>
+    <ClCompile Include="[Common]\UtfStr.cpp">
+      <Filter>[Common]</Filter>
+    </ClCompile>
+    <ClCompile Include="[Common]\Utilities.cpp">
+      <Filter>[Common]</Filter>
+    </ClCompile>
+    <ClCompile Include="[Common]\D3D11Proxy.cpp">
+      <Filter>[Common]</Filter>
+    </ClCompile>
+    <ClCompile Include="[Common]\Dump.cpp">
+      <Filter>[Common]</Filter>
+    </ClCompile>
+    <ClCompile Include="[Common]\INIReader.cpp">
+      <Filter>[Common]</Filter>
+    </ClCompile>
+    <ClCompile Include="[Common]\IMemoryManager.cpp">
+      <Filter>[Common]</Filter>
+    </ClCompile>
+    <ClCompile Include="[Common]\MSRTTI.cpp">
+      <Filter>[Common]</Filter>
+    </ClCompile>
+    <ClCompile Include="[Common]\StdAfx.cpp">
+      <Filter>[Common]</Filter>
+    </ClCompile>
+    <ClCompile Include="[Common]\IMemory.cpp">
+      <Filter>[Common]</Filter>
+    </ClCompile>
+    <ClCompile Include="[EditorAPI]\BSString.cpp">
+      <Filter>[EditorAPI]</Filter>
+    </ClCompile>
+    <ClCompile Include="[EditorAPI]\NiMemoryManager.cpp">
+      <Filter>[EditorAPI]</Filter>
+    </ClCompile>
+    <ClCompile Include="[Depends]\jDialogs\include\jdialogs.cpp">
+      <Filter>[Depends]\jDialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="[Depends]\zipper\src\zip.c">
+      <Filter>[Depends]\zipper</Filter>
+    </ClCompile>
+    <ClCompile Include="[EditorAPI]\BSFile.cpp">
+      <Filter>[EditorAPI]</Filter>
+    </ClCompile>
+    <ClCompile Include="[EditorAPI]\BSArchiveManager.cpp">
+      <Filter>[EditorAPI]</Filter>
+    </ClCompile>
+    <ClCompile Include="[EditorAPI]\BSArchive.cpp">
+      <Filter>[EditorAPI]</Filter>
+    </ClCompile>
+    <ClCompile Include="[EditorAPI]\Settings.cpp">
+      <Filter>[EditorAPI]</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\Defender.cpp">
+      <Filter>[Patches]</Filter>
+    </ClCompile>
+    <ClCompile Include="[EditorAPI]\TESFormComponents.cpp">
+      <Filter>[EditorAPI]</Filter>
+    </ClCompile>
+    <ClCompile Include="[EditorAPI]\TESRender.cpp">
+      <Filter>[EditorAPI]</Filter>
+    </ClCompile>
+    <ClCompile Include="[Common]\IProcessMessage.cpp">
+      <Filter>[Common]</Filter>
+    </ClCompile>
+    <ClCompile Include="[Common]\IProgressTaskBar.cpp">
+      <Filter>[Common]</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="resource.rc">
+      <Filter>[Resources]</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint">
+      <Filter>[Resources]</Filter>
+    </None>
+    <None Include="[Resources]\f4ck_loader.bin">
+      <Filter>[Resources]</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="[Resources]\logo.bmp">
+      <Filter>[Resources]</Filter>
+    </Image>
+    <Image Include="[Resources]\toolbar.bmp">
+      <Filter>[Resources]</Filter>
+    </Image>
+    <Image Include="[Resources]\toolbar_light.bmp">
+      <Filter>[Resources]</Filter>
+    </Image>
+    <Image Include="[Resources]\types.bmp">
+      <Filter>[Resources]</Filter>
+    </Image>
+    <Image Include="[Resources]\uncheck.bmp">
+      <Filter>[Resources]</Filter>
+    </Image>
+    <Image Include="[Resources]\uncheck_darktheme.bmp">
+      <Filter>[Resources]</Filter>
+    </Image>
+    <Image Include="[Resources]\Bitmap_430_w.bmp">
+      <Filter>[Resources]</Filter>
+    </Image>
+    <Image Include="[Resources]\check.bmp">
+      <Filter>[Resources]</Filter>
+    </Image>
+    <Image Include="[Resources]\check_darktheme.bmp">
+      <Filter>[Resources]</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <MASM Include="[Patches]\asm_search_bstarray.asm">
+      <Filter>[Patches]</Filter>
+    </MASM>
+  </ItemGroup>
+</Project>

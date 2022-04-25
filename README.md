@@ -1,22 +1,34 @@
-![Image of Fallout4Test](https://staticdelivery.nexusmods.com/mods/1151/images/headers/51165_1635577265.jpg)
+<p align="center">
+ <a href="https://ibb.co/nB88hv4"><img src="https://i.ibb.co/Lrhh4WB/Fallout4-Test.png" alt="Fallout4-Test" border="0"></a>  
+</p>
 
-# Fallout4Test
-A collection of modifications, enhancements, and reverse engineered resources for Fallout 4 and CK Fallout 4
+<p align="center">
+A collection of modifications, enhancements, and reverse engineered resources for Fallout 4 and CK Fallout 4.
+</p>
+
+<p align="center">
+ <a href="https://github.com/Perchik71/Fallout4Test/blob/master/LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>  
+ <a href="https://github.com/Perchik71/Fallout4Test/releases/tag/1.7.2"><img alt="GitHub release (stable)" src="https://img.shields.io/github/v/release/Perchik71/Fallout4Test?color=cf8c18&label=stable"></a>  
+ <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/perchik71/Fallout4Test?color=ff">
+ <a href="https://github.com/Perchik71/Fallout4Test/releases/download/1.6/f4ck_loader.7z"><img alt="GitHub release (by f4ck_loader)" src="https://img.shields.io/github/downloads/perchik71/Fallout4Test/1.6/total?color=49b5bc&label=f4ck_loader"></a>  
+ <img alt="GitHub all releases" src="https://img.shields.io/github/downloads/perchik71/Fallout4Test/total">  
+ <img alt="GitHub code size in bytes" src="https://img.shields.io/github/languages/code-size/Perchik71/FAllout4Test?color=a72e56">  
+</p>
 
 # Fixed or added
-* Fast file loading
-* Ability to remove hints on the progress bar
-* Multiple UI Fix View Menu section and etc
-* Create master files and open them as plugins
-* Opening plugins as master files if they are in dependencies
-* Filtering by active forms
-* Filtering mods in the Data dialog
-* Many other fixes are also from the author of "@Nukem9"
+:white_check_mark: Fast file loading  
+:white_check_mark: Ability to remove hints on the progress bar  
+:white_check_mark: Multiple UI Fix View Menu section and etc  
+:white_check_mark: Create master files and open them as plugins  
+:white_check_mark: Opening plugins as master files if they are in dependencies  
+:white_check_mark: Filtering by active forms  
+:white_check_mark: Filtering mods in the Data dialog  
+:white_check_mark: Many other fixes are also from the author of [@Nukem9](https://github.com/Nukem9)
 
 # ENB
-**CK** does not work well with **ENB**. 
-I wrote **f4ck_loader 0.3**, download from tag [1.6](https://github.com/Perchik71/Fallout4Test/releases/tag/1.6) or compile branch *"master"* yourself.
-So also it is embedded in itself .dll and can be extracted if necessary.
+**CK** does not work well with **ENB**.  
+I wrote **f4ck_loader 0.3**, download from tag [1.6](https://github.com/Perchik71/Fallout4Test/releases/tag/1.6) or compile branch *"master"* yourself.  
+So also it is embedded in itself .dll and can be extracted if necessary.  
 The program is console and simple, for *15 seconds* removes from the known to me *.dll* files that harm the work of **CK** this time is enough to load the **CK** itself.
 All deleted *.dll* files will be restored after this time.
 
@@ -33,7 +45,13 @@ It still uses CK32 and it should be installed.
 # Installation
 After compiling the code, dynamic libraries are created: *tbb.dll*, *tbbmalloc.dll*, *winhttp.dll*.  
 (Optional *CreationKitUnicodePlugin.dll* to compile, use **Lazarus 1.8.2 and higher**)  
-All this should be in the root directory of the game.
+You should place all .dll *(Exception winhttp.dll)* this in the **/Data/F4CKFixes/bin folder** and *winhttp.dll* to root game folder.
+Place dialogs in the **/Data/F4CKFixes/dia** folder or pack it into a zip archive and place it in the **/Data/F4CKFixes** folder.  
+**ImGui** uses fonts that should be in the folder **/Data/F4CKFixes/fonts**.  
+ 
+You can download it here *(actual 04/08/2022)*:
+* [Ruda Font](https://fonts.google.com/specimen/Ruda);
+* [MaterialIcons Font](https://github.com/google/material-design-icons/blob/master/font/MaterialIcons-Regular.ttf);
 
 # Mod Settings
 To hide errors, create a file *CreationKitWarnings.txt*.  
@@ -44,25 +62,23 @@ The file must be in **ANSI** encoding.
 
 # Unicode
 **ONLY SURROGATE**: Support for English and native languages without special characters.
-For understanding, the application uses the ancient **ANSI** type string representation.  
-The idea is to feed the text already in your native encoding.  
-When loading .esp, .esl, .esm files all strings are translated from UTF-8 to WinCP, and when saved back.  
-WinCP is the current encoding in your operating system.  
-**IMPORTANT**: In **Win10**, in the language settings, there is now an option to work with UTF-8, you need to turn it off otherwise there will be only "?".
+For understanding, the application uses the ancient **ANSI** type string representation. The idea is to feed the text already in your native encoding. When loading .esp, .esl, .esm files all strings are translated from UTF-8 to WinCP, and when saved back. WinCP is the current encoding in your operating system.  
+**IMPORTANT**:  
+In **Win10**, in the language settings, there is now an option to work with UTF-8, you need to turn it off otherwise there will be only "?".
 
 # Compilation
-At the moment, the project is built on **MS Visual Studio 2019 version 16.11.2**.  
-I rebuilt it in a new studio, however, I also stick to **C++17**, there are so many things errors with **C++20**.... Well, him!.
+At the moment, the project is built on **MS Visual Studio 2019 version 16.11.8** and **WinSDK version 10.0.17763.0**   
+*(I would recommend this version)*.  
+I rebuilt it in a new studio, however, I also stick to **C++17**, there are so many things errors with **C++20**.... Well, him!.  
 (Optional *CreationKitUnicodePlugin.dll* to compile, use **Lazarus 1.8.2 and higher**)
 
 # License
 ![MIT License](https://camo.githubusercontent.com/20666e1b72ed1ea8f0a7c1d1e0ea35769a7c24f879ecc27ac16641b46f225a01/68747470733a2f2f6f70656e736f757263652e6f72672f74726164656d61726b732f6f70656e736f757263652f4f53492d417070726f7665642d4c6963656e73652d313030783133372e706e67)
 
-[MIT License](https://opensource.org/licenses/MIT)
+[![License](http://img.shields.io/badge/license-MIT-green.svg)](https://github.com/Perchik71/Fallout4Test/blob/master/LICENSE)
 
-Copyright (c) 2020 Nukem9 <email:Nukem@outlook.com>
-
-Copyright (c) 2020-2021 Perchik71 <email:perchik71@outlook.com>
+Copyright (c) 2020 Nukem9 <email:Nukem@outlook.com>  
+Copyright (c) 2020-2022 Perchik71 <email:perchik71@outlook.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this
 software and associated documentation files (the "Software"), to deal in the Software
@@ -81,11 +97,4 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 DEALINGS IN THE SOFTWARE.
 
 # Future
-In the future, I will not be so active in the project, due to the fact that this is enough for me.  
-In addition, there are no ideas what you need to add to the project.
-
-# Themes
-1. ![Image of Fallout4Test:Theme3](https://staticdelivery.nexusmods.com/mods/1151/images/51165/51165-1620695225-231609444.png)
-1. ![Image of Fallout4Test:Theme2](https://staticdelivery.nexusmods.com/mods/1151/images/51165/51165-1620695229-1041447606.png)
-1. ![Image of Fallout4Test:Theme1](https://staticdelivery.nexusmods.com/mods/1151/images/51165/51165-1620695240-1122105286.png)
-1. ![Image of Fallout4Test:Theme0](https://staticdelivery.nexusmods.com/mods/1151/images/51165/51165-1620695246-844758444.png)
+The project stopped.
