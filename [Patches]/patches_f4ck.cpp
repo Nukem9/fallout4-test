@@ -73,6 +73,8 @@ namespace Classes = Core::Classes::UI;
 static BSString sCommandRun;
 static INT32 nCountArgCmdLine = 0;
 
+BOOL bAllow64BitBA2Files = FALSE;
+
 /*
 ==================
 F_RequiredPatches
@@ -811,8 +813,17 @@ VOID FIXAPI MainFix_PatchFallout4CreationKit(VOID)
 				goto ParserCommandLine;
 		}
 
-		if (*sCommandRun)
+		if (*sCommandRun) {
 			_MESSAGE_FMT("Command: %s", *sCommandRun);
+
+			// A list of allowed commands for using large files 
+			if ((nCountArgCmdLine > 1) && !(sCommandRun.Compare("-GeneratePreCombined") && sCommandRun.Compare("-GeneratePreVisData") &&
+				sCommandRun.Compare("-BuildCDX") && sCommandRun.Compare("-CompressPSG") && sCommandRun.Compare("-CheckInPlugin")))
+			{
+				_MESSAGE_FMT("It is allowed to load large files with risk.");
+				bAllow64BitBA2Files = TRUE;
+			}
+		}
 
 		_MESSAGE_FMT("CommandLine: %d (Args) %s", nCountArgCmdLine, GetCommandLineA());
 
@@ -820,11 +831,8 @@ VOID FIXAPI MainFix_PatchFallout4CreationKit(VOID)
 			if (Fix_CheckPatchPreCombined()) {
 				_MESSAGE("Detected patch SeargeDP");
 
-				if (nCountArgCmdLine == 1 || 
-					(sCommandRun.Compare("-GeneratePreCombined") && 
-					 sCommandRun.Compare("-GeneratePreVisData") &&
-					 sCommandRun.Compare("-BuildCDX") && 
-					 sCommandRun.Compare("-CompressPSG"))) {
+				if ((nCountArgCmdLine == 1) || (sCommandRun.Compare("-GeneratePreCombined") && sCommandRun.Compare("-GeneratePreVisData") &&
+					sCommandRun.Compare("-BuildCDX") && sCommandRun.Compare("-CompressPSG"))) {
 					MessageBoxA(NULL,
 						"Patched SeargeDP Creation Kit version detected.\nCalling an unsupported command.\n\n"
 						"Close Creation Kit.\n"

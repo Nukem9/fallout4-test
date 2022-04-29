@@ -24,6 +24,8 @@
 #include "BSString.h"
 #include "BSArchive.h"
 
+extern BOOL bAllow64BitBA2Files;
+
 VOID FIXAPI BSArchive::GetFileSizeStr(DWORD64 fileSize, BSString& fileSizeStr) {
 	if (fileSize >= 0x40000000)
 		fileSizeStr.Format("%.3f GByte", ((long double)fileSize) / 0x40000000);
@@ -44,7 +46,11 @@ BSArchive::EResultError FIXAPI BSArchive::hk_LoadArchive(LPVOID arrayDataList, B
 	AssertMsgVa(std::filesystem::exists(*filePath), "Can't found file %s", *filePath);
 
 	auto fileSize = std::filesystem::file_size(*filePath);
-	AssertMsgVa(fileSize < 0x100000000, "It is not possible to load a file '%s' larger than 4 GB", fileName);
+	
+	// Skipping the assert
+	// If it is allowed to load such files, however, I will return FALSE, as it was in the orginal
+	if (!bAllow64BitBA2Files)
+		AssertMsgVa(fileSize < 0x100000000, "It is not possible to load a file '%s' larger than 4 GB", fileName);
 
 	GetFileSizeStr(fileSize, fileSizeStr);
 	
@@ -65,17 +71,22 @@ BOOL FIXAPI BSArchive::hk_Check64bitSize(LPCSTR fileName, DWORD& fileSize) {
 			return FALSE;
 		
 		if (fileData.nFileSizeHigh) {
-			DWORD64 size = fileData.nFileSizeLow | ((DWORD64)fileData.nFileSizeHigh << 32);
-			BSString fileSizeStr;
+			// Skipping the notification
+			// If it is allowed to load such files, however, I will return FALSE, as it was in the orginal
 
-			GetFileSizeStr(size, fileSizeStr);
+			if (!bAllow64BitBA2Files) {
+				DWORD64 size = fileData.nFileSizeLow | ((DWORD64)fileData.nFileSizeHigh << 32);
+				BSString fileSizeStr;
 
-			std::string fileShortName = fileName;
-			auto del = fileShortName.find_last_of("\\/");
-			if (del != fileShortName.npos)
-				fileShortName = fileShortName.substr(del + 1);
+				GetFileSizeStr(size, fileSizeStr);
 
-			_MESSAGE_FMT("Skip load an archive file \"%s\". The archive has a size of more than 4GB (%s)...", fileShortName.c_str(), *fileSizeStr);
+				std::string fileShortName = fileName;
+				auto del = fileShortName.find_last_of("\\/");
+				if (del != fileShortName.npos)
+					fileShortName = fileShortName.substr(del + 1);
+
+				_MESSAGE_FMT("Skip load an archive file \"%s\". The archive has a size of more than 4GB (%s)...", fileShortName.c_str(), *fileSizeStr);
+			}
 
 			return FALSE;
 		}

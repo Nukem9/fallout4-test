@@ -41,7 +41,7 @@ protected:
 	/* 010 */ BSEntryString* _AppPath;		// init "<DIR FALLOUT 4>"
 	/* 018 */ BSEntryString* _DataPath;		// init "/Data"
 	/* 020 */ BSEntryString* _FileName;		// for example "Homemaker - Main.ba2"
-	/* 028 */ DWORD dwUnk28;
+	/* 028 */ DWORD BufferSize;
 	/* 02C */ DWORD dwUnk2C;
 	/* 030 */ DWORD dwUnk30;
 	/* 034 */ DWORD dwUnk34;

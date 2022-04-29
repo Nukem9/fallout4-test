@@ -37,10 +37,6 @@
 // Zipper
 #include "..\[Depends]\zipper\src\zip.h"
 
-// ImGui
-#include "..\[Depends]\imgui\imgui.h"
-#include "..\[Depends]\imgui\imgui_internal.h"
-
 // Memory
 #include "IMemory.h"
 #include "IMemoryManager.h"
