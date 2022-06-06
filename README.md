@@ -43,15 +43,15 @@ If successful, the file will be where .wav is, but it will load only after openi
 It still uses CK32 and it should be installed.
 
 # Compiling
-Cloning the project, as well as its dependencies to path **[Depends]**:
-[meshoptimizer](https://github.com/zeux/meshoptimizer.git) URL **https://github.com/zeux/meshoptimizer.git** AS **[Depends]/meshoptimizer**
-[libdeflate](https://github.com/ebiggers/libdeflate.git) URL **https://github.com/ebiggers/libdeflate.git** AS **[Depends]/libdeflate**
-[detours](https://github.com/Nukem9/detours.git) URL **https://github.com/Nukem9/detours.git** AS **[Depends]/detours**
-[mINI](https://github.com/Perchik71/mINI) URL **https://github.com/Perchik71/mINI** AS **[Depends]/mINI**
-[tbb](https://github.com/oneapi-src/oneTBB.git) URL **https://github.com/oneapi-src/oneTBB.git** AS **[Depends]/tbb** BRANCH **tbb_2020**
-[zipper](https://github.com/kuba--/zip.git) URL **https://github.com/kuba--/zip.git** AS **[Depends]/zipper**
-[jDialogs](https://github.com/Perchik71/jDialogs.git) URL **https://github.com/Perchik71/jDialogs.git** AS **[Depends]/jDialogs** (NEED UPDATE RECURSIVE)
-Select **Release** mode compiling configuration and compile. After compilation, the binary files can be found x64/Release-MT and x64/Release.
+Cloning the project, as well as its dependencies to path **[Depends]**:  
+[meshoptimizer](https://github.com/zeux/meshoptimizer.git) URL **https://github.com/zeux/meshoptimizer.git** AS **[Depends]/meshoptimizer**  
+[libdeflate](https://github.com/ebiggers/libdeflate.git) URL **https://github.com/ebiggers/libdeflate.git** AS **[Depends]/libdeflate**  
+[detours](https://github.com/Nukem9/detours.git) URL **https://github.com/Nukem9/detours.git** AS **[Depends]/detours**  
+[mINI](https://github.com/Perchik71/mINI) URL **https://github.com/Perchik71/mINI** AS **[Depends]/mINI**  
+[tbb](https://github.com/oneapi-src/oneTBB.git) URL **https://github.com/oneapi-src/oneTBB.git** AS **[Depends]/tbb** BRANCH **tbb_2020**  
+[zipper](https://github.com/kuba--/zip.git) URL **https://github.com/kuba--/zip.git** AS **[Depends]/zipper**  
+[jDialogs](https://github.com/Perchik71/jDialogs.git) URL **https://github.com/Perchik71/jDialogs.git** AS **[Depends]/jDialogs** (NEED UPDATE RECURSIVE)  
+Select **Release** mode compiling configuration and compile. After compilation, the binary files can be found x64/Release-MT and x64/Release.  
 
 # Installation
 After compiling the code, dynamic libraries are created: *tbb.dll*, *tbbmalloc.dll*, *winhttp.dll*.  
