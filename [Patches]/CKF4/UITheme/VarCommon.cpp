@@ -30,7 +30,7 @@ namespace Core
 		{
 			Core::Classes::UI::CUIFont* ThemeFont;
 
-			constexpr COLORREF szConstDark[62]
+			constexpr COLORREF szConstDark[63]
 			{
 				RGB(52, 52, 52),											// ThemeColor_Default
 				RGB(32, 32, 32),											// ThemeColor_ListView_Color
@@ -93,10 +93,11 @@ namespace Core
 				RGB(34, 34, 34),											// ThemeColor_Header_Normal_Gradient_Start
 				RGB(27, 27, 27),											// ThemeColor_Header_Normal_Gradient_End
 				RGB(44, 44, 44),											// ThemeColor_Header_Hot_Gradient_Start
-				RGB(37, 37, 37)												// ThemeColor_Header_Hot_Gradient_End
+				RGB(37, 37, 37),											// ThemeColor_Header_Hot_Gradient_End
+				RGB(160, 201, 235)											// ThemeColor_ListView_Owner_Selected
 			};
 
-			constexpr COLORREF szConstDarkGray[62]
+			constexpr COLORREF szConstDarkGray[63]
 			{
 				RGB(83, 83, 83),											// ThemeColor_Default
 				RGB(58, 58, 58),											// ThemeColor_ListView_Color
@@ -159,10 +160,11 @@ namespace Core
 				RGB(60, 60, 60),											// ThemeColor_Header_Normal_Gradient_Start
 				RGB(55, 55, 55),											// ThemeColor_Header_Normal_Gradient_End
 				RGB(70, 70, 70),											// ThemeColor_Header_Hot_Gradient_Start
-				RGB(65, 65, 65)												// ThemeColor_Header_Hot_Gradient_End
+				RGB(65, 65, 65),											// ThemeColor_Header_Hot_Gradient_End
+				RGB(160, 201, 235)											// ThemeColor_ListView_Owner_Selected
 			};
 
-			constexpr COLORREF szConstGray[62]
+			constexpr COLORREF szConstGray[63]
 			{
 				RGB(184, 184, 184),											// ThemeColor_Default
 				RGB(238, 238, 238),											// ThemeColor_ListView_Color
@@ -225,10 +227,11 @@ namespace Core
 				RGB(166, 166, 166),											// ThemeColor_Header_Normal_Gradient_Start
 				RGB(147, 147, 147),											// ThemeColor_Header_Normal_Gradient_End
 				RGB(176, 176, 176),											// ThemeColor_Header_Hot_Gradient_Start
-				RGB(157, 157, 157)											// ThemeColor_Header_Hot_Gradient_End
+				RGB(157, 157, 157),											// ThemeColor_Header_Hot_Gradient_End
+				RGB(242, 176, 173)											// ThemeColor_ListView_Owner_Selected
 			};
 
-			constexpr COLORREF szConstLight[62]
+			constexpr COLORREF szConstLight[63]
 			{
 				RGB(214, 214, 214),											// ThemeColor_Default
 				RGB(255, 255, 255),											// ThemeColor_ListView_Color
@@ -291,7 +294,8 @@ namespace Core
 				RGB(196, 196, 196),											// ThemeColor_Header_Normal_Gradient_Start
 				RGB(177, 177, 177),											// ThemeColor_Header_Normal_Gradient_End
 				RGB(206, 206, 206),											// ThemeColor_Header_Hot_Gradient_Start
-				RGB(187, 187, 187)											// ThemeColor_Header_Hot_Gradient_End
+				RGB(187, 187, 187),											// ThemeColor_Header_Hot_Gradient_End
+				RGB(242, 176, 173)											// ThemeColor_ListView_Owner_Selected
 			};
 
 			HBRUSH hThemeDefaultBrush = NULL;

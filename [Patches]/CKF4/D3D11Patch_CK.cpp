@@ -38,7 +38,7 @@ IDXGISwapChain* g_SwapChain;
 ID3D11DeviceContext* g_DeviceContext;
 
 HRESULT WINAPI hk_CreateDXGIFactory(REFIID riid, void** ppFactory) {
-	_F4CKMSG("// Creating DXGI factory...");
+	_F4CKMSG("[F4CK]		Creating DXGI factory...");
 
 	if (SUCCEEDED(ptrCreateDXGIFactory(__uuidof(IDXGIFactory3), ppFactory)))
 		return S_OK;
@@ -169,7 +169,7 @@ HRESULT WINAPI hk_D3D11CreateDeviceAndSwapChain(
 	}
 
 	// Create ImGui globals BEFORE the device is proxied
-	_F4CKMSG_FMT("// Created D3D11 device with feature level %X...", level);
+	_F4CKMSG_FMT("[F4CK]		Created D3D11 device with feature level %X...", level);
 
 	if (SUCCEEDED((*ppDevice)->QueryInterface<ID3D11Device2>(&g_Device_2))) {
 		// Force DirectX11.2 in case we use features later (11.3+ requires Win10 or higher)
@@ -181,7 +181,7 @@ HRESULT WINAPI hk_D3D11CreateDeviceAndSwapChain(
 		g_DeviceContext = proxyContext;
 		*ppImmediateContext = proxyContext;
 
-		_F4CKMSG("// Force DirectX11.2");
+		_F4CKMSG("[F4CK]		Force DirectX11.2");
 	}
 	else {
 		g_Device = *ppDevice;

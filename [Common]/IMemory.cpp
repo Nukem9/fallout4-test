@@ -1,6 +1,7 @@
 //////////////////////////////////////////
 /*
-* Copyright (c) 2020-2022 Perchik71 <email:perchik71@outlook.com>
+* Copyright (c) 2020 Nukem9 <email:Nukem@outlook.com>
+* Copyright (c) 2020-2021 Perchik71 <email:perchik71@outlook.com>
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy of this
 * software and associated documentation files (the "Software"), to deal in the Software
@@ -21,6 +22,70 @@
 //////////////////////////////////////////
 
 #include "StdAfx.h"
+
+/*
+Uses oneTBB (oneAPI Threading Building Blocks (oneTBB))
+URL: https://github.com/oneapi-src/oneTBB/tree/a803f276186fa2c286a357207832112265b448e4
+
+To increase the performance of the application, the functions are replaced with tbb
+*/
+
+LPVOID FIXAPI IMemory_v1_6::MemAlloc(size_t Size, UINT32 Alignment, bool Aligned, bool Zeroed)
+{
+	// If the caller doesn't care, force 4 byte aligns as a minimum
+	if (!Aligned)
+		Alignment = 4;
+
+	if (Size <= 0) {
+		Size = 1;
+		Alignment = 2;
+	}
+
+	AssertMsg(Alignment != 0 && Alignment % 2 == 0, "Alignment is fucked");
+
+	// Must be a power of 2, round it up if needed
+	if ((Alignment & (Alignment - 1)) != 0) {
+		Alignment--;
+		Alignment |= Alignment >> 1;
+		Alignment |= Alignment >> 2;
+		Alignment |= Alignment >> 4;
+		Alignment |= Alignment >> 8;
+		Alignment |= Alignment >> 16;
+		Alignment++;
+	}
+
+	// Size must be a multiple of alignment, round up to nearest
+	if ((Size % Alignment) != 0)
+		Size = ((Size + Alignment - 1) / Alignment) * Alignment;
+
+	LPVOID ptr = scalable_aligned_malloc(Size, Alignment);
+
+	if (ptr && Zeroed)
+		memset(ptr, 0, Size);
+
+	return ptr;
+}
+
+VOID FIXAPI IMemory_v1_6::MemFree(LPVOID Memory, bool Aligned)
+{
+	if (!Memory)
+		return;
+
+	scalable_aligned_free(Memory);
+}
+
+size_t FIXAPI IMemory_v1_6::MemSize(LPVOID Memory)
+{
+	return (size_t)scalable_msize(Memory);
+}
+
+LPSTR FIXAPI IMemory_v1_6::StrDup(LPCSTR string)
+{
+	size_t len = (strlen(string) + 1);
+	return (LPSTR)memcpy(MemAlloc(len), string, len);
+}
+
+#if 0
 
 #define ALIGN(n, a)	(((n) + (a) - 1) & ~((a) - 1))
 
@@ -148,3 +213,5 @@ LPSTR FIXAPI QStrDup(LPCSTR string) {
 	size_t len = (strlen(string) + 1);
 	return (LPSTR)memcpy(QMemAlloc(len), (LPVOID)string, len);
 }
+
+#endif

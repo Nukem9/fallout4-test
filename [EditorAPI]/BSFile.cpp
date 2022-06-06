@@ -50,5 +50,9 @@ BOOL BSFile::hk_ICreateInstance(LPCSTR fileName, DWORD mode, DWORD64 bufferSize,
 	if (mode == FileModes::kFileMode_ReadOnly && bufferSize < 0x40000)
 		bufferSize = 0x40000;
 
+	// Files larger than 256 MB open synchronously
+	if (((mode & FILE_FLAG_NO_BUFFERING) == FILE_FLAG_NO_BUFFERING) && (std::filesystem::file_size(fileName) >= 0x10000000))
+		mode &= ~FILE_FLAG_NO_BUFFERING;
+
 	return ICreateInstance(this, fileName, mode, bufferSize, isTextFile);
 }

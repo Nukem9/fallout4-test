@@ -145,5 +145,5 @@ namespace LogWindow {
 #define _F4CKMSGW(x)				LogWindow::LogWcDef(x)
 #define _F4CKMSGW_FMT(x, ...)		LogWindow::LogWcDef(x, ##__VA_ARGS__)
 
-#define _MESSAGE_BEGIN_PATCH(x)		_F4CKMSG_FMT("// Initialize %s patch...", x);
+#define _MESSAGE_BEGIN_PATCH(x)		_F4CKMSG_FMT("[F4CK] Initialize %s patch...", x);
 #define _MESSAGE_END_PATCH			

@@ -25,6 +25,7 @@
 #include "ListView.h"
 
 #define UI_CONTROL_CONDITION_ID 0xFA0
+#define SIZEBUF 1024
 
 namespace Core {
 	namespace UI {
@@ -80,6 +81,83 @@ namespace Core {
 					}
 
 					return DefSubclassProc(hWnd, uMsg, wParam, lParam);
+				}
+
+				VOID FIXAPI OnCustomDrawItemPlugins(HWND hWindow, LPDRAWITEMSTRUCT lpDrawItem)
+				{
+					// If there are no list view items, skip this message. 
+					if (lpDrawItem->itemID == -1)
+						return;
+
+					CHAR szFileName[SIZEBUF] = { 0 };
+					CHAR szFileType[SIZEBUF] = { 0 };
+
+					RECT rc = lpDrawItem->rcItem;
+					Graphics::CUICanvas Canvas(lpDrawItem->hDC);
+					
+					BOOL Selected = (lpDrawItem->itemState & ODS_SELECTED) == ODS_SELECTED;
+
+					Canvas.Fill(rc, GetThemeSysColor(ThemeColor::ThemeColor_ListView_Color));
+
+					ListView_GetItemText(lpDrawItem->hwndItem, lpDrawItem->itemID, 0, (LPSTR)(&szFileName[0]), SIZEBUF);
+					ListView_GetItemText(lpDrawItem->hwndItem, lpDrawItem->itemID, 1, (LPSTR)(&szFileType[0]), SIZEBUF);
+
+					BOOL isMaster = !stricmp(szFileType, "Master File");
+
+					if (isMaster)
+					{
+						auto ext = BSString::Utils::ExtractFileExt(szFileName);
+						if (!ext.Compare(".esl"))
+							Canvas.FillWithTransparent(rc, RGB(0, 255, 0), 10);
+						else
+							Canvas.FillWithTransparent(rc, RGB(255, 0, 0), 10);
+					}
+
+					// CHECKBOX
+
+					int icon_off = 0;
+					HIMAGELIST hImageList = ListView_GetImageList(lpDrawItem->hwndItem, LVSIL_SMALL);
+					if (hImageList)
+					{
+						int cx, cy;
+						ImageList_GetIconSize(hImageList, &cx, &cy);
+						
+						if ((rc.bottom - rc.top > cy) && (rc.right - rc.left > (cx + 8)))
+						{
+							icon_off = cx;
+							cy = ((rc.bottom - rc.top) - cy) >> 1;
+
+							LVITEMA lvi = { 0 };
+							lvi.mask = LVIF_IMAGE;
+							lvi.iItem = lpDrawItem->itemID;
+							ListView_GetItem(lpDrawItem->hwndItem, &lvi);
+
+							ImageList_Draw(hImageList, lvi.iImage, lpDrawItem->hDC, rc.left + 2, rc.top + cy, ILD_TRANSPARENT);
+						}
+					}
+
+					// TEXT
+
+					Canvas.Font.Assign(*ThemeFont);
+
+					SetBkMode(lpDrawItem->hDC, TRANSPARENT);
+					SetTextColor(lpDrawItem->hDC, GetThemeSysColor(ThemeColor::ThemeColor_Text_4));
+
+					Classes::UI::CRECT rcText;
+					ListView_GetSubItemRect(lpDrawItem->hwndItem, lpDrawItem->itemID, 0, LVIR_BOUNDS, (LPRECT)&rcText);
+					rcText.Inflate(-2, -2);
+					rcText.Left += 2 + icon_off;
+					Canvas.TextRect(rcText, szFileName, DT_SINGLELINE | DT_VCENTER | DT_END_ELLIPSIS);
+
+					ListView_GetSubItemRect(lpDrawItem->hwndItem, lpDrawItem->itemID, 1, LVIR_BOUNDS, (LPRECT)&rcText);
+					rcText.Inflate(-2, -2);
+					rcText.Left += 2;
+
+					Canvas.TextRect(rcText, szFileType, DT_SINGLELINE | DT_VCENTER | DT_END_ELLIPSIS);
+
+					if (Selected)
+						// blend 40%
+						Canvas.FillWithTransparent(rc, GetThemeSysColor(ThemeColor::ThemeColor_ListView_Owner_Selected), 40);
 				}
 
 				LRESULT FIXAPI OnCustomDraw(HWND hWindow, LPNMLVCUSTOMDRAW lpListView)

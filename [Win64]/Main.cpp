@@ -194,10 +194,10 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD fdwReason, LPVOID lpReserved) {
 			if ((g_LoadType == GAME_EXECUTABLE_TYPE::CREATIONKIT_FALLOUT4) || 
 				(g_LoadType == GAME_EXECUTABLE_TYPE::CREATIONKIT_FALLOUT4_PATCHED_PREVIS))
 				LogWindow::InitializeChannel();
-
+#if 0
 			IMemory::CreateInstance(g_INI->GetBoolean("Mode", "TBBMalloc", FALSE) ?
 				IMemory::MEM_MODE_TBB : IMemory::MEM_MODE_DEFAULT);
-
+#endif
 			Sys_DumpEnableBreakpoint();
 			break;
 		}

@@ -23,7 +23,6 @@
 #include "StdAfx.h"
 
 #pragma comment(lib, "delayimp.lib")
-#pragma comment(lib, "libimgui.lib")
 #pragma comment(lib, "msimg32.lib")
 #pragma comment(lib, "winmm.lib")
 #pragma comment(lib, "d3d11.lib")

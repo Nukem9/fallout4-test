@@ -401,27 +401,27 @@ VOID FIXAPI BeginUIDefer(VOID) {
 	g_UseDeferredDialogInsert = TRUE;
 }
 
-VOID FIXAPI hk_vsprintf_autosave(LPSTR lpBuffer, UINT uBufferSize, LPCSTR lpFormat, LPCSTR lpDefaultName) {
-	static LPCSTR format = "autosave_%s_%s.bak";
-	auto time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-	// Mon Oct 2 00:59 : 08 2017
-	std::string stime = XUtil::Str::LowerCase(XUtil::Str::trim(std::ctime(&time)));
-	XUtil::Str::replaceAll(stime, " ", "_");
-	XUtil::Str::replaceAll(stime, ":", "_");
-
-	if (FileHandler && FileHandler->ActiveMod) {
-		auto name = FileHandler->ActiveMod->FileName;
-
-		if (!name.Length())
-			goto l_default;
-
-		sprintf_s(lpBuffer, uBufferSize, format, *name, stime.c_str());
-		return;
-	}
-
-	l_default:
-	sprintf_s(lpBuffer, uBufferSize, format, lpDefaultName, stime.c_str());
-}
+//VOID FIXAPI hk_vsprintf_autosave(LPSTR lpBuffer, UINT uBufferSize, LPCSTR lpFormat, LPCSTR lpDefaultName) {
+//	static LPCSTR format = "autosave_%s_%s.bak";
+//	auto time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+//	// Mon Oct 2 00:59 : 08 2017
+//	std::string stime = XUtil::Str::LowerCase(XUtil::Str::trim(std::ctime(&time)));
+//	XUtil::Str::replaceAll(stime, " ", "_");
+//	XUtil::Str::replaceAll(stime, ":", "_");
+//
+//	if (FileHandler && FileHandler->ActiveMod) {
+//		auto name = FileHandler->ActiveMod->FileName;
+//
+//		if (!name.Length())
+//			goto l_default;
+//
+//		sprintf_s(lpBuffer, uBufferSize, format, *name, stime.c_str());
+//		return;
+//	}
+//
+//	l_default:
+//	sprintf_s(lpBuffer, uBufferSize, format, lpDefaultName, stime.c_str());
+//}
 
 VOID FIXAPI EndUIDefer(VOID) {
 	if (!g_UseDeferredDialogInsert)
@@ -1009,11 +1009,13 @@ VOID FIXAPI EnabledExtremelyMode(VOID) {
 	bExtremelyMode = TRUE;
 }
 
+#if 0
 VOID FIXAPI SkipAnimationTextExport(VOID) {
 	Assert(!_stricmp(CK_Settings[35].Key, "bSkipAnimationTextExport"));
 	CK_Settings[35].Value = "1";
 	CK_Settings[35].ExtremelyValue = "1";
 }
+#endif
 
 VOID FIXAPI OriginalLoadBA2(VOID) {
 	Assert(!_stricmp(CK_Settings[30].Key, "bAutoloadTESFileArchives"));
@@ -1025,27 +1027,27 @@ VOID FIXAPI hk_call_142D12196(VOID) {
 	AssertMsg(FALSE, "Creation Kit renderer initialization failed because your graphics card doesn't support D3D11 Feature Level 11 (FL11_0). Updating your drivers may fix this.");
 }
 
-VOID FIXAPI hk_FastAnimationBuild(LPVOID rcx, LPVOID rdx, LPVOID r8) {
-	PULONGLONG* beginAddr = (PULONGLONG*)rdx;
-	PULONGLONG* endAddr = (PULONGLONG*)((DWORD_PTR)rdx + ((DWORD_PTR)rcx * 8));
-
-	//std::async(std::launch::async, exec, ping.c_str());
-
-	for (; beginAddr != endAddr; ++beginAddr) {
-		if (!(*beginAddr))
-			break;
-
-		BOOL bResult = FALSE;
-		std::thread th([&beginAddr, &r8, &bResult]() {
-			bResult = (BOOL)fastCall<LPVOID>(0xFBE20, r8, *beginAddr);
-		});
-
-		th.join();
-
-		if (!bResult)
-			break;
-	}
-}
+//VOID FIXAPI hk_FastAnimationBuild(LPVOID rcx, LPVOID rdx, LPVOID r8) {
+//	PULONGLONG* beginAddr = (PULONGLONG*)rdx;
+//	PULONGLONG* endAddr = (PULONGLONG*)((DWORD_PTR)rdx + ((DWORD_PTR)rcx * 8));
+//
+//	//std::async(std::launch::async, exec, ping.c_str());
+//
+//	for (; beginAddr != endAddr; ++beginAddr) {
+//		if (!(*beginAddr))
+//			break;
+//
+//		BOOL bResult = FALSE;
+//		std::thread th([&beginAddr, &r8, &bResult]() {
+//			bResult = (BOOL)fastCall<LPVOID>(0xFBE20, r8, *beginAddr);
+//		});
+//
+//		th.join();
+//
+//		if (!bResult)
+//			break;
+//	}
+//}
 
 //VOID FIXAPI hk_sub_6450B0(HWND ControlHandle) {
 	//auto sub_644CC0 = (void(*)(HWND, uint8_t, bool, __int64, __int64, __int64, __int64, __int64))OFFSET(0x644CC0, 0);

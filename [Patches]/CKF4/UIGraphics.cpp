@@ -834,6 +834,100 @@ namespace Core
 				FillRect(m_hDC, (LPRECT)&area, (HBRUSH)m_fBrush.Handle);
 			}
 
+			VOID CUICanvas::FillWithTransparent(const RECT& area, const COLORREF color, BYTE percent)
+			{
+				HDC hMemDC = ::CreateCompatibleDC(m_hDC);
+				if (!hMemDC) return;
+
+				int w = area.right - area.left;
+				int h = area.bottom - area.top;
+
+				HBITMAP hMemBmp = ::CreateCompatibleBitmap(m_hDC, w, h);
+				if (!hMemBmp)
+				{
+					DeleteDC(hMemDC);
+					return;
+				}
+
+				HBRUSH hMemBrush = ::CreateSolidBrush(color);
+				CRECT clipRect = CRECT(0, 0, w, h);
+
+				SelectObject(hMemDC, hMemBmp);
+				FillRect(hMemDC, (LPRECT)&clipRect, hMemBrush);
+
+				BLENDFUNCTION bf;
+
+				float p = std::min(percent, (BYTE)100);
+
+				bf.BlendOp = AC_SRC_OVER;
+				bf.BlendFlags = 0;
+				bf.SourceConstantAlpha = (BYTE)(255 * (p / 100));   // Range from 0 to 255
+				bf.AlphaFormat = AC_SRC_OVER;
+
+				AlphaBlend(m_hDC,
+					area.left,
+					area.top,
+					area.right - area.left,
+					area.bottom - area.top,
+					hMemDC,
+					0,
+					0,
+					clipRect.Width,
+					clipRect.Height,
+					bf);
+
+				DeleteObject(hMemBrush);
+				DeleteObject(hMemBmp);
+				DeleteDC(hMemDC);
+			}
+
+			VOID CUICanvas::FillWithTransparent(const CRECT& area, const COLORREF color, BYTE percent)
+			{
+				HDC hMemDC = ::CreateCompatibleDC(m_hDC);
+				if (!hMemDC) return;
+
+				int w = area.Width;
+				int h = area.Height;
+
+				HBITMAP hMemBmp = ::CreateCompatibleBitmap(m_hDC, w, h);
+				if (!hMemBmp)
+				{
+					DeleteDC(hMemDC);
+					return;
+				}
+
+				HBRUSH hMemBrush = ::CreateSolidBrush(color);
+				CRECT clipRect = CRECT(0, 0, w, h);
+
+				SelectObject(hMemDC, hMemBmp);
+				FillRect(hMemDC, (LPRECT)&clipRect, hMemBrush);
+
+				BLENDFUNCTION bf;
+
+				float p = std::min(percent, (BYTE)100);
+
+				bf.BlendOp = AC_SRC_OVER;
+				bf.BlendFlags = 0;
+				bf.SourceConstantAlpha = (BYTE)(255 * (p / 100));   // Range from 0 to 255
+				bf.AlphaFormat = AC_SRC_OVER;
+
+				AlphaBlend(m_hDC,
+					area.Left,
+					area.Top,
+					area.Width,
+					area.Height,
+					hMemDC,
+					0,
+					0,
+					clipRect.Width,
+					clipRect.Height,
+					bf);
+
+				DeleteObject(hMemBrush);
+				DeleteObject(hMemBmp);
+				DeleteDC(hMemDC);
+			}
+
 			VOID CUICanvas::Fill(const LPCRECT area, const INT nCount, const COLORREF color)
 			{
 				m_fBrush.Color = color;
@@ -1052,6 +1146,81 @@ namespace Core
 			VOID CUICanvas::SetColorText(COLORREF value)
 			{
 				::SetTextColor(m_hDC, value);
+			}
+
+			VOID CUICanvas::ToFileBitmap(LPCSTR fname)
+			{
+				RECT rc;
+				::GetClipBox(m_hDC, &rc);
+				
+				BITMAP bmpScreen;
+				HBITMAP bm = ::CreateCompatibleBitmap(m_hDC, rc.right - rc.left, rc.bottom - rc.top);
+
+				DWORD dwBytesWritten = 0;
+
+				// Get the BITMAP from the HBITMAP.
+				GetObject(bm, sizeof(BITMAP), &bmpScreen);
+
+				BITMAPFILEHEADER   bmfHeader;
+				BITMAPINFOHEADER   bi;
+
+				bi.biSize = sizeof(BITMAPINFOHEADER);
+				bi.biWidth = bmpScreen.bmWidth;
+				bi.biHeight = bmpScreen.bmHeight;
+				bi.biPlanes = 1;
+				bi.biBitCount = 32;
+				bi.biCompression = BI_RGB;
+				bi.biSizeImage = 0;
+				bi.biXPelsPerMeter = 0;
+				bi.biYPelsPerMeter = 0;
+				bi.biClrUsed = 0;
+				bi.biClrImportant = 0;
+
+				DWORD dwBmpSize = ((bmpScreen.bmWidth * bi.biBitCount + 31) / 32) * 4 * bmpScreen.bmHeight;
+
+				// Starting with 32-bit Windows, GlobalAlloc and LocalAlloc are implemented as wrapper functions that 
+				// call HeapAlloc using a handle to the process's default heap. Therefore, GlobalAlloc and LocalAlloc 
+				// have greater overhead than HeapAlloc.
+				HANDLE hDIB = GlobalAlloc(GHND, dwBmpSize);
+				PCHAR lpbitmap = (PCHAR)GlobalLock(hDIB);
+
+				// Gets the "bits" from the bitmap, and copies them into a buffer 
+				// that's pointed to by lpbitmap.
+				GetDIBits(m_hDC, bm, 0,
+					(UINT)bmpScreen.bmHeight,
+					lpbitmap,
+					(BITMAPINFO*)&bi, DIB_RGB_COLORS);
+
+				// A file is created, this is where we will save the screen capture.
+				HANDLE hFile = CreateFileA(fname,
+					GENERIC_WRITE,
+					0,
+					NULL,
+					CREATE_ALWAYS,
+					FILE_ATTRIBUTE_NORMAL, NULL);
+
+				// Add the size of the headers to the size of the bitmap to get the total file size.
+				DWORD dwSizeofDIB = dwBmpSize + sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
+
+				// Offset to where the actual bitmap bits start.
+				bmfHeader.bfOffBits = (DWORD)sizeof(BITMAPFILEHEADER) + (DWORD)sizeof(BITMAPINFOHEADER);
+				// Size of the file.
+				bmfHeader.bfSize = dwSizeofDIB;
+				// bfType must always be BM for Bitmaps.
+				bmfHeader.bfType = 0x4D42; // BM.
+
+				WriteFile(hFile, (LPSTR)&bmfHeader, sizeof(BITMAPFILEHEADER), &dwBytesWritten, NULL);
+				WriteFile(hFile, (LPSTR)&bi, sizeof(BITMAPINFOHEADER), &dwBytesWritten, NULL);
+				WriteFile(hFile, (LPSTR)lpbitmap, dwBmpSize, &dwBytesWritten, NULL);
+
+				// Unlock and Free the DIB from the heap.
+				GlobalUnlock(hDIB);
+				GlobalFree(hDIB);
+
+				// Close the handle for the file that was created.
+				CloseHandle(hFile);
+
+				DeleteObject(bm);
 			}
 
 			CUICanvas::CUICanvas(HDC hDC) : m_hDC(hDC), m_fPen(psSolid, 1, RGB(255, 0, 0)), m_fBrush(RGB(255, 255, 255)), m_fFont(hDC)

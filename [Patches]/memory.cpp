@@ -25,6 +25,136 @@
 
 #define MEM_THRESHOLD 4294967296
 
+struct MemoryPatch_v1_6
+{
+	static LPVOID FIXAPI hk_calloc(size_t Count, size_t Size);
+	static LPVOID FIXAPI hk_malloc(size_t Size);
+	static LPVOID FIXAPI hk_aligned_malloc(size_t Size, size_t Alignment);
+	static LPVOID FIXAPI hk_realloc(LPVOID Memory, size_t Size);
+	static LPVOID FIXAPI hk_recalloc(LPVOID Memory, size_t Count, size_t Size);
+	static VOID FIXAPI hk_free(LPVOID Block);
+	static VOID FIXAPI hk_aligned_free(LPVOID Block);
+	static size_t FIXAPI hk_msize(LPVOID Block);
+};
+
+LPVOID FIXAPI MemoryPatch_v1_6::hk_calloc(size_t Count, size_t Size)
+{
+	// The allocated memory is always zeroed
+	return QMemAlloc(Count * Size, 0, FALSE, TRUE);
+}
+
+LPVOID FIXAPI MemoryPatch_v1_6::hk_malloc(size_t Size)
+{
+	return QMemAlloc(Size);
+}
+
+LPVOID FIXAPI MemoryPatch_v1_6::hk_aligned_malloc(size_t Size, size_t Alignment) 
+{
+	return QMemAlloc(Size, Alignment, TRUE);
+}
+
+LPVOID FIXAPI MemoryPatch_v1_6::hk_realloc(LPVOID Memory, size_t Size) 
+{
+	LPVOID newMemory = NULL;
+
+	if (Size > 0) {
+		// Recalloc behaves like calloc if there's no existing allocation. Realloc doesn't. Zero it anyway.
+		newMemory = QMemAlloc(Size, 0, FALSE, TRUE);
+
+		if (Memory)
+			memcpy(newMemory, Memory, std::min(Size, QMemSize(Memory)));
+	}
+
+	QMemFree(Memory);
+	return newMemory;
+}
+
+LPVOID FIXAPI MemoryPatch_v1_6::hk_recalloc(LPVOID Memory, size_t Count, size_t Size) 
+{
+	return hk_realloc(Memory, Count * Size);
+}
+
+VOID FIXAPI MemoryPatch_v1_6::hk_free(LPVOID Block)
+{
+	QMemFree(Block);
+}
+
+VOID FIXAPI MemoryPatch_v1_6::hk_aligned_free(LPVOID Block)
+{
+	QMemFree(Block, TRUE);
+}
+
+
+size_t FIXAPI MemoryPatch_v1_6::hk_msize(LPVOID Block)
+{
+	return QMemSize(Block);
+}
+
+DWORD64 FIXAPI Sys_GetPhysicalMemory(VOID) 
+{
+	MEMORYSTATUSEX statex = { 0 };
+	statex.dwLength = sizeof(MEMORYSTATUSEX);
+	if (!GlobalMemoryStatusEx(&statex))
+		return 0;
+	return statex.ullTotalPhys;
+}
+
+BOOL FIXAPI Sys_LowPhysicalMemory(VOID) 
+{ 
+	return (Sys_GetPhysicalMemory() > MEM_THRESHOLD) ? TRUE : FALSE; 
+}
+
+VOID FIXAPI Fix_PatchMemory(VOID)
+{
+	AssertMsg(Sys_LowPhysicalMemory(), "Not enough memory to run the program");
+
+	auto GB = (Sys_GetPhysicalMemory() / 1073741824) + 1;
+	g_ScrapSize = (GB > 8) ? 0x8000000 : 0x4000000;
+	g_bhkMemSize = (GB > 16) ? 0x80000000 : 0x40000000;
+
+	_F4CKMSG_FMT("[F4CK]		Total memory %u Gb", (DWORD)GB);
+	_F4CKMSG_FMT("[F4CK]		ScrapHeap set %u Mb", DWORD(g_ScrapSize / 1048576));
+
+	if (g_bhkMemSize >= 0x40000000)
+		_F4CKMSG_FMT("[F4CK]		bhkThreadMemorySource set %u Gb", DWORD(g_bhkMemSize / 1073741824));
+	else
+		_F4CKMSG_FMT("[F4CK]		bhkThreadMemorySource set %u Mb", DWORD(g_bhkMemSize / 1048576));
+
+	// Turning on large pages (deprecated)
+	scalable_allocation_mode(TBBMALLOC_USE_HUGE_PAGES, 1);
+
+	PatchIAT(MemoryPatch_v1_6::hk_calloc, "MSVCR110.dll", "calloc");
+	PatchIAT(MemoryPatch_v1_6::hk_calloc, "API-MS-WIN-CRT-HEAP-L1-1-0.DLL", "calloc");
+	PatchIAT(MemoryPatch_v1_6::hk_malloc, "MSVCR110.dll", "malloc");
+	PatchIAT(MemoryPatch_v1_6::hk_malloc, "API-MS-WIN-CRT-HEAP-L1-1-0.DLL", "malloc");
+	PatchIAT(MemoryPatch_v1_6::hk_aligned_malloc, "MSVCR110.dll", "_aligned_malloc");
+	PatchIAT(MemoryPatch_v1_6::hk_aligned_malloc, "API-MS-WIN-CRT-HEAP-L1-1-0.DLL", "_aligned_malloc");
+	PatchIAT(MemoryPatch_v1_6::hk_realloc, "MSVCR110.dll", "realloc");
+	PatchIAT(MemoryPatch_v1_6::hk_recalloc, "API-MS-WIN-CRT-HEAP-L1-1-0.DLL", "_recalloc");
+	PatchIAT(MemoryPatch_v1_6::hk_free, "MSVCR110.dll", "free");
+	PatchIAT(MemoryPatch_v1_6::hk_free, "API-MS-WIN-CRT-HEAP-L1-1-0.DLL", "free");
+	PatchIAT(MemoryPatch_v1_6::hk_aligned_free, "MSVCR110.dll", "_aligned_free");
+	PatchIAT(MemoryPatch_v1_6::hk_aligned_free, "API-MS-WIN-CRT-HEAP-L1-1-0.DLL", "_aligned_free");
+	PatchIAT(MemoryPatch_v1_6::hk_msize, "MSVCR110.dll", "_msize");
+	PatchIAT(MemoryPatch_v1_6::hk_msize, "API-MS-WIN-CRT-HEAP-L1-1-0.DLL", "_msize");
+	PatchIAT(memcpy_s, "API-MS-WIN-CRT-HEAP-L1-1-0.DLL", "memcpy_s");
+	PatchIAT(memcpy_s, "MSVCR110.dll", "memcpy_s");
+	PatchIAT(memcpy_s, "API-MS-WIN-CRT-HEAP-L1-1-0.DLL", "memmove_s");
+	PatchIAT(memcpy_s, "MSVCR110.dll", "memmove_s");
+	PatchIAT(memcmp, "API-MS-WIN-CRT-HEAP-L1-1-0.DLL", "memcmp");
+	PatchIAT(memcmp, "MSVCR110.dll", "memcmp");
+	PatchIAT(memset, "API-MS-WIN-CRT-HEAP-L1-1-0.DLL", "memset");
+	PatchIAT(memset, "MSVCR110.dll", "memset");
+	PatchIAT(QStrDup, "MSVCR110.dll", "_strdup");
+	PatchIAT(QStrDup, "API-MS-WIN-CRT-STRING-L1-1-0.DLL", "_strdup");
+	PatchIAT(QMemCopy, "API-MS-WIN-CRT-HEAP-L1-1-0.DLL", "memcpy");
+	PatchIAT(QMemCopy, "MSVCR110.dll", "memcpy");
+	PatchIAT(QMemCopy, "API-MS-WIN-CRT-HEAP-L1-1-0.DLL", "memmove");
+	PatchIAT(QMemCopy, "MSVCR110.dll", "memmove");
+}
+
+#if 0
+
 LPVOID hk_calloc(size_t Count, size_t Size) { return QMemAlloc(Count * Size, TRUE); }
 LPVOID hk_malloc(size_t Size) { return QMemAlloc(Size); }
 LPVOID hk_realloc(LPVOID Memory, size_t Size) {
@@ -105,3 +235,5 @@ VOID FIXAPI Fix_PatchMemory(VOID) {
 	PatchIAT(QMemCopy, "API-MS-WIN-CRT-HEAP-L1-1-0.DLL", "memmove");
 	PatchIAT(QMemCopy, "MSVCR110.dll", "memmove");
 }
+
+#endif

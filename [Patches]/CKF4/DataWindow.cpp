@@ -283,6 +283,12 @@ namespace DataWindow
 			ListView_SetImageList(DataWindowControls.ListViewPluginsResult.Handle, DataWindowControls.ImageList.Handle, LVSIL_SMALL);
 			ListView_SetImageList(DataWindowControls.ListViewPlugins.Handle, DataWindowControls.ImageList.Handle, LVSIL_SMALL);
 
+			if (UITheme::IsEnabledMode())
+			{
+				DataWindowControls.ListViewPlugins.SetStyle(DataWindowControls.ListViewPlugins.GetStyle() | LVS_OWNERDRAWFIXED);
+				DataWindowControls.ListViewPluginsResult.SetStyle(DataWindowControls.ListViewPluginsResult.GetStyle() | LVS_OWNERDRAWFIXED);
+			}
+
 			// fix no checked in list 
 			RedrawWindow(DataWindowControls.ListViewPlugins.Handle, NULL, NULL, RDW_UPDATENOW | RDW_NOCHILDREN);
 

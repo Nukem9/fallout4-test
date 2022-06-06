@@ -25,6 +25,7 @@
 
 #include "UIThemeMode.h"
 #include "UIBaseWindow.h"
+#include "DataWindow.h"
 #include "MainWindow.h"
 #include "Editor.h"
 
@@ -665,13 +666,32 @@ namespace UITheme
 		case WM_DRAWITEM: {
 			LPDRAWITEMSTRUCT lpdis = (LPDRAWITEMSTRUCT)lParam;
 
+			switch (lpdis->CtlType)
+			{
+			case ODT_MENU:
+				// Paint menu item
+				Theme::PopupMenu::Event::OnDrawItem(hWnd, lpdis);
+				return TRUE;
+			case ODT_LISTVIEW:
+				{
+					if ((lpdis->CtlID == UI_LISTVIEW_PLUGINS) || (lpdis->CtlID == UI_NEW_LISTVIEW_CONTROL_TO_RESULT))
+					{
+						// Paint draw item listview
+						Theme::ListView::OnCustomDrawItemPlugins(hWnd, lpdis);
+
+						return TRUE;
+					}
+				}
+				break;
+			}
 			if (lpdis->CtlType == ODT_MENU)
 			{
 				// Paint menu item
 				Theme::PopupMenu::Event::OnDrawItem(hWnd, lpdis);
 
 				return TRUE;
-			}		
+			}
+
 		}
 		break;
 
@@ -691,7 +711,12 @@ namespace UITheme
 
 				switch (themeType) {
 				case UITheme::ThemeType::ListView:
-					return Theme::ListView::OnCustomDraw(hWnd, (LPNMLVCUSTOMDRAW)lParam);
+					// To colorize the list of mods, WM_NOTIFY calls prevent me.
+					// It's strange, but to change the color of the text from black to light in standard CK windows with properties, WM_NOTIFY is needed.
+					if ((nmhdr->idFrom != UI_LISTVIEW_PLUGINS) && (nmhdr->idFrom != UI_NEW_LISTVIEW_CONTROL_TO_RESULT))
+						return Theme::ListView::OnCustomDraw(hWnd, (LPNMLVCUSTOMDRAW)lParam);
+					else
+						return CDRF_DODEFAULT;
 				case UITheme::ThemeType::ToolBar:
 					return Theme::ToolBar::OnCustomDraw(hWnd, (LPNMTBCUSTOMDRAW)lParam);
 				}

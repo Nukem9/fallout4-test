@@ -119,6 +119,7 @@ DWORD WINAPI Sys_DumpWriterThread(LPVOID Arg)
 {
 	Assert(Arg);
 
+	BSString filezip = "";
 	CHAR fileName[MAX_PATH];
 	BOOL dumpWritten = FALSE;
 
@@ -127,6 +128,8 @@ DWORD WINAPI Sys_DumpWriterThread(LPVOID Arg)
 
 	if (miniDumpWriteDump)
 	{
+		LPSTR files[2];
+
 		// Create a dump in the same folder of the exe itself
 		CHAR exePath[MAX_PATH];
 		GetModuleFileNameA(GetModuleHandleA(NULL), exePath, ARRAYSIZE(exePath));
@@ -134,6 +137,11 @@ DWORD WINAPI Sys_DumpWriterThread(LPVOID Arg)
 		SYSTEMTIME sysTime;
 		GetSystemTime(&sysTime);
 		sprintf_s(fileName, "%s_%4d%02d%02d_%02d%02d%02d.dmp", exePath, sysTime.wYear, sysTime.wMonth, sysTime.wDay, sysTime.wHour, sysTime.wMinute, sysTime.wSecond);
+
+		auto slen = strlen(fileName) + 1;
+		files[0] = new CHAR[slen];
+		ZeroMemory(files[0], slen);
+		strcpy(files[0], fileName);
 
 		HANDLE file = CreateFileA(fileName, GENERIC_READ | GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 
@@ -150,7 +158,24 @@ DWORD WINAPI Sys_DumpWriterThread(LPVOID Arg)
 			CloseHandle(file);
 		}
 
-		LogWindow::SaveRichTextToFile(XUtil::Str::ChangeFileExt(fileName, ".log").c_str());
+		auto slog = XUtil::Str::ChangeFileExt(fileName, ".log");
+		slen = slog.length() + 1;
+		files[1] = new CHAR[slen];
+		ZeroMemory(files[1], slen);
+		strcpy(files[1], slog.c_str());
+
+		LogWindow::SaveRichTextToFile(slog.c_str());
+
+		filezip = BSString::Utils::ChangeFileExt(fileName, ".zip");
+
+		if (!zip_create(filezip.c_str(), (LPCSTR*)files, 2))
+		{
+			DeleteFileA(files[0]);
+			DeleteFileA(files[1]);
+		}
+
+		delete[] files[0];
+		delete[] files[1];
 	}
 	else
 		strcpy_s(fileName, "UNABLE TO LOAD DBGHELP.DLL");
@@ -182,7 +207,11 @@ DWORD WINAPI Sys_DumpWriterThread(LPVOID Arg)
 		break;
 	}
 
-	XUtil::XAssert("", 0, message, reason, exceptionInfo->ExceptionRecord->ExceptionCode, fileName);
+	if (filezip.Length() > 0)
+		XUtil::XAssert("", 0, message, reason, exceptionInfo->ExceptionRecord->ExceptionCode, filezip.c_str());
+	else
+		XUtil::XAssert("", 0, message, reason, exceptionInfo->ExceptionRecord->ExceptionCode, "");
+
 	return 0;
 }
 

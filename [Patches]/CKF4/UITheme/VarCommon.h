@@ -114,7 +114,8 @@ namespace Core
 				ThemeColor_Header_Normal_Gradient_Start,
 				ThemeColor_Header_Normal_Gradient_End,
 				ThemeColor_Header_Hot_Gradient_Start,
-				ThemeColor_Header_Hot_Gradient_End
+				ThemeColor_Header_Hot_Gradient_End,
+				ThemeColor_ListView_Owner_Selected
 			};
 
 			inline COLORREF FIXAPI GetThemeSysColor(const ThemeColor color);

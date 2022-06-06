@@ -24,6 +24,16 @@
 
 #include "CommInc.h"
 
+struct IMemory_v1_6 
+{
+	static LPVOID FIXAPI MemAlloc(size_t Size, UINT32 Alignment = 0, bool Aligned = FALSE, bool Zeroed = FALSE);
+	static VOID FIXAPI MemFree(LPVOID Memory, bool Aligned = FALSE);
+	static size_t FIXAPI MemSize(LPVOID Memory);
+	static LPSTR FIXAPI StrDup(LPCSTR string);
+};
+
+#if 0
+
 #define __MEMALIGN__ 16
 #define __IMEM_VER 2
 
@@ -69,4 +79,10 @@ VOID	FIXAPI QMemFree(LPVOID Memory, BOOL Aligned = FALSE);
 UINT64	FIXAPI QMemSize(LPVOID Memory, BOOL Aligned = FALSE);
 LPSTR	FIXAPI QStrDup(LPCSTR string);
 
+#endif
+
+#define QMemAlloc IMemory_v1_6::MemAlloc
+#define QMemFree IMemory_v1_6::MemFree
+#define QMemSize IMemory_v1_6::MemSize
+#define QStrDup IMemory_v1_6::StrDup
 #define QMemCopy memcpy

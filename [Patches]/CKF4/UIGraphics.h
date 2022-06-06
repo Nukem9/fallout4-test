@@ -320,6 +320,8 @@ namespace Core
 				VOID Fill(const COLORREF color);
 				VOID Fill(const RECT& area, const COLORREF color);
 				VOID Fill(const CRECT& area, const COLORREF color);
+				VOID FillWithTransparent(const RECT& area, const COLORREF color, BYTE percent);
+				VOID FillWithTransparent(const CRECT& area, const COLORREF color, BYTE percent);
 				VOID Fill(const LPCRECT area, const INT nCount, const COLORREF color);
 				VOID Fill(const LPCCRECT area, const INT nCount, const COLORREF color);
 				VOID EllipseFill(const RECT& area, const COLORREF color);
@@ -341,6 +343,8 @@ namespace Core
 				VOID TextRect(RECT& area, LPCWSTR text, UINT flags) const;
 				VOID TextRect(CRECT& area, LPCWSTR text, UINT flags) const;
 				VOID TextInput(INT x, INT y, LPCSTR text);
+			public:
+				VOID ToFileBitmap(LPCSTR fname);
 			public:
 				VOID IncludeRect(const RECT& area) const;
 				VOID IncludeRect(const CRECT& area) const;

@@ -40,7 +40,7 @@ HANDLE WINAPI hk_FindFirstFileA(LPCSTR lpFileName, LPWIN32_FIND_DATAA lpFindFile
 DWORD WINAPI hk_modGetPrivateProfileStringA(LPCSTR lpAppName, LPCSTR lpKeyName, LPCSTR lpDefault, LPSTR lpReturnedString,
 	DWORD nSize, LPCTSTR lpFileName);
 DWORD WINAPI hk_modGetPrivateProfileIntA(LPCSTR lpAppName, LPCSTR lpKeyName, INT nDefault, LPCSTR lpFileName);
-VOID FIXAPI hk_vsprintf_autosave(LPSTR lpBuffer, UINT uBufferSize, LPCSTR lpFormat, LPCSTR lpDefaultName);
+//VOID FIXAPI hk_vsprintf_autosave(LPSTR lpBuffer, UINT uBufferSize, LPCSTR lpFormat, LPCSTR lpDefaultName);
 
 BOOL FIXAPI OpenPluginSaveDialog(HWND ParentWindow, LPCSTR BasePath, BOOL IsESM, LPSTR Buffer, uint32_t BufferSize, LPCSTR Directory);
 VOID FIXAPI UpdateObjectWindowTreeView(LPVOID Thisptr, HWND ControlHandle, INT64 Unknown);
@@ -55,7 +55,7 @@ DWORD FIXAPI GetCountItemInLayer(LPVOID unknown, BGSLayer* layer);
 VOID FIXAPI QuitHandler(VOID);
 
 VOID FIXAPI hk_call_142D12196(VOID);
-VOID FIXAPI hk_FastAnimationBuild(LPVOID rcx, LPVOID rdx, LPVOID r8);
+//VOID FIXAPI hk_FastAnimationBuild(LPVOID rcx, LPVOID rdx, LPVOID r8);
 //VOID FIXAPI hk_sub_6450B0(HWND ControlHandle);
 VOID FIXAPI hk_call_140906407(INT64 a1, INT64 a2, INT64 a3);
 BOOL FIXAPI hk_call_12E852C(HWND RichEditControl, LPCSTR Text);

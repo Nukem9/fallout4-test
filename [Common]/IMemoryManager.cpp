@@ -24,11 +24,11 @@
 #include "StdAfx.h"
 
 LPVOID MemoryManager::Allocate(MemoryManager *Manager, UINT64 Size, UINT32 Alignment, BOOL Aligned) {
-	return QMemAlloc(Size, TRUE);
+	return QMemAlloc(Size, Alignment, Aligned, TRUE);
 }
 
 VOID MemoryManager::Deallocate(MemoryManager *Manager, LPVOID Memory, BOOL Aligned) {
-	QMemFree(Memory);
+	QMemFree(Memory, Aligned);
 }
 
 UINT64 MemoryManager::Size(MemoryManager *Manager, LPVOID Memory) {
@@ -39,7 +39,7 @@ LPVOID ScrapHeap::Allocate(UINT64 Size, UINT32 Alignment) {
 	if (Size > g_ScrapSize)
 		return NULL; 
 
-	return QMemAlloc(Size);
+	return QMemAlloc(Size, Alignment, Alignment != 0);
 }
 
 VOID ScrapHeap::Deallocate(LPVOID Memory) {
