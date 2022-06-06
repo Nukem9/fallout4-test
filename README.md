@@ -8,7 +8,7 @@ A collection of modifications, enhancements, and reverse engineered resources fo
 
 <p align="center">
  <a href="https://github.com/Perchik71/Fallout4Test/blob/master/LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>  
- <a href="https://github.com/Perchik71/Fallout4Test/releases/tag/1.7.2"><img alt="GitHub release (stable)" src="https://img.shields.io/github/v/release/Perchik71/Fallout4Test?color=cf8c18&label=stable"></a>  
+ <a href="https://github.com/Perchik71/Fallout4Test/releases/tag/1.8"><img alt="GitHub release (stable)" src="https://img.shields.io/github/v/release/Perchik71/Fallout4Test?color=cf8c18&label=stable"></a>  
  <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/perchik71/Fallout4Test?color=ff">
  <a href="https://github.com/Perchik71/Fallout4Test/releases/download/1.6/f4ck_loader.7z"><img alt="GitHub release (by f4ck_loader)" src="https://img.shields.io/github/downloads/perchik71/Fallout4Test/1.6/total?color=49b5bc&label=f4ck_loader"></a>  
  <img alt="GitHub all releases" src="https://img.shields.io/github/downloads/perchik71/Fallout4Test/total">  
