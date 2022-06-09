@@ -286,6 +286,7 @@
     <ClCompile Include="[EditorAPI]\BSArchive.cpp" />
     <ClCompile Include="[EditorAPI]\BSArchiveManager.cpp" />
     <ClCompile Include="[EditorAPI]\BSFile.cpp" />
+    <ClCompile Include="[EditorAPI]\BSResourceLooseFiles.cpp" />
     <ClCompile Include="[EditorAPI]\BSString.cpp" />
     <ClCompile Include="[EditorAPI]\Core.cpp" />
     <ClCompile Include="[EditorAPI]\NiClasses.cpp" />

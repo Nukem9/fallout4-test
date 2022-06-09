@@ -53,6 +53,7 @@
 #include "..\[EditorAPI]\BSFile.h"
 #include "..\[EditorAPI]\BSArchiveManager.h"
 #include "..\[EditorAPI]\TESObjectREFR.h"
+#include "..\[EditorAPI]\BSResourceLooseFiles.h"
 
 /*
 
@@ -719,11 +720,80 @@ VOID FIXAPI F_UnicodePatches(VOID) {
 ==================
 F_UnicodePatches
 
+For read large files
+==================
+*/
+VOID FIXAPI F_LooseFilePatches(VOID) {
+	if (!g_INI->GetBoolean("CreationKit", "LooseFilePatch", FALSE))
+		return;
+
+	_MESSAGE_FMT("It is allowed to load large files with risk.");
+	bAllow64BitBA2Files = TRUE;
+
+	//
+	// Loose files
+	//
+	_MESSAGE_BEGIN_PATCH("Loose files");
+
+	// Set new size class 0x160 to 0x180
+	XUtil::PatchMemory(OFFSET(0x24D3341, 0), { 0x80 });
+
+	// I will add initialization to fill in the new fields with data
+	class LooseFileStreamHook : public Xbyak::CodeGenerator {
+	public:
+		LooseFileStreamHook(VOID) : Xbyak::CodeGenerator()
+		{
+			push(r11);
+			push(rax);
+			mov(rcx, ptr[r11 + 0x18]);
+			mov(rdx, rbp);
+			sub(rsp, 0x40);
+			mov(rax, (uintptr_t)&BSResource::LooseFileStream::CreateInstance);
+			call(rax);
+			add(rsp, 0x40);
+			pop(rax);
+			pop(r11);
+			mov(rbx, ptr[r11 + 0x10]);
+			mov(rbp, ptr[r11 + 0x18]);
+			mov(rsi, ptr[r11 + 0x20]);
+			mov(rsp, r11);
+			pop(rdi);
+			ret();
+		}
+
+		static VOID Generate(uintptr_t Target) {
+			auto hook = new LooseFileStreamHook();
+			XUtil::DetourJump(Target, (uintptr_t)hook->getCode());
+		}
+	};
+	LooseFileStreamHook::Generate(OFFSET(0x24D3BB7, 0));
+
+	// As I understand it, CK evaluates the amount of useful data with the file size, 
+	// since I will now adjust the 64-bit size, sacrificing checking for NullPtr.
+	//
+	// mov rax, qword ptr ds:[rcx+0x160]
+	// jmp -> cmp rsi, rax
+	XUtil::PatchMemory(OFFSET(0x24BB104, 0), { 0x48, 0x8B, 0x81, 0x60, 0x01, 0x00, 0x00, 0xEB, 0x1D });
+
+	// Ignoring the correctness check is not useful
+	XUtil::PatchMemory(OFFSET(0x24D6E50, 0), { 0xEB });
+	XUtil::PatchMemory(OFFSET(0x24D6FDD, 0), { 0xEB });
+	XUtil::PatchMemory(OFFSET(0x24D7196, 0), { 0xEB });
+	XUtil::PatchMemory(OFFSET(0x24D87A0, 0), { 0xC3 });
+	XUtil::PatchMemory(OFFSET(0x24D87F0, 0), { 0xC3 });
+
+	_MESSAGE_END_PATCH;
+}
+
+
+/*
+==================
+F_UnicodePatches
+
 Patches for facegen
 ==================
 */
 VOID FIXAPI F_FaceGenPatches(VOID) {
-
 	if (!g_INI->GetBoolean("CreationKit", "FaceGenPatch", FALSE))
 		return;
 
@@ -812,18 +882,9 @@ VOID FIXAPI MainFix_PatchFallout4CreationKit(VOID)
 			else
 				goto ParserCommandLine;
 		}
-
-		if (*sCommandRun) {
+	
+		if (*sCommandRun)
 			_MESSAGE_FMT("Command: %s", *sCommandRun);
-
-			// A list of allowed commands for using large files 
-			if ((nCountArgCmdLine > 1) && !(sCommandRun.Compare("-GeneratePreCombined") && sCommandRun.Compare("-GeneratePreVisData") &&
-				sCommandRun.Compare("-BuildCDX") && sCommandRun.Compare("-CompressPSG") && sCommandRun.Compare("-CheckInPlugin")))
-			{
-				_MESSAGE_FMT("It is allowed to load large files with risk.");
-				bAllow64BitBA2Files = TRUE;
-			}
-		}
 
 		_MESSAGE_FMT("CommandLine: %d (Args) %s", nCountArgCmdLine, GetCommandLineA());
 
@@ -923,6 +984,7 @@ VOID FIXAPI MainFix_PatchFallout4CreationKit(VOID)
 		OriginalLoadBA2();
 
 	F_RequiredPatches();
+	F_LooseFilePatches();
 	
 	// Will force CK to read large pages
 	if (g_INI->GetBoolean("CreationKit", "IOPatch", FALSE)) {
