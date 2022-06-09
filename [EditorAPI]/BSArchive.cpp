@@ -64,8 +64,8 @@ BSArchive::EResultError FIXAPI BSArchive::hk_LoadArchive(LPVOID arrayDataList, B
 
 BOOL FIXAPI BSArchive::hk_Check64bitSize(LPCSTR fileName, DWORD& fileSize) {
 	WIN32_FILE_ATTRIBUTE_DATA fileData;
-	if (GetFileAttributesExA(fileName, GetFileExInfoStandard, &fileData)) {
 
+	if (GetFileAttributesExA(fileName, GetFileExInfoStandard, &fileData)) {
 		if ((fileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY ||
 			fileData.dwFileAttributes == INVALID_FILE_ATTRIBUTES)
 			return FALSE;
@@ -86,9 +86,9 @@ BOOL FIXAPI BSArchive::hk_Check64bitSize(LPCSTR fileName, DWORD& fileSize) {
 					fileShortName = fileShortName.substr(del + 1);
 
 				_MESSAGE_FMT("Skip load an archive file \"%s\". The archive has a size of more than 4GB (%s)...", fileShortName.c_str(), *fileSizeStr);
-			}
 
-			return FALSE;
+				return FALSE;
+			}
 		}
 
 		fileSize = fileData.nFileSizeLow;

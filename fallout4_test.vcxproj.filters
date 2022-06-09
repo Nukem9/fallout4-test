@@ -626,6 +626,9 @@
     <ClCompile Include="[Common]\IProgressTaskBar.cpp">
       <Filter>[Common]</Filter>
     </ClCompile>
+    <ClCompile Include="[EditorAPI]\BSResourceLooseFiles.cpp">
+      <Filter>[EditorAPI]</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc">
