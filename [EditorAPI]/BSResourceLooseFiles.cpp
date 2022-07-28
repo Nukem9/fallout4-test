@@ -48,6 +48,8 @@ VOID BSResource::LooseFileStream::Initialize64BitData(LPCSTR FileName)
 	auto path = BSString::Utils::GetApplicationPath() + FileName;
 	if (BSString::Utils::FileExists(path))
 		dw64FileSize = std::filesystem::file_size(*path);
+	else
+		dw64FileSize = dwFileSize;
 }
 
 ///////////////////////////////////////////////////////////////////////

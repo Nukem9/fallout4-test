@@ -1,10 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Release-AVX|x64">
-      <Configuration>Release-AVX</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|x64">
       <Configuration>Release</Configuration>
       <Platform>x64</Platform>
@@ -26,15 +22,6 @@
     <InterproceduralOptimization>true</InterproceduralOptimization>
     <PreferredToolArchitecture>x64</PreferredToolArchitecture>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-AVX|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>MultiByte</CharacterSet>
-    <InterproceduralOptimization>true</InterproceduralOptimization>
-    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
-  </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
     <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.props" />
@@ -44,19 +31,8 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release-AVX|x64'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(WindowsSDK_IncludePath);$(VC_IncludePath);$(SolutionDir)[Depends]\detours;$(SolutionDir)[Depends]\zydis\msvc\zydis;$(SolutionDir)[Depends]\zydis\include;$(SolutionDir)[Depends]\tbb\include;$(SolutionDir)[Depends];$(SolutionDir);$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)x64\Release-MT\;$(OutDir);$(LibraryPath)</LibraryPath>
-    <TargetName>winhttp</TargetName>
-    <IntDir>$(SolutionDir)x64\$(ProjectName)\</IntDir>
-    <PreBuildEventUseInBuild>true</PreBuildEventUseInBuild>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-AVX|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(WindowsSDK_IncludePath);$(VC_IncludePath);$(SolutionDir)[Depends]\detours;$(SolutionDir)[Depends]\zydis\msvc\zydis;$(SolutionDir)[Depends]\zydis\include;$(SolutionDir)[Depends]\tbb\include;$(SolutionDir)[Depends];$(SolutionDir);$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)x64\Release-MT\;$(OutDir);$(LibraryPath)</LibraryPath>
@@ -107,55 +83,6 @@
       <DelayLoadDLLs>tbb.dll;tbbmalloc.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
       <SupportUnloadOfDelayLoadedDLL>true</SupportUnloadOfDelayLoadedDLL>
       <SupportNobindOfDelayLoadedDLL>true</SupportNobindOfDelayLoadedDLL>
-    </Link>
-    <PreBuildEvent>
-      <Command>powershell -ExecutionPolicy Bypass -File "$(SolutionDir)release.ps1" 4</Command>
-    </PreBuildEvent>
-    <PreBuildEvent>
-      <Message>Update version_info.h</Message>
-    </PreBuildEvent>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release-AVX|x64'">
-    <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
-      <Optimization>MaxSpeed</Optimization>
-      <PreprocessorDefinitions>JDIALOG_4x4_DIALOG_UINT;NOMINMAX;NDEBUG;_WINDOWS;_USRDLL;FALLOUT4=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <UseMSVC>false</UseMSVC>
-      <GenerateAlternateCodePaths>AVX2</GenerateAlternateCodePaths>
-      <UseProcessorExtensions>HOST</UseProcessorExtensions>
-      <Mtune>Broadwell</Mtune>
-      <CCppSupport>Cpp17Support</CCppSupport>
-      <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalOptions>/D "NOMINMAX" /D "ZYDIS_STATIC_DEFINE"  /D "TRACY_ON_DEMAND" /D "_REENTRANT" /D "JEMALLOC_EXPORT=" %(AdditionalOptions)</AdditionalOptions>
-      <OmitFramePointers>true</OmitFramePointers>
-      <DisableSpecificWarnings>4430;4267;4302;4311;4312;4996;4244;4477;26495;26451;26812</DisableSpecificWarnings>
-      <FloatingPointExceptions>true</FloatingPointExceptions>
-      <LanguageStandard_C>Default</LanguageStandard_C>
-      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
-      <StructMemberAlignment>Default</StructMemberAlignment>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <CallingConvention>FastCall</CallingConvention>
-      <ForcedIncludeFiles>
-      </ForcedIncludeFiles>
-      <AssemblerOutput>NoListing</AssemblerOutput>
-      <UseUnicodeForAssemblerListing>false</UseUnicodeForAssemblerListing>
-      <ModuleOutputFile>$(IntDir)</ModuleOutputFile>
-    </ClCompile>
-    <Link>
-      <SubSystem>Windows</SubSystem>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
-      <GenerateDebugInformation>false</GenerateDebugInformation>
-      <AdditionalOptions>/ignore:4104 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalLibraryDirectories>..\x64\Release-MT-AVX;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <StackReserveSize>32768</StackReserveSize>
-      <AdditionalDependencies>comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <StackCommitSize>32768</StackCommitSize>
-      <MinimumRequiredVersion>6.1</MinimumRequiredVersion>
     </Link>
     <PreBuildEvent>
       <Command>powershell -ExecutionPolicy Bypass -File "$(SolutionDir)release.ps1" 4</Command>
