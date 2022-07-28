@@ -1009,13 +1009,11 @@ VOID FIXAPI EnabledExtremelyMode(VOID) {
 	bExtremelyMode = TRUE;
 }
 
-#if 0
 VOID FIXAPI SkipAnimationTextExport(VOID) {
 	Assert(!_stricmp(CK_Settings[35].Key, "bSkipAnimationTextExport"));
 	CK_Settings[35].Value = "1";
 	CK_Settings[35].ExtremelyValue = "1";
 }
-#endif
 
 VOID FIXAPI OriginalLoadBA2(VOID) {
 	Assert(!_stricmp(CK_Settings[30].Key, "bAutoloadTESFileArchives"));

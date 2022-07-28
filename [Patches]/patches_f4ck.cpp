@@ -402,6 +402,9 @@ VOID FIXAPI F_RequiredPatches(VOID) {
 	// Skip some warning
 	//
 
+	// EXTRA SPACE
+	XUtil::PatchMemoryNop(OFFSET(0x86F151, 0), 0x35);
+
 	// Animation messages
 	XUtil::PatchMemoryNop(OFFSET(0x257CF88, 0), 5);
 	XUtil::PatchMemoryNop(OFFSET(0x257D4B3, 0), 5);
@@ -1023,7 +1026,6 @@ VOID FIXAPI MainFix_PatchFallout4CreationKit(VOID)
 		_MESSAGE_END_PATCH;
 	}
 
-#if 0
 	if (nCountArgCmdLine == 1 && g_INI->GetBoolean("CreationKit", "SkipAnimationBuildProcessData", FALSE)) {
 		//
 		// Loading Files... Done! and continue
@@ -1042,7 +1044,6 @@ VOID FIXAPI MainFix_PatchFallout4CreationKit(VOID)
 		// Skipping create temporary files
 		XUtil::PatchMemory(OFFSET(0xD36C0, 0), { 0xC3 });
 	}
-#endif
 
 	//if (DWORD autosavetimeout = g_INI->GetInteger("CreationKit", "AutosavePluginTimeout", 0); autosavetimeout) {
 	//	XUtil::PatchMemory(OFFSET(0x5FC156, 0), { 0x41, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x90 });	// every N min

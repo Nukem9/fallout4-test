@@ -738,31 +738,60 @@ namespace UITheme
 	}
 
 	HRESULT FIXAPI Comctl32DrawThemeText(HTHEME hTheme, HDC hdc, INT iPartId, INT iStateId, LPCWSTR pszText, INT cchText, DWORD dwTextFlags, DWORD dwTextFlags2, LPCRECT pRect) {
-		Classes::CUICanvas Canvas(hdc);
-		Canvas.TransparentMode = TRUE;
-		Canvas.Font.Assign(*Theme::ThemeFont);
-
-		if ((Theme::GetTheme() == Theme::Theme_Dark) || (Theme::GetTheme() == Theme::Theme_DarkGray)) {
-			// detected standart OS theme (comdlg32)
-			COLORREF clTest = GetPixel(hdc, pRect->left + ((pRect->right - pRect->left) >> 1), pRect->top + 2);
-			if (CLR_INVALID != clTest && ((GetRValue(clTest) + GetGValue(clTest) + GetBValue(clTest)) / 3) > 128)
-				return DrawThemeText(hTheme, hdc, iPartId, iStateId, pszText, cchText, dwTextFlags, dwTextFlags2, pRect);
-		}
-
 		auto themeType = ThemeType::None;
 		if (auto itr = ThemeHandles.find(hTheme); itr != ThemeHandles.end())
 			themeType = itr->second;
 
-		RECT rc = *pRect;
+		if (themeType == ThemeType::StatusBar)
+		{
+			// StatusBar flicker...
+			// To completely get rid of a lot of renderings, it looks like commctrl does not have double buffering, as I was told.
 
-		switch (themeType) {
-		case ThemeType::StatusBar:
+			// Enabling double buffering
+
+			RECT rc = { 0, 0, (pRect->right - pRect->left) + 6, pRect->bottom - pRect->top };
+			HDC hdcMem = CreateCompatibleDC(hdc);
+			HBITMAP hbmMem = CreateCompatibleBitmap(hdc, rc.right, rc.bottom);
+			HBITMAP hbmOld = (HBITMAP)SelectObject(hdcMem, hbmMem);
+
+			Classes::CUICanvas Canvas(hdcMem);
+
+			Theme::StatusBar::Render::DrawBackground(Canvas, &rc);
+
+			Canvas.TransparentMode = TRUE;
+			Canvas.Font.Assign(*Theme::ThemeFont);
+
 			Theme::StatusBar::Event::OnBeforeDrawText(Canvas, dwTextFlags);
-			break;
-		case ThemeType::TabControl:
-			Theme::PageControl::Event::OnBeforeDrawText(Canvas, dwTextFlags);
-			break;
-		case ThemeType::Button:
+
+			Canvas.TextRect(rc, pszText, dwTextFlags);
+			Canvas.TransparentMode = FALSE;
+
+			BitBlt(hdc, pRect->left - 3, pRect->top, rc.right, rc.bottom, hdcMem, 0, 0, SRCCOPY);
+
+			SelectObject(hdcMem, hbmOld);
+			DeleteObject(hbmMem);
+			DeleteDC(hdcMem);
+		}
+		else
+		{
+			if ((Theme::GetTheme() == Theme::Theme_Dark) || (Theme::GetTheme() == Theme::Theme_DarkGray)) {
+				// detected standart OS theme (comdlg32)
+				COLORREF clTest = GetPixel(hdc, pRect->left + ((pRect->right - pRect->left) >> 1), pRect->top + 2);
+				if (CLR_INVALID != clTest && ((GetRValue(clTest) + GetGValue(clTest) + GetBValue(clTest)) / 3) > 128)
+					return DrawThemeText(hTheme, hdc, iPartId, iStateId, pszText, cchText, dwTextFlags, dwTextFlags2, pRect);
+			}
+
+			RECT rc = *pRect;
+
+			Classes::CUICanvas Canvas(hdc);
+			Canvas.TransparentMode = TRUE;
+			Canvas.Font.Assign(*Theme::ThemeFont);
+
+			switch (themeType) {
+			case ThemeType::TabControl:
+				Theme::PageControl::Event::OnBeforeDrawText(Canvas, dwTextFlags);
+				break;
+			case ThemeType::Button:
 			{
 				if (iPartId == BP_PUSHBUTTON)
 					Theme::PushButton::Event::OnBeforeDrawText(Canvas, dwTextFlags, iStateId);
@@ -781,19 +810,20 @@ namespace UITheme
 					rc.right += 10; // eliminate end "..." when this is not necessary
 					Theme::GroupBox::Event::OnBeforeDrawText(Canvas, dwTextFlags);
 				}
-					
-			}
-			break;		
-		case ThemeType::ComboBox:
-			Theme::ComboBox::Event::OnBeforeDrawText(Canvas, dwTextFlags, iStateId);
-			break;
-		default:
-			Canvas.ColorText = Theme::GetThemeSysColor(Theme::ThemeColor_Text_4);
-			break;
-		}			
 
-		Canvas.TextRect(rc, pszText, dwTextFlags);
-		Canvas.TransparentMode = FALSE;
+			}
+			break;
+			case ThemeType::ComboBox:
+				Theme::ComboBox::Event::OnBeforeDrawText(Canvas, dwTextFlags, iStateId);
+				break;
+			default:
+				Canvas.ColorText = Theme::GetThemeSysColor(Theme::ThemeColor_Text_4);
+				break;
+			}
+
+			Canvas.TextRect(rc, pszText, dwTextFlags);
+			Canvas.TransparentMode = FALSE;
+		}
 
 		return S_OK;
 	}
@@ -977,15 +1007,19 @@ namespace UITheme
 			switch (iPartId) {
 			case 0:
 				// Outside border (top, right)
+				// 
+				// In fact, the whole window... it is necessary to avoid drawing the text area
 				Theme::StatusBar::Render::DrawBorder(Canvas, pRect);
-			return S_OK;
+				return S_OK;
 
 			case SP_PANE:
 			case SP_GRIPPERPANE:
 			case SP_GRIPPER:
 				// Everything else
-				Theme::StatusBar::Render::DrawBackground(Canvas, pRect);
-			return S_OK;
+				// 
+				// flicker.... I will draw along with the text
+				//Theme::StatusBar::Render::DrawBackground(Canvas, pRect);
+				return S_OK;
 			}
 		}
 		else if (themeType == ThemeType::Spin) {

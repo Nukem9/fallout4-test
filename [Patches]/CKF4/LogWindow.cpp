@@ -336,6 +336,24 @@ namespace LogWindow {
 	LRESULT CALLBACK WndProc(HWND Hwnd, UINT Message, WPARAM wParam, LPARAM lParam) {
 		static BOOL autoScroll;
 
+		// Fix colored label "Channel:"
+		if (UITheme::IsEnabledMode())
+		{
+			switch (Message) {
+			case WM_CTLCOLORSTATIC:
+			case WM_CTLCOLORBTN:
+			case WM_CTLCOLORDLG: {
+				if (HDC hdc = reinterpret_cast<HDC>(wParam); hdc)
+				{
+					SetTextColor(hdc, UITheme::Theme::GetThemeSysColor(UITheme::Theme::ThemeColor_Text_3));
+					SetBkColor(hdc, UITheme::Theme::GetThemeSysColor(UITheme::Theme::ThemeColor_Default));
+				}
+
+				return reinterpret_cast<INT_PTR>(UITheme::Theme::Comctl32GetSysColorBrush(COLOR_BTNFACE));
+			}
+			}
+		}
+
 		switch (Message) {
 		case WM_CREATE: {
 			auto info = (const CREATESTRUCT*)lParam;
@@ -382,8 +400,12 @@ namespace LogWindow {
 			BtnLogChnHwnd = CreateWindowExA(0, "BUTTON", ChangeLogChannel->Name, style, 198, 8, 100, 24,
 				Hwnd, (HMENU)UI_LOG_CMD_CHANGELOGCHANNEL, info->hInstance, NULL);
 
-			LabelHwnd = CreateWindowExW(0, L"STATIC", L"Channels:", WS_CHILD | WS_VISIBLE, 8, 12, 74, 16,
+			LabelHwnd = CreateWindowExW(0, L"STATIC", L"Channels:", WS_CHILD | WS_VISIBLE | SS_CENTER, 8, 12, 74, 16,
 				Hwnd, NULL, info->hInstance, NULL);
+
+			if (UITheme::IsEnabledMode()) {
+				SendMessageA(LabelHwnd, WM_SETFONT, (WPARAM)UITheme::Theme::ThemeFont->Handle, 0);
+			}
 
 			Button_SetCheck(BtnDefChnHwnd, BST_CHECKED);
 
