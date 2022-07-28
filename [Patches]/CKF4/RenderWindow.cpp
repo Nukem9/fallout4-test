@@ -197,23 +197,56 @@ l_find_form:
 			return Ret;
 		}
 		else {
-
 			if (Message == WM_KEYUP) {
 				auto ctrl = HIBYTE(GetKeyState(VK_CONTROL)) & 0x80;
 
-				if (ctrl) {
-					if (wParam == '5')
-						// Fake click fog
-						MainWindow::GetMainMenuObj().GetSubMenuItem(2).GetItemByPos(23).Click();
+				if (!g_HotkeyReplace)
+				{
+					if (ctrl) {
+						if (wParam == '5')
+							// Fake click fog
+							MainWindow::GetMainMenuObj().GetSubMenuItem(2).GetItemByPos(23).Click();
+						//else if (wParam == 'N')
+						//	// Fix that only worked with the menu
+						//	MainWindow::GetMainMenuObj().GetSubMenuItem(2).GetItemByPos(17).Click();
+					}
+					else {
+						if (wParam == 'M')
+							// If you click on M, the menu will still have the previous state, we will fix this. 
+							// However, in fact, there should be two requests to show or hide, but the second one is ignored and this is good.
+							MainWindow::GetMainMenuObj().GetSubMenuItem(2).GetItemByPos(15).Click();	
+					}
 				}
-				else {
-					if (wParam == 'M')
-						// If you click on M, the menu will still have the previous state, we will fix this. 
-						// However, in fact, there should be two requests to show or hide, but the second one is ignored and this is good.
-						MainWindow::GetMainMenuObj().GetSubMenuItem(2).GetItemByPos(15).Click();
-					else if (wParam == 'S')
-						// Fix that only worked with the menu
-						MainWindow::GetMainMenuObj().GetSubMenuItem(2).GetItemByPos(17).Click();
+				else
+				{
+					auto alt = HIBYTE(GetKeyState(VK_MENU)) & 0x80;
+					auto shift = HIBYTE(GetKeyState(VK_SHIFT)) & 0x80;
+
+					for (auto it = MainWindow::UIKeybinds.begin(); it != MainWindow::UIKeybinds.end(); it++)
+					{
+						if (!_stricmp("HKFunc_ToggleFog", (*it).HKFuncName.c_str()))
+						{
+							if ((*it).Shift == (bool)shift && (*it).Ctrl == (bool)ctrl &&
+								(*it).Alt == (bool)alt && (*it).Vk == (CHAR)wParam)
+							{
+								// Fake click fog
+								MainWindow::GetMainMenuObj().GetSubMenuItem(2).GetItemByPos(23).Click();
+								break;
+							}
+						}
+
+						if (!_stricmp("HKFunc_ToggleMarkers", (*it).HKFuncName.c_str()))
+						{
+							if ((*it).Shift == (bool)shift && (*it).Ctrl == (bool)ctrl &&
+								(*it).Alt == (bool)alt && (*it).Vk == (CHAR)wParam)
+							{
+								// If you click on M, the menu will still have the previous state, we will fix this. 
+								// However, in fact, there should be two requests to show or hide, but the second one is ignored and this is good.
+								MainWindow::GetMainMenuObj().GetSubMenuItem(2).GetItemByPos(15).Click();
+								break;
+							}
+						}
+					}
 				}
 			}
 			else if (Message == WM_ACTIVATE) {

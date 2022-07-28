@@ -313,17 +313,20 @@ namespace Core
 
 							if (bSelected && !bDisabled)
 							{
-								Render::DrawItem_Focused(canvas, (LPRECT)& rc);
+								Render::DrawItem_Focused(canvas, (LPRECT)&rc);
 								clrPrevText = SetTextColor(lpDrawItem->hDC, Core::UI::Theme::GetThemeSysColor(ThemeColor::ThemeColor_Text_4));
 							}
 							else
 							{
-								Render::DrawItem_Normal(canvas, (LPRECT)& rc);
+								Render::DrawItem_Normal(canvas, (LPRECT)&rc);
 								clrPrevText = SetTextColor(lpDrawItem->hDC, Core::UI::Theme::GetThemeSysColor(ThemeColor::ThemeColor_Text_3));
 							}
 
 							if ((lpDrawItem->itemState & ODS_CHECKED) == ODS_CHECKED)
-								Render::DrawItem_Checkbox(canvas, (LPRECT)& rc, bSelected, bDisabled);
+								Render::DrawItem_Checkbox(canvas, (LPRECT)&rc, bSelected, bDisabled);
+
+							if (bDisabled)
+								canvas.Font.Styles = { Core::Classes::UI::fsStrikeOut };
 
 							std::string text = menuItem.Text;
 							canvas.TextRect(rc, text.c_str(), DT_CALCRECT | DT_HIDEPREFIX);
@@ -336,8 +339,12 @@ namespace Core
 							{
 								rc_shortcut.Top = rc.Top;
 								rc_shortcut.Right -= 4;
+
 								canvas.TextRect(rc_shortcut, text.c_str(), DT_VCENTER | DT_HIDEPREFIX | DT_RIGHT);
 							}
+
+							if (bDisabled)
+								canvas.Font.Styles = {};
 
 							SetTextColor(lpDrawItem->hDC, clrPrevText);
 

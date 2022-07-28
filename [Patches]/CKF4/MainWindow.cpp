@@ -41,6 +41,100 @@ namespace MainWindow
 	static Classes::CUIBaseControl ToolbarPanel_1;
 
 	WNDPROC OldWndProc;
+	std::vector<UIKeybind> UIKeybinds;
+
+	VOID UIKeybind::UpdateMenuShortcut(VOID)
+	{
+		Classes::CUIMenu Menu(hMenu);
+		auto MenuItem = Menu.GetItemByPos(dwPos);	
+		auto Name = MenuItem.Text;
+
+		std::string Shortcut;
+
+		CHAR szBuff[128] = { 0 };
+
+		if (Shift)
+			Shortcut = "Shift";
+
+		if (Ctrl)
+		{
+			if (!Shortcut.empty())
+				Shortcut += "-Ctrl";
+			else
+				Shortcut += "Ctrl";
+		}
+
+		if (Alt)
+		{
+			if (!Shortcut.empty())
+				Shortcut += "-Alt";
+			else
+				Shortcut += "Alt";
+		}
+
+		std::string StrVk;
+
+		switch (Vk)
+		{
+		case VK_RETURN:
+			StrVk = "Enter";
+			break;
+		case VK_DELETE:
+			StrVk = "Del";
+			break;
+		case VK_TAB:
+			StrVk = "Tab";
+			break;
+		case VK_SPACE:
+			StrVk = "Space";
+			break;
+		case VK_BACK:
+			StrVk = "Backspace";
+			break;
+		case VK_ESCAPE:
+			StrVk = "Esc";
+			break;
+		default:
+			if (Vk >= VK_F1 && Vk <= VK_F12)
+			{
+				_itoa_s((Vk - VK_F1) + 1, szBuff, 10);
+				StrVk = "F";
+				StrVk += szBuff;
+			}
+			else
+			{
+				szBuff[0] = Vk;
+				StrVk = szBuff;
+			}
+			break;
+		}
+
+		if (!Shortcut.empty())
+		{
+			Shortcut += "-";
+			Shortcut += StrVk;
+		}
+		else
+			Shortcut = StrVk;
+
+		sprintf_s(szBuff, "%s\t%s", Name.c_str(), Shortcut.c_str());
+		MenuItem.Text = szBuff;
+	}
+
+	UIKeybind UIKeybind::CreateInstance(CHAR cVk, bool bShift, bool bCtrl, bool bAlt, LPCSTR lpstrHKFuncName, Classes::CUIMenuItem uiMenu)
+	{
+		UIKeybind Keybind;
+		
+		Keybind.Vk = cVk;
+		Keybind.Alt = bAlt;
+		Keybind.Ctrl = bCtrl;
+		Keybind.Shift = bShift;
+		Keybind.HKFuncName = lpstrHKFuncName;
+		Keybind.hMenu = uiMenu.Menu()->Handle;
+		Keybind.dwPos = uiMenu.GetPosition();
+
+		return Keybind;
+	}
 	
 	BOOL FIXAPI IsActive(VOID) {
 		return bActiveApp;
@@ -175,28 +269,56 @@ namespace MainWindow
 
 				/////////////////////////////////////////////////////////////////////////
 
-				//
-				// Initialize ITaskBarList3 interface
-				//
-				IProgressTaskBarContext::CreateInstance();
+				// Fix display text hotkey toggle sound marker
+				ViewMenu.GetItemByPos(17).Text = "Sound Marker\tCtrl-N";
+				// Deprecated
+				ViewMenu.GetItemByPos(25).Enabled = FALSE;
+				ViewMenu.GetItemByPos(29).Enabled = FALSE;
+
+				// Initialize ui keybinds for hotkeys
+				
+				Classes::CUIMenu FileMenu = MainWindow.MainMenu.GetSubMenuItem(0);
+				UIKeybinds.push_back(UIKeybind::CreateInstance('S', false, true, false, "HKFunc_Save", FileMenu.GetItemByPos(1)));
+
+				Classes::CUIMenu EditMenu = MainWindow.MainMenu.GetSubMenuItem(1);		
+				UIKeybinds.push_back(UIKeybind::CreateInstance('Z', false, true, false, "HKFunc_Undo", EditMenu.GetItemByPos(0)));
+				UIKeybinds.push_back(UIKeybind::CreateInstance('Y', false, true, false, "HKFunc_Redo", EditMenu.GetItemByPos(1)));
+				UIKeybinds.push_back(UIKeybind::CreateInstance('X', false, true, false, "HKFunc_CutSelection", EditMenu.GetItemByPos(3)));
+				UIKeybinds.push_back(UIKeybind::CreateInstance('C', false, true, false, "HKFunc_Copy", EditMenu.GetItemByPos(4)));
+				UIKeybinds.push_back(UIKeybind::CreateInstance('V', false, true, false, "HKFunc_Paste", EditMenu.GetItemByPos(5)));
+				UIKeybinds.push_back(UIKeybind::CreateInstance('V', true, true, false, "HKFunc_PasteInPlace", EditMenu.GetItemByPos(6)));
+				UIKeybinds.push_back(UIKeybind::CreateInstance('D', false, true, false, "HKFunc_Duplicate", EditMenu.GetItemByPos(7)));
+				UIKeybinds.push_back(UIKeybind::CreateInstance('F', false, true, false, "HKFunc_SearchAndReplace", EditMenu.GetItemByPos(8)));
+				UIKeybinds.push_back(UIKeybind::CreateInstance('/', false, false, false, "HKFunc_PickingPreferences", EditMenu.GetItemByPos(13)));
+
+				UIKeybinds.push_back(UIKeybind::CreateInstance('-', false, false, false, "HKFunc_ToggleBatchDialog", ViewMenu.GetItemByPos(8)));
+				UIKeybinds.push_back(UIKeybind::CreateInstance('I', false, true, false, "HKFunc_ToggleLightMarkers", ViewMenu.GetItemByPos(16)));
+				UIKeybinds.push_back(UIKeybind::CreateInstance('L', false, false, false, "HKFunc_ToggleLightRadius", ViewMenu.GetItemByPos(18)));
+				UIKeybinds.push_back(UIKeybind::CreateInstance('7', false, false, false, "HKFunc_ToggleWireframe", ViewMenu.GetItemByPos(19)));
+				UIKeybinds.push_back(UIKeybind::CreateInstance('A', false, false, false, "HKFunc_ToggleBrightLights", ViewMenu.GetItemByPos(20)));
+				UIKeybinds.push_back(UIKeybind::CreateInstance('6', false, false, false, "HKFunc_ToggleSky", ViewMenu.GetItemByPos(21)));
+				UIKeybinds.push_back(UIKeybind::CreateInstance('8', false, false, false, "HKFunc_ToggleGrass", ViewMenu.GetItemByPos(22)));
+				UIKeybinds.push_back(UIKeybind::CreateInstance(VK_F4, false, false, false, "HKFunc_ToggleCollisionGeometry", ViewMenu.GetItemByPos(24)));
+				UIKeybinds.push_back(UIKeybind::CreateInstance('T', false, false, true, "HKFunc_ToggleTrees", ViewMenu.GetItemByPos(26)));
+				UIKeybinds.push_back(UIKeybind::CreateInstance('U', false, false, false, "HKFunc_ToggleOcclusionPlanes", ViewMenu.GetItemByPos(27)));
+				UIKeybinds.push_back(UIKeybind::CreateInstance('T', false, false, false, "HKFunc_PlaceCameraAboveSelection", ViewMenu.GetItemByPos(30)));
+				UIKeybinds.push_back(UIKeybind::CreateInstance(VK_F5, false, false, false, "HKFunc_Refresh", ViewMenu.GetItemByPos(33)));
+				UIKeybinds.push_back(UIKeybind::CreateInstance(VK_RETURN, false, false, false, "HKFunc_TogglePropertiesWindow", ViewMenu.GetItemByPos(34)));
+				UIKeybinds.push_back(UIKeybind::CreateInstance('N', false, true, false, "HKFunc_ToggleSoundMarkers", ViewMenu.GetItemByPos(17)));
+				UIKeybinds.push_back(UIKeybind::CreateInstance('5', false, true, false, "HKFunc_ToggleFog", ViewMenu.GetItemByPos(23)));
+				UIKeybinds.push_back(UIKeybind::CreateInstance('M', false, false, false, "HKFunc_ToggleMarkers", ViewMenu.GetItemByPos(15)));
+
+				Classes::CUIMenu WorldMenu = MainWindow.MainMenu.GetSubMenuItem(3);
+				UIKeybinds.push_back(UIKeybind::CreateInstance('H', false, false, true, "HKFunc_ToggleHavok", WorldMenu.GetItemByPos(10)));
+				UIKeybinds.push_back(UIKeybind::CreateInstance('H', false, false, false, "HKFunc_EditLandscape", WorldMenu.GetItemByPos(13)));
+				UIKeybinds.push_back(UIKeybind::CreateInstance('O', true, false, false, "HKFunc_ObjectPalette", WorldMenu.GetItemByPos(14)));
 
 				/////////////////////////////////////////////////////////////////////////
 
 				//
-				// Run asynchronous processing of application painting messages
-				// They are processed in a separate thread.
+				// Initialize ITaskBarList3 interface
 				//
-				/*IProcessMessage::ProcessMessageAsync(NULL, 0, 0, IProcessMessage::ProcessingPaint |
-					IProcessMessage::RemoveMessage | IProcessMessage::Loop,
-					CloseProcessingHandlerMainWindow);*/
-
-				//
-				// Run asynchronous processing of application keyboard and mouse messages
-				// They are processed in a separate thread.
-				//RenderWindow
-				/*IProcessMessage::ProcessMessageAsync(NULL, 0, 0, IProcessMessage::ProcessingInput |
-					IProcessMessage::NoYield | IProcessMessage::RemoveMessage | IProcessMessage::Loop,
-					CloseProcessingHandlerMainWindow);*/
+				IProgressTaskBarContext::CreateInstance();
 
 				/////////////////////////////////////////////////////////////////////////
 

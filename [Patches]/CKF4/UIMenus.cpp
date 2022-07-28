@@ -75,7 +75,9 @@ namespace Core
 					GetMenuItemInfoA(m_Menu->Handle, m_Pos, m_ByPos, &m_mif);
 
 					// skip shortcut
-					if (LPSTR s = strchr(&str[0], '\t'); s) *s = '\0';
+					auto found = str.find_first_of('\t');
+					if (found != str.npos)
+						str.erase(found, str.length() - found);
 				}
 
 				return str;
@@ -99,8 +101,9 @@ namespace Core
 					GetMenuItemInfoA(m_Menu->Handle, m_Pos, m_ByPos, &m_mif);
 
 					// skip text
-					if (LPSTR s = strchr(&str[0], '\t'); s)
-						memmove((LPVOID)str.data(), (LPVOID)s, strlen(s) + 1);
+					auto found = str.find_first_of('\t');
+					if (found != str.npos)
+						str.assign(str.c_str(), found + 1, str.length() - found);
 					else
 						return "";
 				}

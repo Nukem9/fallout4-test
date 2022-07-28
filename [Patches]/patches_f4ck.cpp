@@ -405,6 +405,9 @@ VOID FIXAPI F_RequiredPatches(VOID) {
 	// EXTRA SPACE
 	XUtil::PatchMemoryNop(OFFSET(0x86F151, 0), 0x35);
 
+	// NavMesh ID %08X in cell %s has invalid cover data.  It will be removed.
+	XUtil::PatchMemoryNop(OFFSET(0x100B39C, 0), 0x5);
+	
 	// Animation messages
 	XUtil::PatchMemoryNop(OFFSET(0x257CF88, 0), 5);
 	XUtil::PatchMemoryNop(OFFSET(0x257D4B3, 0), 5);
@@ -1156,6 +1159,10 @@ VOID FIXAPI MainFix_PatchFallout4CreationKit(VOID)
 	if (g_INI->GetBoolean("CreationKit", "UIHotkeys", FALSE)) {
 		_MESSAGE_BEGIN_PATCH("UIHotkeys");
 
+		g_HotkeyReplace = TRUE;
+
+		XUtil::PatchMemoryNop(OFFSET(0x457763, 0), 0x19);
+		
 		Detours::X64::DetourFunctionClass(OFFSET(0xAADD, 0), &EditorUI::RegisterHotkeyFunction);
 
 		_MESSAGE_END_PATCH;

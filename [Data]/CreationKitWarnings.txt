@@ -738,300 +738,6 @@ MASTERFILE: LoadProcedureTreeItem:  File 'DLCCoast.esm' has package with missing
 MASTERFILE: LOCALIZATION: Zero entries or empty block size read from strings file STRINGS/DLCWorkshop02_en.ILSTRINGS. Strings will be missing.
 MASTERFILE: Multiple next idles for IDLE Form 'ChangeAnimFlavor' (000B3446).
 MASTERFILE: Multiple next idles for IDLE Form 'MeleeRightSyncKillHuman_Ripper' (000C73B7).
-MASTERFILE: NavMesh ID 0006388C in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0009207D in cell 'ConcordUndergroundExt' (0000DDE0) (-16, 17) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0009C702 in cell 'AndrewStation01' (00074D28) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0009D46D in cell 'TheBigDig01' (0004E428) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 000B38E1 in cell 'InstituteReactor' (000B36AE) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 000B3CB2 in cell 'FensStreetSewer01' (0003B381) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 000F93F1 in cell 'Wilderness' (0000E4CA) (-4, -6) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00107715 in cell 'MahkraFishpackingExt02' (0000D925) (20, 24) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00119FF3 in cell 'Wilderness' (0000E4A9) (-4, -5) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00135BB3 in cell 'POIJS036' (0000E71E) (-6, -24) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00135C01 in cell 'Wilderness' (0000E70D) (-22, -23) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00140ADF in cell 'Wilderness' (0000D917) (3, 25) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00140AE2 in cell 'Wilderness' (0000D936) (3, 24) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00140FC7 in cell 'Wilderness' (0000E825) (-19, -31) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0014A1CB in cell 'ForestGroveMarshExt05' (0000E4B5) (-16, -5) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00151E47 in cell 'NavMeshGenCell' (00000025) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00151E49 in cell 'NavMeshGenCell' (00000025) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00151E54 in cell 'NavMeshGenCell' (00000025) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00151E6C in cell 'NavMeshGenCell' (00000025) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0015FE96 in cell 'Wilderness' (0000E51D) (-21, -8) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0016A5FA in cell 'WarrenTheater01' (000941DE) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00171735 in cell 'FiddlersGreenExt' (0000E434) (-19, -1) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0017173C in cell 'Wilderness' (0000E455) (-19, -2) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00172975 in cell 'Wilderness' (0000E413) (-19, 0) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00175FBC in cell 'POIJS027' (0000DFC9) (-10, 2) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0017E164 in cell 'Wilderness' (0000DF80) (-3, 4) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0018486E in cell 'Wilderness' (0000E0D3) (7, -6) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00184BAD in cell 'Wilderness' (0000E53C) (-19, -9) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 001868A0 in cell 'CustomHouseTowerExt' (0000E075) (8, -3) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00186994 in cell 'GeneralAtomicsFactoryExt' (0000E12E) (9, -9) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0018F9B3 in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0018FB3A in cell 'Wilderness' (0000E822) (-17, -32) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 001A90C5 in cell 'NavMeshGenCell' (00000025) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 001CA7D7 in cell 'Financial14' (0004ACB4) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 001EC54E in cell 'InstituteConcourse' (0002A199) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 001F60FF in cell 'Wilderness' (0000DB13) (23, 8) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 001F6100 in cell 'Wilderness' (0000DAF4) (23, 9) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 001F97C3 in cell 'NavMeshGenCell' (00000025) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 001FB9FB in cell 'AtomatoysCorporateHQ01' (0009087E) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00203B0D in cell 'NavMeshGenCell' (00000025) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00209862 in cell 'Wilderness' (0000DB35) (20, 7) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0020ECFE in cell 'SuffolkCountyCharterSchoolExt' (0000E6B5) (0, -21) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00217B76 in cell 'Wilderness' (0000E1E5) (12, -15) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0022433E in cell 'FederalSurveillanceCenterExt' (0000E6CF) (-26, -21) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 002269BE in cell 'Wilderness' (0000E4BC) (-23, -5) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00228788 in cell 'Wilderness' (0000E559) (-15, -10) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00228B35 in cell 'Wilderness' (0000E6CB) (-22, -21) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00228B3D in cell 'Wilderness' (0000E666) (-20, -18) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0022C850 in cell 'Wilderness' (0000E6D4) (-31, -21) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0022CF74 in cell 'Wilderness' (0000E522) (-26, -8) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0022D139 in cell 'Wilderness' (0000E45C) (-26, -2) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0022F1C4 in cell 'RevereBeachStationExt' (0000DB3B) (13, 7) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0022F301 in cell 'Wilderness' (0000E276) (22, -20) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00231DAF in cell 'Wilderness' (0000DB44) (4, 7) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00238323 in cell 'QuincyQuarriesExt02' (0000E2A8) (3, -21) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0023884E in cell 'FortStrongExt07' (0000E0AA) (18, -5) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00238851 in cell 'FortStrongExt06' (0000E08B) (18, -4) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00239B0F in cell 'Wilderness' (0000E406) (-6, 0) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0023AFC3 in cell 'Wilderness' (0000E4B9) (-20, -5) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0023AFEC in cell 'Wilderness' (0000DFCF) (-16, 2) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0023E480 in cell 'Financial22Ext' (0000E095) (7, -4) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00245948 in cell 'QuincyQuarriesExt03' (0000E289) (3, -20) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00245966 in cell 'POIRJ14' (0000D952) (6, 23) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0024596C in cell 'NavMeshGenCell' (00000025) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00245F38 in cell 'QuincyRuinsExt07' (0000E2E2) (7, -23) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0024601F in cell 'Wilderness' (0000E465) (-2, -3) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0024627A in cell 'PoseidonEnergyExt04' (0000E2E0) (9, -23) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 002470A7 in cell 'ParsonsPOIExt02' (0000D92E) (11, 24) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00247255 in cell 'GreaterMassBloodClinicExt02' (0000E49A) (-22, -4) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00247256 in cell 'GreaterMassBloodClinicExt' (0000E479) (-22, -3) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 002472F7 in cell 'Wilderness' (0000E794) (-25, -27) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 002472FC in cell 'Wilderness' (0000E770) (-22, -26) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0024746F in cell 'Wilderness' (0000E201) (15, -16) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00247479 in cell 'SpectacleIslandExt16' (0000E23C) (18, -18) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0024749E in cell 'Wilderness' (0000E647) (-22, -17) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0024969A in cell 'InstituteConcourse' (0002A199) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0024969B in cell 'InstituteConcourse' (0002A199) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0024969C in cell 'InstituteReactor' (000B36AE) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 002496A2 in cell 'Financial14' (0004ACB4) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 002496A3 in cell 'Wilderness' (0000DAF4) (23, 9) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 002496B2 in cell 'Wilderness' (0000E53C) (-19, -9) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 002496B3 in cell 'Wilderness' (0000E4B9) (-20, -5) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 002496B7 in cell 'Wilderness' (0000E6EB) (-21, -22) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 002496B9 in cell 'Wilderness' (0000E51D) (-21, -8) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 002496BA in cell 'Wilderness' (0000E51D) (-21, -8) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 002496BD in cell 'Wilderness' (0000E70D) (-22, -23) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 002496D5 in cell 'CustomHouseTowerExt' (0000E075) (8, -3) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 002496D9 in cell 'FiddlersGreenExt' (0000E434) (-19, -1) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 002496DA in cell 'FiddlersGreenExt' (0000E434) (-19, -1) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 002496DD in cell 'ForestGroveMarshExt05' (0000E4B5) (-16, -5) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 002496EC in cell 'MahkraFishpackingExt02' (0000D925) (20, 24) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 002496ED in cell 'MahkraFishpackingExt02' (0000D925) (20, 24) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 002496EF in cell 'POIJS017' (0000DB45) (3, 7) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 002496F4 in cell 'POIJS036' (0000E71E) (-6, -24) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 002496F5 in cell 'POIRJ14' (0000D952) (6, 23) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 002496F7 in cell 'PoseidonEnergyExt04' (0000E2E0) (9, -23) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 002496F8 in cell 'PoseidonEnergyExt04' (0000E2E0) (9, -23) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 002496F9 in cell 'PoseidonEnergyExt04' (0000E2E0) (9, -23) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 002496FA in cell 'QuincyQuarriesExt02' (0000E2A8) (3, -21) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 002496FB in cell 'QuincyQuarriesExt02' (0000E2A8) (3, -21) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 002496FC in cell 'QuincyQuarriesExt02' (0000E2A8) (3, -21) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 002496FE in cell 'QuincyRuinsExt07' (0000E2E2) (7, -23) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 002496FF in cell 'AndrewStation01' (00074D28) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249700 in cell 'FensStreetSewer01' (0003B381) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249701 in cell 'FensStreetSewer01' (0003B381) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249702 in cell 'TheBigDig01' (0004E428) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249708 in cell 'WarrenTheater01' (000941DE) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0024970D in cell 'Wilderness' (0000D936) (3, 24) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0024970E in cell 'Wilderness' (0000D917) (3, 25) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0024970F in cell 'Wilderness' (0000D917) (3, 25) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249710 in cell 'Wilderness' (0000E4A9) (-4, -5) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249711 in cell 'Wilderness' (0000E4A9) (-4, -5) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249712 in cell 'Wilderness' (0000E4A9) (-4, -5) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249713 in cell 'Wilderness' (0000E4CA) (-4, -6) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249714 in cell 'Wilderness' (0000E4CA) (-4, -6) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249715 in cell 'Wilderness' (0000E4CA) (-4, -6) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249716 in cell 'Wilderness' (0000DB44) (4, 7) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249718 in cell 'Wilderness' (0000E0D3) (7, -6) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249719 in cell 'Wilderness' (0000E406) (-6, 0) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249A52 in cell 'GreaterMassBloodClinicExt' (0000E479) (-22, -3) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249A53 in cell 'GreaterMassBloodClinicExt' (0000E479) (-22, -3) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249A54 in cell 'GreaterMassBloodClinicExt' (0000E479) (-22, -3) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249A55 in cell 'GreaterMassBloodClinicExt' (0000E479) (-22, -3) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249A56 in cell 'GreaterMassBloodClinicExt' (0000E479) (-22, -3) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249A5F in cell 'Wilderness' (0000E455) (-19, -2) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249A60 in cell 'Wilderness' (0000E6EB) (-21, -22) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249A63 in cell 'Wilderness' (0000E559) (-15, -10) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249A64 in cell 'Wilderness' (0000E559) (-15, -10) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249A65 in cell 'RevereBeachStationExt' (0000DB3B) (13, 7) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249A66 in cell 'FederalSurveillanceCenterExt' (0000E6CF) (-26, -21) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249A67 in cell 'Wilderness' (0000E666) (-20, -18) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249A6B in cell 'GreaterMassBloodClinicExt02' (0000E49A) (-22, -4) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249A6C in cell 'GreaterMassBloodClinicExt02' (0000E49A) (-22, -4) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249A6D in cell 'GreaterMassBloodClinicExt02' (0000E49A) (-22, -4) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249A70 in cell 'Wilderness' (0000E825) (-19, -31) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249A71 in cell 'Wilderness' (0000E822) (-17, -32) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249A72 in cell 'Wilderness' (0000E822) (-17, -32) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249A73 in cell 'Wilderness' (0000E822) (-17, -32) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249A75 in cell 'QuincyQuarriesExt03' (0000E289) (3, -20) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249A76 in cell 'QuincyQuarriesExt03' (0000E289) (3, -20) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249A77 in cell 'QuincyQuarriesExt03' (0000E289) (3, -20) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249A78 in cell 'QuincyQuarriesExt03' (0000E289) (3, -20) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249A79 in cell 'QuincyQuarriesExt03' (0000E289) (3, -20) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249A7A in cell 'QuincyQuarriesExt03' (0000E289) (3, -20) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249A7B in cell 'QuincyQuarriesExt03' (0000E289) (3, -20) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249A7C in cell 'QuincyQuarriesExt03' (0000E289) (3, -20) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249A7F in cell 'GeneralAtomicsFactoryExt' (0000E12E) (9, -9) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249A80 in cell 'GeneralAtomicsFactoryExt' (0000E12E) (9, -9) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249A82 in cell 'Wilderness' (0000DB13) (23, 8) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B06 in cell 'Wilderness' (0000DFCF) (-16, 2) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B0B in cell 'Wilderness' (0000E465) (-2, -3) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B0C in cell 'Wilderness' (0000E465) (-2, -3) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B0D in cell 'FortStrongExt07' (0000E0AA) (18, -5) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B0E in cell 'FortStrongExt07' (0000E0AA) (18, -5) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B10 in cell 'Wilderness' (0000E770) (-22, -26) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B11 in cell 'Wilderness' (0000E6D4) (-31, -21) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B15 in cell 'FortStrongExt06' (0000E08B) (18, -4) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B16 in cell 'FortStrongExt06' (0000E08B) (18, -4) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B17 in cell 'FortStrongExt06' (0000E08B) (18, -4) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B19 in cell 'Wilderness' (0000DB35) (20, 7) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B1A in cell 'SuffolkCountyCharterSchoolExt' (0000E6B5) (0, -21) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B1B in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B1C in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B1D in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B1E in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B1F in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B20 in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B21 in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B22 in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B23 in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B24 in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B25 in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B26 in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B27 in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B28 in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B29 in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B2A in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B2B in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B2C in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B2D in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B2E in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B30 in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B31 in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B32 in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B33 in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B35 in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B36 in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B37 in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B38 in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B39 in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B3A in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B3B in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B3C in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B3D in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B3E in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B3F in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B40 in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B41 in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B42 in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B43 in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B44 in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B45 in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B46 in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B47 in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B48 in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B49 in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B4A in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B4B in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B4C in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B4D in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B4E in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B4F in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B50 in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B51 in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B52 in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B53 in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B54 in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B55 in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B56 in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B57 in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B58 in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B59 in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B5A in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B5B in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B5C in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B5D in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B5E in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B5F in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B60 in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B61 in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B62 in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B63 in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B64 in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B65 in cell 'AtomatoysCorporateHQ01' (0009087E) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 01010CD1 in cell 'DLC04GZNukaGalaxy01' (01010CA5) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 010180E5 in cell 'DLC03POI31' (01000C36) (7, 2) in WorldSpace 'DLC03FarHarbor' (01000B0F) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0101AF17 in cell 'Wilderness' (01000DE0) (-12, 0) in WorldSpace 'DLC03FarHarbor' (01000B0F) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0101C8FE in cell 'Wilderness' (01000BEB) (12, 9) in WorldSpace 'DLC03FarHarbor' (01000B0F) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0101C900 in cell 'Wilderness' (01000B43) (13, 9) in WorldSpace 'DLC03FarHarbor' (01000B0F) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0102131E in cell 'Wilderness' (01000C01) (11, -2) in WorldSpace 'DLC03FarHarbor' (01000B0F) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 01025F19 in cell 'Wilderness' (01000CE5) (0, -14) in WorldSpace 'DLC03FarHarbor' (01000B0F) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0102E3D1 in cell 'DLC03WindFarmBuilding01' (0102E12D) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0103003B in cell 'DLC04NoLocHoldingCell' (0103000D) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 01031A1B in cell 'DLC04NWJunkyardUFO01' (01031A1A) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 01032355 in cell 'DLC04NWJunkyardUFO01' (01031A1A) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 010328D9 in cell 'Wilderness' (01003422) (-11, -6) in WorldSpace 'NukaWorld' (0100290F) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 01032A21 in cell 'Wilderness' (01003054) (4, -7) in WorldSpace 'NukaWorld' (0100290F) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 01035DD7 in cell 'Wilderness' (01003009) (5, 3) in WorldSpace 'NukaWorld' (0100290F) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0103B13D in cell 'DLC04POISC13' (01003260) (-4, -11) in WorldSpace 'NukaWorld' (0100290F) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 01043219 in cell 'Wilderness' (01000B4B) (10, -8) in WorldSpace 'DLC03FarHarbor' (01000B0F) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 01043641 in cell 'NationalParkVisitorsCenterExt' (01000C43) (6, 11) in WorldSpace 'DLC03FarHarbor' (01000B0F) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 01043819 in cell 'Wilderness' (01000B90) (8, -9) in WorldSpace 'DLC03FarHarbor' (01000B0F) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 01044102 in cell 'Wilderness' (01000C1D) (8, 9) in WorldSpace 'DLC03FarHarbor' (01000B0F) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 01049FF7 in cell 'Wilderness' (01000CA4) (2, -4) in WorldSpace 'DLC03FarHarbor' (01000B0F) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0104C05D in cell 'DLC03POI08' (01000CA9) (2, -10) in WorldSpace 'DLC03FarHarbor' (01000B0F) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0104E171 in cell 'EdenMeadowsCinemasExt' (01000D0C) (-2, 4) in WorldSpace 'DLC03FarHarbor' (01000B0F) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0104EB61 in cell 'Wilderness' (0100274E) (-10, 8) in WorldSpace 'DLC03FarHarbor' (01000B0F) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0104EB62 in cell 'Wilderness' (01002749) (-9, 8) in WorldSpace 'DLC03FarHarbor' (01000B0F) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0104EB65 in cell 'Wilderness' (01002740) (-8, 11) in WorldSpace 'DLC03FarHarbor' (01000B0F) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 01053AF0 in cell 'Wilderness' (01003009) (5, 3) in WorldSpace 'NukaWorld' (0100290F) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 01054436 in cell 'Wilderness' (01002749) (-9, 8) in WorldSpace 'DLC03FarHarbor' (01000B0F) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 01054437 in cell 'Wilderness' (0100274E) (-10, 8) in WorldSpace 'DLC03FarHarbor' (01000B0F) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 01054439 in cell 'Wilderness' (0100274E) (-10, 8) in WorldSpace 'DLC03FarHarbor' (01000B0F) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0105443C in cell 'Wilderness' (01002740) (-8, 11) in WorldSpace 'DLC03FarHarbor' (01000B0F) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 030180E5 in cell 'DLC03POI31' (03000C36) (7, 2) in WorldSpace 'DLC03FarHarbor' (03000B0F) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0301AF17 in cell 'Wilderness' (03000DE0) (-12, 0) in WorldSpace 'DLC03FarHarbor' (03000B0F) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0301C8FE in cell 'Wilderness' (03000BEB) (12, 9) in WorldSpace 'DLC03FarHarbor' (03000B0F) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0301C900 in cell 'Wilderness' (03000B43) (13, 9) in WorldSpace 'DLC03FarHarbor' (03000B0F) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0302131E in cell 'Wilderness' (03000C01) (11, -2) in WorldSpace 'DLC03FarHarbor' (03000B0F) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 03025F19 in cell 'Wilderness' (03000CE5) (0, -14) in WorldSpace 'DLC03FarHarbor' (03000B0F) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0302E3D1 in cell 'DLC03WindFarmBuilding01' (0302E12D) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 03043219 in cell 'Wilderness' (03000B4B) (10, -8) in WorldSpace 'DLC03FarHarbor' (03000B0F) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 03043641 in cell 'NationalParkVisitorsCenterExt' (03000C43) (6, 11) in WorldSpace 'DLC03FarHarbor' (03000B0F) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 03043819 in cell 'Wilderness' (03000B90) (8, -9) in WorldSpace 'DLC03FarHarbor' (03000B0F) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 03044102 in cell 'Wilderness' (03000C1D) (8, 9) in WorldSpace 'DLC03FarHarbor' (03000B0F) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 03049FF7 in cell 'Wilderness' (03000CA4) (2, -4) in WorldSpace 'DLC03FarHarbor' (03000B0F) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0304C05D in cell 'DLC03POI08' (03000CA9) (2, -10) in WorldSpace 'DLC03FarHarbor' (03000B0F) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0304E171 in cell 'EdenMeadowsCinemasExt' (03000D0C) (-2, 4) in WorldSpace 'DLC03FarHarbor' (03000B0F) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0304EB61 in cell 'Wilderness' (0300274E) (-10, 8) in WorldSpace 'DLC03FarHarbor' (03000B0F) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0304EB62 in cell 'Wilderness' (03002749) (-9, 8) in WorldSpace 'DLC03FarHarbor' (03000B0F) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0304EB65 in cell 'Wilderness' (03002740) (-8, 11) in WorldSpace 'DLC03FarHarbor' (03000B0F) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 03054436 in cell 'Wilderness' (03002749) (-9, 8) in WorldSpace 'DLC03FarHarbor' (03000B0F) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 03054437 in cell 'Wilderness' (0300274E) (-10, 8) in WorldSpace 'DLC03FarHarbor' (03000B0F) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 03054439 in cell 'Wilderness' (0300274E) (-10, 8) in WorldSpace 'DLC03FarHarbor' (03000B0F) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0305443C in cell 'Wilderness' (03002740) (-8, 11) in WorldSpace 'DLC03FarHarbor' (03000B0F) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 06010CD1 in cell 'DLC04GZNukaGalaxy01' (06010CA5) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0603003B in cell 'DLC04NoLocHoldingCell' (0603000D) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 06031A1B in cell 'DLC04NWJunkyardUFO01' (06031A1A) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 06032355 in cell 'DLC04NWJunkyardUFO01' (06031A1A) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 060328D9 in cell 'Wilderness' (06003422) (-11, -6) in WorldSpace 'NukaWorld' (0600290F) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 06032A21 in cell 'Wilderness' (06003054) (4, -7) in WorldSpace 'NukaWorld' (0600290F) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 06035DD7 in cell 'Wilderness' (06003009) (5, 3) in WorldSpace 'NukaWorld' (0600290F) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0603B13D in cell 'DLC04POISC13' (06003260) (-4, -11) in WorldSpace 'NukaWorld' (0600290F) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 06053AF0 in cell 'Wilderness' (06003009) (5, 3) in WorldSpace 'NukaWorld' (0600290F) has invalid cover data.  It will be removed.
 MASTERFILE: No occlusion plane for occlusion plane ref extra.
 MASTERFILE: No quest completion XP global on completable quest 'InstM01_OLD' (000498B5)
 MASTERFILE: No quest completion XP global on completable quest 'InstR01_OLD' (000E8D19)
@@ -3278,98 +2984,32 @@ FORMS: No match for tinting entry 1763 in NPC 'DN123_NessMercenary01' (0004B36C)
 MASTERFILE: No quest completion XP global on completable quest 'InstM01_OLD' (000498B5)
 MASTERFILE: No quest completion XP global on completable quest 'InstR01_OLD' (000E8D19)
 MASTERFILE: No quest completion XP global on completable quest 'InstR03_OLD' (000EC1E9)
-MASTERFILE: NavMesh ID 0023E480 in cell 'Financial22Ext' (0000E095) (7, -4) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249A56 in cell 'GreaterMassBloodClinicExt' (0000E479) (-22, -3) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249A55 in cell 'GreaterMassBloodClinicExt' (0000E479) (-22, -3) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249A54 in cell 'GreaterMassBloodClinicExt' (0000E479) (-22, -3) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249A53 in cell 'GreaterMassBloodClinicExt' (0000E479) (-22, -3) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249A52 in cell 'GreaterMassBloodClinicExt' (0000E479) (-22, -3) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00247256 in cell 'GreaterMassBloodClinicExt' (0000E479) (-22, -3) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
 MASTERFILE: Unable to find linked reference 00091D4A for reference defaultLightCool03FlickerNSGoboCage (00091D49). Linked reference data will be removed.
 FORMS: DOOR: Reference MetalTrapdoor01 001B9AE2 has portal to navmesh 0104F4D3 which is not found.  Please finalize navmesh in cell Пустоши 0000DFB7 to resolve this.
 CELLS: Dummy object ref does not have a leveled list. This ref will never be visible in game.
-MASTERFILE: NavMesh ID 0009207D in cell 'ConcordUndergroundExt' (0000DDE0) (-16, 17) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249A65 in cell 'RevereBeachStationExt' (0000DB3B) (13, 7) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0022F1C4 in cell 'RevereBeachStationExt' (0000DB3B) (13, 7) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249A66 in cell 'FederalSurveillanceCenterExt' (0000E6CF) (-26, -21) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0022433E in cell 'FederalSurveillanceCenterExt' (0000E6CF) (-26, -21) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 002496DA in cell 'FiddlersGreenExt' (0000E434) (-19, -1) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 002496D9 in cell 'FiddlersGreenExt' (0000E434) (-19, -1) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00171735 in cell 'FiddlersGreenExt' (0000E434) (-19, -1) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
 CELLS: Ref is not in its persistence location 'MysticPinesLocation' (0004E011).
 CELLS: Dummy object ref does not have a leveled list. This ref will never be visible in game.
 MASTERFILE: Reference 001A618A ('SWCurb4x1Str01Grass') has a custom material swap. Please change to a standard material swap.
-MASTERFILE: NavMesh ID 00175FBC in cell 'POIJS027' (0000DFC9) (-10, 2) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249A6D in cell 'GreaterMassBloodClinicExt02' (0000E49A) (-22, -4) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249A6C in cell 'GreaterMassBloodClinicExt02' (0000E49A) (-22, -4) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249A6B in cell 'GreaterMassBloodClinicExt02' (0000E49A) (-22, -4) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00247255 in cell 'GreaterMassBloodClinicExt02' (0000E49A) (-22, -4) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 002496EF in cell 'POIJS017' (0000DB45) (3, 7) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
 LOOTJOY: Unable to find default template item for Bound Object 'WorkshopTurretLaser' (0019a7f2). First Object Template Item used.
 MASTERFILE: Unable to find linked reference 00246B4D for reference MuseumBounceWarm04NS (000BAFB5). Linked reference data will be removed.
-MASTERFILE: NavMesh ID 002496D5 in cell 'CustomHouseTowerExt' (0000E075) (8, -3) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 001868A0 in cell 'CustomHouseTowerExt' (0000E075) (8, -3) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00247479 in cell 'SpectacleIslandExt16' (0000E23C) (18, -18) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
 MASTERFILE: Reference 000C8AC4 ('RockPileL01RubbleRock01') has a custom material swap. Please change to a standard material swap.
-MASTERFILE: NavMesh ID 002496F9 in cell 'PoseidonEnergyExt04' (0000E2E0) (9, -23) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 002496F8 in cell 'PoseidonEnergyExt04' (0000E2E0) (9, -23) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 002496F7 in cell 'PoseidonEnergyExt04' (0000E2E0) (9, -23) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0024627A in cell 'PoseidonEnergyExt04' (0000E2E0) (9, -23) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
 CELLS: Dummy object ref does not have a leveled list. This ref will never be visible in game.
-MASTERFILE: NavMesh ID 00249A7C in cell 'QuincyQuarriesExt03' (0000E289) (3, -20) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249A7B in cell 'QuincyQuarriesExt03' (0000E289) (3, -20) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249A7A in cell 'QuincyQuarriesExt03' (0000E289) (3, -20) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249A79 in cell 'QuincyQuarriesExt03' (0000E289) (3, -20) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249A78 in cell 'QuincyQuarriesExt03' (0000E289) (3, -20) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249A77 in cell 'QuincyQuarriesExt03' (0000E289) (3, -20) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249A76 in cell 'QuincyQuarriesExt03' (0000E289) (3, -20) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249A75 in cell 'QuincyQuarriesExt03' (0000E289) (3, -20) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00245948 in cell 'QuincyQuarriesExt03' (0000E289) (3, -20) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
 CELLS: Dummy object ref does not have a leveled list. This ref will never be visible in game.
-MASTERFILE: NavMesh ID 002496FC in cell 'QuincyQuarriesExt02' (0000E2A8) (3, -21) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 002496FB in cell 'QuincyQuarriesExt02' (0000E2A8) (3, -21) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 002496FA in cell 'QuincyQuarriesExt02' (0000E2A8) (3, -21) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00238323 in cell 'QuincyQuarriesExt02' (0000E2A8) (3, -21) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249A80 in cell 'GeneralAtomicsFactoryExt' (0000E12E) (9, -9) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249A7F in cell 'GeneralAtomicsFactoryExt' (0000E12E) (9, -9) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00186994 in cell 'GeneralAtomicsFactoryExt' (0000E12E) (9, -9) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 002470A7 in cell 'ParsonsPOIExt02' (0000D92E) (11, 24) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 002496DD in cell 'ForestGroveMarshExt05' (0000E4B5) (-16, -5) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0014A1CB in cell 'ForestGroveMarshExt05' (0000E4B5) (-16, -5) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 002496FE in cell 'QuincyRuinsExt07' (0000E2E2) (7, -23) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00245F38 in cell 'QuincyRuinsExt07' (0000E2E2) (7, -23) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
 CELLS: Dummy object ref does not have a leveled list. This ref will never be visible in game.
 MASTERFILE: Reference 00132B49 ('RockCliff03_NF') has a custom material swap. Please change to a standard material swap.
 MASTERFILE: Unable to find material swap 0022CE41. Material swap data will be removed.
-MASTERFILE: NavMesh ID 002496F4 in cell 'POIJS036' (0000E71E) (-6, -24) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00135BB3 in cell 'POIJS036' (0000E71E) (-6, -24) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 002496F5 in cell 'POIRJ14' (0000D952) (6, 23) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00245966 in cell 'POIRJ14' (0000D952) (6, 23) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B0E in cell 'FortStrongExt07' (0000E0AA) (18, -5) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B0D in cell 'FortStrongExt07' (0000E0AA) (18, -5) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0023884E in cell 'FortStrongExt07' (0000E0AA) (18, -5) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
 MASTERFILE: Unable to find reference group 000DB86D. Reference group data will be removed.
 CELLS: Dummy object ref does not have a leveled list. This ref will never be visible in game.
-MASTERFILE: NavMesh ID 00249B17 in cell 'FortStrongExt06' (0000E08B) (18, -4) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B16 in cell 'FortStrongExt06' (0000E08B) (18, -4) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B15 in cell 'FortStrongExt06' (0000E08B) (18, -4) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00238851 in cell 'FortStrongExt06' (0000E08B) (18, -4) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B1A in cell 'SuffolkCountyCharterSchoolExt' (0000E6B5) (0, -21) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0020ECFE in cell 'SuffolkCountyCharterSchoolExt' (0000E6B5) (0, -21) in WorldSpace 'Commonwealth' (0000003C) has invalid cover data.  It will be removed.
 CELLS: Dummy object ref does not have a leveled list. This ref will never be visible in game.
 MASTERFILE: Automatic door 'AutoloadDoorNoText' (000998E3) [105 units] in cell 'Vault111Ext' has its teleport marker too close to the linked door.
 MASTERFILE: Reference 0006752A ('ExtRubble_BricksLrg_Med_Mid01') has a custom material swap. Please change to a standard material swap.
 MASTERFILE: Reference 0006752B ('ExtRubble_BricksLrg_Med_Mid01') has a custom material swap. Please change to a standard material swap.
 MASTERFILE: Enable state parent loop detected. Parent removed.
 MASTERFILE: Unable to find reference group 0201F9E0. Reference group data will be removed.
-MASTERFILE: NavMesh ID 0204C05D in cell 'DLC03POI08' (02000CA9) (2, -10) in WorldSpace 'DLC03FarHarbor' (02000B0F) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 02043641 in cell 'NationalParkVisitorsCenterExt' (02000C43) (6, 11) in WorldSpace 'DLC03FarHarbor' (02000B0F) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0204E171 in cell 'EdenMeadowsCinemasExt' (02000D0C) (-2, 4) in WorldSpace 'DLC03FarHarbor' (02000B0F) has invalid cover data.  It will be removed.
 MASTERFILE: Unable to find reference group 0201F9E0. Reference group data will be removed.
 MASTERFILE: Potentially Invalid Z value (-141089.25) on reference:REFR Form '' (02044914) to MSTT form 'SkeletonClothedF03' (001A4D3E) in Cell 'NorthwoodRidgeQuarryExt03' (02000CFF) (-1, -12) in WorldSpace 'DLC03FarHarbor' (02000B0F)
 MASTERFILE: Ref (0204974E) to base object Fern01_DLC03_04 (02003C5B) in cell Пустоши (8, 6) (02000C20) should be persistent but is not.
 CELLS: Ref is not in its persistence location 'DLC03HorizonFlight1207Location' (0200F044).
-MASTERFILE: NavMesh ID 020180E5 in cell 'DLC03POI31' (02000C36) (7, 2) in WorldSpace 'DLC03FarHarbor' (02000B0F) has invalid cover data.  It will be removed.
 CELLS: Dummy object ref does not have a leveled list. This ref will never be visible in game.
 MASTERFILE: Cell contains more than one COC marker:'VimPopFactoryExt' (02000CE2) (0, -8) in WorldSpace 'DLC03FarHarbor' (02000B0F)
 MASTERFILE: Reference 030249D7 ('HouseKCapWall01') has a custom material swap. Please change to a standard material swap.
@@ -3381,7 +3021,6 @@ MASTERFILE: Reference 03023AB9 ('SwimPoolFloorDeckTrim01') has a custom material
 MASTERFILE: Unable to find reference group 030323D1. Reference group data will be removed.
 CELLS: Dummy object ref does not have a leveled list. This ref will never be visible in game.
 MASTERFILE: Cell contains more than one COC marker:'DLC04GalacticZoneExt' (03003215) (-3, -1) in WorldSpace 'NukaWorld' (0300290F)
-MASTERFILE: NavMesh ID 0303B13D in cell 'DLC04POISC13' (03003260) (-4, -11) in WorldSpace 'NukaWorld' (0300290F) has invalid cover data.  It will be removed.
 CELLS: Ref is not in its persistence location 'DLC04GrandchesterMansionLocation' (0301EB9B).
 MASTERFILE: Reference 030249D8 ('HouseKCapWall01Dam01') has a custom material swap. Please change to a standard material swap.
 MASTERFILE: Reference 0301EBA8 ('DecoMainC1x1WallPeak01LFull02') has a custom material swap. Please change to a standard material swap.
@@ -3423,8 +3062,6 @@ MASTERFILE: Reference 0301F649 ('HouseKCapGarageWall01') has a custom material s
 MASTERFILE: Unable to find reference group 03020212. Reference group data will be removed.
 MASTERFILE: Unable to find reference group 0301F1CD. Reference group data will be removed.
 MASTERFILE: Unable to find reference group 03020212. Reference group data will be removed.
-MASTERFILE: NavMesh ID 03053AF0 in cell 'Пустоши' (03003009) (5, 3) in WorldSpace 'NukaWorld' (0300290F) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 03035DD7 in cell 'Пустоши' (03003009) (5, 3) in WorldSpace 'NukaWorld' (0300290F) has invalid cover data.  It will be removed.
 MASTERFILE: Unable to find reference group 03033AF8. Reference group data will be removed.
 MASTERFILE: Unable to find reference group 03033AED. Reference group data will be removed.
 MASTERFILE: Unable to find reference group 03033AF8. Reference group data will be removed.
@@ -3435,15 +3072,7 @@ MASTERFILE: Reference 03050D4D ('FluorescentLightThinHanging01') has a custom ma
 CELLS: Dummy object ref does not have a leveled list. This ref will never be visible in game.
 LOOTJOY: Unable to find default template item for Bound Object 'MQ302InstituteBoss01' (001cfb17). First Object Template Item used.
 MASTERFILE: Automatic door 'AutoloadDoor' (00186949) [0 units] in cell 'InstituteConcourse' has its teleport marker too close to the linked door.
-MASTERFILE: NavMesh ID 0024969B in cell 'InstituteConcourse' (0002A199) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0024969A in cell 'InstituteConcourse' (0002A199) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 001EC54E in cell 'InstituteConcourse' (0002A199) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249701 in cell 'FensStreetSewer01' (0003B381) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249700 in cell 'FensStreetSewer01' (0003B381) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 000B3CB2 in cell 'FensStreetSewer01' (0003B381) has invalid cover data.  It will be removed.
 MASTERFILE: Unable to find reference group 000939E1. Reference group data will be removed.
-MASTERFILE: NavMesh ID 00249702 in cell 'TheBigDig01' (0004E428) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0009D46D in cell 'TheBigDig01' (0004E428) has invalid cover data.  It will be removed.
 MASTERFILE: Unable to find location 0002768B. Location data will be removed.
 CELLS: Dummy object ref does not have a leveled list. This ref will never be visible in game.
 CELLS: Dummy object ref does not have a leveled list. This ref will never be visible in game.
@@ -3453,108 +3082,16 @@ MASTERFILE: Occlusion box has < 16.0 half-extent and should be switched to a pla
 MASTERFILE: Occlusion box has < 16.0 half-extent and should be switched to a plane : REFR Form '' (000A14BF) to STAT form 'PlaneMarker' (00000017) in Cell 'ConcordMuseum01' (00017DF7)
 MASTERFILE: Potentially Invalid Z value (-142001.25) on reference:REFR Form '' (00203BDD) to MSTT form 'SkeletonClothedF03' (001A4D3E) in Cell '' (00203B1B)
 CELLS: Dummy object ref does not have a leveled list. This ref will never be visible in game.
-MASTERFILE: NavMesh ID 002496FF in cell 'AndrewStation01' (00074D28) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0009C702 in cell 'AndrewStation01' (00074D28) has invalid cover data.  It will be removed.
 CELLS: Cell name Альтернативная ячейка Братства Стали for cell BoSAliasCell (000D1064) is too long. The maximum length allowed is 33 characters.
 CELLS: Dummy object ref does not have a leveled list. This ref will never be visible in game.
 MASTERFILE: No occlusion plane for occlusion plane ref extra.
 LOOTJOY: Unable to find default template item for Bound Object 'MQ302InstituteBoss03' (001cfb19). First Object Template Item used.
 LOOTJOY: Unable to find default template item for Bound Object 'MQ302InstituteBoss02' (001cfb18). First Object Template Item used.
-MASTERFILE: NavMesh ID 0024969C in cell 'InstituteReactor' (000B36AE) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 000B38E1 in cell 'InstituteReactor' (000B36AE) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0006388C in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B1B in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B1C in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B1D in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B1E in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B1F in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B20 in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B21 in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B22 in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B23 in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B24 in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B25 in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B26 in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B27 in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B28 in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B29 in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B2A in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B2B in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B2C in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B2D in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B2E in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B30 in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B31 in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B32 in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B33 in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B35 in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B36 in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B37 in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B38 in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B39 in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B3A in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B3B in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B3C in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B3D in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B3E in cell 'zUnusedFinancial23' (0004D414) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 002496A2 in cell 'Financial14' (0004ACB4) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 001CA7D7 in cell 'Financial14' (0004ACB4) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249708 in cell 'WarrenTheater01' (000941DE) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0016A5FA in cell 'WarrenTheater01' (000941DE) has invalid cover data.  It will be removed.
 MASTERFILE: Cell 'SanctuaryRosaHouse' (0001F398) has a hand tagged location and an encounter zone applied location. Hand tagged location will be ignored in game.
 CELLS: Ref is not in its persistence location 'CommonwealthLocation' (00002CF0).
-MASTERFILE: NavMesh ID 0024596C in cell 'NavMeshGenCell' (00000025) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00203B0D in cell 'NavMeshGenCell' (00000025) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 001F97C3 in cell 'NavMeshGenCell' (00000025) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 001A90C5 in cell 'NavMeshGenCell' (00000025) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00151E6C in cell 'NavMeshGenCell' (00000025) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00151E54 in cell 'NavMeshGenCell' (00000025) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00151E49 in cell 'NavMeshGenCell' (00000025) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00151E47 in cell 'NavMeshGenCell' (00000025) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0018F9B3 in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B3F in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B40 in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B41 in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B42 in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B43 in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B44 in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B45 in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B46 in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B47 in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B48 in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B49 in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B4A in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B4B in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B4C in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B4D in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B4E in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B4F in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B50 in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B51 in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B52 in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B53 in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B54 in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B55 in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B56 in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B57 in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B58 in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B59 in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B5A in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B5B in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B5C in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B5D in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B5E in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B5F in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B60 in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B61 in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B62 in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B63 in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 00249B64 in cell 'QASmoke' (0001F7A9) has invalid cover data.  It will be removed.
 MASTERFILE: Reference 0015A221 ('BldConcSmFlrOnly01') has a custom material swap. Please change to a standard material swap.
 CELLS: Dummy object ref does not have a leveled list. This ref will never be visible in game.
 MASTERFILE: Automatic door 'AutoloadDoor' (0003A897) [330 units] in cell 'OldGulletSinkhole01' has its teleport marker too close to the linked door.
-MASTERFILE: NavMesh ID 00249B65 in cell 'AtomatoysCorporateHQ01' (0009087E) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 001FB9FB in cell 'AtomatoysCorporateHQ01' (0009087E) has invalid cover data.  It will be removed.
 MASTERFILE: Cell 'Vault111Start' (000016D9) has a hand tagged location and an encounter zone applied location. Hand tagged location will be ignored in game.
 CELLS: Dummy object ref does not have a leveled list. This ref will never be visible in game.
 MASTERFILE: Unable to find reference group 01013491. Reference group data will be removed.
@@ -3562,7 +3099,6 @@ CELLS: Dummy object ref does not have a leveled list. This ref will never be vis
 MASTERFILE: Unable to find reference group 0203B7BA. Reference group data will be removed.
 MASTERFILE: Unable to find reference group 0203B7BF. Reference group data will be removed.
 CELLS: Ref is not in its persistence location 'DLC03CliffsEdgeHotelLocation' (0200F041).
-MASTERFILE: NavMesh ID 0202E3D1 in cell 'DLC03WindFarmBuilding01' (0202E12D) has invalid cover data.  It will be removed.
 CELLS: Dummy object ref does not have a leveled list. This ref will never be visible in game.
 MASTERFILE: Unable to find reference group 03030B8B. Reference group data will be removed.
 MASTERFILE: Unable to find reference group 03030BD9. Reference group data will be removed.
@@ -3582,13 +3118,9 @@ MASTERFILE: Unable to find reference group 03031E23. Reference group data will b
 MASTERFILE: Unable to find reference group 03031E2B. Reference group data will be removed.
 MASTERFILE: Unable to find reference group 03032F68. Reference group data will be removed.
 CELLS: Dummy object ref does not have a leveled list. This ref will never be visible in game.
-MASTERFILE: NavMesh ID 03032355 in cell 'DLC04NWJunkyardUFO01' (03031A1A) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 03031A1B in cell 'DLC04NWJunkyardUFO01' (03031A1A) has invalid cover data.  It will be removed.
-MASTERFILE: NavMesh ID 0303003B in cell 'DLC04NoLocHoldingCell' (0303000D) has invalid cover data.  It will be removed.
 CELLS: Ref is not in its persistence location 'DLC04KiddieKingdomLocation' (03017645).
 MASTERFILE: Cell 'DLC04KiddieKingdomHoldingCell' (0303D627) has a hand tagged location and an encounter zone applied location. Hand tagged location will be ignored in game.
 CELLS: Dummy object ref does not have a leveled list. This ref will never be visible in game.
-MASTERFILE: NavMesh ID 03010CD1 in cell 'DLC04GZNukaGalaxy01' (03010CA5) has invalid cover data.  It will be removed.
 MASTERFILE: Potentially Invalid Z value (-46512.24) on reference:REFR Form '' (0304A9BA) to MSTT form 'TrashcanMetalOffice01' (001A594B) in Cell 'DLC04HubFizztopMountainInterior01' (03018596)
 MASTERFILE: Unable to find material swap 0301CE18. Material swap data will be removed.
 MASTERFILE: Automatic door 'DLC04KKTunnelsToBottlingPlant' (03039829) [64 units] in cell 'DLC04KiddieKingdomTunnels01' has its teleport marker too close to the linked door.
@@ -3647,3 +3179,5 @@ FORMS: Could not find NPC for FillAttackSecondsFromAnimation for weapon DLC04Ani
 ANIMATION: Could not get proper data when querying about length of fire animation for weapon DLC04FakeAlienBlasterTurret (0301FAAB) using NPC Player (00000007) with race HumanRace (00013746)
 FORMS: Could not find NPC for FillAttackSecondsFromAnimation for weapon DLC04AnimatronicAlienGun (0301FAAA)
 FORMS: Could not find NPC for FillAttackSecondsFromAnimation for weapon DLC04MrGutsy_LaserGun_Right (0301FAA9)
+FORMS: The format of face customization texture Actors/Synths/Gen2SkinHeadValentine_d.dds (98) does not match that of other textures (71) on race 'SynthGen2RaceValentine' (002261A4).
+FORMS: The format of face customization texture Actors/Synths/Gen2SkinHeadValentine_d.dds (98) does not match that of other textures (71) on race 'SynthGen2Race' (0010BD65).

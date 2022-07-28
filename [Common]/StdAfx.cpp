@@ -71,6 +71,7 @@ HMODULE g_DllD3D11;
 int8_t g_i8DialogMode = 0;
 int8_t g_i8NeedLoadBA2 = 0;
 BOOL g_AttachRenderWnd = 0;
+BOOL g_HotkeyReplace = 0;
 
 GAME_EXECUTABLE_TYPE g_LoadType;
 char g_GitVersion[64] = VER_CURRENT_COMMIT_ID;

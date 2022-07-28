@@ -23,6 +23,9 @@
 
 #pragma once
 
+#include <string>
+#include <vector>
+
 #include "UIMenus.h"
 #include "UIBaseWindow.h"
 #include "..\..\[EditorAPI]\Core.h"
@@ -59,6 +62,22 @@ namespace MainWindow
 {
 	namespace Classes = Core::Classes::UI;
 
+	struct UIKeybind
+	{
+		CHAR Vk;
+		bool Alt;
+		bool Ctrl;
+		bool Shift;
+		std::string HKFuncName;
+		HMENU hMenu;
+		UINT dwPos;
+
+		VOID UpdateMenuShortcut(VOID);
+
+		static UIKeybind CreateInstance(CHAR cVk, bool bShift, bool bCtrl, bool bAlt, LPCSTR lpstrHKFuncName, Classes::CUIMenuItem uiMenu);
+	};
+
+	extern std::vector<UIKeybind> UIKeybinds;
 	extern WNDPROC OldWndProc;
 
 	BOOL FIXAPI IsActive(VOID);

@@ -217,11 +217,80 @@ namespace EditorUI
 			TabCtrl_DeleteItem(TabControlHandle, TabIndex);
 	}
 
-	VOID FIXAPI RegisterHotkeyFunction(LPVOID Thisptr, VOID(*Callback)(VOID), LPCSTR* HotkeyFunction, LPCSTR* DisplayText, CHAR VirtualKey,
-		BOOL Alt, BOOL Ctrl, BOOL Shift) {
+	VOID FIXAPI RegisterHotkeyFunction(LPVOID Thisptr, VOID(*Callback)(VOID), BSEntryString** HotkeyFunction, BSEntryString** DisplayText, CHAR VirtualKey,
+		bool Alt, bool Ctrl, bool Shift) {
+
+#if 0
+		std::string debugInfoKeybind;
+
+		if (Shift)
+			debugInfoKeybind = "SHIFT";
+
+		if (Ctrl)
+		{
+			if(!debugInfoKeybind.empty())
+				debugInfoKeybind += "+CTRL";
+			else
+				debugInfoKeybind = "CTRL";
+		}
+
+		if (Alt)
+		{
+			if (!debugInfoKeybind.empty())
+				debugInfoKeybind += "+ALT";
+			else
+				debugInfoKeybind = "ALT";
+		}
+
+		std::string keybind;
+
+		if (VirtualKey >= VK_F1 && VirtualKey <= VK_F12)
+		{
+			char szBuf[5] = { 0 };
+			_itoa_s((VirtualKey - VK_F1) + 1, szBuf, 10);
+
+			keybind = "F";
+			keybind += szBuf;
+		}
+		else if (VirtualKey == VK_ESCAPE)
+			keybind = "ESC";
+		else if (VirtualKey == VK_SPACE)
+			keybind = "SPACE";
+		else if (VirtualKey == VK_RETURN)
+			keybind = "ENTER";
+		else if (VirtualKey == VK_DELETE)
+			keybind = "DEL";
+		else if (VirtualKey == VK_TAB)
+			keybind = "TAB";
+		else if (VirtualKey == VK_BACK)
+			keybind = "BACK";
+		else
+		{
+			char szBuf[2] = { 0 };
+			szBuf[0] = VirtualKey;
+			keybind = strupr(szBuf);
+		}
+
+		if (!debugInfoKeybind.empty()) 
+		{
+			debugInfoKeybind += "+";
+			debugInfoKeybind += keybind;
+		}
+		else
+			debugInfoKeybind = keybind;
+
+		//_MESSAGE_FMT("HOTKEY: %s -> %s (%s)", (*HotkeyFunction)->Get<CHAR>(TRUE), (*DisplayText)->Get<CHAR>(TRUE), debugInfoKeybind.c_str());
+		//formating string for ini file
+		_MESSAGE_FMT("; %s", (*DisplayText)->Get<CHAR>(TRUE));
+		_MESSAGE_FMT("%s=%s", (*HotkeyFunction)->Get<CHAR>(TRUE), debugInfoKeybind.c_str());
+#endif
 
 		// Read the setting, strip spaces/quotes, then split by each '+' modifier
-		std::string newKeybind = g_INI->Get("CreationKit_Hotkeys", *HotkeyFunction, "");
+		std::string newKeybind = g_INI->Get("CreationKit_Hotkeys", (*HotkeyFunction)->Get<CHAR>(TRUE), "");
+		if (!newKeybind.length()) {
+			_MESSAGE_FMT("Can't find this hotkeys ""%s"" in the mod settings. (%X), %d, %d, %d, %s)",
+				(*HotkeyFunction)->Get<CHAR>(TRUE), VirtualKey, (int)Alt, (int)Ctrl, (int)Shift, (*DisplayText)->Get<CHAR>(TRUE));
+		}
 
 		for (size_t i; (i = newKeybind.find("\"")) != std::string::npos;)
 			newKeybind.replace(i, 1, "");
@@ -233,22 +302,26 @@ namespace EditorUI
 			std::transform(newKeybind.begin(), newKeybind.end(), newKeybind.begin(), toupper);
 
 			VirtualKey = 0;
-			Alt = FALSE;
-			Ctrl = FALSE;
-			Shift = FALSE;
+			Alt = false;
+			Ctrl = false;
+			Shift = false;
 
 			LPSTR context = NULL;
 			LPCSTR t = strtok_s(newKeybind.data(), "+", &context);
 
 			do {
 				if (!strcmp(t, "CTRL"))
-					Ctrl = TRUE;
+					Ctrl = true;
 				else if (!strcmp(t, "SHIFT"))
-					Shift = TRUE;
+					Shift = true;
 				else if (!strcmp(t, "ALT"))
-					Alt = TRUE;
+					Alt = true;
 				else if (!strcmp(t, "ESC"))
 					VirtualKey = VK_ESCAPE;
+				else if (!strcmp(t, "SPACE"))
+					VirtualKey = VK_SPACE;
+				else if (!strcmp(t, "ENTER"))
+					VirtualKey = VK_RETURN;
 				else if (!strcmp(t, "DEL"))
 					VirtualKey = VK_DELETE;
 				else if (!strcmp(t, "TAB"))
@@ -269,15 +342,23 @@ namespace EditorUI
 					VirtualKey = t[0];
 				}
 			} while (t = strtok_s(NULL, "+", &context));
+
+			LPCSTR lpStrF = (*HotkeyFunction)->Get<CHAR>(TRUE);
+			for (auto it = MainWindow::UIKeybinds.begin(); it != MainWindow::UIKeybinds.end(); it++)
+			{
+				if (!_stricmp(lpStrF, (*it).HKFuncName.c_str()))
+				{
+					(*it).Vk = VirtualKey;
+					(*it).Alt = Alt;
+					(*it).Ctrl = Ctrl;
+					(*it).Shift = Shift;
+
+					(*it).UpdateMenuShortcut();
+					break;
+				}
+			}
 		}
 
-		if (!_stricmp(*HotkeyFunction, "HKFunc_Refresh")) {
-			HK_RefreshT.VirtualKey = VirtualKey;
-			HK_RefreshT.Alt = Alt;
-			HK_RefreshT.Ctrl = Ctrl;
-			HK_RefreshT.Shift = Shift;
-		}
-		
 		((decltype(&RegisterHotkeyFunction))OFFSET(0x4575A0, 0))(Thisptr, Callback, HotkeyFunction, DisplayText, VirtualKey, Alt, Ctrl, Shift);
 	}
 

@@ -23,6 +23,7 @@
 #pragma once
 
 #include "..\..\[Common]\StdAfx.h"
+#include "..\..\[EditorAPI]\BSEntryString.h"
 
 namespace EditorUI
 {
@@ -42,7 +43,7 @@ namespace EditorUI
 	VOID FIXAPI ComboBox_Redraw(HWND hCB, BOOL redraw);
 	LRESULT FIXAPI hk_SetSettingsPartStatusBar(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 	VOID FIXAPI hk_SpamFPSToStatusBar(INT64 a1);
-	VOID FIXAPI RegisterHotkeyFunction(LPVOID Thisptr, VOID(*Callback)(VOID), LPCSTR* HotkeyFunction, LPCSTR* DisplayText, CHAR VirtualKey,
-		BOOL Alt, BOOL Ctrl, BOOL Shift);
+	VOID FIXAPI RegisterHotkeyFunction(LPVOID Thisptr, VOID(*Callback)(VOID), BSEntryString** HotkeyFunction, BSEntryString** DisplayText, CHAR VirtualKey,
+		bool Alt, bool Ctrl, bool Shift);
 	VOID FIXAPI hkAddRefrToLayer(LPVOID* active_layer);
 }

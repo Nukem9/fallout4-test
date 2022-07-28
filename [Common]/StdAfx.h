@@ -107,6 +107,7 @@ extern HMODULE g_DllD3D11;
 extern int8_t g_i8DialogMode;
 extern int8_t g_i8NeedLoadBA2;
 extern BOOL g_AttachRenderWnd;
+extern BOOL g_HotkeyReplace;
 
 enum class GAME_EXECUTABLE_TYPE {
 	UNKNOWN,

@@ -55,6 +55,7 @@ namespace Core
 				BOOL IsSubMenu(VOID) const;
 				inline CUIMenu* Menu(VOID) const { return m_Menu; };
 				inline BOOL ByPosition(VOID) const { return m_ByPos; };
+				UINT GetPosition(VOID) const { return m_Pos; };
 				VOID Click(VOID) const;
 			public:
 				static VOID Remove(CUIMenuItem* MenuItem);
