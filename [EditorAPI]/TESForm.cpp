@@ -23,11 +23,7 @@
 #include "../[Common]/StdAfx.h"
 #include "TESForm.h"
 
-#if 0
-std::unordered_set<TESForm*> AlteredFormListShadow;
-#else
-tbb::concurrent_unordered_set<TESForm*> AlteredFormListShadow;
-#endif
+#include "..\[Patches]\boost_search_array.h"
 
 VOID TESForm::LoadForm(TESFile* file) {
 	thisVirtualCall<VOID>(0xD0, this, file);
@@ -84,34 +80,26 @@ TESForm* GetFormByNumericID(const DWORD SearchID) {
 	return fastCall<TESForm*>(0x853220, SearchID);
 }
 
-LPVOID TESForm::AlteredFormList_Create(TESFormArray* Array, uint32_t Unknown) {
-	AlteredFormListShadow.clear();
-
-	return fastCall<LPVOID, TESFormArray*, uint32_t>(0x62EB80, Array, Unknown);
-}
-
-VOID TESForm::AlteredFormList_RemoveAllEntries(TESFormArray* Array) {
-	AlteredFormListShadow.clear();
-
-	fastCall<VOID, TESFormArray*>(0x2007E70, Array);
-}
-
-VOID TESForm::AlteredFormList_Insert(TESFormArray* Array, TESForm*& Entry, uint64_t Unknow1, uint32_t Unknow2) {
-	AlteredFormListShadow.insert(Entry);
-
-	fastCall<VOID, TESFormArray*, TESForm*&>(0x20078B0, Array, Entry, Unknow1, Unknow2);
-}
-
-VOID TESForm::AlteredFormList_RemoveEntry(TESFormArray* Array, uint32_t Index, uint32_t Unknown) {
-#if 0
-	AlteredFormListShadow.erase(Array->at(Index));
-#else
-	AlteredFormListShadow.unsafe_erase(Array->at(Index));
-#endif
-
-	fastCall<VOID, TESFormArray*, uint32_t, uint32_t>(0x7FC280, Array, Index, Unknown);
-}
-
 BOOL TESForm::AlteredFormList_ElementExists(TESFormArray* Array, TESForm*& Entry) {
-	return AlteredFormListShadow.count(Entry) > 0;
+	if (!Array)
+		return FALSE;
+
+	if (Array->QSize() < 16)
+	{
+		auto count = Array->QSize();
+		auto elemn = Array->QBuffer();
+
+		while (count)
+		{
+			if (*elemn == Entry)
+				return TRUE;
+
+			elemn++;
+			count--;
+		}
+
+		return FALSE;
+	}
+	else
+		return Experimental::QSIMDFastSearchArrayItemQWORD(*(BSTArray<UINT64>*)Array, reinterpret_cast<UINT64&>(Entry)) != (DWORD)-1;
 }

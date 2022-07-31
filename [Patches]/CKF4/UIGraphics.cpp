@@ -748,6 +748,16 @@ namespace Core
 
 			// CUICanvas
 
+			VOID CUICanvas::SetPixel(INT x, INT y, const COLORREF color) const
+			{
+				::SetPixel(m_hDC, x, y, color);
+			}
+
+			VOID CUICanvas::SetPixel(const POINT& p, const COLORREF color) const
+			{
+				::SetPixel(m_hDC, p.x, p.y, color);
+			}
+
 			VOID CUICanvas::SetBrush(const CUIBrush& brush)
 			{
 				m_fBrush.Assign(brush);

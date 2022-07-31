@@ -76,17 +76,9 @@ static INT32 nCountArgCmdLine = 0;
 
 BOOL bAllow64BitBA2Files = FALSE;
 
-/*
-==================
-F_RequiredPatches
-
-Patches that are installed by default
-==================
-*/
-VOID FIXAPI F_RequiredPatches(VOID) {
-	//
+VOID FIXAPI F_RequiredPatches(VOID)
+{
 	// MemoryManager
-	//
 	_MESSAGE_BEGIN_PATCH("Memory");
 
 	Fix_PatchMemory();
@@ -107,7 +99,10 @@ VOID FIXAPI F_RequiredPatches(VOID) {
 	XUtil::DetourJump(OFFSET(0x200B170, 0), &ScrapHeap::Deallocate);
 
 	_MESSAGE_END_PATCH;
-	
+}
+
+VOID FIXAPI F_VerifiedPatches(VOID)
+{
 	_MESSAGE_BEGIN_PATCH("Dialoges");
 
 	PatchIAT(hk_CreateDialogParamA, "USER32.DLL", "CreateDialogParamA");
@@ -116,72 +111,21 @@ VOID FIXAPI F_RequiredPatches(VOID) {
 	PatchIAT(hk_SendMessageA, "USER32.DLL", "SendMessageA");
 
 	_MESSAGE_END_PATCH;
-	
-	//
-	// Threads
-	//
-	_MESSAGE_BEGIN_PATCH("Thread");
-
-	Fix_PatchThreading();
-
-	_MESSAGE_END_PATCH;
-
-	//
-	// Steam API
-	//
-	_MESSAGE_BEGIN_PATCH("Steam");
-
-	XUtil::PatchMemory(OFFSET(0x2881F84, 0), { 0x74, 0x1B, 0x90, 0x90, 0x90, 0x90 });
-	XUtil::PatchMemory(OFFSET(0x2881FB4, 0), { 0x74, 0x26, 0x90, 0x90, 0x90, 0x90 });
-	XUtil::PatchMemory(OFFSET(0x2881FF4, 0), { 0x74, 0x1D, 0x90, 0x90, 0x90, 0x90 });
-
-	_MESSAGE_END_PATCH;
-	
-	//
-	// Fixes sky and fog
-	//
-	_MESSAGE_BEGIN_PATCH("Sky/Fog");
-
-	PatchSky();
-
-	// Fix for crash (nullptr no test) when close CK with Sky enable 
-	XUtil::PatchMemory(OFFSET(0xF84521, 0), { 0xEB, 0x4D, 0x90 });
-	XUtil::PatchMemory(OFFSET(0xF84570, 0), { 0x48, 0x85, 0xC9, 0x74, 0xB5, 0x48, 0x8B, 0x01, 0xEB, 0xAA });
-
-	_MESSAGE_END_PATCH;
-	
-	//
-	// TESForm
-	//
-	_MESSAGE_BEGIN_PATCH("TESForm storage");
-
-	XUtil::PatchMemory(OFFSET(0x85B331, 0), { 0xCC });
-	XUtil::DetourCall(OFFSET(0x85B6E8, 0), &TESForm::AlteredFormList_Create);
-	XUtil::DetourCall(OFFSET(0x7DA96C, 0), &TESForm::AlteredFormList_RemoveAllEntries);
-	XUtil::DetourCall(OFFSET(0x853E7B, 0), &TESForm::AlteredFormList_Insert);
-	XUtil::DetourCall(OFFSET(0x8539DE, 0), &TESForm::AlteredFormList_RemoveEntry);
-	XUtil::DetourCall(OFFSET(0x853F2B, 0), &TESForm::AlteredFormList_RemoveEntry);
-	XUtil::DetourCall(OFFSET(0x853E47, 0), &TESForm::AlteredFormList_ElementExists);
-
-	_MESSAGE_END_PATCH;
 
 	_MESSAGE_BEGIN_PATCH("TESDataHandler");
 
 	TESDataHandler::Initialize();
-
 	// Getting a pointer to TESDataFileHandler_CK. (no actual)
 	// And when the ReplacingTipsWithProgressBar option is enabled, the dialog starts.
 	XUtil::DetourCall(OFFSET(0x5BE5A6, 0), &EditorUI::hk_CallLoadFile);
 	// Foreground CellView and Object Windows after loading.
 	// And when the ReplacingTipsWithProgressBar option is enabled, closing the dialog box.
 	XUtil::DetourJump(OFFSET(0x7DA80D, 0), &EditorUI::hk_EndLoadFile);
-
 	// no support cmd line
 	if (nCountArgCmdLine == 1) {
 		//
 		// Processing messages during file upload so that the window doesn't hang
 		//
-
 		// jump to function for useful work (messages pool)
 		XUtil::DetourJump(OFFSET(0x2485C46, 0), &PatchMessage);
 		XUtil::DetourJump(OFFSET(0x2485E46, 0), &PatchMessage);
@@ -198,33 +142,153 @@ VOID FIXAPI F_RequiredPatches(VOID) {
 	}
 
 	_MESSAGE_END_PATCH;
-	
-	_MESSAGE_BEGIN_PATCH("Archive");
 
-	//
-	// Archive load interceptor
-	//
-	XUtil::DetourCall(OFFSET(0x24BB1D7, 0), BSArchive::hk_LoadArchive);
-	XUtil::DetourJump(OFFSET(0x24E2E40, 0), BSArchive::hk_Check64bitSize);
-
-	// Fix for crash when plugins.txt is present in the game root folder. Buffer overflow in ArchiveManager::OpenMasterArchives when appending
-	// to a string. Skip the parsing code completely.
-	XUtil::PatchMemoryNop(OFFSET(0x249EFD7, 0), 6);
-
-	_MESSAGE_END_PATCH;
-	
 	_MESSAGE_BEGIN_PATCH("Console");
-	
+
 	// Adds support for quotation marks of some commands on the command line
 	PatchCmdLineWithQuote();
 
 	_MESSAGE_END_PATCH;
 
-	_MESSAGE_BEGIN_PATCH("FastLoad");
+	_MESSAGE_BEGIN_PATCH("Thread");
 
+	Fix_PatchThreading();
+
+	_MESSAGE_END_PATCH;
+
+	_MESSAGE_BEGIN_PATCH("Steam");
+
+	XUtil::PatchMemory(OFFSET(0x2881F84, 0), { 0x74, 0x1B, 0x90, 0x90, 0x90, 0x90 });
+	XUtil::PatchMemory(OFFSET(0x2881FB4, 0), { 0x74, 0x26, 0x90, 0x90, 0x90, 0x90 });
+	XUtil::PatchMemory(OFFSET(0x2881FF4, 0), { 0x74, 0x1D, 0x90, 0x90, 0x90, 0x90 });
+
+	_MESSAGE_END_PATCH;
+
+	_MESSAGE_BEGIN_PATCH("Sky/Fog");
+
+	PatchSky();
+	// Fix for crash (nullptr no test) when close CK with Sky enable 
+	XUtil::PatchMemory(OFFSET(0xF84521, 0), { 0xEB, 0x4D, 0x90 });
+	XUtil::PatchMemory(OFFSET(0xF84570, 0), { 0x48, 0x85, 0xC9, 0x74, 0xB5, 0x48, 0x8B, 0x01, 0xEB, 0xAA });
+
+	_MESSAGE_END_PATCH;
+
+	_MESSAGE_BEGIN_PATCH("Misc");
+
+	// Kill broken destructors causing crashes on exit
+	XUtil::DetourCall(OFFSET(0x5B6DF7, 0), &QuitHandler);
+	XUtil::DetourCall(OFFSET(0x2D48FC0, 0), &QuitHandler);
+	XUtil::DetourCall(OFFSET(0x2D48FCF, 0), &QuitHandler);
+	// Disable useless "Processing Topic X..." status bar updates
+	XUtil::PatchMemoryNop(OFFSET(0xB89897, 0), 5);
+	XUtil::PatchMemoryNop(OFFSET(0xB89BF3, 0), 5);
+	XUtil::PatchMemoryNop(OFFSET(0xB8A472, 0), 5);
+	// Fixed failed load d3dcompiler.dll
+	XUtil::PatchMemoryNop(OFFSET(0x2A46AC0, 0), 6);
+	// Fixed when the value is different from 0.0 to 1.0. Smoothness value to material (nif)
+	XUtil::DetourCall(OFFSET(0x2B7F5B7, 0), &Fixed_IncorrectSmoothnessValueToMaterialNif);
+	XUtil::PatchMemory(OFFSET(0x2B7F5BC, 0), { 0x66, 0x0F, 0x7E, 0x85, 0x88, 0x00, 0x00, 0x00, 0xEB, 0x18 });
+	// Fixed crash when by load plugin in which there is no root parent to materials
+	XUtil::PatchMemory(OFFSET(0x2500E7C, 0), { 0x0F, 0xC6, 0x1D, 0x1C, 0xC0, 0x30, 0x01, 0xEE, 0x0F, 0xC6, 0x05, 0x14,
+		0xC0, 0x30, 0x01, 0x44, 0x31, 0xC0, 0xEB, 0x4B });
+	XUtil::PatchMemory(OFFSET(0x8ED2AF, 0), { 0xEB, 0x6F });
+	XUtil::PatchMemory(OFFSET(0x2AC1D07, 0), { 0xEB });
+	// Fixed when you delete a group tinting to race window
+	XUtil::PatchMemory(OFFSET(0x963E2E, 0), { 0x4D, 0x8B, 0x47, 0x8, 0x4C, 0x89, 0xE2 });
+	XUtil::DetourCall(OFFSET(0x963E35, 0), &Fixed_DeleteTintingRace);
+	XUtil::PatchMemory(OFFSET(0x963E3A, 0), { 0xEB, 0x18 });
+	// Raise the papyrus script editor text limit to 500k characters from 64k
+	XUtil::DetourCall(OFFSET(0x12E852C, 0), &hk_call_12E852C);
+	// Assert if D3D11 FL11 features are not supported
+	XUtil::DetourCall(OFFSET(0x2A48B1E, 0), &hk_call_142D12196);
+	// Skipping the string check is more than 33 characters, this is irrelevant for new games
+	XUtil::PatchMemory(OFFSET(0xDAF421, 0), { 0xEB });
+	// Fixed infinite loop by Compile Papyrus Scripts...
+	XUtil::PatchMemory(OFFSET(0x12E5E50, 0), { 0xC3 });
+	// Enable the render window "Go to selection in game" hotkey even if version control is off
+	XUtil::PatchMemoryNop(OFFSET(0x472123, 0), 2);
+	// Fix for crash when using the -MapMaker command line option. Nullptr camera passed to BSGraphics::State::SetCameraData.
+	XUtil::DetourCall(OFFSET(0x0906407, 0), &hk_call_140906407);
+	// Fix for crash when tab control buttons are deleted. Uninitialized TCITEMA structure variables.
+	XUtil::DetourJump(OFFSET(0x0564E30, 0), &EditorUI::TabControlDeleteItem);
+	// Fix for crash (recursive sorting function stack overflow) when saving certain ESP files (i.e SimSettlements.esp)
+	XUtil::DetourJump(OFFSET(0x07ED840, 0), &ArrayQuickSortRecursive<class TESForm_CK*>);
+	XUtil::PatchMemory(OFFSET(0x07EDA50, 0), { 0xC3 });
+	// Skipping the program update check
+	XUtil::PatchMemory(OFFSET(0x5C180B, 0), { 0xEB, 0x10 });
+	// Fix crash when Unicode string conversion fails with bethesda.net http responses
+	XUtil::DetourJump(OFFSET(0x27DAF60, 0), &BNetConvertUnicodeString);
+	// Change the default " 64-bit"
+	const char* newTitlePart = " Fallout 4 64-bit";
+	XUtil::PatchMemory(OFFSET(0x5C16CB, 0), { 0x8B });
+	XUtil::PatchMemory(OFFSET(0x3857828, 0), (uint8_t*)&newTitlePart, sizeof(newTitlePart));
+
+	// Fixed sFile Path (The option should specify the current directory, but when changing the folder, it points to the old one)
+	PatchIAT(hk_modGetPrivateProfileStringA, "kernel32.dll", "GetPrivateProfileStringA");
+
+#if !FALLOUT4_STUDY_CK64_INIFILE
 	//
+	// Skip option bSkipValidateForms and bDisableDuplicateReferenceCheck
+	//
+	PatchIAT(hk_modGetPrivateProfileIntA, "kernel32.dll", "GetPrivateProfileIntA");
+#else
+	//
+	// For study ini
+	//
+	Tools::IniHookInputInit();
+#endif // !FALLOUT4_STUDY_CK64_INIFILE
+
+	_MESSAGE_END_PATCH;
+
+	_MESSAGE_BEGIN_PATCH("Misc");
+
+	// Fixed a very harmful error that pops up very rarely
+	XUtil::DetourCall(OFFSET(0x2511176, 0), &hk_call_2511176);
+
+	//////////////////////////////////////
+	//
+	// Skip some warning
+	//
+
+	// EXTRA SPACE
+	XUtil::PatchMemoryNop(OFFSET(0x86F151, 0), 0x35);
+
+	// NavMesh ID %08X in cell %s has invalid cover data.  It will be removed.
+	XUtil::PatchMemoryNop(OFFSET(0x100B39C, 0), 0x5);
+	
+	// Animation messages
+	XUtil::PatchMemoryNop(OFFSET(0x257CF88, 0), 5);
+	XUtil::PatchMemoryNop(OFFSET(0x257D4B3, 0), 5);
+	XUtil::PatchMemoryNop(OFFSET(0x257D518, 0), 5);
+	XUtil::PatchMemoryNop(OFFSET(0x257D44A, 0), 5);
+	XUtil::PatchMemoryNop(OFFSET(0x1C62B27, 0), 5);
+	// TEXTURE Unable to load file
+	XUtil::PatchMemory(OFFSET(0x2AC6E17, 0), { 0xE9, 0xB8, 0x00, 0x00, 0x00, 0x90 });
+	// MODEL Could not find model
+	XUtil::PatchMemoryNop(OFFSET(0x260CFC6, 0), 5);
+	XUtil::PatchMemoryNop(OFFSET(0x260D2A3, 0), 5);
+	// SHADER Could not find material
+	XUtil::PatchMemoryNop(OFFSET(0x183D42, 0), 5);
+	XUtil::PatchMemoryNop(OFFSET(0x2AB67AC, 0), 5);
+	// MODEL Found geometry
+	XUtil::PatchMemoryNop(OFFSET(0x8DF0A6, 0), 5);
+	//////////////////////////////////////
+
+	_MESSAGE_END_PATCH;
+}
+
+VOID FIXAPI F_OptimizationWithRiskPatches(VOID)
+{
+	_MESSAGE_BEGIN_PATCH("TESForm storage");
+
+	if (g_INI->GetBoolean("CreationKit", "AlteredFormListPatch", FALSE))
+		XUtil::DetourCall(OFFSET(0x853E47, 0), &TESForm::AlteredFormList_ElementExists);
+
+	_MESSAGE_END_PATCH;
+
+	_MESSAGE_BEGIN_PATCH("FastLoad");
+	
 	// Plugin loading optimizations
-	//
 	INT32 cpuinfo[4];
 	__cpuid(cpuinfo, 1);
 	bool sse41 = (cpuinfo[2] & (1 << 19)) != 0;
@@ -312,25 +376,9 @@ VOID FIXAPI F_RequiredPatches(VOID) {
 		_MESSAGE_FMT("Replaced function with SIMD function: %d.", count);
 	}
 
-	//
-	// FAST AnimBuild
-	//
-	//XUtil::PatchMemoryNop(OFFSET(0xB2E4A, 0), 0x23);
-	//XUtil::PatchMemory(OFFSET(0xB2E8C, 0), { 0xDF });
-
-
-	/*XUtil::PatchMemory(OFFSET(0xB2E39, 0), { 0x90, 0x00, 0x02, 0x00, 0x00, 0x4C, 0x8D, 0x85, 0xB0, 0x01, 0x00, 0x00 });
-	XUtil::DetourCall(OFFSET(0xB2E45, 0), &hk_FastAnimationBuild);
-	XUtil::PatchMemory(OFFSET(0xB2E4A, 0), { 0xEB, 0x42 });*/
-
-	//
 	// Skip remove failed forms
-	//
 	XUtil::PatchMemory(OFFSET(0x7E4064, 0), { 0xEB });
-
-	//
 	// Skip preload interier or exterier
-	//
 	XUtil::PatchMemory(OFFSET(0x5BE646, 0), { 0xEB });
 
 	XUtil::DetourCall(OFFSET(0x08056B7, 0), &hk_inflateInit);
@@ -339,130 +387,21 @@ VOID FIXAPI F_RequiredPatches(VOID) {
 
 	_MESSAGE_END_PATCH;
 
-	_MESSAGE_BEGIN_PATCH("Misc");
+	_MESSAGE_BEGIN_PATCH("Archive");
 
-	// Kill broken destructors causing crashes on exit
-	XUtil::DetourCall(OFFSET(0x5B6DF7, 0), &QuitHandler);
-	XUtil::DetourCall(OFFSET(0x2D48FC0, 0), &QuitHandler);
-	XUtil::DetourCall(OFFSET(0x2D48FCF, 0), &QuitHandler);
-	
-	// Disable useless "Processing Topic X..." status bar updates
-	XUtil::PatchMemoryNop(OFFSET(0xB89897, 0), 5);
-	XUtil::PatchMemoryNop(OFFSET(0xB89BF3, 0), 5);
-	XUtil::PatchMemoryNop(OFFSET(0xB8A472, 0), 5);
-
-	// Fixed failed load d3dcompiler.dll
-	XUtil::PatchMemoryNop(OFFSET(0x2A46AC0, 0), 6);
-
-	// Fixed when the value is different from 0.0 to 1.0. Smoothness value to material (nif)
-	XUtil::DetourCall(OFFSET(0x2B7F5B7, 0), &Fixed_IncorrectSmoothnessValueToMaterialNif);
-	XUtil::PatchMemory(OFFSET(0x2B7F5BC, 0), { 0x66, 0x0F, 0x7E, 0x85, 0x88, 0x00, 0x00, 0x00, 0xEB, 0x18 });
-
-	// Fixed a very harmful error that pops up very rarely
-	XUtil::DetourCall(OFFSET(0x2511176, 0), &hk_call_2511176);
-
-	// Fixed infinite loop by Compile Papyrus Scripts...
-	XUtil::PatchMemory(OFFSET(0x12E5E50, 0), { 0xC3 });
-
-	// Fixed when you delete a group tinting to race window
-	XUtil::PatchMemory(OFFSET(0x963E2E, 0), { 0x4D, 0x8B, 0x47, 0x8, 0x4C, 0x89, 0xE2 });
-	XUtil::DetourCall(OFFSET(0x963E35, 0), &Fixed_DeleteTintingRace);
-	XUtil::PatchMemory(OFFSET(0x963E3A, 0), { 0xEB, 0x18 });
-
-	// Fixed crash when by load plugin in which there is no root parent to materials
-	XUtil::PatchMemory(OFFSET(0x2500E7C, 0), { 0x0F, 0xC6, 0x1D, 0x1C, 0xC0, 0x30, 0x01, 0xEE, 0x0F, 0xC6, 0x05, 0x14,
-		0xC0, 0x30, 0x01, 0x44, 0x31, 0xC0, 0xEB, 0x4B });
-	XUtil::PatchMemory(OFFSET(0x8ED2AF, 0), { 0xEB, 0x6F });
-	XUtil::PatchMemory(OFFSET(0x2AC1D07, 0), { 0xEB });
-
-	// Enable the render window "Go to selection in game" hotkey even if version control is off
-	XUtil::PatchMemoryNop(OFFSET(0x472123, 0), 2);
-
-	// Fix for crash when using the -MapMaker command line option. Nullptr camera passed to BSGraphics::State::SetCameraData.
-	XUtil::DetourCall(OFFSET(0x0906407, 0), &hk_call_140906407);
-
-	// Fix for crash when tab control buttons are deleted. Uninitialized TCITEMA structure variables.
-	XUtil::DetourJump(OFFSET(0x0564E30, 0), &EditorUI::TabControlDeleteItem);
-
-	// Fix for crash (recursive sorting function stack overflow) when saving certain ESP files (i.e SimSettlements.esp)
-	XUtil::DetourJump(OFFSET(0x07ED840, 0), &ArrayQuickSortRecursive<class TESForm_CK*>);
-	XUtil::PatchMemory(OFFSET(0x07EDA50, 0), { 0xC3 });
-
-	// Raise the papyrus script editor text limit to 500k characters from 64k
-	XUtil::DetourCall(OFFSET(0x12E852C, 0), &hk_call_12E852C);
-
-	// Assert if D3D11 FL11 features are not supported
-	XUtil::DetourCall(OFFSET(0x2A48B1E, 0), &hk_call_142D12196);
-
-	// Skipping the string check is more than 33 characters, this is irrelevant for new games
-	XUtil::PatchMemory(OFFSET(0xDAF421, 0), { 0xEB });
-
-	//////////////////////////////////////
 	//
-	// Skip some warning
+	// Archive load interceptor
 	//
+	XUtil::DetourCall(OFFSET(0x24BB1D7, 0), BSArchive::hk_LoadArchive);
+	XUtil::DetourJump(OFFSET(0x24E2E40, 0), BSArchive::hk_Check64bitSize);
 
-	// EXTRA SPACE
-	XUtil::PatchMemoryNop(OFFSET(0x86F151, 0), 0x35);
-
-	// NavMesh ID %08X in cell %s has invalid cover data.  It will be removed.
-	XUtil::PatchMemoryNop(OFFSET(0x100B39C, 0), 0x5);
-	
-	// Animation messages
-	XUtil::PatchMemoryNop(OFFSET(0x257CF88, 0), 5);
-	XUtil::PatchMemoryNop(OFFSET(0x257D4B3, 0), 5);
-	XUtil::PatchMemoryNop(OFFSET(0x257D518, 0), 5);
-	XUtil::PatchMemoryNop(OFFSET(0x257D44A, 0), 5);
-	XUtil::PatchMemoryNop(OFFSET(0x1C62B27, 0), 5);
-	// TEXTURE Unable to load file
-	XUtil::PatchMemory(OFFSET(0x2AC6E17, 0), { 0xE9, 0xB8, 0x00, 0x00, 0x00, 0x90 });
-	// MODEL Could not find model
-	XUtil::PatchMemoryNop(OFFSET(0x260CFC6, 0), 5);
-	XUtil::PatchMemoryNop(OFFSET(0x260D2A3, 0), 5);
-	// SHADER Could not find material
-	XUtil::PatchMemoryNop(OFFSET(0x183D42, 0), 5);
-	XUtil::PatchMemoryNop(OFFSET(0x2AB67AC, 0), 5);
-	// MODEL Found geometry
-	XUtil::PatchMemoryNop(OFFSET(0x8DF0A6, 0), 5);
-	//////////////////////////////////////
-
-	// Skipping the program update check
-	XUtil::PatchMemory(OFFSET(0x5C180B, 0), { 0xEB, 0x10 });
-
-	// Fix crash when Unicode string conversion fails with bethesda.net http responses
-	XUtil::DetourJump(OFFSET(0x27DAF60, 0), &BNetConvertUnicodeString);
-
-	// Change the default " 64-bit"
-	const char* newTitlePart = " Fallout 4 64-bit";
-	XUtil::PatchMemory(OFFSET(0x5C16CB, 0), { 0x8B });
-	XUtil::PatchMemory(OFFSET(0x3857828, 0), (uint8_t*)&newTitlePart, sizeof(newTitlePart));
-
-	// Fixed sFile Path (The option should specify the current directory, but when changing the folder, it points to the old one)
-	PatchIAT(hk_modGetPrivateProfileStringA, "kernel32.dll", "GetPrivateProfileStringA");
-
-#if !FALLOUT4_STUDY_CK64_INIFILE
-	//
-	// Skip option bSkipValidateForms and bDisableDuplicateReferenceCheck
-	//
-	PatchIAT(hk_modGetPrivateProfileIntA, "kernel32.dll", "GetPrivateProfileIntA");
-#else
-	//
-	// For study ini
-	//
-	Tools::IniHookInputInit();
-#endif // !FALLOUT4_STUDY_CK64_INIFILE
+	// Fix for crash when plugins.txt is present in the game root folder. Buffer overflow in ArchiveManager::OpenMasterArchives when appending
+	// to a string. Skip the parsing code completely.
+	XUtil::PatchMemoryNop(OFFSET(0x249EFD7, 0), 6);
 
 	_MESSAGE_END_PATCH;
 }
 
-
-/*
-==================
-F_UIPatches
-
-Patches for the UI
-==================
-*/
 VOID FIXAPI F_UIPatches(VOID) {
 	auto comDll = (uintptr_t)GetModuleHandleA("comctl32.dll");
 	Assert(comDll);
@@ -990,6 +929,8 @@ VOID FIXAPI MainFix_PatchFallout4CreationKit(VOID)
 		OriginalLoadBA2();
 
 	F_RequiredPatches();
+	F_VerifiedPatches();
+	F_OptimizationWithRiskPatches();
 	F_LooseFilePatches();
 	
 	// Will force CK to read large pages
@@ -1048,15 +989,6 @@ VOID FIXAPI MainFix_PatchFallout4CreationKit(VOID)
 		XUtil::PatchMemory(OFFSET(0xD36C0, 0), { 0xC3 });
 	}
 
-	//if (DWORD autosavetimeout = g_INI->GetInteger("CreationKit", "AutosavePluginTimeout", 0); autosavetimeout) {
-	//	XUtil::PatchMemory(OFFSET(0x5FC156, 0), { 0x41, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x90 });	// every N min
-	//	XUtil::PatchMemory(OFFSET(0x5FC158, 0), (uint8_t*)&autosavetimeout, sizeof(DWORD));		// ^
-	//	XUtil::PatchMemory(OFFSET(0x5FC0DD, 0), { 0x03 });										// 4 part statusbar
-	//	XUtil::PatchMemory(OFFSET(0x5FC12A, 0), { 0x03 });										// ^
-	//	XUtil::PatchMemory(OFFSET(0x5FC036, 0), { 0xEB, 0x53 });								// skip GetActiveWindow
-	//	XUtil::DetourCall(OFFSET(0x7E1F51, 0), &hk_vsprintf_autosave);							// generate filename
-	//}
-
 	F_FaceGenPatches();
 	F_UIPatches();
 	F_UnicodePatches();
@@ -1098,14 +1030,6 @@ VOID FIXAPI MainFix_PatchFallout4CreationKit(VOID)
 
 		_MESSAGE_END_PATCH;
 	}
-	
-	//
-	// Fix file corruption
-	// I saw that Elianora had a crash and damaged the file .esp, let's complicate the save by creating a backup.
-	//
-	// There's not even anything to add, CK does it anyway
-	//if (g_INI->GetBoolean("CreationKit", "BackupPluginBySave", FALSE))
-	//	*(uintptr_t*)&api::TESDataHandler::SaveTESFile = Detours::X64::DetourFunctionClass(OFFSET(0x7DD740, 0), &api::TESDataHandler::hk_SaveTESFile);
 
 	//
 	// Remove assertion message boxes

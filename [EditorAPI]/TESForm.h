@@ -254,10 +254,6 @@ public:
 	INLINE DWORD GetFormFlags(VOID) const { return _FormFlags; }
 	INLINE DWORD GetFormID(VOID) const { return _FormID; }
 public:
-	static LPVOID AlteredFormList_Create(TESFormArray* Array, uint32_t Unknown);
-	static VOID	AlteredFormList_RemoveAllEntries(TESFormArray* Array);
-	static VOID	AlteredFormList_Insert(TESFormArray* Array, TESForm*& Entry, uint64_t Unknow1, uint32_t Unknow2);
-	static VOID	AlteredFormList_RemoveEntry(TESFormArray* Array, uint32_t Index, uint32_t Unknown);
 	static BOOL	AlteredFormList_ElementExists(TESFormArray* Array, TESForm*& Entry);
 public:
 	READ_PROPERTY(IsModified) BOOL Active;

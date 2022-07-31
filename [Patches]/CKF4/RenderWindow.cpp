@@ -1,6 +1,6 @@
 //////////////////////////////////////////
 /*
-* Copyright (c) 2020-2021 Perchik71 <email:perchik71@outlook.com>
+* Copyright (c) 2020-2022 Perchik71 <email:perchik71@outlook.com>
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy of this
 * software and associated documentation files (the "Software"), to deal in the Software
@@ -206,9 +206,6 @@ l_find_form:
 						if (wParam == '5')
 							// Fake click fog
 							MainWindow::GetMainMenuObj().GetSubMenuItem(2).GetItemByPos(23).Click();
-						//else if (wParam == 'N')
-						//	// Fix that only worked with the menu
-						//	MainWindow::GetMainMenuObj().GetSubMenuItem(2).GetItemByPos(17).Click();
 					}
 					else {
 						if (wParam == 'M')

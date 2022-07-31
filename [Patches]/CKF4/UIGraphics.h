@@ -307,6 +307,8 @@ namespace Core
 			private:
 				static VOID DoChange(CUIObjectGUI* sender, CUICanvas* canvas);
 			public:
+				VOID SetPixel(INT x, INT y, const COLORREF color) const;
+				VOID SetPixel(const POINT& p, const COLORREF color) const;
 				VOID MoveTo(INT x, INT y) const;
 				VOID MoveTo(const POINT& p) const;
 				VOID LineTo(INT x, INT y) const;
