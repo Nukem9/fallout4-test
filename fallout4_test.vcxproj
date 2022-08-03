@@ -116,6 +116,7 @@
     <ClInclude Include="[EditorAPI]\BSEntryString.h" />
     <ClInclude Include="[EditorAPI]\BSFile.h" />
     <ClInclude Include="[EditorAPI]\BSFixedString.h" />
+    <ClInclude Include="[EditorAPI]\BSPointerHandleManager.h" />
     <ClInclude Include="[EditorAPI]\BSResourceLooseFiles.h" />
     <ClInclude Include="[EditorAPI]\BSString.h" />
     <ClInclude Include="[EditorAPI]\BSStringCache.h" />
@@ -213,6 +214,7 @@
     <ClCompile Include="[EditorAPI]\BSArchive.cpp" />
     <ClCompile Include="[EditorAPI]\BSArchiveManager.cpp" />
     <ClCompile Include="[EditorAPI]\BSFile.cpp" />
+    <ClCompile Include="[EditorAPI]\BSPointerHandleManager.cpp" />
     <ClCompile Include="[EditorAPI]\BSResourceLooseFiles.cpp" />
     <ClCompile Include="[EditorAPI]\BSString.cpp" />
     <ClCompile Include="[EditorAPI]\Core.cpp" />

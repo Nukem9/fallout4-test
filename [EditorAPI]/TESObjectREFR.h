@@ -24,6 +24,7 @@
 
 #include "NiRefObject.h"
 #include "NiEvents.h"
+#include "BSPointerHandleManager.h"
 #include "BGSPrimitive.h"
 #include "TESForm.h"
 #include "TESObjectCELL.h"
@@ -32,19 +33,7 @@
 
 class BGSLayer;
 
-// 10
-class BSHandleRefObject : public NiRefObject {
-public:
-	enum { mask_RefCount = 0x3FF };
-
-	INLINE DWORD GetRefCount(VOID) const { return ((DWORD)m_ll64RefCount) & mask_RefCount; }
-	INLINE VOID DecRefHandle(VOID) {
-		if (((DWORD)(InterlockedDecrement64(&m_ll64RefCount)) & mask_RefCount) == 0)
-			DeleteThis();
-	}
-};
-
-class TESObjectREFR : public TESForm {
+class TESObjectREFR : public TESForm, public BSTEventSink<LPVOID>, public BSHandleRefObject {
 private:
 	enum { eTypeID = FormType::ftReference };
 	enum SpecialFlagsForm {
@@ -54,8 +43,6 @@ private:
 		fsFrozen = 1 << 29,
 	};
 private:
-	BSTEventSink<LPVOID> _unkEventSink01;	// 0x028
-	BSHandleRefObject _handleRefObject;		// 0x030
 	BSTEventSink<LPVOID> _unkEventSink02;	// 0x040
 	BSTEventSink<LPVOID> _unkEventSink03;	// 0x048
 	BSTEventSink<LPVOID> _unkEventSink04;	// 0x050
@@ -91,7 +78,6 @@ public:
 public:
 	READ_PROPERTY2(TESObjectCELL*, ParentCell, _parentCell);
 	READ_PROPERTY2(TESForm*, Parent, _baseForm);
-	READ_PROPERTY2(const BSHandleRefObject*, RefHandler, &_handleRefObject);
 	PROPERTY(GetPosition, SetPosition) NiPoint3 Position;
 	PROPERTY(GetRotate, SetRotate) NiPoint3 Rotate;
 	PROPERTY(GetScale, SetScale) WORD Scale;

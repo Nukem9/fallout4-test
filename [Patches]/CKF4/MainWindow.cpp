@@ -29,6 +29,7 @@
 #include "Editor.h"
 #include "EditorUI.h"
 #include "..\..\[EditorAPI]\Settings.h"
+#include "..\..\[EditorAPI]\BSPointerHandleManager.h"
 #include "..\..\[Common]\StdAfx.h"
 
 #pragma warning (disable : 6387)
@@ -178,8 +179,9 @@ namespace MainWindow
 		result = result && ExtensionSubMenu->Append("Autoscroll Log", UI_EXTMENU_AUTOSCROLL, TRUE, TRUE);
 		result = result && ExtensionSubMenu->AppendSeparator();
 		result = result && ExtensionSubMenu->Append("Dump Active Forms", UI_EXTMENU_LOADEDESPINFO);
-		result = result && ExtensionSubMenu->AppendSeparator();
 		result = result && ExtensionSubMenu->Append("Save Hardcoded Forms", UI_EXTMENU_HARDCODEDFORMS);
+		result = result && ExtensionSubMenu->AppendSeparator();
+		result = result && ExtensionSubMenu->Append("Output SDM information", UI_EXTMENU_OUTTOLOGINFOSDM);
 		result = result && MainWindow.MainMenu.Append("Extensions", *ExtensionSubMenu);
 
 		result = result && LinksSubMenu->Append("Creation Kit Wiki official page", UI_EXTMENU_LINKS_WIKI);
@@ -375,6 +377,15 @@ namespace MainWindow
 				MenuItem.Checked = !MenuItem.Checked;
 
 				PostMessageA(LogWindow::GetWindow(), UI_LOG_CMD_AUTOSCROLL, (WPARAM)MenuItem.Checked, 0);
+			}
+			return S_OK;
+
+			case UI_EXTMENU_OUTTOLOGINFOSDM: {
+				_MESSAGE("SDM Info:");
+				_MESSAGE_FMT("Head: %08X", g_HandleRefObjectManager->Head());
+				_MESSAGE_FMT("Tail: %08X", g_HandleRefObjectManager->Tail());
+				_MESSAGE_FMT("Capacity: %08X / %08X (%3.2f%%)", g_HandleRefObjectManager->Head(), BSUntypedPointerHandle::MAX_HANDLE_COUNT,
+					((long double)(g_HandleRefObjectManager->Head()) * 100.0) / (long double)(BSUntypedPointerHandle::MAX_HANDLE_COUNT));
 			}
 			return S_OK;
 

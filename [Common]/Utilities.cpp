@@ -285,6 +285,19 @@ void XUtil::PatchMemoryNop(uintptr_t Address, size_t Size) {
 	FlushInstructionCache(GetCurrentProcess(), (LPVOID)Address, Size);
 }
 
+void XUtil::PatchMemoryWP(uintptr_t Address, std::initializer_list<uint8_t> Data)
+{
+	uintptr_t i = Address;
+	for (auto value : Data)
+		*(volatile uint8_t*)i++ = value;
+}
+
+void XUtil::PatchMemoryNopWP(uintptr_t Address, size_t Size)
+{
+	for (uintptr_t i = Address; i < (Address + Size); i++)
+		*(volatile uint8_t*)i = 0x90;
+}
+
 void XUtil::DetourJump(uintptr_t Target, uintptr_t Destination) {
 	Detours::X64::DetourFunction(Target, Destination, Detours::X64Option::USE_REL32_JUMP);
 }

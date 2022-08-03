@@ -56,7 +56,7 @@ namespace DMDebugInfoFormWindow {
 
 								if (form->TypeID == TESForm::FormType::ftReference) {
 									_MESSAGE_FMT("\t\t REFR parent cell: %s", ((TESObjectREFR*)form)->ParentCell->GetFullName().c_str());
-									_MESSAGE_FMT("\t\t REFR count ref: %d", ((TESObjectREFR*)form)->RefHandler->GetRefCount());
+									_MESSAGE_FMT("\t\t REFR count ref: %d", ((TESObjectREFR*)form)->GetRef());
 								}
 
 								hk_EndDialog(DialogHwnd, IDOK);

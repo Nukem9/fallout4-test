@@ -69,7 +69,7 @@ class NiPointer {
 public:
 	T* m_pObject;	// 00
 
-	inline NiPointer(T* pObject = (T*) 0) {
+	inline NiPointer(T* pObject = (T*)0) {
 		m_pObject = pObject;
 		if(m_pObject) m_pObject->IncRef();
 	}
@@ -82,19 +82,19 @@ public:
 		return m_pObject != nullptr;
 	}
 
-	inline operator T *() const {
+	inline operator T*() const {
 		return m_pObject;
 	}
 
-	inline T & operator*() const {
+	inline T& operator*() const {
 		return *m_pObject;
 	}
 
-	inline T * operator->() const {
+	inline T* operator->() const {
 		return m_pObject;
 	}
 
-	inline NiPointer <T> & operator=(const NiPointer & rhs) {
+	inline NiPointer<T>& operator=(const NiPointer & rhs) {
 		if(m_pObject != rhs.m_pObject) {
 			if(rhs) rhs.m_pObject->IncRef();
 			if(m_pObject) m_pObject->DecRef();
@@ -124,11 +124,11 @@ public:
 		return m_pObject != pObject;
 	}
 
-	inline bool operator==(const NiPointer & ptr) const {
+	inline bool operator==(const NiPointer& ptr) const {
 		return m_pObject == ptr.m_pObject;
 	}
 
-	inline bool operator!=(const NiPointer & ptr) const {
+	inline bool operator!=(const NiPointer& ptr) const {
 		return m_pObject != ptr.m_pObject;
 	}
 };

@@ -54,6 +54,7 @@
 #include "..\[EditorAPI]\BSArchiveManager.h"
 #include "..\[EditorAPI]\TESObjectREFR.h"
 #include "..\[EditorAPI]\BSResourceLooseFiles.h"
+#include "..\[EditorAPI]\BSPointerHandleManager.h"
 
 /*
 
@@ -64,6 +65,7 @@ This file is part of Fallout 4 Fixes source code.
 VOID FIXAPI ENBSeriesFixableRunHandler(VOID);
 VOID FIXAPI Fix_PatchMemory(VOID);
 VOID FIXAPI Fix_PatchThreading(VOID);
+VOID FIXAPI Fix_HandleRefPatch(VOID);
 VOID FIXAPI Fix_GenerateCrashdumps(VOID);
 BOOL FIXAPI Fix_CheckPatchPreCombined(VOID);
 VOID FIXAPI Fix_PatchD3D11_CreationKit(VOID);
@@ -283,6 +285,12 @@ VOID FIXAPI F_OptimizationWithRiskPatches(VOID)
 
 	if (g_INI->GetBoolean("CreationKit", "AlteredFormListPatch", FALSE))
 		XUtil::DetourCall(OFFSET(0x853E47, 0), &TESForm::AlteredFormList_ElementExists);
+
+	_MESSAGE_END_PATCH;
+
+	_MESSAGE_BEGIN_PATCH("BSHandleRefObject");
+
+	Fix_HandleRefPatch();
 
 	_MESSAGE_END_PATCH;
 
