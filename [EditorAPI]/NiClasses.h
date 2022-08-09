@@ -128,8 +128,6 @@ class BSReadWriteLock {
 public:
 	BSReadWriteLock(VOID) : threadID(0), lockValue(0) {}
 
-	VOID LockForRead(VOID);					
-	VOID LockForWrite(VOID);	
 	VOID LockForReadAndWrite(VOID);
 	BOOL TryLockForWrite(VOID);
 	BOOL TryLockForRead(VOID);
@@ -138,7 +136,7 @@ public:
 
 class BSReadLocker {
 public:
-	BSReadLocker(BSReadWriteLock* lock) { m_lock = lock; m_lock->LockForRead(); }
+	BSReadLocker(BSReadWriteLock* lock) { m_lock = lock; m_lock->TryLockForRead(); }
 	~BSReadLocker(VOID) { m_lock->Unlock(); }
 protected:
 	BSReadWriteLock* m_lock;
@@ -146,7 +144,7 @@ protected:
 
 class BSWriteLocker {
 public:
-	BSWriteLocker(BSReadWriteLock* lock) { m_lock = lock; m_lock->LockForWrite(); }
+	BSWriteLocker(BSReadWriteLock* lock) { m_lock = lock; m_lock->TryLockForWrite(); }
 	~BSWriteLocker(VOID) { m_lock->Unlock(); }
 
 protected:

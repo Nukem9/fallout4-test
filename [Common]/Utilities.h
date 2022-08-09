@@ -184,8 +184,11 @@ namespace XUtil {
 	void PatchMemory(uintptr_t Address, uint8_t* Data, size_t Size);
 	void PatchMemory(uintptr_t Address, std::initializer_list<uint8_t> Data);
 	void PatchMemoryNop(uintptr_t Address, size_t Size);
+	void PatchMemoryWP(uintptr_t Address, uint8_t* Data, size_t Size);
 	void PatchMemoryWP(uintptr_t Address, std::initializer_list<uint8_t> Data);
 	void PatchMemoryNopWP(uintptr_t Address, size_t Size);
+	void UnlockWP(uintptr_t Address, size_t Size);
+	void LockWP(uintptr_t Address, size_t Size);
 	void DetourJump(uintptr_t Target, uintptr_t Destination);
 	void DetourCall(uintptr_t Target, uintptr_t Destination);
 

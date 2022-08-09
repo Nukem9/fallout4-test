@@ -48,14 +48,6 @@
 #include "..\[Common]\StdAfx.h"
 #include "NiClasses.h"
 
-VOID BSReadWriteLock::LockForRead(VOID) {
-	((VOID(__fastcall*)())OFFSET(0x200D220, 0))();
-}
-
-VOID BSReadWriteLock::LockForWrite(VOID) {
-	((VOID(__fastcall*)())OFFSET(0x200D3D0, 0))();
-}
-
 VOID SimpleLock::Lock(DWORD pauseAttempts) {
 	DWORD myThreadID = GetCurrentThreadId();
 

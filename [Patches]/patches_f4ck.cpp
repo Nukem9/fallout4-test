@@ -240,10 +240,6 @@ VOID FIXAPI F_VerifiedPatches(VOID)
 	Tools::IniHookInputInit();
 #endif // !FALLOUT4_STUDY_CK64_INIFILE
 
-	_MESSAGE_END_PATCH;
-
-	_MESSAGE_BEGIN_PATCH("Misc");
-
 	// Fixed a very harmful error that pops up very rarely
 	XUtil::DetourCall(OFFSET(0x2511176, 0), &hk_call_2511176);
 
@@ -281,18 +277,29 @@ VOID FIXAPI F_VerifiedPatches(VOID)
 
 VOID FIXAPI F_OptimizationWithRiskPatches(VOID)
 {
-	_MESSAGE_BEGIN_PATCH("TESForm storage");
-
 	if (g_INI->GetBoolean("CreationKit", "AlteredFormListPatch", FALSE))
+	{
+		_MESSAGE_BEGIN_PATCH("TESForm storage");
+
 		XUtil::DetourCall(OFFSET(0x853E47, 0), &TESForm::AlteredFormList_ElementExists);
 
+		_MESSAGE_END_PATCH;
+	}
+
+	_MESSAGE_BEGIN_PATCH("PreVis");
+
+	XUtil::PatchMemoryNop(OFFSET(0x133BB9A, 0), 0x62);
+
 	_MESSAGE_END_PATCH;
 
-	_MESSAGE_BEGIN_PATCH("BSHandleRefObject");
+	if (g_INI->GetBoolean("CreationKit", "BSHandleRefObjectPatch", FALSE))
+	{
+		_MESSAGE_BEGIN_PATCH("BSHandleRefObject");
 
-	Fix_HandleRefPatch();
+		Fix_HandleRefPatch();
 
-	_MESSAGE_END_PATCH;
+		_MESSAGE_END_PATCH;
+	}
 
 	_MESSAGE_BEGIN_PATCH("FastLoad");
 	
@@ -842,21 +849,38 @@ VOID FIXAPI MainFix_PatchFallout4CreationKit(VOID)
 		_MESSAGE_FMT("CommandLine: %d (Args) %s", nCountArgCmdLine, GetCommandLineA());
 
 		if (g_LoadType == GAME_EXECUTABLE_TYPE::CREATIONKIT_FALLOUT4_PATCHED_PREVIS) {
-			if (Fix_CheckPatchPreCombined()) {
-				_MESSAGE("Detected patch SeargeDP");
 
-				if ((nCountArgCmdLine == 1) || (sCommandRun.Compare("-GeneratePreCombined") && sCommandRun.Compare("-GeneratePreVisData") &&
-					sCommandRun.Compare("-BuildCDX") && sCommandRun.Compare("-CompressPSG"))) {
+			if (Fix_CheckPatchPreCombined())
+			{
+				if (g_INI->GetBoolean("CreationKit", "BSHandleRefObjectPatch", FALSE))
+				{
 					MessageBoxA(NULL,
-						"Patched SeargeDP Creation Kit version detected.\nCalling an unsupported command.\n\n"
-						"Close Creation Kit.\n"
-						"Support command:\n"
-						"-GeneratePreCombined, -GeneratePreVisData, -BuildCDX and -CompressPSG",
+						"Patched SeargeDP Creation Kit version detected.\n"
+						"It is already incompatible.\n\n"
+						"Close Creation Kit.\n",
 						"Incorrect user actions",
 						MB_ICONERROR);
 
 					QuitHandler();
 					return;
+				}
+				else
+				{
+					_MESSAGE("Detected patch SeargeDP");
+
+					if ((nCountArgCmdLine == 1) || (sCommandRun.Compare("-GeneratePreCombined") && sCommandRun.Compare("-GeneratePreVisData") &&
+						sCommandRun.Compare("-BuildCDX") && sCommandRun.Compare("-CompressPSG"))) {
+						MessageBoxA(NULL,
+							"Patched SeargeDP Creation Kit version detected.\nCalling an unsupported command.\n\n"
+							"Close Creation Kit.\n"
+							"Support command:\n"
+							"-GeneratePreCombined, -GeneratePreVisData, -BuildCDX and -CompressPSG",
+							"Incorrect user actions",
+							MB_ICONERROR);
+
+						QuitHandler();
+						return;
+					}
 				}
 			}
 			else

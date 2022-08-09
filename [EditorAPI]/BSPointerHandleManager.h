@@ -122,8 +122,6 @@ public:
 	READ_PROPERTY(GetRefCount) LONGLONG RefCount;
 	PROPERTY(GetHandleEntryIndex, SetHandleEntryIndex) LONGLONG HandleIndex;
 };
-
-//#define BSHandleRefObject IBSHandleRefObject<>
 static_assert(sizeof(BSHandleRefObject) == 0x10);
 
 #if UNTYPE_PTR_64

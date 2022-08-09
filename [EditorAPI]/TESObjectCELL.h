@@ -117,8 +117,8 @@ public:
 	INLINE DWORD GetNavMeshesCount(VOID) const { return (DWORD)_navmeshes->QSize(); }
 	INLINE const TESForm** GetNavMeshesConst(VOID) const { return (const TESForm**)_navmeshes->QBuffer(); }
 	INLINE TESForm** GetNavMeshes(VOID) { return (TESForm**)_navmeshes->QBuffer(); }
-	INLINE INT32 GetGridX(VOID) const { return (IsExterior()) ? _celldata.Grid->X : 0; }
-	INLINE INT32 GetGridY(VOID) const { return (IsExterior()) ? _celldata.Grid->Y : 0; }
+	INLINE INT32 GetGridX(VOID) const { return (IsExterior()) ? _celldata.Grid->X : 0; } // 0xDB3470
+	INLINE INT32 GetGridY(VOID) const { return (IsExterior()) ? _celldata.Grid->Y : 0; } // 0xDB3490
 	INLINE LightingData* GetLighting(VOID) { return (IsInterior()) ? _celldata.Lighting : NULL; }
 	INLINE BOOL IsActive(VOID) const { return _cell_process_level == CellProcessLevels::cplActive; }
 	INLINE BOOL IsLoaded(VOID) const { return _cell_process_level == CellProcessLevels::cplLoaded; }

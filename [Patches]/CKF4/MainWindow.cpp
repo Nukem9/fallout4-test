@@ -381,11 +381,14 @@ namespace MainWindow
 			return S_OK;
 
 			case UI_EXTMENU_OUTTOLOGINFOSDM: {
-				_MESSAGE("SDM Info:");
-				_MESSAGE_FMT("Head: %08X", g_HandleRefObjectManager->Head());
-				_MESSAGE_FMT("Tail: %08X", g_HandleRefObjectManager->Tail());
-				_MESSAGE_FMT("Capacity: %08X / %08X (%3.2f%%)", g_HandleRefObjectManager->Head(), BSUntypedPointerHandle::MAX_HANDLE_COUNT,
-					((long double)(g_HandleRefObjectManager->Head()) * 100.0) / (long double)(BSUntypedPointerHandle::MAX_HANDLE_COUNT));
+				if (g_HandleRefObjectManager)
+				{
+					_MESSAGE("SDM Info:");
+					_MESSAGE_FMT("Head: %08X", g_HandleRefObjectManager->Head());
+					_MESSAGE_FMT("Tail: %08X", g_HandleRefObjectManager->Tail());
+					_MESSAGE_FMT("Capacity: %08X / %08X (%3.2f%%)", g_HandleRefObjectManager->Head(), BSUntypedPointerHandle::MAX_HANDLE_COUNT,
+						((long double)(g_HandleRefObjectManager->Head()) * 100.0) / (long double)(BSUntypedPointerHandle::MAX_HANDLE_COUNT));
+				}
 			}
 			return S_OK;
 

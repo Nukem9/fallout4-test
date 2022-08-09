@@ -285,6 +285,12 @@ void XUtil::PatchMemoryNop(uintptr_t Address, size_t Size) {
 	FlushInstructionCache(GetCurrentProcess(), (LPVOID)Address, Size);
 }
 
+void XUtil::PatchMemoryWP(uintptr_t Address, uint8_t* Data, size_t Size)
+{
+	for (uintptr_t i = Address; i < (Address + Size); i++)
+		*(volatile uint8_t*)i = *Data++;
+}
+
 void XUtil::PatchMemoryWP(uintptr_t Address, std::initializer_list<uint8_t> Data)
 {
 	uintptr_t i = Address;
@@ -296,6 +302,22 @@ void XUtil::PatchMemoryNopWP(uintptr_t Address, size_t Size)
 {
 	for (uintptr_t i = Address; i < (Address + Size); i++)
 		*(volatile uint8_t*)i = 0x90;
+}
+
+static DWORD dwOldFlagProtected = 0;
+
+void XUtil::UnlockWP(uintptr_t Address, size_t Size)
+{
+	Assert(!dwOldFlagProtected);
+	VirtualProtect((LPVOID)Address, Size, PAGE_EXECUTE_READWRITE, &dwOldFlagProtected);
+}
+
+void XUtil::LockWP(uintptr_t Address, size_t Size)
+{
+	Assert(dwOldFlagProtected);
+	VirtualProtect((LPVOID)Address, Size, dwOldFlagProtected, &dwOldFlagProtected);
+	FlushInstructionCache(GetCurrentProcess(), (LPVOID)Address, Size);
+	dwOldFlagProtected = 0;
 }
 
 void XUtil::DetourJump(uintptr_t Target, uintptr_t Destination) {
