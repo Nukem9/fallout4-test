@@ -1025,6 +1025,20 @@ VOID FIXAPI hk_call_142D12196(VOID) {
 	AssertMsg(FALSE, "Creation Kit renderer initialization failed because your graphics card doesn't support D3D11 Feature Level 11 (FL11_0). Updating your drivers may fix this.");
 }
 
+TESForm* FIXAPI hk_call_853220(LPVOID a1)
+{
+	// This function returns Form, for preprocessing visibility, however, 
+	// sometimes this function returns a Form that is not a Cell. This is an error, 
+	// because in the body it is further revealedand coordinates in the world space are obtained.
+
+	TESForm* Ret = fastCall<TESForm*>(0x853220, a1);
+
+	if (Ret && (Ret->TypeID != TESForm::ftCell))
+		return NULL;
+
+	return Ret;
+}
+
 //VOID FIXAPI hk_FastAnimationBuild(LPVOID rcx, LPVOID rdx, LPVOID r8) {
 //	PULONGLONG* beginAddr = (PULONGLONG*)rdx;
 //	PULONGLONG* endAddr = (PULONGLONG*)((DWORD_PTR)rdx + ((DWORD_PTR)rcx * 8));

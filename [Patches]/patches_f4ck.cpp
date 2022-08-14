@@ -286,11 +286,27 @@ VOID FIXAPI F_OptimizationWithRiskPatches(VOID)
 		_MESSAGE_END_PATCH;
 	}
 
-	_MESSAGE_BEGIN_PATCH("PreVis");
+	if (g_INI->GetBoolean("CreationKit", "PreVisPatch", FALSE))
+	{
+		_MESSAGE_BEGIN_PATCH("PreVis");
 
-	XUtil::PatchMemoryNop(OFFSET(0x133BB9A, 0), 0x62);
+		XUtil::DetourCall(OFFSET(0x33CEC1, 0), &hk_call_853220);
+		// Failed to find static geometry id (0x%8x, 0x%8x), generating dummy data.
+		XUtil::PatchMemoryNop(OFFSET(0x25F63C1, 0), 0x5);
+		// Failed to create instance (0x%08X) for model (0x%08X) while generating visibility.
+		XUtil::PatchMemoryNop(OFFSET(0x133C173, 0), 0x5);
+		// failed to create visibility model from scene model (0x%08X)
+		XUtil::PatchMemoryNop(OFFSET(0x133BDF4, 0), 0x5);
+		XUtil::PatchMemoryNop(OFFSET(0x133BE3A, 0), 0x5);
+		// Missing root material: %s.
+		XUtil::PatchMemoryNop(OFFSET(0x2B7E2BD, 0), 0x5);
+		// Bound for object '%s' (%08X) exceeds 32000 unit limits (%.0f,%.0f,%.0f),(%.0f,%.0f,%.0f).
+		XUtil::PatchMemoryNop(OFFSET(0xCC7C3D, 0), 0x5);
+		// skip generation duplicate model
+		XUtil::PatchMemory(OFFSET(0x133BE6C, 0), { 0xE9, 0x8B, 0x00, 0x00, 0x00 });
 
-	_MESSAGE_END_PATCH;
+		_MESSAGE_END_PATCH;
+	}
 
 	if (g_INI->GetBoolean("CreationKit", "BSHandleRefObjectPatch", FALSE))
 	{

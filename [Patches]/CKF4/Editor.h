@@ -63,6 +63,7 @@ VOID FIXAPI PatchTemplatedFormIterator(VOID);
 VOID FIXAPI EnabledExtremelyMode(VOID);
 VOID FIXAPI SkipAnimationTextExport(VOID);
 VOID FIXAPI OriginalLoadBA2(VOID);
+TESForm* FIXAPI hk_call_853220(LPVOID a1);
 
 /*
 ==================
