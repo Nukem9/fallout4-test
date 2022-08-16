@@ -345,6 +345,9 @@
     <ClInclude Include="[EditorAPI]\BSPointerHandleManager.h">
       <Filter>[EditorAPI]</Filter>
     </ClInclude>
+    <ClInclude Include="[Patches]\CKF4\UITheme\CustomCaption.h">
+      <Filter>[Patches]\CK\UITheme</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="[Win64]\Main.cpp">
@@ -634,6 +637,9 @@
     </ClCompile>
     <ClCompile Include="[EditorAPI]\BSPointerHandleManager.cpp">
       <Filter>[EditorAPI]</Filter>
+    </ClCompile>
+    <ClCompile Include="[Patches]\CKF4\UITheme\CustomCaption.cpp">
+      <Filter>[Patches]\CK\UITheme</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

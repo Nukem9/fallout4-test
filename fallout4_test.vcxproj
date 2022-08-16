@@ -171,6 +171,7 @@
     <ClInclude Include="[Patches]\CKF4\UITheme\CheckBox.h" />
     <ClInclude Include="[Patches]\CKF4\UITheme\ComboBox.h" />
     <ClInclude Include="[Patches]\CKF4\UITheme\CustomBox.h" />
+    <ClInclude Include="[Patches]\CKF4\UITheme\CustomCaption.h" />
     <ClInclude Include="[Patches]\CKF4\UITheme\EditText.h" />
     <ClInclude Include="[Patches]\CKF4\UITheme\GroupBox.h" />
     <ClInclude Include="[Patches]\CKF4\UITheme\Header.h" />
@@ -261,6 +262,7 @@
     <ClCompile Include="[Patches]\CKF4\UITheme\CheckBox.cpp" />
     <ClCompile Include="[Patches]\CKF4\UITheme\ComboBox.cpp" />
     <ClCompile Include="[Patches]\CKF4\UITheme\CustomBox.cpp" />
+    <ClCompile Include="[Patches]\CKF4\UITheme\CustomCaption.cpp" />
     <ClCompile Include="[Patches]\CKF4\UITheme\EditText.cpp" />
     <ClCompile Include="[Patches]\CKF4\UITheme\GroupBox.cpp" />
     <ClCompile Include="[Patches]\CKF4\UITheme\Header.cpp" />

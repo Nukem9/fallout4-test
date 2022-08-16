@@ -97,6 +97,7 @@
 #include <Objbase.h>
 #include <Psapi.h>
 #include <shellapi.h>
+#include <dwmapi.h>
 #include <ShObjIdl_core.h>
 #include <Uxtheme.h>
 #include <vssym32.h>

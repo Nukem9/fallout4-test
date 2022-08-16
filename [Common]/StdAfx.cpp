@@ -32,6 +32,7 @@
 #pragma comment(lib, "ws2_32.lib")
 #pragma comment(lib, "uxtheme.lib")
 #pragma comment(lib, "Version.lib")
+#pragma comment(lib, "Dwmapi.lib")
 #pragma comment(lib, "libdeflate.lib")			// Boost deflate
 #pragma comment(lib, "tbb.lib")					// Thread Building Blocks
 #pragma comment(lib, "libzydis.lib")			// Zydis

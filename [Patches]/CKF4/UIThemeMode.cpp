@@ -55,6 +55,7 @@
 #include "UITheme/PageControl.h"
 #include "UITheme/RichEdit20.h"
 #include "UITheme/Memo.h"
+#include "UITheme/CustomCaption.h"
 
 /*
 
@@ -315,6 +316,39 @@ namespace UITheme
 		Theme::TimeOfDay::NewUITimeOfDayComponents.hWndEdit.Caption = "10.00";
 	}
 
+	// Return false if the window is unknown
+	BOOL FIXAPI ExcludeSubclassKnownWindows(HWND hWindow, BOOL bRemoved = FALSE)
+	{
+		auto style = GetWindowLongA(hWindow, GWL_STYLE);
+		if ((style & WS_CHILD) == WS_CHILD)
+			return FALSE;
+
+		CHAR szBuffer[MAX_PATH];
+		GetWindowTextA(hWindow, szBuffer, MAX_PATH);
+
+		static std::unordered_map<std::string_view, SUBCLASSPROC, std::hash<std::string_view>, string_equal_to> KnownWindows{
+			{ "Render Window", Theme::CustomCaption::DlgProc },
+		};
+
+		if (auto itr = KnownWindows.find(szBuffer); itr != KnownWindows.end())
+		{
+			if (!bRemoved)
+			{
+				//SetWindowSubclass(hWindow, (*itr).second, 0, reinterpret_cast<DWORD_PTR>((*itr).second));
+				//WindowHandles.emplace(hWindow, TRUE);
+			}
+			else
+			{
+				RemoveWindowSubclass(hWindow, WindowSubclass, 0);
+				//SetWindowSubclass(hWindow, (*itr).second, 0, reinterpret_cast<DWORD_PTR>((*itr).second));
+			}
+
+			return TRUE;
+		}
+
+		return FALSE;
+	}
+
 	// Returns a valid visual theme type, depending on the window class
 	ThemeType FIXAPI GetThemeTypeFromWindow(HWND hWindow) {
 		static std::unordered_map<std::string_view, ThemeType, std::hash<std::string_view>, string_equal_to> TargetWindowThemes {
@@ -420,13 +454,21 @@ namespace UITheme
 			else if (messageData->message == WM_INITDIALOG) {
 				auto wnd = WindowHandles.find(messageData->hwnd);
 				if (wnd == WindowHandles.end()) {
-					SetWindowSubclass(messageData->hwnd, DialogSubclass, 0, reinterpret_cast<DWORD_PTR>(DialogSubclass));
-					WindowHandles.emplace(messageData->hwnd, TRUE);
+					if (!ExcludeSubclassKnownWindows(messageData->hwnd))
+					{
+						SetWindowSubclass(messageData->hwnd, DialogSubclass, 0, reinterpret_cast<DWORD_PTR>(DialogSubclass));
+						WindowHandles.emplace(messageData->hwnd, TRUE);
+					}
 				}
 				else {
-					RemoveWindowSubclass(messageData->hwnd, WindowSubclass, 0);
-					SetWindowSubclass(messageData->hwnd, DialogSubclass, 0, reinterpret_cast<DWORD_PTR>(DialogSubclass));
-					wnd->second = TRUE;
+					if (!ExcludeSubclassKnownWindows(messageData->hwnd, TRUE))
+					{
+						RemoveWindowSubclass(messageData->hwnd, WindowSubclass, 0);
+						SetWindowSubclass(messageData->hwnd, DialogSubclass, 0, reinterpret_cast<DWORD_PTR>(DialogSubclass));
+						wnd->second = TRUE;
+					}
+					else
+						wnd->second = TRUE;
 				}
 			}
 		}

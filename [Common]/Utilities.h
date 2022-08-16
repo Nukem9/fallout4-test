@@ -48,6 +48,9 @@
 #define _TIMING_END						XUtil::Timing.End(__FUNCTION__)
 #define _TIMING_END_FMT(x, ...)			XUtil::Timing.End(__FUNCTION__, x, ##__VA_ARGS__)
 
+#define RECTWIDTH(r)					(r.right - r.left)
+#define RECTHEIGHT(r)					(r.bottom - r.top)
+
 #define PatchIAT(detour, module, procname) Detours::IATHook(g_ModuleBase, (module), (procname), (uintptr_t)(detour));
 
 #define templated(...)					__VA_ARGS__

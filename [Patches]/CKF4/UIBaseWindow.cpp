@@ -33,6 +33,21 @@ namespace Core
 
 			// CUIBaseWindow
 
+			BOOL CUIBaseWindow::IsWindowMaximized(void) const
+			{
+				WINDOWPLACEMENT placement = { 0 };
+				placement.length = sizeof(WINDOWPLACEMENT);
+				if (GetWindowPlacement(m_hWnd, &placement)) {
+					return placement.showCmd == SW_SHOWMAXIMIZED;
+				}
+				return FALSE;
+			}
+
+			UINT CUIBaseWindow::DpiForWindow(void) const
+			{
+				return GetDpiForWindow(m_hWnd);
+			}
+
 			void CUIBaseWindow::LockUpdate(void)
 			{
 				if (m_LockUpdate)

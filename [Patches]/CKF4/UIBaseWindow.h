@@ -85,8 +85,10 @@ namespace Core
 				virtual void SetHeight(const LONG value);
 			public:
 				BOOL Is(void) const;
+				BOOL IsWindowMaximized(void) const;
 				CRECT WindowRect(void) const;
 				CRECT ClientRect(void) const;
+				UINT DpiForWindow(void) const;
 				LONG ClientWidth(void) const;
 				LONG ClientHeight(void) const;
 				void Move(const LONG x, const LONG y, const BOOL topmost = TRUE);
