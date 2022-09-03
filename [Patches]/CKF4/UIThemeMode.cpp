@@ -780,6 +780,8 @@ namespace UITheme
 	}
 
 	HRESULT FIXAPI Comctl32DrawThemeText(HTHEME hTheme, HDC hdc, INT iPartId, INT iStateId, LPCWSTR pszText, INT cchText, DWORD dwTextFlags, DWORD dwTextFlags2, LPCRECT pRect) {
+		auto lpStr = _wcsdup(pszText);
+		
 		auto themeType = ThemeType::None;
 		if (auto itr = ThemeHandles.find(hTheme); itr != ThemeHandles.end())
 			themeType = itr->second;
@@ -805,7 +807,7 @@ namespace UITheme
 
 			Theme::StatusBar::Event::OnBeforeDrawText(Canvas, dwTextFlags);
 
-			Canvas.TextRect(rc, pszText, dwTextFlags);
+			Canvas.TextRect(rc, lpStr, dwTextFlags);
 			Canvas.TransparentMode = FALSE;
 
 			BitBlt(hdc, pRect->left - 3, pRect->top, rc.right, rc.bottom, hdcMem, 0, 0, SRCCOPY);
@@ -820,7 +822,12 @@ namespace UITheme
 				// detected standart OS theme (comdlg32)
 				COLORREF clTest = GetPixel(hdc, pRect->left + ((pRect->right - pRect->left) >> 1), pRect->top + 2);
 				if (CLR_INVALID != clTest && ((GetRValue(clTest) + GetGValue(clTest) + GetBValue(clTest)) / 3) > 128)
-					return DrawThemeText(hTheme, hdc, iPartId, iStateId, pszText, cchText, dwTextFlags, dwTextFlags2, pRect);
+				{	 
+					auto Ret = DrawThemeText(hTheme, hdc, iPartId, iStateId, pszText, cchText, dwTextFlags, dwTextFlags2, pRect);
+					free(lpStr);
+
+					return Ret;
+				}
 			}
 
 			RECT rc = *pRect;
@@ -863,9 +870,11 @@ namespace UITheme
 				break;
 			}
 
-			Canvas.TextRect(rc, pszText, dwTextFlags);
+			Canvas.TextRect(rc, lpStr, dwTextFlags);
 			Canvas.TransparentMode = FALSE;
 		}
+
+		free(lpStr);
 
 		return S_OK;
 	}
