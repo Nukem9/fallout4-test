@@ -23,14 +23,11 @@
 /*
 * There will be patches from the author here SeargeDP.
 * Profile: http://www.nexusmods.com/users/5780168
-* The file that is patched is too large and it has an unpleasant effect on the overall work of CK, 
-* some fixes that he implemented will be here.
 * 
-* YES, IT'S NOT TOO GOOD, BUT I'LL POINT HIM OUT AS THE CREATOR OF THE IDEAS THAT HE INVESTED.
-* AS I SAID ABOVE, NOT ALL PATCHES WILL BE HERE, DUE TO THE FACT THAT SOME FIXES MAY AFFECT 
-* THE OVERALL WORK OF THE PROGRAM ON OTHER TASKS. FIXES WILL BE SELECTED BY CONDUCTING 
-* A COMPARATIVE ANALYSIS.
+* Here is the patch verification code
 */
+
+
 
 #include "..\..\[Common]\StdAfx.h"
 

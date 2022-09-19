@@ -302,8 +302,16 @@ VOID FIXAPI F_OptimizationWithRiskPatches(VOID)
 		XUtil::PatchMemoryNop(OFFSET(0x2B7E2BD, 0), 0x5);
 		// Bound for object '%s' (%08X) exceeds 32000 unit limits (%.0f,%.0f,%.0f),(%.0f,%.0f,%.0f).
 		XUtil::PatchMemoryNop(OFFSET(0xCC7C3D, 0), 0x5);
+		
+		_MESSAGE_END_PATCH;
+	}
+
+	if (g_INI->GetBoolean("CreationKit", "PreVis_SkipDuplicatePatch", FALSE))
+	{
+		_MESSAGE_BEGIN_PATCH("PreVis_SkipDuplicate");
+
 		// skip generation duplicate model
-		//XUtil::PatchMemory(OFFSET(0x133BE6C, 0), { 0xE9, 0x8B, 0x00, 0x00, 0x00 });
+		XUtil::PatchMemory(OFFSET(0x133BE6C, 0), { 0xE9, 0x8B, 0x00, 0x00, 0x00 });
 
 		_MESSAGE_END_PATCH;
 	}
@@ -1001,10 +1009,13 @@ VOID FIXAPI MainFix_PatchFallout4CreationKit(VOID)
 	if (g_INI->GetBoolean("CreationKit", "SkipChangeWorldSpace", FALSE))
 		XUtil::PatchMemoryNop(OFFSET(0x5FBE14, 0), 0x13);
 
+	int precomb_flag1 = g_INI->GetInteger("CreationKit_PreVisAndComb", "GenerationVersion1", 0);
+	int precomb_flag2 = g_INI->GetInteger("CreationKit_PreVisAndComb", "GenerationVersion2", 0);
+
 	//
 	// Fix for the -GeneratePreCombined command line option creating files for the PS4 (2) format. It should be WIN64 (0).
 	//
-	XUtil::PatchMemory(OFFSET(0xDCB7DB, 0), { 0x00, 0x00, 0x00, 0x00 });
+	XUtil::PatchMemory(OFFSET(0xDCB7DB, 0), (uint8_t*)&precomb_flag1, 4);
 
 	if (nCountArgCmdLine != 1 && g_LoadType == GAME_EXECUTABLE_TYPE::CREATIONKIT_FALLOUT4 && !sCommandRun.Compare("-GeneratePreCombined")) {
 		_MESSAGE_BEGIN_PATCH("PreCombined");
@@ -1012,8 +1023,8 @@ VOID FIXAPI MainFix_PatchFallout4CreationKit(VOID)
 		//
 		// Additional options taken from the patch, if you do not use the patched F4CK.
 		//
-		XUtil::PatchMemory(OFFSET(0x347E6E, 0), { 0x00, 0x00, 0x00, 0x00 });
-		XUtil::PatchMemory(OFFSET(0xDCB677, 0), { 0x00, 0x00, 0x00, 0x00 });
+		XUtil::PatchMemory(OFFSET(0x347E6E, 0), (uint8_t*)&precomb_flag2, 4);
+		XUtil::PatchMemory(OFFSET(0xDCB677, 0), (uint8_t*)&precomb_flag2, 4);
 
 		_MESSAGE_END_PATCH;
 	}
