@@ -21,6 +21,9 @@
 */
 //////////////////////////////////////////
 
+#pragma warning (disable : 6063)
+#pragma warning (disable : 26454)
+
 #include "ObjectWindow.h"
 #include "EditorUI.h"
 #include "MainWindow.h"
@@ -31,8 +34,11 @@
 
 namespace ObjectWindow
 {
+	constexpr static size_t LVC_TOOLTIP_MAX = 512;
+
 	OBJWNDS ObjectWindows;
 	DLGPROC OldDlgProc;
+	CHAR szTooltips[LVC_TOOLTIP_MAX];
 
 	HWND FIXAPI GetWindow(UINT uId)
 	{
@@ -157,6 +163,8 @@ namespace ObjectWindow
 			lpObjWnd->Controls.TreeList.Perform(TVM_SETEXTENDEDSTYLE, TVS_EX_DOUBLEBUFFER, TVS_EX_DOUBLEBUFFER);
 			// Eliminate the flicker when changing categories
 			ListView_SetExtendedListViewStyleEx(lpObjWnd->Controls.ItemList.Handle, LVS_EX_DOUBLEBUFFER, LVS_EX_DOUBLEBUFFER);
+			// 
+			ListView_SetExtendedListViewStyleEx(lpObjWnd->Controls.ItemList.Handle, LVS_EX_INFOTIP, LVS_EX_INFOTIP);
 
 			// Erase Icon and SysMenu
 			if (!ObjectWindows.size())
@@ -234,6 +242,39 @@ namespace ObjectWindow
 			}
 			return S_OK;
 
+			}
+		}
+		else if (Message == WM_NOTIFY)
+		{
+			// Restore tooltip original
+			// It is unclear how he disappeared
+
+			auto lpTooltipInfo = (LPNMLVGETINFOTIPA)lParam;
+
+			if ((lpTooltipInfo->hdr.idFrom == 1041) && (lpTooltipInfo->hdr.code == LVN_GETINFOTIP))
+			{
+				LVITEMA lvi = { 0 };
+				lvi.mask = LVIF_PARAM;
+				lvi.iItem = lpTooltipInfo->iItem;
+				ListView_GetItem(lpTooltipInfo->hdr.hwndFrom, &lvi);
+				
+				auto form = (TESForm*)lvi.lParam;
+				if (form)
+					StringCchPrintfA(szTooltips, LVC_TOOLTIP_MAX, "'%s' (%08X)", *(form->EditID), form->FormID);
+				else
+					// It's unlikely to get here, but who knows...
+				{
+					CHAR szBuf1[200];
+					CHAR szBuf2[200];
+
+					ListView_GetItemText(lpTooltipInfo->hdr.hwndFrom, lpTooltipInfo->iItem, 0, (LPSTR)(&szBuf1[0]), 200);
+					ListView_GetItemText(lpTooltipInfo->hdr.hwndFrom, lpTooltipInfo->iItem, 1, (LPSTR)(&szBuf2[0]), 200);
+
+					StringCchPrintfA(szTooltips, LVC_TOOLTIP_MAX, "'%s' (%s)", szBuf1, szBuf2);
+				}
+
+				lpTooltipInfo->pszText = szTooltips;
+				lpTooltipInfo->cchTextMax = LVC_TOOLTIP_MAX;
 			}
 		}
 		else if (Message == WM_SHOWWINDOW)
