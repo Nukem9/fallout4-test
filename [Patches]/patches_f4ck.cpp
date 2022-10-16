@@ -502,6 +502,9 @@ VOID FIXAPI F_UIPatches(VOID) {
 		XUtil::DetourCall(OFFSET(0x1336521, 0), &PreferencesWindow::CreateDialogParamA);
 	}
 
+	// Fix button Ok to Dialog "Cell"
+	XUtil::PatchMemoryNop(OFFSET(0xDEE520, 0), 6);
+	
 	// Layers enable doublebuffered
 	XUtil::DetourCall(OFFSET(0x67A325, 0), &LayersWindow::SendMessageAfterCreateTreeView);
 	// Layers dialog fix resize
