@@ -383,4 +383,15 @@ namespace EditorUI
 		if (Handle)
 			fastCall<VOID>(0x3C5960, active_layer);
 	}
+
+	VOID FIXAPI EncounterZoneAnalyzeLoot(LPVOID _Class, HWND _Dialog, BYTE _Level)
+	{
+		if (!_Class)
+		{
+			Core::Classes::UI::CUIMainWindow::MessageWarningDlg(L"You are making mistakes!\n\nSet the ID and location and click Ok, only after that you can open and click on this button.");
+			return;
+		}
+
+		fastCall<VOID>(0xD29910, _Class, _Dialog, _Level);
+	}
 }

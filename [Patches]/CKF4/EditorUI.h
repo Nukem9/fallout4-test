@@ -46,4 +46,5 @@ namespace EditorUI
 	VOID FIXAPI RegisterHotkeyFunction(LPVOID Thisptr, VOID(*Callback)(VOID), BSEntryString** HotkeyFunction, BSEntryString** DisplayText, CHAR VirtualKey,
 		bool Alt, bool Ctrl, bool Shift);
 	VOID FIXAPI hkAddRefrToLayer(LPVOID* active_layer);
+	VOID FIXAPI EncounterZoneAnalyzeLoot(LPVOID _Class, HWND _Dialog, BYTE _Level);
 }

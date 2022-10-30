@@ -494,13 +494,19 @@ VOID FIXAPI F_UIPatches(VOID) {
 		Detours::X64::DetourFunctionClass(OFFSET(0x4D3890, 0), &BGSRenderWindowReferenceEditModule::hk_MoveObjects);
 	*(uintptr_t*)&TESObjectREFR::SetNewPosition = 
 		Detours::X64::DetourFunctionClass(OFFSET(0xE24B10, 0), &TESObjectREFR::hk_SetNewPosition);*/
-
+	
 	//XUtil::DetourJump(OFFSET(0x4D3890, 0), &BGSRenderWindowReferenceEditModule::hk_MoveObjects);
 
 	if (UITheme::IsEnabledMode()) {
 		*(uintptr_t*)&PreferencesWindow::OldDlgProc = OFFSET(0x1335AF0, 0);
 		XUtil::DetourCall(OFFSET(0x1336521, 0), &PreferencesWindow::CreateDialogParamA);
 	}
+
+	// Fix Encounter Zone
+	// TBM_GETPOS = wParam must be zero.
+	XUtil::PatchMemory(OFFSET(0xD28DDA, 0), { 0x00 });
+	// Fix Encounter Zone
+	XUtil::DetourCall(OFFSET(0xD28DFE, 0), &EditorUI::EncounterZoneAnalyzeLoot);
 
 	// Fix button Ok to Dialog "Cell"
 	XUtil::PatchMemoryNop(OFFSET(0xDEE520, 0), 6);
