@@ -1,14 +1,23 @@
-[submodule "Dependencies/meshoptimizer"]
-	path = Dependencies/meshoptimizer
+[submodule "[Depends]/meshoptimizer"]
+	path = [Depends]/meshoptimizer
 	url = https://github.com/zeux/meshoptimizer.git
 	branch = master
-[submodule "Dependencies/tbb"]
-	path = Dependencies/tbb
-	url = https://github.com/01org/tbb.git
-	branch = tbb_2019
-[submodule "Dependencies/libdeflate"]
-	path = Dependencies/libdeflate
+[submodule "[Depends]/libdeflate"]
+	path = [Depends]/libdeflate
 	url = https://github.com/ebiggers/libdeflate.git
-[submodule "Dependencies/detours"]
-	path = Dependencies/detours
+[submodule "[Depends]/detours"]
+	path = [Depends]/detours
 	url = https://github.com/Nukem9/detours.git
+[submodule "[Depends]/mINI"]
+	path = [Depends]/mINI
+	url = https://github.com/Perchik71/mINI
+[submodule "[Depends]/tbb"]
+	path = [Depends]/tbb
+	url = https://github.com/oneapi-src/oneTBB.git
+	branch = tbb_2020
+[submodule "[Depends]/zipper"]
+	path = [Depends]/zipper
+	url = https://github.com/kuba--/zip.git
+[submodule "[Depends]/jDialogs"]
+	path = [Depends]/jDialogs
+	url = https://github.com/Perchik71/jDialogs.git

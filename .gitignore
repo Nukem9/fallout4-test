@@ -49,5 +49,13 @@ x86/
 # Nsight
 *.nvuser
 
-fallout4_test/src/version_info.h
-fallout4_test/VTune Amplifier Results/
+version_info.h
+resource.aps
+
+*.lnk
+*.vcxproj.user
+
+# other
+*.cer
+*.bat
+*.bin

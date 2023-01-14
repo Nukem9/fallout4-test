@@ -1,0 +1,23 @@
+{
+  "ExStyle": [ "WS_EX_COMPOSITED", "WS_EX_LAYERED", "WS_EX_TOPMOST", "WS_EX_TRANSPARENT" ],
+  "Style": [ "DS_CENTER", "DS_ABSALIGN", "WS_POPUP" ],
+  "Title": "",
+  "Width": 700,
+  "Height": 700,
+  "FontName": "Microsoft Sans Serif",
+  "FontSize": 10,
+  "FontWeight": 400,
+  "FontItalic": 0,
+  "Controls": [
+    {
+      "Type": "BITMAP",
+      "Style": [ "SS_REALSIZEIMAGE" ],
+      "Id": 1962,
+      "Title": "320",
+      "x": 0,
+      "y": 0,
+      "Width": 700,
+      "Height": 700
+    }
+  ]
+}
